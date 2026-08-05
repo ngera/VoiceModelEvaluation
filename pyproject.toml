@@ -58,6 +58,10 @@ select = ["E", "F", "I", "W", "UP", "B"]
 # in the default is required by the framework, not a mutable-default bug.
 ignore = ["B008"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
 [tool.mypy]
 python_version = "3.11"
 strict = true
