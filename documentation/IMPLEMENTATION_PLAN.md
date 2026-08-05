@@ -64,9 +64,14 @@ TTFA ~600–700 ms, total ~1.8–2.0 s across three runs.
 
 ### Still outstanding from Phase A
 
-- **`tests/`** — `pytest` is a dev dep; no test dir exists. Minimum: run-store
-  immutability, config validation, `ProviderError` mapping, and a
-  `finalize_wav_header` case (placeholder header → corrected, non-WAV → no-op).
+- ✅ **`tests/`** — 29 tests added (commit `51e4f6b`): `finalize_wav_header`
+  regression net, run-store invariants, config `extra="forbid"` validation.
+  Deliberately excludes adapter HTTP mocking; `veval doctor` covers that live.
+- ⏳ **One test is red by design.**
+  `test_manifest_records_a_stable_interpreter` fails until the devcontainer is
+  rebuilt onto stable 3.11 — it is the gate proving that fix landed. **Rebuild
+  is a host action** (Command Palette → *Dev Containers: Rebuild Container*);
+  Docker isn't reachable from inside this container. Suite goes 29/29 after.
 
 ## Where Phase A stopped (original reconstruction)
 
@@ -108,7 +113,13 @@ complete in outline — every file exists and reads as finished work.
 These are conflicts and judgment calls found while reading the tree. They were
 **not** part of the recovered plan — they need your call.
 
-- **The interpreter is a release candidate.** `python -VV` reports
+**Resolved 2026-08-05:** the interpreter, `uv.lock`, and tests are all handled
+(commits `d850ddd`, `11ff01d`, `51e4f6b`) — the interpreter fix lands on the
+next container rebuild. The two entries below are kept for the record; the
+`weights.yaml` conflict and the empty provider keys remain open.
+
+- **The interpreter is a release candidate.** *(fixed in `11ff01d`, pending
+  rebuild.)* `python -VV` reports
   **`3.11.0rc1 (main, Aug 12 2022)`** — Ubuntu 22.04's `python3.11` package
   never moved past the RC. It is baked into `manifest.json` for every run
   (`"python_version": "3.11.0rc1"`), so it ships in the provenance record of
@@ -121,9 +132,10 @@ These are conflicts and judgment calls found while reading the tree. They were
   The devcontainer is now fixed, so a rebuild restores it; or run
   `uv sync --extra analyze --extra admin --extra dev` (large CUDA download).
   Not needed until Phase E.
-- **`.gitignore` ignores `uv.lock`.** For an application whose selling point is
-  reproducibility, the lock file is normally committed. Recommend un-ignoring.
-  *Left as-is pending your call — it is a one-line change.*
+- ✅ **`uv.lock` is now committed** (`d850ddd`). It pins the measuring
+  instrument — jiwer normalization, CTranslate2, TTSDS2 revisions all move the
+  numbers — so the +4wk drift re-run can attribute a change to the provider
+  rather than to our own toolchain. Without it that talking point is a guess.
 - **`eval_harness_architecture.mermaid:4` still shows `weights.yaml`** with
   "per-use-case weights + rationale". CLAUDE.md records that the weighted
   composite was killed in favour of pre-committed gates + Pareto frontiers. The
