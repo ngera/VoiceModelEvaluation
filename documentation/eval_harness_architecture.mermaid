@@ -1,0 +1,56 @@
+flowchart TB
+    subgraph CONFIG["Config (git-committed BEFORE results)"]
+        C1["providers.yaml<br/>model strings · voice IDs · endpoints"]
+        C2["weights.yaml<br/>per-use-case weights + rationale"]
+        C3["corpus/*.yaml<br/>84 items × 2 use cases, versioned"]
+    end
+
+    subgraph ADAPTERS["Provider adapters (one file each, common interface)"]
+        A1["synthesize(text, opts) →<br/>{audio_bytes, ttfa_ms, chars_billed, meta}"]
+        A2["elevenlabs.py · fish.py · xai.py<br/>deepgram.py · google.py · minimax.py …"]
+    end
+
+    subgraph RUNNER["Runner (CLI: veval generate)"]
+        R1["Orchestrator<br/>retry + backoff · rate-limit aware<br/>content-hash cache (skip unchanged)"]
+        R2["Latency campaign mode<br/>runs ONLY from pinned cloud VM"]
+    end
+
+    subgraph STORE["Immutable run store — runs/&lt;run_id&gt;/"]
+        S1["manifest.json<br/>date · region · model+voice versions"]
+        S2["audio/&lt;provider&gt;/&lt;item&gt;.wav"]
+        S3["api_log.jsonl<br/>timings · usage · errors-as-data"]
+    end
+
+    subgraph ANALYZE["Analyzers (CLI: veval analyze) — VERSA engine, pure, re-runnable"]
+        AN1["wer.py — two-judge ASR<br/>Parakeet TDT + faster-whisper · jiwer"]
+        AN2["quality.py<br/>TTSDS2 + Audiobox Aesthetics"]
+        AN3["hygiene.py<br/>silero-VAD · pyloudnorm · clipping"]
+        AN4["latency.py<br/>TTFA p50/p90 + RTF from api_log"]
+    end
+
+    subgraph HUMAN["Pairwise rating (D4)"]
+        H1["Static A/B voting page<br/>blinded codes + human anchors"]
+        H2["judgments.csv → Bradley–Terry fit"]
+    end
+
+    subgraph SCORE["Decision layer (CLI: veval score)"]
+        SC1["Apply gates.yaml<br/>(pre-committed per use case)"]
+        SC2["Pareto frontiers<br/>quality × cost · quality × latency<br/>+ gate-robustness ±20%"]
+        SC3["hi_snapshot.json + capability_matrix.yaml<br/>HI reference · D8 audit"]
+    end
+
+    subgraph REPORT["Reporting (CLI: veval report)"]
+        RP1["Results tables (md/html)<br/>incl. Δ-vs-HI + Reproduces? cols"]
+        RP2["Charts + heatmap"]
+        RP3["Decision memos (hand-written,<br/>data auto-injected)"]
+    end
+
+    CONFIG --> RUNNER
+    ADAPTERS --> RUNNER
+    RUNNER --> STORE
+    STORE --> ANALYZE
+    STORE --> HUMAN
+    ANALYZE --> SCORE
+    HUMAN --> SCORE
+    SC3 --> SCORE
+    SCORE --> REPORT

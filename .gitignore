@@ -1,0 +1,51 @@
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+
+# Build artifacts
+build/
+dist/
+*.whl
+
+# Run artifacts (generated audio + logs — regenerable, not versioned)
+runs/
+analysis/
+judgments/
+decisions/
+
+# Deviations from prereg — versioned, kept
+!DEVIATIONS.md
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Word lock files (left behind by open .docx in documentation/)
+~$*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Vercel
+voting/node_modules/
+voting/.vercel/
+voting/dist/

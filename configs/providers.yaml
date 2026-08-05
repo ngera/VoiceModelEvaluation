@@ -1,0 +1,11 @@
+# providers.yaml — locked BEFORE any results (git tag `prereg-v1`).
+# Phase A stub: only Deepgram registered so `veval doctor` has something to probe.
+# Phase C will add the remaining five providers.
+
+providers:
+  - name: deepgram
+    display_name: "Deepgram Aura-2"
+    model: "aura-2-thalia-en"
+    env_key: DEEPGRAM_API_KEY
+    tier: control
+    notes: "Off-index control (Humanness Index excludes non-cloning models)."

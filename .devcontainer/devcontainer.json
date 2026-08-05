@@ -1,0 +1,59 @@
+{
+  "name": "veval",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "runArgs": [
+    "--gpus", "all",
+    "--shm-size=8g"
+  ],
+  "hostRequirements": {
+    "gpu": "optional"
+  },
+  // No PYTHONPATH: `uv sync` installs veval editable, pointing sys.path at the
+  // live workspace src/. Setting PYTHONPATH=/workspace/src shadowed that with
+  // the stale copy the Dockerfile COPYs in for layer caching, so source edits
+  // had no effect until a rebuild.
+  "containerEnv": {
+    "HF_HOME": "/workspace/.cache/huggingface",
+    "TORCH_HOME": "/workspace/.cache/torch"
+  },
+  "mounts": [
+    "source=veval-hf-cache,target=/workspace/.cache/huggingface,type=volume",
+    "source=veval-torch-cache,target=/workspace/.cache/torch,type=volume"
+  ],
+  "forwardPorts": [
+    8501
+  ],
+  "portsAttributes": {
+    "8501": {
+      "label": "Streamlit admin panel",
+      "onAutoForward": "notify"
+    }
+  },
+  // Must include --extra analyze: uv sync prunes extras it isn't given, so
+  // syncing admin+dev alone uninstalled the analyzer stack the Dockerfile had
+  // just installed — and then the torch check below failed on its own doing.
+  "postCreateCommand": "uv sync --extra analyze --extra admin --extra dev && python -c 'import torch; print(f\"CUDA available: {torch.cuda.is_available()}\")'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  },
+  "remoteUser": "root"
+}
