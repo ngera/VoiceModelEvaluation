@@ -35,7 +35,7 @@
   // Must include --extra analyze: uv sync prunes extras it isn't given, so
   // syncing admin+dev alone uninstalled the analyzer stack the Dockerfile had
   // just installed — and then the torch check below failed on its own doing.
-  "postCreateCommand": "uv sync --extra analyze --extra admin --extra dev && python -c 'import torch; print(f\"CUDA available: {torch.cuda.is_available()}\")'",
+  "postCreateCommand": "uv sync --extra analyze --extra admin --extra dev && uv run python -c 'import sys, torch; print(f\"python={sys.version.split()[0]} cuda={torch.cuda.is_available()}\")'",
   "customizations": {
     "vscode": {
       "extensions": [

@@ -14,11 +14,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # sox: fallback resampling
 # build-essential: some pip packages compile C extensions
 # git: pip installs from git repos (VERSA, TTSDS2 sometimes)
+#
+# NOTE: python3.11 is deliberately NOT installed from apt. Ubuntu 22.04 ships
+# `python3.11` as 3.11.0rc1 (a 2022 release candidate), which we ran until
+# 2026-08-05 — see documentation/IMPLEMENTATION_PLAN.md. uv installs a stable
+# 3.11.x below instead. cp311 wheels are ABI-compatible across patch releases,
+# so the analyzer stack is unaffected by the switch.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3.11 \
-        python3.11-dev \
-        python3.11-venv \
-        python3-pip \
         ffmpeg \
         libsndfile1 \
         sox \
@@ -28,18 +30,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-
 # --- uv (fast Python package manager) ---
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
     && mv /root/.local/bin/uv /usr/local/bin/uv
 
+# --- Python: uv-managed stable 3.11, not Ubuntu's rc1 ---
+ENV UV_PYTHON=3.11
+RUN uv python install 3.11 \
+    && uv run --no-project python -VV
+
 WORKDIR /workspace
 
-# Copy just the project metadata first for layer caching
-COPY pyproject.toml README.md* CLAUDE.md* ./
+# Copy just the project metadata first for layer caching.
+# uv.lock is committed, so builds resolve to the pinned instrument, not "latest".
+COPY pyproject.toml uv.lock README.md* CLAUDE.md* ./
 COPY src ./src
+
+# One venv, addressed absolutely. The repo mounts at /workspaces/<name> while
+# this image builds at /workspace, so without UV_PROJECT_ENVIRONMENT uv creates
+# a second venv depending on CWD. Putting it on PATH also means bare `python`
+# is the project interpreter rather than whatever apt left behind.
+ENV VIRTUAL_ENV=/workspace/.venv \
+    UV_PROJECT_ENVIRONMENT=/workspace/.venv \
+    PATH="/workspace/.venv/bin:${PATH}"
 
 # Base + admin + dev deps (analyzer extras added below with heavier install)
 RUN uv sync --extra admin --extra dev
@@ -51,13 +64,22 @@ RUN uv sync --extra analyze --extra admin --extra dev
 # VERSA / TTSDS2 / NeMo installs — done as a separate RUN so partial failures
 # don't invalidate the extras layer above.
 # Parakeet TDT ships via NeMo toolkit. TTSDS2 and Audiobox Aesthetics are pip-installable.
-RUN uv pip install --system \
+# NOT --system: that installed them into the system interpreter while the app
+# runs from the venv, so `import nemo` would have failed at Phase E despite a
+# green build.
+RUN uv pip install \
         "nemo-toolkit[asr]>=2.0" \
         "ttsds>=2.0" \
         "audiobox-aesthetics>=0.0.3" \
     || echo "WARN: analyzer extras deferred to first analyze run"
 
-# Sanity check that CUDA is visible at build time (does not fail build if not)
+# Sanity check the interpreter is a stable release and CUDA is visible.
+# Neither fails the build; GPU is absent during image build on most hosts.
+# Hard-fail: a release-candidate interpreter must never reach a run manifest again.
+RUN python -VV \
+    && python -c "import sys; assert sys.version_info[:2] == (3, 11) and 'rc' not in sys.version, f'non-stable interpreter: {sys.version}'"
+
+# Soft-fail: GPU is usually absent during image build, so this is informational.
 RUN python -c "import torch; print(f'torch={torch.__version__} cuda={torch.cuda.is_available()}')" \
     || echo "WARN: torch/CUDA check deferred to runtime"
 
