@@ -13,8 +13,9 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# uv
-uv.lock
+# uv — uv.lock IS committed on purpose. It pins the measuring instrument
+# (jiwer, faster-whisper/CTranslate2, TTSDS2), so the +4wk drift re-run can
+# attribute a change to the provider rather than to our own toolchain.
 
 # Build artifacts
 build/
