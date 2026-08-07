@@ -108,3 +108,33 @@ pricing:
       that has now been reversed: all six providers run the full 10-item
       subset (spec §3.4). Latency scored N/A-hosted (measures Replicate's
       cold start, not the model).
+
+  # --- OpenAI (added prereg-v1.1, DEVIATIONS.md D-003) ---
+  - provider: openai
+    tier: paid
+    unit: per_1M_chars
+    rate_usd: 15.0
+    source_url: https://openai.com/api/pricing/
+    date_verified: "2026-08-07"
+    notes: >-
+      gpt-4o-mini-tts / gpt-4o-tts approximate rate. OpenAI actually
+      bills per-character for tts-1 and per-second for the gpt-4o
+      variants; ~$15/1M chars is the conservative approximation used
+      for D6. Prepaid credit required (no free tier). Estimated project
+      cost ~$0.50-2 given corpus size + variance subset. Re-verify on
+      analysis day per D6 rule.
+
+  # --- Speechify (added prereg-v1.1, DEVIATIONS.md D-003) ---
+  - provider: speechify
+    tier: starter_monthly
+    unit: per_1M_chars
+    rate_usd: 10.0
+    included_units_per_month: 1000000  # 1M chars/mo on Starter
+    minimum_monthly_usd: 10.0
+    source_url: https://speechify.com/pricing/
+    date_verified: "2026-08-07"
+    notes: >-
+      Simba 3.2 model. Free tier caps at 50K chars/mo — insufficient
+      for the ~130K chars/provider campaign volume — so Starter plan
+      ($10/mo, 1M chars) required. Cancel after campaign to avoid
+      auto-renewal. Estimated project cost: $10 (one Starter month).

@@ -485,7 +485,11 @@ def test_shipped_providers_yaml_is_valid() -> None:
     repo_root = Path(__file__).resolve().parent.parent
     providers = load_providers(repo_root / "configs" / "providers.yaml")
     names = {p.name for p in providers.providers}
-    assert names == {"deepgram", "fish", "google", "cartesia", "elevenlabs", "orpheus"}
+    # Original 6 (prereg-v1) + OpenAI, Speechify (prereg-v1.1, DEVIATIONS D-003)
+    assert names == {
+        "deepgram", "fish", "google", "cartesia", "elevenlabs", "orpheus",
+        "openai", "speechify",
+    }
 
 
 def test_shipped_gates_yaml_is_valid() -> None:

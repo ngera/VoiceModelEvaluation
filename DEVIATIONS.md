@@ -40,6 +40,56 @@ receipt.
 
 ---
 
+## D-003 — Provider roster expanded 6 → 8 (2026-08-07)
+
+**What changed.** Two providers added to the locked portfolio-edition
+roster after the prereg-v1 tag but before any campaign result exists:
+
+- **OpenAI** — `gpt-4o-mini-tts` (conversational) / `gpt-4o-tts`
+  (narration). Fills the *"LLM-ecosystem default"* archetype: the API a
+  team building GPT-adjacent products already has credentials for. This
+  archetype is not represented by any of the original 6 providers and
+  is a foreseeable reviewer question ("why not test OpenAI?").
+- **Speechify** — `simba-3.2`. Fills the *"audit the top of the HI
+  leaderboard"* story. Speechify sits at HI #1 (score 99) by their own
+  measure; a direct like-for-like run against that ranking is a
+  differentiator no other provider on our list offers.
+
+Roster after amendment (8):
+ElevenLabs · Cartesia · Fish Audio · Google · Deepgram · Canopy Orpheus
+· **OpenAI · Speechify**.
+
+**Why.** Spec §2 argued "providers 7–12 add coverage, not narrative;
+the story is identical at 6." That was accurate for the original 6
+archetypes (quality / latency / value / hyperscaler / off-index /
+open-source), but overlooked two distinct archetypes:
+"already-in-their-stack" (OpenAI) and "auditable-#1" (Speechify). Both
+are genuine axes a buyer navigates that no original roster member
+represents. Trade-off explicitly accepted: +2–4 days scope, +$5–15
+budget, +33–71% D4 pairwise volume.
+
+**Impact on results.**
+- Frontier charts: 4 more points (8 providers × 2 use cases). No
+  archetype now unrepresented; reviewer questions on missing providers
+  should be answered by presence rather than by rationale.
+- D4 pairwise volume: 21 unique pairs → 28 (adding OpenAI only) → 36
+  (adding both). Target reps preserved (5 per pair) — total judgments
+  360 for 8 providers (was 210). Minimum acceptable still 3 reps = 216.
+- Budget: OpenAI absorbs in signup credit / low-volume trivial cost
+  (~$0.05 for the doctor probe + campaign trivial). Speechify Starter
+  $10 (1 month). New budget subtotal: ~$46–57 (was ~$36–47). Ceiling
+  unchanged; contingency band tightens.
+- Prereg tag: re-tagged **prereg-v1.1** on the amendment commit.
+  prereg-v1 remains reachable as history for the "predates results"
+  receipt.
+
+**Where to look.** commits [tbd]; `configs/providers.yaml` (+2 entries),
+`configs/voices.yaml` (+4 entries), `configs/pricing.yaml` (+2 rows),
+`src/veval/adapters/{openai,speechify}.py` (new), spec §3.1 amended
+provider table, CLAUDE.md project-overview roster line updated.
+
+---
+
 ## D-002 — Corpus authored fresh, not curated from the parent (2026-08-07)
 
 **What changed.** The spec/plan language framed the 60 novel items per use case

@@ -79,3 +79,27 @@ providers:
       on the wrong cost estimate and has been reversed (spec §3.4).
       Licence to confirm Week 1: model card says Apache-2.0, comparison
       board reports Llama-3.2 community licence.
+
+  # Added in prereg-v1.1 (2026-08-07, DEVIATIONS.md D-003).
+  - name: openai
+    display_name: "OpenAI gpt-4o-mini-tts / gpt-4o-tts"
+    env_key: OPENAI_API_KEY
+    tier: core
+    notes: >-
+      LLM-ecosystem-default archetype: the API teams building
+      GPT-adjacent products already have credentials for. Standard
+      Bearer auth against POST /v1/audio/speech. Model + voice picked
+      per use case in voices.yaml (gpt-4o-mini-tts for conversational
+      latency; gpt-4o-tts for narration quality). Response is raw
+      audio bytes (not JSON-wrapped). Added in prereg-v1.1.
+
+  - name: speechify
+    display_name: "Speechify Simba 3.2"
+    env_key: SPEECHIFY_API_KEY
+    tier: core
+    notes: >-
+      Audit-HI-#1 archetype: Speechify sits at HI #1 (score 99); the
+      direct like-for-like run against that ranking is the "does the
+      top of the leaderboard hold up?" story. Starter plan ($10/mo)
+      required — free tier 50K chars/mo does not cover the campaign.
+      Bearer auth. Added in prereg-v1.1.

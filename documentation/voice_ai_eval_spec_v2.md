@@ -110,9 +110,13 @@ WER, −18 LUFS normalisation before A/B, both use cases, the red-team disciplin
 
 ## 3. Scope
 
-### 3.1 Providers — locked roster of 6
+### 3.1 Providers — locked roster of 8 (amended 2026-08-07)
 
-One per archetype, so the frontier chart has a story at every point.
+Roster locked in `prereg-v1.1` — extended from the original 6 in
+`prereg-v1` by two providers that fill genuine archetype gaps
+(DEVIATIONS.md D-003): **OpenAI** ("LLM-ecosystem default") and
+**Speechify** ("audit the top of the HI leaderboard"). One provider
+per archetype, so the frontier chart has a story at every point.
 
 | Provider | Archetype | Est. cost | Note |
 |---|---|---|---|
@@ -122,6 +126,8 @@ One per archetype, so the frontier chart has a story at every point.
 | Google Cloud TTS | Hyperscaler baseline | $0 | 1M chars/month free tier covers the project; use Chirp3 HD, their flagship |
 | Deepgram | Off-index control | $0 | $200 signup credit. Excluded from the comparison board by its cloning gate — which is exactly why it is here |
 | Canopy Orpheus | Open-weights floor | ~$1–3 | Replicate-hosted (~$0.003/generation, billed per GPU-second so cost scales with output length). **Latency scored N/A-hosted** — per-run hosted inference measures the host's cold start, not the model. Licence to be confirmed in Week 1: the model card says Apache-2.0, the comparison board reports a Llama-3.2 community licence |
+| **OpenAI** *(added prereg-v1.1)* | LLM-ecosystem default — the API teams building GPT-adjacent products already have credentials for | ~$0–2 (typically absorbed in prepaid credits) | `gpt-4o-mini-tts` for conv, `gpt-4o-tts` for narration. Standard Bearer auth. Fills the "already-in-their-stack" archetype no original 6 provider covers |
+| **Speechify** *(added prereg-v1.1)* | Audit HI's #1 | ~$10 (Starter month) | `simba-3.2`. Speechify sits at HI #1 (score 99) — the direct like-for-like run against that ranking is the "does the top of the leaderboard hold up?" story |
 
 **Per-provider measurement constraints.** These change what a number *means* and must
 travel with it into the results table:
@@ -134,8 +140,9 @@ travel with it into the results table:
 | **Cartesia** | Low concurrency caps (2 free / 3 Pro) | Latency trials serialised anyway (D1 rule); campaign concurrency capped to match |
 | **Fish** | Free tier is best-effort with no SLA | Quality/WER on the free string, latency on paid — see the R9 note below |
 
-Dropped to the "re-run later if curious" list: Speechify, OpenAI, MiniMax, xAI, Inworld.
-The Humanness Index cross-check still works — four of the six appear on their board.
+Dropped to the "re-run later if curious" list: MiniMax, xAI, Inworld.
+The Humanness Index cross-check now works for six of the eight — even
+more overlap after the OpenAI + Speechify additions in `prereg-v1.1`.
 
 **R9 — tier assumption, stated at point of use.** Fish quality and WER run on the free
 `s2.1-pro-free` model string; latency runs on the paid string, because free-tier latency

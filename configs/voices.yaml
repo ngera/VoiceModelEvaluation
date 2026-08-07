@@ -147,3 +147,57 @@ voices:
       Leo is the lower-pitch male voice in the default set — reasonable
       narration match. No official per-use-case recommendation from
       Canopy. TODO(Phase-B): verify.
+
+  # ============================================================
+  # OpenAI (added prereg-v1.1, DEVIATIONS.md D-003)
+  # Two use cases use DIFFERENT models per spec §3.2:
+  #   gpt-4o-mini-tts for conversational (latency-optimised)
+  #   gpt-4o-tts      for narration (quality-optimised)
+  # ============================================================
+  - provider: openai
+    use_case: conversational
+    voice_id: "fable"
+    model: "gpt-4o-mini-tts"
+    reasoning: >-
+      gpt-4o-mini-tts is OpenAI's latency-optimised model — the model a
+      buyer would deploy for a support agent. Voice_id user-selected
+      2026-08-07 from OpenAI's English voice options as the
+      conversational-fit pick.
+  - provider: openai
+    use_case: narration
+    voice_id: "cedar"
+    model: "gpt-4o-tts"
+    reasoning: >-
+      gpt-4o-tts is OpenAI's quality-optimised model — the model a
+      buyer would deploy for long-form narration. This is a DIFFERENT
+      model from the conversational entry above; a buyer would
+      actually swap them. Voice_id user-selected 2026-08-07 as the
+      narration-fit pick.
+
+  # ============================================================
+  # Speechify (added prereg-v1.1, DEVIATIONS.md D-003)
+  # Simba 3.2 is Speechify's flagship model (HI #1 · score 99).
+  # ============================================================
+  - provider: speechify
+    use_case: conversational
+    voice_id: "geffen_32"
+    model: "simba-3.2"
+    reasoning: >-
+      Simba 3.2 is Speechify's flagship model — the same model that
+      earned HI's #1 rank (score 99). Only 8 of 956 voices in the
+      Speechify library carry the simba-3.2 model (verified 2026-08-07
+      via API /v1/voices). Selected `geffen_32` — en-US female, style
+      "intriguing", timbre "warm" — the only voice in the 8 tagged with
+      BOTH `use-case:conversational` AND `use-case:customer-service-ivr`.
+      Direct fit for the support-agent archetype.
+  - provider: speechify
+    use_case: narration
+    voice_id: "wyatt_32"
+    model: "simba-3.2"
+    reasoning: >-
+      Same Simba 3.2 model. Selected `wyatt_32` — en-US male,
+      middle-aged, style "sophisticated", timbre "textured". Tagged
+      `narration` + `audiobook` + `audiobook-long-form`. Classic
+      long-form narrator archetype. Different gender from the
+      conversational pick reduces within-provider gender confounding
+      across the two use cases.

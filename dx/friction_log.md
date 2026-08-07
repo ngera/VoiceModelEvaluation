@@ -277,6 +277,88 @@ REPLICATE_API_TOKEN in `.env` (currently the missing 6/6 env key).
 
 ---
 
+## OpenAI — Phase C.1 (2026-08-07, added prereg-v1.1)
+
+**Wall-clock:** TODO — start when you run `veval doctor --provider openai`.
+
+**Rationale for addition:** LLM-ecosystem-default archetype (see
+DEVIATIONS.md D-003). Not in original 6; added after Phase C round
+because "why not OpenAI?" is the reviewer question that answer-by-presence
+handles better than answer-by-rationale.
+
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint `https://api.openai.com/v1/audio/speech`
+- [ ] Auth: `Authorization: Bearer <OPENAI_API_KEY>`
+- [ ] Body: `model` (gpt-4o-mini-tts / gpt-4o-tts), `input` (text),
+      `voice` (one of 11), `response_format` (`wav`/`mp3`)
+- [ ] Voice IDs: alloy · ash · ballad · coral · echo · fable · nova ·
+      onyx · sage · shimmer · verse (all 11 accepted on gpt-4o-* models)
+- [ ] Response is raw audio bytes over chunked HTTP (streamable)
+- [ ] `instructions` field NOT sent (spec §3.4 defaults rule)
+
+**Friction events (2026-08-07 live probe):**
+- **Zero fixes needed on first probe.** All 6 assumptions correct;
+  `cedar` voice_id (which post-dates my training cutoff) accepted by
+  the API — real voice as of 2026. Green ✅ against `gpt-4o-mini-tts`
+  with `fable`.
+- **TTFA: 1410 ms · Total: 1874 ms · 168,044 bytes.** Streaming works
+  as expected over chunked HTTP; TTFA is real (first-byte time from
+  streamed response).
+- OpenAI ecosystem-default archetype now represented in the roster
+  per DEVIATIONS.md D-003.
+
+**D7 timing caveat:** same as the other adapters — authored offline
+from prior API knowledge, so wall-clock isn't a valid D7 measurement.
+
+**Status:** ✅ Adapter green end-to-end on first probe.
+
+---
+
+## Speechify — Phase C.1 (2026-08-07, added prereg-v1.1)
+
+**Wall-clock:** TODO — start when you run `veval doctor --provider speechify`.
+
+**Rationale for addition:** audit HI #1 archetype (see DEVIATIONS.md
+D-003). Speechify sits at HI #1 (score 99); the direct like-for-like
+run against that ranking is the "does the top of the leaderboard
+hold up?" story.
+
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint `https://api.sws.speechify.com/v1/audio/speech`
+- [ ] Auth: `Authorization: Bearer <SPEECHIFY_API_KEY>`
+- [ ] Body: `model="simba-3.2"`, `input` (text), `voice_id`,
+      `audio_format` (`wav`/`mp3`), `language="en-US"`
+- [ ] Voice ID format: short string like `simba-english` or per-voice
+      UUID from Speechify voice library
+- [ ] Response is raw audio bytes streamed over chunked HTTP
+
+**Cost warning:** Speechify's free tier caps at 50K chars/mo —
+insufficient for campaign volume. Starter plan ($10/mo, 1M chars)
+required. Doctor probe: rounding-error cost.
+
+**Friction events (2026-08-07 voice-ID research):**
+- **Speechify's UI made voice_id discovery hard** — voice IDs are not
+  surfaced in a copyable form in the browser voice library. Instead
+  had to query the `/v1/voices` API directly with the account API key
+  to enumerate. Portfolio-worthy DX observation: the browsing surface
+  doesn't expose the API primary key (voice_id).
+- **Only 8 of 956 voices support the flagship `simba-3.2` model**
+  (verified via API 2026-08-07). Speechify's premium model has narrow
+  voice coverage relative to older Simba variants. Constraint on
+  pinning: `simba-3.2` forces one of 8, all English.
+- Voice picks based on tag inspection:
+  - Conversational: `geffen_32` (en-US, female, warm/intriguing;
+    only voice in the 8 tagged both `conversational` AND
+    `customer-service-ivr`)
+  - Narration: `wyatt_32` (en-US, male, sophisticated/textured,
+    middle-aged; all three narration tags present)
+
+**Friction events (live probe pending):** (fill in when probed)
+
+**Status:** ⏳ Voices locked; awaiting first live synthesis probe.
+
+---
+
 ## Environment gotchas — not per-provider, but re-runners will hit them
 
 Non-D7 friction: toolchain / venv / OS-portability issues encountered

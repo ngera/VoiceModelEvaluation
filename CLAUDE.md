@@ -28,9 +28,9 @@
 ## Project overview
 
 - **What:** Voice AI provider evaluation harness (portfolio edition scope)
-- **Scope:** 6 providers × 2 use cases (conversational + narration) × 75 corpus items
-- **Timeline / budget:** ~3 weeks part-time, ~$36–47 baseline (worst case ~$69 with contingencies — see spec §8)
-- **Status:** Phase A closed 2026-08-05; Phase B (configs + corpus + prereg) next
+- **Scope:** 8 providers × 2 use cases (conversational + narration) × 75 corpus items (roster extended 6→8 in `prereg-v1.1`, see DEVIATIONS.md D-003)
+- **Timeline / budget:** ~3 weeks part-time, ~$46–57 baseline (worst case ~$79 with contingencies — see spec §8; OpenAI absorbs in signup credits, Speechify Starter $10 added)
+- **Status:** Phase A closed 2026-08-05; Phase B closed 2026-08-07 (prereg-v1 tag); Phase C 6/8 adapters green, OpenAI + Speechify pending
 - **Hard deadline:** Fish Audio free window closes **2026-08-31** — sets the schedule
 
 ## Locked technical decisions
@@ -54,10 +54,15 @@
 | Results / memos / case study | Local only (private) |
 | Corpus source | python-docx extractor over documentation/archive/*.docx |
 
-## Providers (locked roster of 6)
+## Providers (locked roster of 8)
 
-ElevenLabs · Cartesia · Fish Audio · Google Cloud TTS · Deepgram (off-index
-control) · Canopy Orpheus (Replicate-hosted)
+Original 6 (prereg-v1): ElevenLabs · Cartesia · Fish Audio · Google
+Cloud TTS · Deepgram (off-index control) · Canopy Orpheus
+(Replicate-hosted)
+
+Added 2 in `prereg-v1.1` (2026-08-07, DEVIATIONS.md D-003):
+**OpenAI** (LLM-ecosystem default archetype) · **Speechify** (audit
+HI's #1 story)
 
 ## Conventions
 
