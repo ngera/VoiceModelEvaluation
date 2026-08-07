@@ -1,0 +1,36 @@
+# variance_subset.yaml — 10 items per use case for the 3-draw variance
+# campaign (spec §3.4, defect 3.6). Frozen in `prereg-v1`.
+#
+# Purpose: per-provider within-provider SD on TTSDS2 and item-level WER →
+# the measurement noise floor. Every reported between-provider difference
+# in D3/D2 is gated on `1.96 × SE(difference)` vs this noise floor
+# (measurement_noise_floor rule in gates.yaml).
+#
+# All 6 providers run the FULL 10-item subset per defect 3.6 —
+# earlier draft reduced Orpheus to 5 based on a $0.08/generation cost
+# estimate that was ~24× too high. Actual is ~$0.003/gen.
+#
+# Composition per use case: 2 short + 3 medium + 1 long + 2 jargon +
+# 1 edge + 1 probe. Long is capped at 1 because per-draw cost scales with
+# item length; 1 long is enough to detect drift patterns without inflating
+# the variance budget.
+
+subsets:
+  - use_case: conversational
+    item_ids: [S03, S05, M04, M07, M13, L03, J04, J07, E02, P01]
+    rationale: >-
+      Spans register (acknowledgment, verification, urgent-escalation),
+      domain (finance, medical, insurance, tech), and content density
+      (short generic → long tech-support). J04+J07 stress medical and
+      financial pronunciation; E02 stresses safety-critical numerics;
+      P01 is a canonical Harvard-sentence contamination probe.
+
+  - use_case: narration
+    item_ids: [S01, S08, M05, M12, M15, L03, J03, J09, E05, P04]
+    rationale: >-
+      Spans fiction, news, educational, medical-readback, and financial
+      registers. Long item L03 is the news broadcast (214 words, moderate
+      length, dense currency/percentage). J03+J09 stress medical Latin
+      and science proper nouns respectively; E05 stresses dense
+      currency/big-number edge; P04 is a canonical famous-opening
+      contamination probe (Melville).

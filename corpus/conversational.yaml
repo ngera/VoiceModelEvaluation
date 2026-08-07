@@ -1,0 +1,757 @@
+# conversational.yaml — pre-registered corpus for the conversational
+# support-agent use case (spec §3.1, §3.3). Frozen in `prereg-v1`.
+#
+# Target: 75 items = 12 short + 20 medium + 8 long + 12 jargon + 8 edge + 15 probe.
+# This file is built up batch-by-batch during Phase B; final tag lands after
+# all strata are approved and the variance subset is selected.
+#
+# Item IDs are stable across the campaign — never renumbered after prereg.
+#
+# Tag semantics:
+#   src:source        — used directly from documentation/archive/voice_ai_test_corpus.docx
+#   src:authored      — written fresh during Phase B corpus authoring
+#   src:public-domain — probe items drawn from public-domain sources
+#   src:h1:*, src:h2:*, src:id:*  — extractor provenance (parent's H1/H2/id marker)
+
+use_case: conversational
+items:
+
+  # ============================================================
+  # LONG stratum (8 items, > 200 words) — batch 1a, approved 2026-08-07
+  # ============================================================
+
+  - id: L01
+    stratum: long
+    word_count: 255
+    tags: [src:source, src:h1:Conversational Agent, src:id:L01, domain:retail, register:support-call]
+    text: >-
+      Thank you for calling Premier Support. My name is Alex and I'll be helping
+      you today. I can see you've been a customer since 2019 — thank you for
+      your loyalty. Could I start by verifying your account? I'll need either
+      your account number or the phone number associated with the account.
+      Great, thank you. I can see your account now. You mentioned you're having
+      trouble with your recent order. Let me pull that up. I'm looking at order
+      number 77341, placed on the 8th of this month for a wireless keyboard and
+      mouse bundle. Is that the one you're calling about? I see the issue. The
+      package was marked as delivered on the 11th, but based on your address,
+      it looks like it may have been left with a neighbour or in a mailroom.
+      Before I raise a missing item claim, I'd recommend checking with your
+      building reception or any nearby neighbours, as the carrier photo shows
+      it was placed near a blue door. If you've already done that and it's
+      still missing, I can file a trace with the carrier — that takes up to
+      five business days — or I can send a replacement right away with priority
+      shipping at no charge. The replacement would arrive within two business
+      days. Which would you prefer? I'll go ahead and process the replacement.
+      You'll receive a confirmation email within the next hour with the new
+      tracking number. Is the delivery address the same as before, or would
+      you like to ship it somewhere different?
+
+  - id: L02
+    stratum: long
+    word_count: 236
+    tags: [src:source, src:h1:Conversational Agent, src:id:L02, domain:finance, register:support-call]
+    text: >-
+      I understand you've been waiting on hold and I appreciate your patience.
+      Let me make sure I have everything I need to resolve this for you today
+      so you don't have to call back. You're asking about the double charge on
+      your account from the 15th. I can see two transactions here — one for
+      $42.50 and another for $42.50 posted eight minutes apart. That does look
+      like a duplicate. What likely happened is that the payment page timed out
+      on your end and the request was submitted twice before the system caught
+      it. I'm going to reverse the second charge now. The reversal will show
+      as a pending credit within 24 hours and the funds will fully clear in
+      three to five business days depending on your bank. I'd also recommend
+      checking if your bank placed a hold — sometimes both charges remain
+      visible during processing even after we've reversed one on our end. I'm
+      also going to add a note to your account so that if you call back and
+      the credit hasn't appeared by Friday, the next agent can escalate it
+      directly to our payments team without you needing to explain everything
+      again. Is there anything else I can help you with today? I also notice
+      your subscription is due for renewal next month — would you like me to
+      go over your current plan and any available upgrades while I have you?
+
+  - id: L03
+    stratum: long
+    word_count: 232
+    tags: [src:authored, topic:tech-support-wifi, domain:tech]
+    text: >-
+      Thanks for calling. I understand your internet's been dropping
+      intermittently over the past few days. Before we dig in, let me confirm
+      a few things about your setup. You're on our Fibre 500 plan, is that
+      right? And the modem is the one we shipped in September — the black one
+      with three green lights on the front. Good. First, I'd like you to look
+      at those lights right now. Are all three of them solid green, or is any
+      of them blinking, off, or a different colour? Okay, so the middle light
+      is amber. That's actually really helpful — amber on the middle indicator
+      means the modem is reaching the local exchange but not receiving a
+      stable authentication response. That points to something in our network
+      rather than in your home, which is good news for you. Let me check the
+      line status from my end. I'm seeing three brief drops in the last
+      twenty-four hours, each lasting between forty seconds and two minutes.
+      That matches what you described. There's a scheduled maintenance window
+      that ran on your exchange overnight — the drops are consistent with the
+      recovery pattern after that kind of work. I'm going to flag this to
+      network engineering as a post-maintenance stability issue and open a
+      ticket in your name. Reference number is going to be TS-4482-91. You
+      should see stability return within twelve to twenty-four hours.
+
+  - id: L04
+    stratum: long
+    word_count: 239
+    tags: [src:authored, topic:insurance-claim-intake, domain:insurance]
+    text: >-
+      First of all, I'm sorry to hear about the accident — I hope you and
+      everyone involved are okay. Take your time. I'm going to walk you
+      through what we need to get a claim opened, but there's no rush. When
+      you're ready, could you tell me the date and approximate time of the
+      incident? Okay, Sunday afternoon around four. And where did it happen —
+      I don't need the exact address if you don't have it, just the road or
+      the nearest intersection. The junction of Elm Street and Fourth Avenue,
+      got it. Was anyone injured, either in your vehicle or the other vehicle?
+      I'm glad to hear it. Now, do you have the other driver's insurance
+      information — company name, policy number, and their contact details?
+      If not, that's fine, we can request it through the exchange process.
+      And did the police attend the scene? If they did, was a report number
+      issued? Perfect, I've noted case number seven-two-two-nine-eight from
+      Metro Police. I have enough now to open your claim under file number
+      CL-2026-8734. Your assigned adjuster will call you within one business
+      day. In the meantime, if you have photographs of the vehicles or the
+      scene, please email them to claims@example.com with your file number in
+      the subject line. Do not have your vehicle repaired before speaking to
+      the adjuster, unless it's a safety issue — is there anything about the
+      current condition that can't wait?
+
+  - id: L05
+    stratum: long
+    word_count: 228
+    tags: [src:authored, topic:subscription-cancellation-retention, domain:media]
+    text: >-
+      I understand you're looking to cancel your subscription today. Before I
+      process that, would it be alright if I ask a couple of quick questions?
+      It'll help us improve the service, and there may be an option I can
+      offer you that saves you some money. You've been with us on the Premium
+      plan for about eighteen months. Are you cancelling because the service
+      isn't meeting your needs, or is it more about the cost? Okay, that's
+      helpful — cost is understandable, especially with everything going up
+      right now. Let me see what's available on your account. I can see you
+      use the streaming feature quite heavily but haven't touched the offline
+      downloads in the last six months. We have a Streaming-Only plan at
+      $8.99 a month, down from your current $15.99, that gives you everything
+      you actually use with no interruption to your library or your watch
+      history. Would that be something you'd like to try, or would you still
+      prefer to cancel completely? If you'd rather test it for a month before
+      committing, I can put a note on your account so you can switch back to
+      Premium any time in the first thirty days at no charge. That way
+      there's no risk. Which would you like to do? Great, I've moved you to
+      Streaming-Only effective the start of your next billing cycle on the 3rd.
+
+  - id: L06
+    stratum: long
+    word_count: 227
+    tags: [src:authored, topic:return-wrong-size, domain:retail]
+    text: >-
+      Thanks for calling, and I'm really sorry for the mix-up. I can see on
+      your order that you selected the medium, and what shipped was a large.
+      That's on us. Let me get the exchange started for you right now. I've
+      put a return label in your account under the order — you'll get an
+      email in the next few minutes with the label attached. You can print
+      it at home or take the barcode to any drop-off location; we've got
+      about four thousand of them across the country, so there should be
+      one close to you. You don't need to package it in the original box,
+      but do please include the original invoice or a note with your order
+      number. On the exchange side, I've reserved a medium in the same
+      colour and style, and I'm going to expedite the shipping so it arrives
+      before you send the large back. That way you're not waiting. You should
+      see the medium delivered within two business days. The system will
+      automatically match the return to the exchange, so you won't be
+      charged again — but if you do see a pending charge on your account
+      before the return processes, it'll fall off within about a week. Is
+      there anything else about this order I should look at, or is there
+      anything else I can help you with today?
+
+  - id: L07
+    stratum: long
+    word_count: 250
+    tags: [src:authored, topic:security-2fa-reset, domain:security]
+    text: >-
+      Thanks for calling. I understand you're locked out of your account and
+      the reset link isn't reaching your two-factor device. I'll help you get
+      back in, but I do need to walk through our identity verification
+      carefully — this is exactly the situation attackers try to exploit, so
+      please bear with me. Can you confirm the email address on the account
+      for me? And can you tell me the last four digits of the payment method
+      we have on file? Okay, that matches. Now, we need to establish that
+      the person on this call is the account holder rather than someone with
+      the email and card details. I'm going to ask two questions from your
+      account history that only you should be able to answer. First: what
+      city was the account originally registered from? And second: what was
+      the approximate amount of your most recent completed transaction,
+      within five dollars? Both correct. Thank you for going through that.
+      What I'm going to do now is reset your two-factor device pairing rather
+      than the password itself — you'll receive a verification email and,
+      once you click it, you'll be prompted to enrol a new authenticator.
+      Once that's done, your existing password will still work; if you'd
+      prefer to change it as well, you can do so from account settings after
+      logging in. The reset email will arrive within five minutes. If it
+      doesn't, check your spam folder, and if it's still not there, call us
+      back and reference case number SEC-9917-42.
+
+  - id: L08
+    stratum: long
+    word_count: 233
+    tags: [src:authored, topic:flight-rebooking, domain:travel]
+    text: >-
+      I'm really sorry about the cancellation — I know that's the last thing
+      you need on a Sunday evening. Let me pull up your booking. I see
+      reference JXQ4T2, flight 447 from Manchester to Malaga, originally
+      departing at seven-fifteen tomorrow morning. That's been cancelled, and
+      I have three options I can offer you. The first is our nine-forty
+      flight tomorrow morning, same route, seats in economy and one exit-row
+      seat available. The second is a rerouting through Barcelona, leaving at
+      six a.m., landing you in Malaga just after two in the afternoon —
+      longer travel time but no risk of being bumped, since both legs are
+      already ticketed. The third option is a next-day departure, direct at
+      seven-thirty on Tuesday morning, with hotel accommodation and meal
+      vouchers provided by us at no charge if the delay of a day is too
+      disruptive. If you're travelling on a fixed schedule and same-day
+      matters, I'd recommend the nine-forty — you'd land only about two hours
+      later than originally planned. Which would work best for you? I've
+      moved you to the nine-forty. Your new boarding pass will be issued to
+      the app automatically, and you'll need to be at the gate no later than
+      nine-ten. If you'd like, I can also arrange a small compensation credit
+      for the disruption — it's a hundred and twenty euros in travel credit,
+      valid for twelve months. Is that useful?
+
+  # ============================================================
+  # SHORT stratum (12 items, < 15 words) — batch 2, approved 2026-08-07
+  # ============================================================
+
+  - id: S01
+    stratum: short
+    word_count: 6
+    tags: [src:authored, register:greeting, domain:general]
+    text: "How can I help you today?"
+
+  - id: S02
+    stratum: short
+    word_count: 6
+    tags: [src:authored, register:greeting, domain:general]
+    text: "Thanks for calling. This is Alex."
+
+  - id: S03
+    stratum: short
+    word_count: 6
+    tags: [src:authored, register:acknowledgment, domain:general]
+    text: "I'll pull up your account now."
+
+  - id: S04
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:acknowledgment, domain:general]
+    text: "Just one moment while I check that."
+
+  - id: S05
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:verification, domain:general]
+    text: "Can you confirm the email on the account?"
+
+  - id: S06
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:confirmation, domain:general]
+    text: "That's been processed. Is there anything else?"
+
+  - id: S07
+    stratum: short
+    word_count: 5
+    tags: [src:authored, register:empathy, domain:general]
+    text: "I completely understand your frustration."
+
+  - id: S08
+    stratum: short
+    word_count: 9
+    tags: [src:authored, register:transition, domain:general]
+    text: "Let me transfer you to my colleague in billing."
+
+  - id: S09
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:escalation, domain:general]
+    text: "One second while I check with my supervisor."
+
+  - id: S10
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:confirmation, domain:general]
+    text: "I've sent that to you in an email."
+
+  - id: S11
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:closing, domain:general]
+    text: "Have a good rest of your day."
+
+  - id: S12
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:commitment, domain:general]
+    text: "You should receive it within two business days."
+
+  # ============================================================
+  # MEDIUM stratum (20 items, 15–60 words) — batch 3, approved 2026-08-07
+  # Legal / finance / medical coverage: M04–M12 (per user direction).
+  # ============================================================
+
+  - id: M01
+    stratum: medium
+    word_count: 45
+    tags: [src:authored, topic:shipping-delay, domain:retail]
+    text: >-
+      I've checked the tracking on your order. It left our warehouse on
+      Monday but hit a delay at the regional sort facility on Tuesday
+      night. It should be back moving today and delivered by end of day
+      tomorrow, one day later than the original estimate.
+
+  - id: M02
+    stratum: medium
+    word_count: 43
+    tags: [src:authored, topic:password-change, domain:security]
+    text: >-
+      Your password has been successfully changed. As a security precaution,
+      you'll be signed out of any other devices where you're currently
+      logged in and will need to sign back in with your new password.
+      Should I text you a confirmation link as well?
+
+  - id: M03
+    stratum: medium
+    word_count: 48
+    tags: [src:authored, topic:refund-status, domain:finance]
+    text: >-
+      I can see the refund was issued on the 4th, which is three business
+      days ago. Depending on your card issuer, it should appear on your
+      statement within one to five business days from that date, so you
+      should see it by early next week at the latest.
+
+  - id: M04
+    stratum: medium
+    word_count: 48
+    tags: [src:authored, topic:finance-bank-fraud, domain:finance]
+    text: >-
+      Hi, this is Priya from Northgate Bank fraud protection. We've
+      flagged a transaction on your card ending 8-2-4-7 for one hundred
+      and forty-two pounds at a merchant in Warsaw at 3:47 this morning.
+      Can you confirm whether you made this purchase, or should I lock the
+      card immediately?
+
+  - id: M05
+    stratum: medium
+    word_count: 45
+    tags: [src:authored, topic:finance-credit-dispute, domain:finance]
+    text: >-
+      I've opened dispute case D-771-2205 for the double charge you
+      mentioned. The provisional credit for the second one hundred and
+      twelve dollar transaction will appear within one business day, and
+      the merchant has thirty days to respond before the dispute is
+      finalised in your favour.
+
+  - id: M06
+    stratum: medium
+    word_count: 44
+    tags: [src:authored, topic:finance-wealth-advisor, domain:finance]
+    text: >-
+      Based on the market movements this week, I'd suggest we schedule a
+      quick review of your Treasury allocation before quarter-end. The
+      ten-year yield is above 4.5 percent, which changes the trade-off on
+      the muni bond ladder we discussed in January. Fifteen minutes on
+      Thursday?
+
+  - id: M07
+    stratum: medium
+    word_count: 49
+    tags: [src:authored, topic:medical-telehealth-triage, domain:medical]
+    text: >-
+      Based on what you've described — the sharp chest pain, shortness of
+      breath, and it started about twenty minutes ago — I need you to
+      hang up and call 999 or 911 right now, or have someone else call.
+      This is not something we can safely assess over telehealth.
+
+  - id: M08
+    stratum: medium
+    word_count: 45
+    tags: [src:authored, topic:medical-appointment-scheduling, domain:medical]
+    text: >-
+      Yes, I can get you in with Dr. Ramirez tomorrow. She has a 10:15 AM
+      slot open. Given that the rash is spreading and you've had a
+      low-grade fever for two days, that's within our recommended window
+      for a same-week appointment. Shall I book it?
+
+  - id: M09
+    stratum: medium
+    word_count: 42
+    tags: [src:authored, topic:medical-prescription-refill, domain:medical]
+    text: >-
+      Your amoxicillin refill is ready for pickup at the Elm Street
+      pharmacy. Please note this is the last refill on this prescription
+      — if you need more, Dr. Wong will want to see you first. The
+      pharmacy closes at nine p.m. tonight.
+
+  - id: M10
+    stratum: medium
+    word_count: 48
+    tags: [src:authored, topic:legal-attorney-intake, domain:legal]
+    text: >-
+      To start, I'll need a few basics. Have you signed anything, agreed
+      to any settlements, or given a statement to anyone from the other
+      party's insurance company or attorney? If so, do you have copies?
+      These are the questions I need answered before we can meet in
+      person.
+
+  - id: M11
+    stratum: medium
+    word_count: 47
+    tags: [src:authored, topic:legal-contract-review, domain:legal]
+    text: >-
+      I've read the non-compete clause on page seven, and it's broader
+      than what we discussed. As drafted, it would prohibit you from
+      working in any capacity for a competitor for eighteen months in the
+      same three states. I'd want to negotiate that down before you sign
+      anything.
+
+  - id: M12
+    stratum: medium
+    word_count: 50
+    tags: [src:authored, topic:legal-compliance-callback, domain:legal]
+    text: >-
+      Your quarterly filing is due by the 31st, and I don't yet have
+      three items from your team: the vendor risk assessments, the
+      updated access log, and the signed attestation from your CTO. If
+      any of those aren't ready, we should talk about an extension
+      request today rather than waiting.
+
+  - id: M13
+    stratum: medium
+    word_count: 44
+    tags: [src:authored, topic:insurance-claim-status, domain:insurance]
+    text: >-
+      I've reviewed your claim file. The adjuster completed the vehicle
+      inspection on Wednesday and estimated the repair at three thousand
+      four hundred dollars. That's above your deductible, so the payout
+      will be issued in the next three business days directly to the
+      repair shop.
+
+  - id: M14
+    stratum: medium
+    word_count: 42
+    tags: [src:authored, topic:insurance-coverage-question, domain:insurance]
+    text: >-
+      Your current policy covers cancellation for medical reasons, but it
+      does not cover cancellation due to work commitments unless you had
+      the optional business coverage. That add-on would have been an
+      extra eighty-five dollars a year and unfortunately can't be applied
+      retroactively.
+
+  - id: M15
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, topic:subscription-pause, domain:media]
+    text: >-
+      Instead of cancelling, would you like to pause your subscription for
+      up to three months? Your account settings, watch history, and
+      downloaded content all stay in place, and you won't be billed. You
+      can restart any time from the app or by giving us a call.
+
+  - id: M16
+    stratum: medium
+    word_count: 48
+    tags: [src:authored, topic:subscription-annual-upgrade, domain:media]
+    text: >-
+      If you switch from monthly to annual today, the annual price works
+      out to eight dollars a month instead of the eleven dollars you pay
+      now. You'd save thirty-six dollars a year, and I can prorate the
+      difference so nothing changes on your card until your next renewal.
+
+  - id: M17
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, topic:tech-quick-fix, domain:tech]
+    text: >-
+      That error usually clears when the modem restarts and
+      re-authenticates with our servers. Could you unplug the power for
+      thirty seconds, then plug it back in and wait about two minutes?
+      While it comes back up, let me check whether there's an outage
+      affecting your address.
+
+  - id: M18
+    stratum: medium
+    word_count: 47
+    tags: [src:authored, topic:tech-escalation, domain:tech]
+    text: >-
+      I've spent about fifteen minutes on this with you, and it looks
+      like the issue is on our network side, not something we can fix
+      from here. I'm going to open an urgent ticket for our field
+      engineering team. They'll call you back within four hours today.
+
+  - id: M19
+    stratum: medium
+    word_count: 49
+    tags: [src:authored, topic:travel-hotel-booking, domain:travel]
+    text: >-
+      I've found availability at the Riverside Grand for the nights of the
+      12th to the 14th. It's a king room with breakfast included at two
+      hundred and forty euros per night. Do you want me to hold that at
+      the current rate, or would you like to see options?
+
+  - id: M20
+    stratum: medium
+    word_count: 49
+    tags: [src:authored, topic:travel-ferry-delay, domain:travel]
+    text: >-
+      I'm sorry, your ferry to Calais has been delayed by approximately
+      three hours due to weather. The new estimated departure is now
+      11:30 PM tonight. We can offer you a meal voucher for the port
+      cafe, or if you'd prefer, transfer you to the earliest tomorrow
+      morning crossing instead.
+
+  # ============================================================
+  # JARGON stratum (12 items) — batch 5, approved 2026-08-07
+  # Support-agent voice delivering domain terms; each item is a sentence
+  # so both TTS delivery and round-trip WER can be scored.
+  # ============================================================
+
+  - id: J01
+    stratum: jargon
+    word_count: 10
+    tags: [src:authored, domain:medical]
+    text: "You've been prescribed acetaminophen five hundred milligrams for pain relief."
+
+  - id: J02
+    stratum: jargon
+    word_count: 13
+    tags: [src:authored, domain:medical]
+    text: "Your amoxicillin course is five hundred milligrams three times daily for seven days."
+
+  - id: J03
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:medical]
+    text: "Your diagnosis is idiopathic thrombocytopenic purpura — that's an autoimmune blood condition."
+
+  - id: J04
+    stratum: jargon
+    word_count: 8
+    tags: [src:authored, domain:medical]
+    text: "Please avoid ibuprofen and naproxen while taking warfarin."
+
+  - id: J05
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:legal]
+    text: "The plaintiff has filed a subpoena duces tecum for the discovery documents."
+
+  - id: J06
+    stratum: jargon
+    word_count: 11
+    tags: [src:authored, domain:legal]
+    text: "This appears to be a bona fide breach of fiduciary duty."
+
+  - id: J07
+    stratum: jargon
+    word_count: 14
+    tags: [src:authored, domain:finance]
+    text: >-
+      The amortisation schedule shows a principal balance of two hundred
+      thirty-four thousand dollars remaining.
+
+  - id: J08
+    stratum: jargon
+    word_count: 16
+    tags: [src:authored, domain:finance]
+    text: >-
+      Your account is subject to the FDIC deposit insurance limit of two
+      hundred fifty thousand dollars.
+
+  - id: J09
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:tech]
+    text: "The Kubernetes cluster is running Prometheus for metrics and Grafana for dashboards."
+
+  - id: J10
+    stratum: jargon
+    word_count: 10
+    tags: [src:authored, domain:tech]
+    text: "OAuth two-point-oh requires the client secret and the redirect URI."
+
+  - id: J11
+    stratum: jargon
+    word_count: 11
+    tags: [src:authored, domain:tech]
+    text: "Your MPLS circuit has been provisioned with QoS enabled for VoIP."
+
+  - id: J12
+    stratum: jargon
+    word_count: 10
+    tags: [src:authored, domain:insurance]
+    text: "This is a subrogation notice regarding your uninsured motorist claim."
+
+  # ============================================================
+  # EDGE stratum (8 items) — batch 6, approved 2026-08-07
+  # Dense TTS/ASR failure-mode content: numbers, dates, currency,
+  # acronyms, URLs, proper nouns. edge_category tags list what each
+  # item contains (multi-tag OK).
+  # ============================================================
+
+  - id: E01
+    stratum: edge
+    word_count: 16
+    tags: [src:authored, domain:finance, edge_category:currency, edge_category:date, edge_category:number-sequence]
+    text: >-
+      Your refund of eighty-four dollars and ninety-nine cents was processed
+      on 3/15/2026 to card ending 4-2-9-7.
+
+  - id: E02
+    stratum: edge
+    word_count: 13
+    tags: [src:authored, domain:medical, edge_category:dosing, edge_category:time]
+    text: "Take 500 milligrams every 6 hours, not exceeding 2 grams in 24 hours."
+
+  - id: E03
+    stratum: edge
+    word_count: 16
+    tags: [src:authored, domain:legal, edge_category:section-ref, edge_category:date, edge_category:time]
+    text: >-
+      Under Section 47.2 of the Terms, notice must be given by 12/31/2025 at
+      11:59 PM Eastern.
+
+  - id: E04
+    stratum: edge
+    word_count: 9
+    tags: [src:authored, domain:tech, edge_category:acronym, edge_category:email, edge_category:url]
+    text: "Send the CSV to support@example.com or upload to https://portal.example.com/uploads."
+
+  - id: E05
+    stratum: edge
+    word_count: 12
+    tags: [src:authored, domain:general, edge_category:proper-noun-diacritics, edge_category:proper-noun-non-english]
+    text: "The Xóchitl account was transferred to Siobhan O'Brien after Ngozi Adekunle's departure."
+
+  - id: E06
+    stratum: edge
+    word_count: 12
+    tags: [src:authored, domain:finance, edge_category:acronym, edge_category:percentage, edge_category:date]
+    text: "The APR on your card changed from 24.99% to 19.99%, effective 4/1/2026."
+
+  - id: E07
+    stratum: edge
+    word_count: 12
+    tags: [src:authored, domain:finance, edge_category:currency, edge_category:number-sequence, edge_category:date]
+    text: >-
+      Wire transfer of $12,345.67 from routing 021000021 to account
+      4457-8291-3062 on 04/22/2026.
+
+  - id: E08
+    stratum: edge
+    word_count: 12
+    tags: [src:authored, domain:general, edge_category:code, edge_category:phone]
+    text: >-
+      Reference number is A1B2-C3D4-E5F6, or call our helpline at 1-800-555-0199
+      extension 4472.
+
+  # ============================================================
+  # PROBE stratum (15 items, public-domain) — batch 7, approved 2026-08-07
+  # Training-contamination probe. Reported as directional observation
+  # only, never a headline (spec §3.3).
+  # 10 Harvard sentences + 5 famous short lines (register-matched to
+  # conversational short utterances).
+  # ============================================================
+
+  - id: P01
+    stratum: probe
+    word_count: 8
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "The birch canoe slid on the smooth planks."
+
+  - id: P02
+    stratum: probe
+    word_count: 8
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "Glue the sheet to the dark blue background."
+
+  - id: P03
+    stratum: probe
+    word_count: 9
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "It's easy to tell the depth of a well."
+
+  - id: P04
+    stratum: probe
+    word_count: 9
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "These days a chicken leg is a rare dish."
+
+  - id: P05
+    stratum: probe
+    word_count: 7
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "Rice is often served in round bowls."
+
+  - id: P06
+    stratum: probe
+    word_count: 7
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "The juice of lemons makes fine punch."
+
+  - id: P07
+    stratum: probe
+    word_count: 8
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "The box was thrown beside the parked truck."
+
+  - id: P08
+    stratum: probe
+    word_count: 8
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "The hogs were fed chopped corn and garbage."
+
+  - id: P09
+    stratum: probe
+    word_count: 7
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "Four hours of steady work faced us."
+
+  - id: P10
+    stratum: probe
+    word_count: 9
+    tags: [src:public-domain, source:harvard-297-1969, domain:general, register:harvard-sentence]
+    text: "A large size in stockings is hard to sell."
+
+  - id: P11
+    stratum: probe
+    word_count: 3
+    tags: [src:public-domain, source:melville-moby-dick-1851, domain:fiction, register:famous-opening]
+    text: "Call me Ishmael."
+
+  - id: P12
+    stratum: probe
+    word_count: 10
+    tags: [src:public-domain, source:shakespeare-hamlet-1600, domain:fiction, register:famous-opening]
+    text: "To be, or not to be, that is the question."
+
+  - id: P13
+    stratum: probe
+    word_count: 6
+    tags: [src:public-domain, source:dickens-christmas-carol-1843, domain:fiction, register:famous-opening]
+    text: "Marley was dead: to begin with."
+
+  - id: P14
+    stratum: probe
+    word_count: 6
+    tags: [src:public-domain, source:whitman-song-of-myself-1855, domain:fiction, register:famous-poem]
+    text: "I celebrate myself, and sing myself."
+
+  - id: P15
+    stratum: probe
+    word_count: 7
+    tags: [src:public-domain, source:frost-road-not-taken-1916, domain:fiction, register:famous-poem]
+    text: "Two roads diverged in a yellow wood."

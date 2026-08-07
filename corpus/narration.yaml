@@ -1,0 +1,808 @@
+# narration.yaml — pre-registered corpus for the long-form narration
+# use case (spec §3.1, §3.3). Frozen in `prereg-v1`.
+#
+# Target: 75 items = 12 short + 20 medium + 8 long + 12 jargon + 8 edge + 15 probe.
+# This file is built up batch-by-batch during Phase B; final tag lands after
+# all strata are approved and the variance subset is selected.
+#
+# Item IDs are stable across the campaign — never renumbered after prereg.
+#
+# Tag semantics:
+#   src:source        — used directly from documentation/archive/voice_ai_test_corpus.docx
+#   src:rescued       — from a cut parent use case, routed into narration
+#   src:authored      — written fresh during Phase B corpus authoring
+#   src:public-domain — probe items drawn from public-domain sources
+#   src:h1:*, src:h2:*, src:id:*  — extractor provenance (parent's H1/H2/id marker)
+
+use_case: narration
+items:
+
+  # ============================================================
+  # LONG stratum (8 items, > 200 words) — batch 1b, approved 2026-08-07
+  # ============================================================
+
+  - id: L01
+    stratum: long
+    word_count: 233
+    tags: [src:source, src:h1:Book and Long-Form Narration, src:id:L01, register:fiction, domain:fiction]
+    text: >-
+      The town of Alderly had three churches, two pubs, and one secret that
+      everyone knew but no one spoke about out loud. The churches were old and
+      cold and smelled of damp hymnals. The pubs were warm and loud and smelled
+      of everything else. The secret — well, the secret smelled of the sea,
+      even though the sea was forty miles away, which was part of what made it
+      strange. Margaret Holt had lived on the high street for sixty-two years.
+      She had watched the elm trees grow and die and be replaced with saplings
+      that were now, themselves, beginning to look like trees. She had watched
+      the post office become a letting agency and the letting agency become a
+      coffee shop and the coffee shop become, briefly, a yoga studio before it
+      became a coffee shop again. She had watched the secret pulse through the
+      town like a second heartbeat, quiet but constant, something the young
+      people thought they'd discovered and the old people knew had always been
+      there. Her granddaughter Rosie had come to visit for the summer, which
+      was part of why Margaret was sitting now at the kitchen window, watching
+      the garden and waiting. Rosie was seventeen and curious in the way that
+      seventeen always is — not curious about answers, but about the questions
+      themselves, which is a kind of courage Margaret had spent decades trying
+      to relearn.
+
+  - id: L02
+    stratum: long
+    word_count: 216
+    tags: [src:source, src:h1:Book and Long-Form Narration, src:id:L02, register:fiction, domain:fiction]
+    text: >-
+      Chapter Four: The Last Map. There is a map in the British Library that
+      is wrong in a way that can only be described as deliberately wrong. It
+      was drawn in 1602 by a cartographer whose name has been lost, which is
+      itself suspicious, since cartographers of that period were meticulous
+      about attribution. The map shows the eastern coast of an island that
+      does not exist. The island is rendered in extraordinary detail — bays,
+      inlets, a river that curves south before turning back on itself, a
+      mountain with a notation in Latin that translates, roughly, as 'here
+      the light is different.' On the reverse side of the map, in a hand
+      that appears to be different from the cartographer's, someone has
+      written: 'I have been here.' Dr. Evelyn Cross had been studying this
+      map for eleven years. She had examined it under ultraviolet light,
+      under infrared imaging, under a microscope powerful enough to count
+      the individual fibres of the vellum. She had traced the coastline
+      against every known island in every ocean and found nothing. She had
+      run the Latin text through six different translation tools and
+      received six slightly different answers, all of which agreed on
+      'light' and disagreed on everything else. Today, for reasons she
+      couldn't fully explain, she thought she was close.
+
+  - id: L03
+    stratum: long
+    word_count: 214
+    tags: [src:rescued, src:h1:News and Broadcast, src:id:L01, register:news-anchor, domain:news]
+    text: >-
+      Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top
+      story tonight: the government has announced an emergency package worth
+      14 billion pounds to help households and businesses with rising energy
+      costs. The Chancellor confirmed the measures in a statement to
+      Parliament this afternoon, saying the package would take effect from
+      the 1st of May. Under the plan, households will receive a flat payment
+      of 400 pounds, with additional support for the lowest-income families
+      of up to 650 pounds. Businesses in the hospitality, retail, and
+      manufacturing sectors will receive rebates on their energy bills for a
+      period of six months. The announcement was welcomed by opposition
+      leaders, though the shadow chancellor called it too little too late,
+      pointing out that average household bills have risen by 67 percent
+      over the past 18 months. Industry groups broadly welcomed the support
+      but said longer-term solutions were still needed. The cost of the
+      package will be funded partly through a windfall tax on energy
+      companies, which the government is extending for a further two years.
+      Several energy firms said they would review planned investment in
+      domestic production following the announcement. We'll have more on
+      this story throughout the evening. Now let's go to our economics
+      correspondent James Okafor, who is outside the Treasury.
+
+  - id: L04
+    stratum: long
+    word_count: 269
+    tags: [src:rescued, src:h1:Educational and Instructional, src:id:L01, register:educational, domain:education]
+    text: >-
+      Lesson 4: Understanding the Water Cycle. Water is constantly moving
+      around our planet in a cycle — from the surface up into the atmosphere
+      and back down again. This is called the water cycle, or the
+      hydrological cycle, and it has been happening for billions of years.
+      Let's start with evaporation. When the sun heats water in oceans,
+      lakes, and rivers, some of that water turns into water vapour — a gas
+      — and rises into the air. Oceans are the main source of evaporated
+      water, which makes sense when you think about how much of the Earth's
+      surface they cover. As the water vapour rises, it enters cooler parts
+      of the atmosphere. When warm, moist air cools down, the water vapour
+      condenses — meaning it turns back into tiny liquid droplets. These
+      droplets collect together to form clouds. You might have noticed that
+      clouds often form at a certain altitude — that's because that's the
+      point where the rising air has cooled just enough for condensation to
+      begin. When enough droplets collect in a cloud, they become too heavy
+      to stay suspended in the air, and they fall as precipitation — which
+      is rain, snow, sleet, or hail depending on the temperature. Some of
+      this precipitation flows into rivers and streams and eventually back
+      to the sea. Some of it soaks into the ground and becomes groundwater.
+      And some of it falls as snow on high mountains and stays frozen for
+      months or even years before slowly melting. And then the whole cycle
+      begins again. Every glass of water you drink has been through this
+      cycle countless times.
+
+  - id: L05
+    stratum: long
+    word_count: 248
+    tags: [src:rescued, src:h1:Medical and Clinical, src:id:L01, register:patient-readback, domain:medical]
+    text: >-
+      Pre-Procedure Instructions: Upper GI Endoscopy. Your upper endoscopy
+      is scheduled for Wednesday the 22nd at 9:30 AM at City General
+      Hospital, Endoscopy Suite, Level 3. Diet: You must have nothing to
+      eat for at least six hours before your procedure. You may drink clear
+      fluids — water, black tea, black coffee, apple juice, or clear broth
+      — up to two hours before your appointment. Do not drink milk or eat
+      any solid food after midnight the night before. Medications: Take all
+      regular medications as usual with a small sip of water on the morning
+      of your procedure, unless your doctor has specifically told you
+      otherwise. If you take blood-thinning medications such as warfarin,
+      clopidogrel, or aspirin, please contact us at least five days before
+      your appointment as you may need to temporarily stop these. If you
+      take insulin, do not take your morning dose — contact your diabetes
+      team for guidance. Arrival: Please arrive 30 minutes before your
+      scheduled time to allow for registration and preparation. Bring a list
+      of your current medications, your hospital card, and any previous
+      endoscopy reports if you have them. After the procedure: You will be
+      in recovery for approximately 45 minutes while the sedation wears off.
+      You must have a responsible adult available to take you home — you
+      cannot travel by taxi or public transport alone, and you must not
+      drive for 24 hours. You may feel bloated or gassy for a few hours
+      after the procedure — this is normal.
+
+  - id: L06
+    stratum: long
+    word_count: 222
+    tags: [src:rescued, src:h1:Legal and Compliance, src:id:L02, register:legal-readback, domain:legal]
+    text: >-
+      Regulatory Disclosure — Financial Products. This document contains
+      important information about the risks associated with the financial
+      products described herein. You should read this disclosure carefully
+      before making any investment decision. Past performance is not a
+      reliable indicator of future results. The value of investments and the
+      income derived from them may fall as well as rise, and you may get
+      back less than you originally invested. Exchange rate fluctuations may
+      cause the value of overseas investments to rise or fall. This product
+      is not suitable for all investors. Before investing, you should
+      carefully consider your investment objectives, level of experience,
+      risk appetite, and financial situation. If you are in any doubt about
+      the suitability of this product, you should seek independent financial
+      advice. The products described in this document are not deposits and
+      are not insured by any government deposit protection scheme. They are
+      not guaranteed by the issuing entity or any of its affiliates.
+      Investors could lose some or all of their investment. This document
+      has been prepared solely for information purposes and does not
+      constitute an offer to buy or sell, or a solicitation of an offer to
+      buy or sell, any security, and should not be relied upon as such. It
+      has been prepared without regard to the individual financial
+      circumstances and objectives of persons who receive it.
+
+  - id: L07
+    stratum: long
+    word_count: 212
+    tags: [src:rescued, src:h1:Finance and Trading, src:id:L02, register:financial-narration, domain:finance]
+    text: >-
+      Earnings Call Summary: TechCorp Inc., Q1 2026. Revenue: $14.2 billion,
+      up 18 percent year-over-year and $400 million ahead of analyst
+      consensus of $13.8 billion. This was the fifth consecutive quarter of
+      double-digit revenue growth. Earnings per share: $2.84 diluted,
+      compared to consensus of $2.61 and $2.31 in Q1 2025. This represents
+      a 23 percent increase year-over-year. Gross margin: 42.3 percent,
+      expanding 1.4 percentage points compared to the same quarter last
+      year, driven by a higher mix of software and services revenue, which
+      carry margins above 60 percent. Cloud segment: revenue of $6.1
+      billion, up 31 percent year-over-year, representing 43 percent of
+      total revenue. Operating income from cloud was $1.8 billion, a margin
+      of 29.5 percent. Guidance for Q2 2026: the company guided for revenue
+      of $14.6 billion to $15 billion, representing year-over-year growth of
+      16 to 19 percent. Earnings per share guidance of $2.90 to $3.05 was
+      ahead of current analyst consensus of $2.76. Management commentary:
+      CEO Michael Chen said growth was broad-based across all segments and
+      geographies, with particularly strong performance in enterprise AI
+      tools, which now represent 12 percent of total revenue, up from 4
+      percent a year ago. The company announced a $5 billion share
+      repurchase programme and raised its quarterly dividend by 8 percent
+      to $0.52 per share.
+
+  - id: L08
+    stratum: long
+    word_count: 227
+    tags: [src:authored, register:travel-documentary, domain:travel]
+    text: >-
+      There is a village in the western Highlands where the shore road ends
+      at a cattle grid, and beyond the cattle grid there is only heather,
+      sea, and the sound of curlews. The village is called Applecross,
+      though on the older maps and in the older Gaelic it was A' Chomraich
+      — meaning the sanctuary. In the eighth century a monk called
+      Maelrubha came here from Bangor and founded a monastery whose stones
+      lie now under the churchyard grass. What he built was more than a
+      monastery. It was a place of refuge, marked by four crosses at the
+      compass points, and any fugitive who reached them, whatever the
+      crime, could not be pursued within their circle. This right of
+      sanctuary held for a thousand years, and was still recognised into
+      the seventeenth century, when Highland courts continued to
+      acknowledge the boundary even as they otherwise wielded a punishing
+      law. Today the crosses are gone, or perhaps buried, and the road
+      ends where the road ends. But in the way that certain landscapes
+      hold memory in their weather — the sudden hush that falls when you
+      turn the last bend, the sense that the light has changed in some
+      quiet, deliberate way — something of the sanctuary is still there,
+      waiting for the traveller who thinks they have arrived, and finds
+      instead that they have been received.
+
+  # ============================================================
+  # SHORT stratum (12 items, < 15 words) — batch 2, approved 2026-08-07
+  # ============================================================
+
+  - id: S01
+    stratum: short
+    word_count: 9
+    tags: [src:authored, register:fiction-opening, domain:fiction]
+    text: "It was the last summer of the old world."
+
+  - id: S02
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:fiction-hook, domain:fiction]
+    text: "The map was never meant to be found."
+
+  - id: S03
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:chapter-title, domain:fiction]
+    text: "Chapter One. The house on the hill."
+
+  - id: S04
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:audiobook-intro, domain:fiction]
+    text: "Welcome to the story of Emmeline Rowe."
+
+  - id: S05
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:list-intro, domain:fiction]
+    text: "There are three rules for surviving winter here."
+
+  - id: S06
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:folktale-opening, domain:fiction]
+    text: "In the beginning, there was only the river."
+
+  - id: S07
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:broadcast-transition, domain:news]
+    text: "Now for the weather across the country."
+
+  - id: S08
+    stratum: short
+    word_count: 8
+    tags: [src:authored, register:news-signoff, domain:news]
+    text: "This has been a special report from Kyoto."
+
+  - id: S09
+    stratum: short
+    word_count: 9
+    tags: [src:authored, register:podcast-preview, domain:media]
+    text: "Coming up next, the story of a lost city."
+
+  - id: S10
+    stratum: short
+    word_count: 7
+    tags: [src:authored, register:lesson-closing, domain:education]
+    text: "And that concludes our lesson for today."
+
+  - id: S11
+    stratum: short
+    word_count: 5
+    tags: [src:authored, register:audiobook-instruction, domain:education]
+    text: "Please turn to page forty-two."
+
+  - id: S12
+    stratum: short
+    word_count: 6
+    tags: [src:authored, register:screenplay-direction, domain:fiction]
+    text: "Fade to black. End of scene."
+
+  # ============================================================
+  # MEDIUM stratum (20 items, 15–60 words) — batch 4, approved 2026-08-07
+  # ============================================================
+
+  - id: M01
+    stratum: medium
+    word_count: 45
+    tags: [src:authored, register:fiction-interiority, domain:fiction]
+    text: >-
+      She had spent the morning walking without knowing where she was going,
+      which was a thing she had learned to do in the year after her father
+      died. The city was easier when you didn't have a destination — it
+      stopped asking things of you.
+
+  - id: M02
+    stratum: medium
+    word_count: 44
+    tags: [src:authored, register:fiction-descriptive, domain:fiction]
+    text: >-
+      The lighthouse had been decommissioned in 1974 but no one had ever
+      quite got around to demolishing it, and now the local council was
+      arguing about whether to sell it, restore it, or simply pretend for
+      another decade that the question hadn't been raised.
+
+  - id: M03
+    stratum: medium
+    word_count: 45
+    tags: [src:authored, register:fiction-dialogue-narration, domain:fiction]
+    text: >-
+      "You don't have to answer," he said, and she noticed he said it the
+      way people say things when they very much want you to answer. She
+      reached for her tea and looked at the fire and did not answer, for
+      a very long time.
+
+  - id: M04
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, register:historical-fiction, domain:fiction]
+    text: >-
+      In the winter of 1748, the road from Inverness to Aberdeen was closed
+      for nine weeks by snow, and the mail coach that had left on the
+      second of December was not recovered until the spring, at which
+      point three of the four horses had survived.
+
+  - id: M05
+    stratum: medium
+    word_count: 42
+    tags: [src:authored, register:educational-astronomy, domain:science]
+    text: >-
+      The Moon is slowly moving away from the Earth at a rate of about 3.8
+      centimetres per year. This is due to tidal interactions: the same
+      forces that create ocean tides transfer angular momentum from the
+      Earth's rotation to the Moon's orbit.
+
+  - id: M06
+    stratum: medium
+    word_count: 47
+    tags: [src:authored, register:educational-history, domain:history]
+    text: >-
+      The Great Fire of London began in a bakery on Pudding Lane in
+      September 1666 and burned for four days. It destroyed more than
+      13,000 houses and 87 parish churches, and yet — remarkably — only
+      six people are recorded as having died in the fire itself.
+
+  - id: M07
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, register:instructional-cooking, domain:culinary]
+    text: >-
+      To achieve a properly emulsified vinaigrette, whisk the mustard,
+      salt, and vinegar together first. Then add the oil in a thin,
+      steady stream while whisking continuously. Adding the oil too
+      quickly is the most common reason a dressing splits — patience is
+      more important than speed.
+
+  - id: M08
+    stratum: medium
+    word_count: 38
+    tags: [src:authored, register:news-bulletin, domain:news]
+    text: >-
+      Rescue teams have reached the group of hikers stranded on Ben Nevis
+      since Sunday evening. All four are reported to be in good health
+      despite the conditions. A full statement is expected from Police
+      Scotland later this evening.
+
+  - id: M09
+    stratum: medium
+    word_count: 43
+    tags: [src:authored, register:news-market-close, domain:news]
+    text: >-
+      European markets closed higher on Friday, led by gains in the
+      technology and industrial sectors. The FTSE 100 rose 1.2 percent,
+      the DAX gained 0.9 percent, and the CAC 40 was up 1.4 percent.
+      Investors are focused on next week's central bank meetings.
+
+  - id: M10
+    stratum: medium
+    word_count: 41
+    tags: [src:authored, register:news-weather, domain:news]
+    text: >-
+      Widespread frost is expected across much of Scotland and northern
+      England overnight, with temperatures dropping to minus four in rural
+      areas. Motorists are advised to allow extra time in the morning and
+      check for ice on untreated roads before setting off.
+
+  - id: M11
+    stratum: medium
+    word_count: 47
+    tags: [src:authored, register:medical-readback, domain:medical]
+    text: >-
+      The seasonal influenza vaccine takes about two weeks to reach full
+      effectiveness. During that period you may still be susceptible to
+      the virus. The vaccine cannot cause influenza — the most common
+      side effects are a sore arm and a low-grade temperature for a day
+      or two.
+
+  - id: M12
+    stratum: medium
+    word_count: 47
+    tags: [src:authored, register:medical-mental-health, domain:medical]
+    text: >-
+      If you're feeling overwhelmed, remember that reaching out is not a
+      burden — it's how connection works. In the UK, you can call the
+      Samaritans free from any phone, day or night. There is always
+      someone available to listen, without judgement, and without needing
+      you to explain.
+
+  - id: M13
+    stratum: medium
+    word_count: 50
+    tags: [src:authored, register:legal-privacy-notice, domain:legal]
+    text: >-
+      We collect the information you provide when you use our services,
+      together with technical data about your device and how you interact
+      with the site. We use this information to operate the service,
+      communicate with you, and comply with our legal obligations. You
+      may request a copy at any time.
+
+  - id: M14
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, register:legal-tos, domain:legal]
+    text: >-
+      By clicking 'agree,' you confirm that you are at least eighteen
+      years old, that you have read these terms in full, and that you
+      accept them on behalf of yourself and any organisation you
+      represent. This agreement is governed by the laws of England and
+      Wales.
+
+  - id: M15
+    stratum: medium
+    word_count: 41
+    tags: [src:authored, register:finance-market-recap, domain:finance]
+    text: >-
+      The S&P 500 finished the week 2.3 percent higher, closing at 5,847
+      on Friday afternoon. Ten-year Treasury yields eased to 4.18
+      percent, and the dollar index fell against most major currencies.
+      Analysts point to softer-than-expected inflation data as the main
+      driver.
+
+  - id: M16
+    stratum: medium
+    word_count: 41
+    tags: [src:authored, register:finance-fund-commentary, domain:finance]
+    text: >-
+      The Emerging Markets Equity Fund returned negative 1.4 percent for
+      the quarter, underperforming its benchmark by ninety basis points.
+      Underperformance was concentrated in Latin American holdings, where
+      currency depreciation weighed on returns. The manager has reduced
+      Brazilian exposure by 3 percent.
+
+  - id: M17
+    stratum: medium
+    word_count: 46
+    tags: [src:authored, register:travel-writing, domain:travel]
+    text: >-
+      Kyoto in November is a study in restraint. The maples turn colour in
+      the second week of the month, sometimes the third, and for perhaps
+      ten days the temple gardens are so beautiful that even the
+      guidebooks seem embarrassed by the inadequacy of their own
+      descriptions.
+
+  - id: M18
+    stratum: medium
+    word_count: 48
+    tags: [src:authored, register:nature-documentary, domain:science]
+    text: >-
+      The Arctic tern makes the longest annual migration of any animal on
+      Earth, flying from its Arctic breeding grounds to Antarctica and
+      back again — a round trip of roughly seventy thousand kilometres.
+      Over a thirty-year lifespan, that adds up to more than two million
+      kilometres in flight.
+
+  - id: M19
+    stratum: medium
+    word_count: 49
+    tags: [src:authored, register:biographical, domain:history]
+    text: >-
+      Ada Lovelace was born in 1815, the only legitimate child of Lord
+      Byron. Her mother, terrified she would inherit her father's poetic
+      temperament, insisted she be trained in mathematics. What no one
+      anticipated was that Ada would apply that training to a machine
+      that had not yet been built.
+
+  - id: M20
+    stratum: medium
+    word_count: 38
+    tags: [src:authored, register:audiobook-opening, domain:fiction]
+    text: >-
+      There was a house on the corner of Cedar and Vale that had been
+      empty for as long as anyone in the neighbourhood could remember.
+      This is the story of what happened during the month it was not.
+
+  # ============================================================
+  # JARGON stratum (12 items) — batch 5, approved 2026-08-07
+  # Documentary / educational / audiobook voice delivering domain terms.
+  # ============================================================
+
+  - id: J01
+    stratum: jargon
+    word_count: 8
+    tags: [src:authored, domain:medical]
+    text: "The patient presented with tachycardia, hypertension, and diaphoresis."
+
+  - id: J02
+    stratum: jargon
+    word_count: 8
+    tags: [src:authored, domain:medical]
+    text: "Angiotensin-converting enzyme inhibitors are commonly prescribed for hypertension."
+
+  - id: J03
+    stratum: jargon
+    word_count: 11
+    tags: [src:authored, domain:medical]
+    text: "The pathogenesis of Alzheimer's disease involves beta-amyloid plaques and neurofibrillary tangles."
+
+  - id: J04
+    stratum: jargon
+    word_count: 14
+    tags: [src:authored, domain:medical]
+    text: >-
+      Levothyroxine sodium and metformin hydrochloride are among the most
+      prescribed medications in the country.
+
+  - id: J05
+    stratum: jargon
+    word_count: 15
+    tags: [src:authored, domain:legal]
+    text: >-
+      The Sarbanes-Oxley Act was enacted in 2002 in response to a series of
+      accounting scandals.
+
+  - id: J06
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:legal]
+    text: "The principle of habeas corpus predates the Magna Carta by several centuries."
+
+  - id: J07
+    stratum: jargon
+    word_count: 13
+    tags: [src:authored, domain:finance]
+    text: >-
+      Quantitative easing involves the purchase of Treasuries and mortgage-backed
+      securities by central banks.
+
+  - id: J08
+    stratum: jargon
+    word_count: 18
+    tags: [src:authored, domain:finance]
+    text: >-
+      The Federal Open Market Committee, or FOMC, meets eight times a year to
+      set the federal funds rate.
+
+  - id: J09
+    stratum: jargon
+    word_count: 16
+    tags: [src:authored, domain:science]
+    text: >-
+      The Higgs boson was confirmed at CERN in 2012, completing the Standard
+      Model of particle physics.
+
+  - id: J10
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:tech]
+    text: "Cryptographic hash functions like SHA-256 underpin the security of the Bitcoin blockchain."
+
+  - id: J11
+    stratum: jargon
+    word_count: 15
+    tags: [src:authored, domain:geography]
+    text: >-
+      The Cotopaxi volcano in Ecuador last erupted in 2015, requiring the
+      evacuation of nearby villages.
+
+  - id: J12
+    stratum: jargon
+    word_count: 12
+    tags: [src:authored, domain:history]
+    text: "The Peloponnesian War pitted Athens against Sparta from 431 to 404 BCE."
+
+  # ============================================================
+  # EDGE stratum (8 items) — batch 6, approved 2026-08-07
+  # ============================================================
+
+  - id: E01
+    stratum: edge
+    word_count: 18
+    tags: [src:authored, domain:history, edge_category:date, edge_category:time, edge_category:proper-noun, edge_category:big-number]
+    text: >-
+      On July 20th, 1969, at 20:17 UTC, Neil Armstrong stepped onto the
+      lunar surface, 384,400 kilometres from Earth.
+
+  - id: E02
+    stratum: edge
+    word_count: 16
+    tags: [src:authored, domain:finance, edge_category:acronym, edge_category:percentage, edge_category:decimal, edge_category:date]
+    text: >-
+      The FTSE 100 rose 1.4% to close at 8,247.15, its highest point since
+      February 28th, 2024.
+
+  - id: E03
+    stratum: edge
+    word_count: 16
+    tags: [src:authored, domain:science, edge_category:acronym, edge_category:decimal, edge_category:percentage]
+    text: "The LHC accelerates protons to 6.5 TeV per beam, or 99.9999991% of the speed of light."
+
+  - id: E04
+    stratum: edge
+    word_count: 13
+    tags: [src:authored, domain:culture, edge_category:proper-noun-diacritics, edge_category:proper-noun-non-english]
+    text: >-
+      The composers Antonín Dvořák, Camille Saint-Saëns, and Sergei
+      Rachmaninoff dominated late Romantic music.
+
+  - id: E05
+    stratum: edge
+    word_count: 19
+    tags: [src:authored, domain:finance, edge_category:acronym, edge_category:currency, edge_category:date, edge_category:big-number]
+    text: >-
+      The IPO priced at $42 per share on September 14th, 2026, raising $2.1
+      billion at a $47.5 billion valuation.
+
+  - id: E06
+    stratum: edge
+    word_count: 15
+    tags: [src:authored, domain:medical, edge_category:acronym, edge_category:date]
+    text: >-
+      The COVID-19 vaccine was authorised for emergency use on December 11th,
+      2020, by the FDA.
+
+  - id: E07
+    stratum: edge
+    word_count: 17
+    tags: [src:authored, domain:news, edge_category:date, edge_category:proper-noun]
+    text: >-
+      The 2028 Summer Olympics will be held in Los Angeles, California, from
+      July 14th to July 30th.
+
+  - id: E08
+    stratum: edge
+    word_count: 16
+    tags: [src:authored, domain:legal, edge_category:acronym, edge_category:date, edge_category:url, edge_category:regulation-number]
+    text: >-
+      The GDPR came into force on May 25th, 2018 — full text at
+      eur-lex.europa.eu, regulation 2016/679.
+
+  # ============================================================
+  # PROBE stratum (15 items, public-domain) — batch 7, approved 2026-08-07
+  # Training-contamination probe. Reported as directional observation
+  # only, never a headline (spec §3.3).
+  # 15 famous literary openings from pre-1930 public-domain works
+  # (some entered US PD 2019/2021 under the 95-year rule).
+  # ============================================================
+
+  - id: P01
+    stratum: probe
+    word_count: 24
+    tags: [src:public-domain, source:dickens-tale-of-two-cities-1859, domain:fiction, register:famous-opening]
+    text: >-
+      It was the best of times, it was the worst of times, it was the age
+      of wisdom, it was the age of foolishness.
+
+  - id: P02
+    stratum: probe
+    word_count: 23
+    tags: [src:public-domain, source:austen-pride-and-prejudice-1813, domain:fiction, register:famous-opening]
+    text: >-
+      It is a truth universally acknowledged, that a single man in
+      possession of a good fortune, must be in want of a wife.
+
+  - id: P03
+    stratum: probe
+    word_count: 14
+    tags: [src:public-domain, source:tolstoy-anna-karenina-1877-garnett-1901, domain:fiction, register:famous-opening]
+    text: "Happy families are all alike; every unhappy family is unhappy in its own way."
+
+  - id: P04
+    stratum: probe
+    word_count: 45
+    tags: [src:public-domain, source:melville-moby-dick-1851, domain:fiction, register:famous-opening]
+    text: >-
+      Call me Ishmael. Some years ago — never mind how long precisely —
+      having little or no money in my purse, and nothing particular to
+      interest me on shore, I thought I would sail about a little and see
+      the watery part of the world.
+
+  - id: P05
+    stratum: probe
+    word_count: 27
+    tags: [src:public-domain, source:dickens-david-copperfield-1849, domain:fiction, register:famous-opening]
+    text: >-
+      Whether I shall turn out to be the hero of my own life, or whether
+      that station will be held by anybody else, these pages must show.
+
+  - id: P06
+    stratum: probe
+    word_count: 29
+    tags: [src:public-domain, source:doyle-hound-of-baskervilles-1902, domain:fiction, register:famous-opening]
+    text: >-
+      Mr. Sherlock Holmes, who was usually very late in the mornings, save
+      upon those not infrequent occasions when he was up all night, was
+      seated at the breakfast table.
+
+  - id: P07
+    stratum: probe
+    word_count: 25
+    tags: [src:public-domain, source:twain-huckleberry-finn-1884, domain:fiction, register:famous-opening]
+    text: >-
+      You don't know about me without you have read a book by the name of
+      The Adventures of Tom Sawyer; but that ain't no matter.
+
+  - id: P08
+    stratum: probe
+    word_count: 22
+    tags: [src:public-domain, source:joyce-ulysses-1922, domain:fiction, register:famous-opening]
+    text: >-
+      Stately, plump Buck Mulligan came from the stairhead, bearing a bowl
+      of lather on which a mirror and a razor lay crossed.
+
+  - id: P09
+    stratum: probe
+    word_count: 23
+    tags: [src:public-domain, source:fitzgerald-great-gatsby-1925, domain:fiction, register:famous-opening]
+    text: >-
+      In my younger and more vulnerable years my father gave me some advice
+      that I've been turning over in my mind ever since.
+
+  - id: P10
+    stratum: probe
+    word_count: 18
+    tags: [src:public-domain, source:woolf-mrs-dalloway-1925, domain:fiction, register:famous-opening]
+    text: >-
+      Mrs Dalloway said she would buy the flowers herself. For Lucy had
+      her work cut out for her.
+
+  - id: P11
+    stratum: probe
+    word_count: 21
+    tags: [src:public-domain, source:poe-the-raven-1845, domain:fiction, register:famous-poem]
+    text: >-
+      Once upon a midnight dreary, while I pondered, weak and weary, over
+      many a quaint and curious volume of forgotten lore.
+
+  - id: P12
+    stratum: probe
+    word_count: 13
+    tags: [src:public-domain, source:alcott-little-women-1868, domain:fiction, register:famous-opening]
+    text: "Christmas won't be Christmas without any presents, grumbled Jo, lying on the rug."
+
+  - id: P13
+    stratum: probe
+    word_count: 35
+    tags: [src:public-domain, source:wilde-dorian-gray-1890, domain:fiction, register:famous-opening]
+    text: >-
+      The studio was filled with the rich odour of roses, and when the
+      light summer wind stirred amidst the trees of the garden, there came
+      through the open door the heavy scent of the lilac.
+
+  - id: P14
+    stratum: probe
+    word_count: 20
+    tags: [src:public-domain, source:yeats-second-coming-1919, domain:fiction, register:famous-poem]
+    text: >-
+      Turning and turning in the widening gyre, the falcon cannot hear
+      the falconer; things fall apart; the centre cannot hold.
+
+  - id: P15
+    stratum: probe
+    word_count: 35
+    tags: [src:public-domain, source:kipling-if-1910, domain:fiction, register:famous-poem]
+    text: >-
+      If you can keep your head when all about you are losing theirs and
+      blaming it on you, if you can trust yourself when all men doubt you,
+      but make allowance for their doubting too.
