@@ -5,24 +5,18 @@
 %% analyzers added; bootstrap CIs added to the human layer; D8 capability audit wired
 %% into the decision layer; VERSA removed as the analyzer engine; admin panel added as
 %% the co-equal second front door; cost analyzer (D6) added.
-%% Revision 2 (2026-08-06): CONFIG now feeds ANALYZE and SCORE (analyzers.yaml/pricing.yaml
-%% and gates.yaml are consumed there — the previous single CONFIG-->RUNNER edge implied the
-%% pre-registered gates never reached the decision layer); store path carries use_case and
-%% draw index; hi_snapshot.json given a home in CONFIG; judge 1 corrected to Parakeet RNNT;
-%% domination rule corrected to a difference-CI test; rating page is local, not hosted.
 flowchart TB
     subgraph FRONT["Two front doors — one implementation"]
-        F1["CLI: veval doctor · generate<br/>analyze · score · report"]
+        F1["CLI: veval doctor · generate · analyze<br/>invites · score · report"]
         F2["Admin panel: Streamlit<br/>Doctor · Run · Results · Frontier<br/>thin wrapper — never duplicates logic"]
     end
 
     subgraph CONFIG["Pre-registered config — git-tagged BEFORE results (prereg-v1)"]
         C1["providers.yaml · voices.yaml<br/>model strings · voice IDs · endpoints"]
-        C2["gates.yaml<br/>gates + rationale + na_policy<br/>robustness_points · significance rule<br/>WER threshold · band cuts · dBFS"]
+        C2["gates.yaml<br/>per-use-case gates + rationale<br/>noise-floor rule · WER threshold"]
         C3["corpus/*.yaml<br/>60 novel + 15 probe × 2 use cases<br/>+ variance_subset.yaml"]
         C4["analyzers.yaml<br/>TTSDS2 reference set + min sample size<br/>split-half threshold · judge revisions"]
-        C5["pricing.yaml<br/>published rates · per-cell source + date<br/>session model (turns × chars)"]
-        C6["hi_snapshot.json<br/>hand-scraped board rankings + date"]
+        C5["pricing.yaml<br/>published rates · per-cell source + date"]
     end
 
     subgraph ADAPTERS["Provider adapters — one file each, common interface"]
@@ -33,29 +27,29 @@ flowchart TB
     subgraph RUNNER["Runner — veval generate"]
         R1["Orchestrator<br/>retry + backoff · rate-limit aware<br/>content-hash cache · spend cap<br/>errors logged as data"]
         R2["--mode latency<br/>pinned cloud VM · strictly serial<br/>50 trials × ≥2 days"]
-        R3["--mode variance<br/>10 items × 2 use cases × 3 draws<br/>× 6 providers = 360 generations"]
+        R3["--mode variance<br/>10 items × 3 draws per provider"]
     end
 
     subgraph STORE["Immutable run store — runs/&lt;run_id&gt;/"]
         S1["manifest.json<br/>date · region · model+voice versions<br/>interpreter · hardware"]
-        S2["audio/&lt;use_case&gt;/&lt;provider&gt;/<br/>&lt;item&gt;[_draw&lt;N&gt;].wav"]
+        S2["audio/&lt;provider&gt;/&lt;item&gt;.wav"]
         S3["api_log.jsonl<br/>timings · usage · errors-as-data"]
     end
 
     subgraph ANALYZE["Analyzers — veval analyze · direct library calls · pure, re-runnable"]
-        AN1["wer.py — two-judge ASR<br/>Parakeet RNNT (HF) + faster-whisper<br/>jiwer · agreement rule · pinned normaliser<br/>+ failure incidence · event detectors"]
+        AN1["wer.py — two-judge ASR<br/>Parakeet TDT (HF) + faster-whisper<br/>jiwer · agreement rule<br/>+ failure incidence"]
         AN2["quality.py<br/>TTSDS2 vs pinned reference<br/>+ Audiobox Aesthetics<br/>+ split-half stability"]
         AN3["hygiene.py<br/>silero-VAD · pyloudnorm · clipping"]
         AN4["latency.py<br/>TTFA p50/p90 · RTF · region"]
-        AN5["variance.py<br/>per-provider SD → measurement noise floor<br/>byte-identity → determinism"]
+        AN5["variance.py<br/>pooled within-provider SD → noise floor<br/>byte-identity → determinism"]
         AN6["drift.py<br/>per-third quality drift on long passages"]
         AN7["cost.py<br/>pricing × logged chars<br/>$/1K words @10K·100K·1M · $/session"]
     end
 
     subgraph HUMAN["Pairwise rating (D4)"]
         H1["Loudness-normalize → −18 LUFS"]
-        H2["LOCAL static A/B page<br/>blinded codes · third-party human anchor<br/>order randomized across sessions"]
-        H3["judgments.csv → Bradley–Terry fit<br/>+ item-clustered bootstrap CI on DIFFERENCES<br/>+ consistency re-judge (gap logged)"]
+        H2["Static A/B voting page<br/>blinded codes · hidden human anchors<br/>order randomized across sessions"]
+        H3["judgments.csv → Bradley–Terry fit<br/>+ bootstrap 95% CI<br/>+ 10% consistency re-judge (session gap logged)"]
     end
 
     subgraph DESK["Capability audit (D8)"]
@@ -63,13 +57,13 @@ flowchart TB
     end
 
     subgraph SCORE["Decision layer — veval score"]
-        SC1["Apply gates.yaml<br/>pre-committed per use case<br/>+ na_policy for unmeasurable inputs"]
-        SC2["Pareto frontiers with error bars — 4 charts<br/>quality × cost · quality × latency, per use case<br/>domination: difference CI excludes zero<br/>+ robustness_points sweep"]
-        SC3["Spearman ρ + permutation p<br/>item-level D3↔D4 (confirmatory)<br/>board concordance (qualitative)"]
+        SC1["Apply gates.yaml<br/>(pre-committed per use case)"]
+        SC2["Pareto frontiers with error bars<br/>quality × cost · quality × latency<br/>domination requires non-overlapping CIs<br/>+ gate-robustness ±20%"]
+        SC3["Spearman ρ: D3↔D4 · D3↔HI · D4↔HI<br/>hi_snapshot.json → Δ · Reproduces?"]
     end
 
     subgraph REPORT["Reporting — veval report"]
-        RP1["Results tables (md/html)<br/>rank Δ · replicates? · fail % · CI cols<br/>row order carries no quality claim"]
+        RP1["Results tables (md/html)<br/>incl. Δ · Reproduces? · Fail % · CI cols"]
         RP2["Frontier charts with error bars<br/>+ heatmap"]
         RP3["Decision memos ×2 (hand-written,<br/>data auto-injected) + case study"]
     end
@@ -79,8 +73,6 @@ flowchart TB
     FRONT --> SCORE
     FRONT --> REPORT
     CONFIG --> RUNNER
-    CONFIG --> ANALYZE
-    CONFIG --> SCORE
     ADAPTERS --> RUNNER
     RUNNER --> STORE
     STORE --> ANALYZE

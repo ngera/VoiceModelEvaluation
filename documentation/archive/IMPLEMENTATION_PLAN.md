@@ -20,7 +20,7 @@
 
 ## Scope
 
-Build the ten boxes in the architecture diagram — FRONT, CONFIG, ADAPTERS, RUNNER, STORE,
+Build the nine boxes in the architecture diagram — CONFIG, ADAPTERS, RUNNER, STORE,
 ANALYZE, HUMAN, DESK, SCORE, REPORT — at portfolio-edition scope: 6 providers, 2 use
 cases, 75 corpus items per use case, n=1 rating baseline with quantified uncertainty,
 private results.
@@ -37,11 +37,11 @@ compute and writing.
 | Area | v1 | v2 | Driver |
 |---|---|---|---|
 | Analyzer backbone | VERSA, with the decision left open | **Dropped** — direct library calls, one module per dimension | Spec B.1 |
-| ASR judge 1 | Parakeet TDT via NeMo | **Parakeet RNNT 0.6B via HuggingFace `transformers`** — TDT exists only on `transformers` `main`, so it cannot be pinned by version; RNNT shipped in a release. Same encoder family, so §4.2's independence argument is unchanged. Phase B re-checks whether TDT has landed in a release | Spec B.3, fact-check 2026-08-06 |
+| ASR judge 1 | Parakeet via NeMo | **Parakeet via HuggingFace `transformers`** | Spec B.3 |
 | ASR judge 2 | faster-whisper, with a Canary swap under consideration | **faster-whisper, locked.** Canary rejected as judge 2 | R1 / Spec §4.2 |
 | Environment | Devcontainer mandatory from Phase E | **Native Windows works throughout.** Devcontainer optional, kept as a reproducibility artifact | Follows from the two rows above |
-| Phase D runner | Campaign + latency modes | **+ variance mode** (10 items × 2 use cases × 3 draws × 6 providers = **360 generations**, all six at full subset) | R4 |
-| Phase E analyzers | 4 modules | **7 modules** — adds `variance.py`, `drift.py`, `cost.py`; `wer.py` gains failure incidence; `quality.py` gains split-half | R3–R6 |
+| Phase D runner | Campaign + latency modes | **+ variance mode** (10 items × 3 draws per provider) | R4 |
+| Phase E analyzers | 4 modules | **6 modules** — adds `variance.py`, `drift.py`; `wer.py` gains failure incidence; `quality.py` gains split-half | R3–R6 |
 | Phase F human layer | Bradley–Terry fit | **+ bootstrap CIs, randomised session ordering, session-gap reporting** | R2, R8 |
 | Phase G scoring | Gates → Pareto → robustness | **+ CI-gated domination rule, Spearman cross-checks** | R2, R7 |
 | Config files | `versa.yaml` | **`analyzers.yaml`** — pins the TTSDS2 reference set and both judge revisions | R3 |
@@ -70,17 +70,15 @@ voiceAgentEvals/
 ├── configs/                           # pre-registered YAMLs (git-tag `prereg-v1`)
 │   ├── providers.yaml
 │   ├── voices.yaml
-│   ├── gates.yaml                     # gates + na_policy + robustness_points + significance rule
-│   │                                  #   + WER threshold + band cut-points + dBFS + event detectors
-│   ├── analyzers.yaml                 # TTSDS2 speech + noise references; min sample size; split-half
-│   │                                  #   threshold; normaliser hash; Audiobox axes; MDD; judge revisions
+│   ├── gates.yaml                     # gates + noise-floor rule + WER threshold + dBFS thresholds
+│   ├── analyzers.yaml                 # TTSDS2 reference set + rationale + min sample size; judge revisions
 │   └── pricing.yaml                   # published rates per provider, date-stamped (D6)
 ├── corpus/
 │   ├── conversational.yaml            # 60 novel + 15 probe = 75
 │   ├── narration.yaml                 # 60 novel + 15 probe = 75
 │   └── variance_subset.yaml           # 10 items per use case, frozen in prereg
 ├── src/veval/
-│   ├── cli.py                         # Typer: doctor|generate|analyze|score|report
+│   ├── cli.py                         # Typer: doctor|generate|analyze|score|report|invites
 │   ├── config.py                      # Pydantic models + loaders
 │   ├── doctor.py                      # shared by CLI + Streamlit
 │   ├── adapters/                      # one file per provider, common interface
@@ -102,7 +100,7 @@ voiceAgentEvals/
 │       └── pages/{1_Doctor,2_Run,3_Results,4_Frontier}.py
 ├── scripts/extract_corpus.py          # python-docx → YAML
 ├── dx/friction_log.md                 # D7 — written live during Phase C, not reconstructable
-├── rating/                            # LOCAL static A/B page + local audio dir (Phase F)
+├── voting/                            # Vercel static site (Phase F)
 ├── tests/                             # pytest — regression net for silent-corruption bugs
 ├── runs/<run_id>/                     # immutable: manifest.json, audio/, api_log.jsonl
 ├── analysis/<run_id>/                 # pure functions of runs/
@@ -111,12 +109,8 @@ voiceAgentEvals/
 └── site/                              # local case study, memos, charts (private)
 ```
 
-`runs/audio/` and `judgments/` raw exports are gitignored. **`analysis/` and `decisions/`
-are committed** — they are small JSON, and the pre-registration receipt is worthless
-without them: if no result artifact ever enters git, "the `prereg-v1` tag predates all
-result files" is vacuously true and proves nothing. Each run also commits a
-`runs/<run_id>/MANIFEST.sha256` so the audio stays out of git while its provenance stays
-in. `veval report` asserts the tag ordering rather than leaving it to be eyeballed.
+`runs/`, `analysis/`, `judgments/`, `decisions/` are gitignored — regenerable outputs,
+not source.
 
 ## Two front doors, one implementation
 
@@ -134,7 +128,7 @@ Streamlit Doctor page call `run_doctor()` in `src/veval/doctor.py`.
 | `veval doctor` | Health-check all/one adapter end-to-end → `runs/doctor-<ts>/` | A ✅ |
 | `veval generate` | Corpus × providers campaign; `--mode campaign\|latency\|variance` | D |
 | `veval analyze` | WER + failure incidence / quality + split-half / hygiene / latency / variance / drift / cost | E |
-
+| `veval invites` | Generate n tokened rater URLs | F |
 | `veval score` | Gates → survivors → Pareto with CIs → ±20% robustness → Spearman → HI cross-check | G |
 | `veval report` | Results tables, frontier charts with error bars, memo and case-study templates | G |
 
@@ -146,7 +140,7 @@ Streamlit Doctor page call `run_doctor()` in `src/veval/doctor.py`.
 | **B** | Configs + corpus + pre-registration | ⬜ **next** |
 | **C** | Remaining 5 adapters | ⬜ |
 | **D** | `veval generate` — campaign, latency and variance modes | ⬜ |
-| **E** | `veval analyze` — seven analyzer modules | ⬜ |
+| **E** | `veval analyze` — six analyzer modules | ⬜ |
 | **F** | Voting UI + human judgment layer | ⬜ |
 | **G** | `veval score` + `veval report` | ⬜ |
 
@@ -162,10 +156,6 @@ Week 3 ≈ F–G plus writing. See spec §7.
 The gate for everything else. Nothing here needs an API key, so it can run in parallel
 with account setup.
 
-0. **Land and verify the interpreter fix (`11ff01d`) on the machine that will actually run
-   the campaign.** `test_manifest_records_a_stable_interpreter` is red until it does, and
-   every run's manifest — the reproducibility receipt — records the interpreter. A campaign
-   stamped `3.11.0rc1` undermines the provenance claim the project is built on.
 1. `scripts/extract_corpus.py` — python-docx over `documentation/*.docx` → draft YAMLs.
 2. Curate and trim to **60 novel items per use case**: fix AI-generation artifacts, verify
    the jargon items are actually hard, confirm the edge battery covers numbers, dates,
@@ -178,7 +168,7 @@ with account setup.
    per use case, with selection reasoning per entry).
 6. Write `configs/gates.yaml` — the gates from spec §5, **plus the pre-committed
    numeric rules**: the per-item WER threshold that defines failure incidence; the
-   noise-floor reporting rule (no difference below the §3.4 significance rule
+   noise-floor reporting rule (no difference below 2× the pooled within-provider SD
    reported as a difference); and the hygiene thresholds (noise floor ≤ −40 dBFS, zero
    clipped samples). Each entry carries a one-line rationale. No gate ships as prose —
    "no audible artifacts" is not pre-registrable, a number is.
@@ -189,11 +179,7 @@ with account setup.
 8. Write `configs/pricing.yaml` — published rates per provider with a per-cell source and
    date. Re-pulled on analysis day (D6 rule); the Week 1 version exists so the pilot can
    produce a toy frontier with a real x-axis.
-9. **Apply the CLAUDE.md amendments** proposed at the foot of this document. Until they
-   land, the locked-decisions file still mandates VERSA and a required devcontainer, and
-   its meta-rule 2 points future sessions at archived documents — so Phase E could be built
-   against superseded instructions.
-10. **Git tag `prereg-v1`.** The receipt that gates, voices, corpus and analyzer parameters
+9. **Git tag `prereg-v1`.** The receipt that gates, voices, corpus and analyzer parameters
    all predate any result.
 
 > **Ordering note.** Two Phase B artifacts cannot be fully validated until audio exists:
@@ -215,25 +201,15 @@ Per-adapter checklist: streaming TTFA measurement wired into the common return s
 `finalize_wav_header()` applied to any streamed WAV (the Phase A defect class); character
 count captured for D6; model string and voice ID written into the manifest.
 
-**Per-provider constraints to implement, not discover** (spec §3.1). **Google first, and
-test before assuming:** Chirp 3 HD went GA in April 2025 and its documentation shows
-streaming synthesis, so the "Preview" justification for falling back to buffered REST is
-stale. Spend fifteen minutes calling `streaming_synthesize` before committing to the
-fallback — if it works, a non-comparability footnote disappears from the latency table,
-both results tables and a threat-to-validity row. If it does not, buffered REST with the
-footnote stands. Remaining constraints: Deepgram REST caps at ~2K chars per request, so long-stratum
+**Per-provider constraints to implement, not discover** (spec §3.1): Google runs D1 on
+**buffered REST** (streaming is gRPC/Chirp3-HD/Preview only) and its TTFA carries a
+non-comparability footnote; Deepgram REST caps at ~2K chars per request, so long-stratum
 items chunk and reassemble with boundaries recorded; Cartesia concurrency is capped at 2–3;
 Orpheus is `N/A-hosted` for D1 and takes a 5-item variance subset.
 
-**D7 is a separate session per provider, not a by-product of adapter work.** The spec
-measures "open docs → first audio in a fresh venv"; building a production adapter with
-streaming capture, WAV finalisation and manifest wiring is a different task with a
-different duration. Each provider therefore gets a ~30–45 minute throwaway hello-world
-session, clocked, *before* its production adapter is written. **Deepgram's must be re-run**
-— its adapter was built in Phase A, before D7 was defined, so its datapoint is otherwise
-missing from a published column. Report times with the direction of the learning bias
-stated (later providers benefit from earlier ones), and publish friction-event counts
-alongside minutes since counts are less order-sensitive.
+Week 1 also carries the **D7 developer-experience measurement** — start the clock at
+"open docs" for each provider and log friction as it happens. It cannot be reconstructed
+later.
 
 **R9 task:** while onboarding Fish, determine whether `s2.1-pro-free` and the paid string
 share weights. Record the finding in the capability matrix; it becomes a footnote or a
@@ -247,24 +223,13 @@ caveat on every Fish quality row.
 - **`--mode latency`** — 50 serial trials per provider (one request in flight),
   scheduled across ≥2 days and ≥2 times of day, from the pinned VM only; RTF on long
   items; serving region recorded. Orpheus skipped (N/A-hosted).
-- **`--mode variance`** — 10 items × 2 use cases × 3 draws × 6 providers = **360
-  generations**. All six run the full subset: Replicate's per-generation cost is ~$0.003,
-  not the ~$0.08 an earlier draft assumed, so Orpheus's share is about $0.20 and the
-  earlier 5-item reduction was unnecessary.
+- **`--mode variance`** — the 10-item subset × 3 draws × 6 providers × 2 use cases = 360
+  generations (~200K chars). **Orpheus runs a 5-item subset** — Replicate bills per
+  generation, so the full subset would cost ~$5 on its own.
 - **Admin:** `pages/2_Run.py` — pick corpus subset and providers, run, live progress.
-- **Two pilots, because one cannot exist yet.** An end-to-end "toy frontier" needs D4
-  (Phase F) on its y-axis, `cost.py` (Phase E) on its x-axis and `veval score`/`report`
-  (Phase G) to render — none of which exist in week 1.
-  - **Pilot-1 (week 1, ~$1):** 5 items × 6 providers → generation + `quality.py` +
-    `hygiene.py`. Purpose: prove the pipeline runs end to end and check that gate
-    thresholds discriminate at all. Any threshold that passes or fails everyone is amended
-    and re-tagged `prereg-v1.1` before the campaign.
-  - **Pilot-2 (end of week 2):** the toy frontier, once F and G stubs exist.
-  - **The TTSDS2 split-half check moves off the pilot entirely.** The benchmark documents
-    50–100 samples as sufficient; a 5-item pilot is far below that and each half further
-    still, so a split-half result there would be noise. It runs on the first full
-    per-provider campaign slice instead, averaged over ≥100 random splits rather than one
-    arbitrary split.
+- **$1 pilot before the real campaign:** 5 items × 6 providers, end to end through to a
+  toy frontier chart. Also the validation input for the TTSDS2 split-half check and any
+  gate threshold that may need a `prereg-v1.1` amendment (Phase B ordering note).
 
 ### Phase E — analyzers
 
@@ -274,14 +239,6 @@ artifact for anyone who wants a pinned Linux environment, and is no longer on th
 critical path. A GPU is still wanted — TTSDS2 plus two ASR judges over **~1,300 files**
 (900 primary + 360 variance + pilot) is slow on CPU. Hardware is recorded in
 `manifest.json`.
-
-**Acceptance gate before any analyzer runs.** Every campaign WAV is decoded and checked:
-header duration matches decoded duration within 1%, LUFS falls in a plausible range, VAD
-finds speech, character counts are logged. Phase A shipped a defect where a streamed header
-declared 44,737 seconds for a 2.8-second clip — which would have silently corrupted RTF,
-VAD, loudness and the distributional score alike. That class of bug fails loudly here or
-not at all. **For Fish this gate must be green before 2026-08-24**, since its audio cannot
-be regenerated at $0 after the free window closes.
 
 All analyzers are pure functions over the run store, re-runnable without regenerating
 audio.
@@ -307,20 +264,15 @@ The only phase with an online component; everything else stays local.
 - `human/loudness_normalize.py` → **−18 LUFS via pyloudnorm, mandatory before upload.**
 - **Anchor recordings** — quiet room, decent mic, normalised like everything else; pilot
   A/B against the best TTS before locking (E8). Own voice by default; a friend's voice
-  requires written consent, since anchor recordings would leave the machine.
+  requires written consent, since anchors ship to Vercel.
 - **Pair builder** — 7 systems (6 providers + anchor) → 21 pairs × 2 use cases × 5
   repetitions = **210 judgments target, 126 minimum**. Roughly two hours across 5–6
   sessions. Pairs are **randomised across sessions rather than blocked by provider** (R8),
   and written to a per-rater manifest.
-
-- **The rating page runs locally in v1** — a static HTML page against a local audio
-  directory. This serves an n=1 design fully, and it removes the hosting decision, the form
-  backend, the token model and, critically, the audio-redistribution exposure: a public
-  `/public` directory is world-readable regardless of any `?rater=` token, and publishing
-  six providers' generated audio plus a human recording contradicts the "private results,
-  no redistribution question" position in the spec's Appendix E. Remote raters are §10
-  future work; when added, audio goes behind signed expiring URLs and a provider ToS review
-  re-enters scope.
+- `voting/` deployed to Vercel Hobby; audio in `voting/public/audio/` (~200MB);
+  LocalStorage-batched votes, one form POST per rater at session end.
+- `veval invites --n 10` → tokened URLs. **n=1 self-rating is the baseline; remote friends
+  are an upgrade layer, and Week 3 must not block on their votes arriving.**
 - **Bradley–Terry fit + bootstrap 95% CIs** (2,000 resamples) — the numbers the frontier
   charts depend on.
 - **10% consistency re-judge** at least a week later; publish the consistency figure
@@ -330,7 +282,7 @@ The only phase with an online component; everything else stays local.
 
 - Gate application → survivor list per use case.
 - **Pareto frontiers with y-error bars.** Domination asserted only where D4 intervals do
-  not overlap; overlapping pairs labelled **"no difference detected at this n"** — a
+  not overlap; overlapping pairs labelled **"indistinguishable at this n"** — a
   first-class status alongside "on frontier", "dominated" and "gated".
 - **Noise-floor rule applied** to every reported difference.
 - **Cost axis** from `cost_model.json` (D6) — re-pull `pricing.yaml` and re-date-stamp it
@@ -391,17 +343,13 @@ Same commands work in both. The switch is invisible to the code.
 
 ## Voting UI stack (Phase F)
 
-| Piece | Choice (v1) |
+| Piece | Choice |
 |---|---|
-| Hosting | **None — local static page**, opened from the filesystem |
-| Audio storage | Local directory; nothing leaves the machine |
-| Vote collection | Local CSV written by the page |
-| Rater model | n=1. Multi-rater is §10 future work and would need its own fit, not pooled judgments |
-| Consent | Anchor voice recorded with written consent (a third party, not the rater — see spec A.4) |
-
-*Rationale for dropping the hosted stack: it existed to reach remote raters, who are future
-work; it cost several hours the schedule does not have; and it published provider audio to
-an open URL, contradicting the spec's own legal position.*
+| Hosting | Vercel Hobby, static site |
+| Audio storage | Vercel `/public` (~200MB, well inside free-tier bandwidth) |
+| Vote backend | Formspree/Basin, batched — one POST per rater at session end |
+| Rater model | Tokened invite URLs (`?rater=abc123`) — no open voting |
+| Consent | Landing-page line: "aggregated judgments will be published; your identity will not" |
 
 ## Open decisions
 
@@ -420,16 +368,16 @@ Still open:
 
 - [ ] A stranger skimming the repo for 10 minutes can state the problem, the method's two cleverest ideas, and both recommendations
 - [ ] Case study readable in 5 minutes; every claim traceable to a dated artifact
-- [ ] `prereg-v1` tag predates **the first committed `analysis/` artifact and every `runs/*/MANIFEST.sha256`**, verified by `git log --diff-filter=A` and asserted in `veval report`
-- [ ] **All four frontier charts** render **with error bars**; memos complete
+- [ ] `prereg-v1` tag predates all result files in git history
+- [ ] Both frontier charts render **with error bars**; memos complete
 - [ ] Consistency re-judge number **and its session gap** disclosed next to every D4 figure
-- [ ] Noise floor published; no difference below the §3.4 significance rule reported as a difference
+- [ ] Noise floor published; no difference below 2× the pooled within-provider SD reported as a difference
 - [ ] TTSDS2 reference set named; split-half stability published
 - [ ] Failure incidence published per provider
-- [ ] Every "dominated" claim backed by a bootstrap CI on the pairwise D4 difference excluding zero
+- [ ] Every "dominated" claim backed by non-overlapping D4 intervals
 - [ ] Per-third drift analysis run, or the listener-fatigue column removed
 - [ ] Spearman ρ published for D3↔D4, D3↔HI, D4↔HI
-- [ ] Total spend ≤ $50, logged — or the overrun logged in `DEVIATIONS.md` with its cause
+- [ ] Total spend ≤ $50, logged
 - [ ] Subscriptions cancelled
 - [ ] Drift re-run scheduled (+4 weeks)
 
@@ -445,8 +393,8 @@ Per meta-rule 1, these are **proposed, not written**. CLAUDE.md is never edited 
 |---|---|---|
 | Analyzer backbone | VERSA (jiwer, TTSDS2, silero-VAD surfaced through it) | **Direct library calls** — jiwer · TTSDS2 · Audiobox · silero-VAD · pyloudnorm; Parakeet via HuggingFace |
 | **Dev env** | WSL2 + Docker Desktop, CUDA base image | **Native Windows throughout; devcontainer optional** — this is one of the headline v2 changes and the current row now contradicts it |
-| **CLI** | doctor / generate / analyze / score / report | unchanged — `invites` and the tokened voting model are cut from v1 with the hosted rating page |
-| ASR judges | *(not recorded)* | **Parakeet RNNT 0.6B (HF, released version) + faster-whisper large-v3, locked.** Judges must differ in org, architecture family and training pipeline — Canary is not admissible as judge 2 |
+| **CLI** | doctor / generate / analyze / score / report | **+ `invites`** (Phase F) |
+| ASR judges | *(not recorded)* | **Parakeet TDT (HF) + faster-whisper large-v3, locked.** Judges must differ in org, architecture family and training pipeline — Canary is not admissible as judge 2 |
 | Statistics | *(not recorded)* | Bootstrap CIs on all D4 scores; noise-floor rule from the variance subset; Spearman for cross-metric agreement |
 
 **Meta-rule 2 needs rewriting.** It currently hard-codes the three source-of-truth docs as
@@ -469,7 +417,7 @@ unmeasured, when D1 is the most rigorous dimension in the plan.
 **Narrative bank — proposed additions:**
 
 - Removed VERSA after choosing it. The tool picked to reduce dependency friction became
-  the one forcing a Linux container — for five of its ninety-odd metrics. The lockfile was
+  the one forcing a Linux container — for five of its eighty metrics. The lockfile was
   already doing the job VERSA was hired for. *(Second killed-my-own-decision moment,
   pairs with the weighted composite.)*
 - Caught a swap that would have broken the two-judge design. Replacing faster-whisper
@@ -481,7 +429,7 @@ unmeasured, when D1 is the most rigorous dimension in the plan.
   this.
 - Put error bars on the money chart. An n=1 perceptual study that declares "dominated"
   without confidence intervals is exactly the thing a hostile reader dismantles first —
-  so domination now requires the difference interval to exclude zero, and "no difference detected at this n"
+  so domination now requires non-overlapping intervals, and "indistinguishable at this n"
   is a result we are willing to print.
 - An external reviewer raised ten gaps before reading the plan; nine were already
   covered, several more rigorously than the reviewer's own recommendation. The tenth
