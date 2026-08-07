@@ -163,19 +163,50 @@ user opened Google docs, so wall-clock time is not a true D7 measurement.
 - Concurrency cap (2 free / 3 Pro) — runner responsibility (Phase D)
 - Free tier is non-commercial — user is on Pro per voices.yaml
 
-**Friction events:** (fill in on live probe)
+**Friction events (2026-08-07 live probe):**
+- **Zero fixes needed on first probe.** All 6 assumptions correct
+  including the `Cartesia-Version: 2024-11-13` pin. Green ✅ against
+  UUID `db6b0ed5-d5d3-463d-ae85-518a07d3c2b4` (conv voice).
+- **TTFA: 1084 ms** — higher than expected for Sonic-2 (marketed as
+  latency-optimised). Two possible causes to isolate in Phase D:
+  cold-start first request effect, or regional edge routing.
+- Total: 1660 ms · 122,394 bytes WAV · request-id `716a9179-...`
 
-**Status:** ⏳ Adapter drafted, awaiting first live probe.
+**D7 timing caveat:** same as prior three — adapter authored before
+user opened Cartesia docs.
+
+**Status:** ✅ Adapter green end-to-end on first probe.
 
 ---
 
-## ElevenLabs — Phase C
+## ElevenLabs — Phase C (2026-08-07)
 
-**Wall-clock:** TODO
+**Wall-clock:** TODO — start when you run `veval doctor --provider elevenlabs`.
 
-**Friction events:**
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint uses voice_id in the PATH:
+      `POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream`
+- [ ] Auth: `xi-api-key` header (not Bearer)
+- [ ] `output_format` is a QUERY parameter (not body); `pcm_24000` for WAV
+- [ ] Body: `text` + `model_id` (not `model` or `model_name`)
+- [ ] `model_id="eleven_flash_v2_5"` is a valid model string for
+      conversational (from voices.yaml). If it's deprecated, ElevenLabs
+      returns 400 with a valid-models list — bump + log.
+- [ ] Streaming: response is chunked raw PCM; TTFA measurable
 
-**Status:** ⚪ Not started.
+**Design note carried into adapter:** `voice_settings` (stability,
+similarity_boost, style) NOT sent — spec §3.4 requires sampling
+parameters at documented defaults. Adding them here would be a prereg
+deviation.
+
+**Cost warning:** ElevenLabs is the biggest single-line-item provider
+in the project (~$22 for one Creator month, spec §8). Doctor probe is
+cheap (~5 characters × per-char cost) but future campaigns will burn
+Creator credits fast.
+
+**Friction events:** (fill in on live probe)
+
+**Status:** ⏳ Adapter drafted, awaiting first live probe.
 
 ---
 
