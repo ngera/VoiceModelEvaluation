@@ -3,6 +3,24 @@
 .env.*
 !.env.example
 
+# Credentials — never commit any provider key material.
+# Belt (specific): the current Google service-account file at repo root.
+voicemodeleval-*.json
+# Braces (broad): any Google-style service-account or credential JSON, anywhere.
+*service-account*.json
+*service_account*.json
+*credentials*.json
+gcloud-*.json
+*-firebase-adminsdk-*.json
+# Standalone secret files: .pem, .key, .p12, .pfx
+*.pem
+*.key
+*.p12
+*.pfx
+# Common secret directories
+.secrets/
+secrets/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -40,6 +58,10 @@ Thumbs.db
 
 # Word lock files (left behind by open .docx in documentation/)
 ~$*
+
+# Local scratch notes under documentation/ — the authoritative record
+# lives in configs/ and corpus/, so raw notes are redundant.
+documentation/*.txt
 
 # Editors
 .vscode/
