@@ -2,6 +2,12 @@
 
 Design rule (CLAUDE.md): admin panel is a thin wrapper — no duplicate logic.
 Both frontends call `run_doctor()` and render the same `DoctorReport`.
+
+v2 change (post-defect 3.37): model string moved from providers.yaml to
+voices.yaml. Doctor now looks up the (voice_id, model) pair for a given
+(provider, use_case) — the same lookup the runner will use. For split-model
+providers (Fish free vs paid), the probe uses `quality_model` to avoid
+burning paid credits on a smoke test.
 """
 
 from __future__ import annotations
@@ -12,7 +18,14 @@ from pathlib import Path
 
 from veval.adapters import ADAPTERS
 from veval.adapters.base import ProviderError, SynthesisOptions, SynthesisResult
-from veval.config import ProviderConfig, load_providers
+from veval.config import (
+    ProviderConfig,
+    UseCase,
+    VoiceSelection,
+    VoicesFile,
+    load_providers,
+    load_voices,
+)
 from veval.store.run_store import Run, default_run_store
 
 
@@ -44,11 +57,24 @@ class DoctorReport:
         return f"[{color}]{present}/{total} present[/{color}]"
 
 
+def _model_for_probe(voice: VoiceSelection) -> str:
+    """Choose which model string to pass for a smoke-test probe.
+
+    Split-model providers (currently just Fish) declare BOTH a latency model
+    and a `quality_model` — the free tier for Fish. Doctor probes are smoke
+    tests; use the free tier where available so probes are $0.
+    """
+    if voice.split_model_from_quality and voice.quality_model:
+        return voice.quality_model
+    return voice.model
+
+
 def run_doctor(
     providers_file: Path = Path("configs/providers.yaml"),
+    voices_file: Path = Path("configs/voices.yaml"),
     only_provider: str | None = None,
+    use_case: UseCase = "conversational",
     probe_text: str = "The quick brown fox jumps over the lazy dog.",
-    probe_voice: str | None = None,
 ) -> DoctorReport:
     """Full health check. Returns a `DoctorReport` — never raises."""
 
@@ -64,7 +90,7 @@ def run_doctor(
                 f"{providers_file} not found — using registered adapters as fallback"
             ),
             envs_present={},
-            adapter_results=_check_registered_adapters(only_provider, probe_text, probe_voice),
+            adapter_results=_check_registered_adapters(only_provider, probe_text),
         )
     except Exception as e:  # noqa: BLE001 — doctor never raises
         return DoctorReport(
@@ -73,6 +99,17 @@ def run_doctor(
             envs_present={},
             adapter_results=[],
         )
+
+    # 1b. voices.yaml — model + voice_id per (provider, use_case) live here since defect 3.37
+    voices: VoicesFile | None = None
+    voices_note = ""
+    try:
+        voices = load_voices(voices_file)
+        voices_note = f" · voices.yaml ({len(voices.voices)} locks)"
+    except FileNotFoundError:
+        voices_note = f" · voices.yaml missing — probes will skip"
+    except Exception as e:  # noqa: BLE001
+        voices_note = f" · voices.yaml parse error: {e}"
 
     # 2. Env vars
     envs_present: dict[str, bool] = {}
@@ -85,7 +122,7 @@ def run_doctor(
     if only_provider and not selected:
         return DoctorReport(
             configs_ok=configs_ok,
-            configs_message=configs_message,
+            configs_message=configs_message + voices_note,
             envs_present=envs_present,
             adapter_results=[
                 AdapterCheck(provider=only_provider, ok=False, notes="not in providers.yaml"),
@@ -95,15 +132,16 @@ def run_doctor(
     # 3. Adapter smoke tests
     run = default_run_store().new_run(kind="doctor", extras={
         "probe_text": probe_text,
-        "probe_voice": probe_voice,
+        "use_case": use_case,
         "providers_file": str(providers_file),
+        "voices_file": str(voices_file),
     })
-    adapter_results = [_probe_adapter(p, probe_text, probe_voice, run) for p in selected]
+    adapter_results = [_probe_adapter(p, voices, use_case, probe_text, run) for p in selected]
     run.finalize()
 
     return DoctorReport(
         configs_ok=configs_ok,
-        configs_message=configs_message,
+        configs_message=configs_message + voices_note,
         envs_present=envs_present,
         adapter_results=adapter_results,
         run_dir=run.dir,
@@ -112,8 +150,9 @@ def run_doctor(
 
 def _probe_adapter(
     p: ProviderConfig,
+    voices: VoicesFile | None,
+    use_case: UseCase,
     text: str,
-    voice_override: str | None,
     run: Run,
 ) -> AdapterCheck:
     adapter_cls = ADAPTERS.get(p.name)
@@ -126,13 +165,30 @@ def _probe_adapter(
     if not api_key:
         return AdapterCheck(provider=p.name, ok=False, notes=f"env var {p.env_key} not set")
 
+    if voices is None:
+        return AdapterCheck(
+            provider=p.name, ok=False,
+            notes="voices.yaml missing; cannot resolve (voice_id, model) for probe",
+        )
+
     try:
-        adapter = adapter_cls(api_key=api_key, model=p.model, endpoint=p.endpoint)
+        voice = voices.get(p.name, use_case)
+    except KeyError:
+        return AdapterCheck(
+            provider=p.name, ok=False,
+            notes=f"no voices.yaml entry for {p.name} × {use_case}",
+        )
+
+    model = _model_for_probe(voice)
+
+    try:
+        adapter = adapter_cls(api_key=api_key, model=model, endpoint=p.endpoint)
     except Exception as e:  # noqa: BLE001
         return AdapterCheck(provider=p.name, ok=False, notes=f"adapter init failed: {e}")
 
-    voice_id = voice_override or p.model  # doctor probe uses model string as voice if none given
-    opts = SynthesisOptions(text=text, voice_id=voice_id, output_format="wav", streaming=True)
+    opts = SynthesisOptions(
+        text=text, voice_id=voice.voice_id, output_format="wav", streaming=True,
+    )
 
     try:
         result = adapter.synthesize(opts)
@@ -163,8 +219,11 @@ def _probe_adapter(
         "ttfa_ms": result.ttfa_ms,
         "total_ms": result.total_ms,
         "chars_billed": result.chars_billed,
+        "billing_unit": result.billing_unit,
         "audio_bytes": len(result.audio_bytes),
         "audio_path": str(audio_path.relative_to(run.dir)),
+        "voice_id": voice.voice_id,
+        "model": model,
         "meta": result.meta,
     })
     return AdapterCheck(
@@ -178,17 +237,16 @@ def _probe_adapter(
 def _check_registered_adapters(
     only_provider: str | None,
     text: str,
-    voice_override: str | None,
 ) -> list[AdapterCheck]:
     """Fallback path when providers.yaml is missing: probe any adapter that has an env key.
 
-    Used in Phase A before Phase B has written providers.yaml.
+    Used pre-Phase-B, before providers.yaml has been written. Hardcodes a
+    Deepgram default so the walking skeleton still demonstrates the flow.
     """
     checks: list[AdapterCheck] = []
     for name, cls in ADAPTERS.items():
         if only_provider and name != only_provider:
             continue
-        # Guess env key from adapter name
         env_key = f"{name.upper()}_API_KEY"
         api_key = os.environ.get(env_key)
         if not api_key:
@@ -197,12 +255,11 @@ def _check_registered_adapters(
                 notes=f"providers.yaml missing; env var {env_key} not set either",
             ))
             continue
-        # Best-effort probe with a placeholder model
         try:
             adapter = cls(api_key=api_key, model="aura-2-thalia-en" if name == "deepgram" else "")
             result = adapter.synthesize(SynthesisOptions(
                 text=text,
-                voice_id=voice_override or "aura-2-thalia-en",
+                voice_id="aura-2-thalia-en",
                 streaming=True,
             ))
             checks.append(

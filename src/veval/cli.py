@@ -55,14 +55,19 @@ def doctor(
         "--providers-file",
         help="Path to providers.yaml",
     ),
+    voices_file: Path = typer.Option(
+        Path("configs/voices.yaml"),
+        "--voices-file",
+        help="Path to voices.yaml (source of truth for (voice_id, model) per use case)",
+    ),
+    use_case: str = typer.Option(
+        "conversational", "--use-case", "-u",
+        help="Which use case's locked voice+model to probe (conversational|narration)",
+    ),
     text: str = typer.Option(
         "The quick brown fox jumps over the lazy dog.",
         "--text",
         help="Probe text for the smoke test",
-    ),
-    voice_id: str | None = typer.Option(
-        None, "--voice",
-        help="Override voice id for the probe (falls back to provider model string)",
     ),
 ) -> None:
     """Health-check the pipeline end-to-end BEFORE spending money on a campaign.
@@ -70,12 +75,21 @@ def doctor(
     Verifies configs load, API keys are present, adapters can synthesize,
     and the run store writes correctly. Same spirit as `brew doctor` or
     `flutter doctor`.
+
+    Voice + model are looked up from voices.yaml per (provider, use_case).
+    For split-model providers (Fish free vs paid), the probe uses the
+    free-tier `quality_model` to avoid burning paid credits on smoke tests.
     """
+    if use_case not in ("conversational", "narration"):
+        console.print(f"[red]--use-case must be conversational or narration, got: {use_case}[/red]")
+        raise typer.Exit(code=2)
+
     results = run_doctor(
         providers_file=providers_file,
+        voices_file=voices_file,
         only_provider=provider,
+        use_case=use_case,  # type: ignore[arg-type]
         probe_text=text,
-        probe_voice=voice_id,
     )
     _print_doctor_report(results)
 
