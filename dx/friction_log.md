@@ -66,20 +66,62 @@ friction event to log):
 - [ ] Free tier `s2.1-pro-free` is accessible with the standard API key
       (no separate "free tier flag" required)
 
-**Friction events (log as you hit them):**
-- (Add rows here with timestamp, event, resolution)
+**Friction events (2026-08-07 live probe):**
+- **Zero fixes needed on first probe.** All 8 assumptions in the adapter
+  were correct on first live call. Green ✅ against `s2.1-pro-free` with
+  `9a9cf47702da476aa4629e2506d4a857` (conv voice), probe text
+  "The quick brown fox jumps over the lazy dog."
+- **Free-tier TTFA: 2279 ms** — high but exactly as spec §3.1 R9
+  predicted ("best-effort with no SLA"). Would fail the conversational
+  `ttfa_p90_ms < 400ms` gate by ~5×. Vindicates the
+  `split_model_from_quality: true` design in voices.yaml: quality/WER
+  runs on free, latency runs on paid `s2.1-pro`.
+- Total round-trip: 2851 ms · 270,380 bytes of WAV audio · run written
+  to `runs/doctor-20260807T215037Z/`.
 
-**Status:** ⏳ Adapter drafted, awaiting first live probe.
+**D7 timing caveat:** the wall-clock time for adapter authoring is NOT
+a valid D7 measurement here — the adapter was drafted from prior
+knowledge before the user opened Fish docs. Same asterisk as Deepgram.
+Fish's D7 would need a clean re-run where a developer starts from
+`docs.fish.audio` and builds forward. See §A.7 caveat.
+
+**Status:** ✅ Adapter green end-to-end on first probe.
 
 ---
 
-## Google Cloud TTS — Phase C
+## Google Cloud TTS — Phase C (2026-08-07)
 
-**Wall-clock:** TODO
+**Wall-clock:** TODO — start when you retry `veval doctor --provider google`.
 
-**Friction events:** (Add rows as encountered)
+**Auth path chosen (Path A):** raw httpx + API key via `?key=<KEY>`
+query parameter. Alternative (service-account JSON + google-auth SDK)
+was rejected on D1 comparability grounds — mixing SDK and raw-httpx
+transports would asymmetrise the latency measurement across providers.
+Service-account JSON stays in `.secrets/` unused. **Decision documented
+in friction log rather than as a prereg deviation** because
+`configs/providers.yaml` already declared `env_key: GOOGLE_API_KEY`
+(matches Path A); no prereg change needed, no re-tag.
 
-**Status:** ⚪ Not started.
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint `https://texttospeech.googleapis.com/v1/text:synthesize`
+- [ ] Auth via `?key=<API_KEY>` (also works: `X-Goog-Api-Key` header)
+- [ ] Body: `input.text`, `voice.name` = full `en-US-Chirp3-HD-Achernar`,
+  `voice.languageCode` = derived from first two dash segments
+- [ ] `audioConfig.audioEncoding` = `LINEAR16` returns raw PCM
+- [ ] `audioContent` in response is base64
+- [ ] Sample rate 24000 Hz is the Chirp3-HD default
+
+**Design constraint carried into adapter:**
+- REST is buffered → TTFA equals total_ms. `meta.transport =
+  "buffered-rest"` recorded on every result. Every downstream table row
+  for Google needs an on-chart footnote that its D1 numbers are not
+  comparable to streaming providers' TTFA. Defect 3.15's "test
+  streaming for 15 min first" is deferred to Phase D — first make
+  buffered work, then probe.
+
+**Friction events:** (to fill in on live probe)
+
+**Status:** ⏳ Adapter drafted, awaiting first live probe.
 
 ---
 
@@ -110,6 +152,47 @@ friction event to log):
 **Friction events:**
 
 **Status:** ⚪ Not started.
+
+---
+
+## Environment gotchas — not per-provider, but re-runners will hit them
+
+Non-D7 friction: toolchain / venv / OS-portability issues encountered
+during Phase C onboarding. Kept here rather than in a separate file so
+the whole DX story is in one place; not part of the D7 measurement.
+
+### `.venv` created in devcontainer breaks under native Windows `uv sync`
+**Encountered:** 2026-08-07, at first `uv run veval doctor --provider fish`
+after moving from devcontainer to native Windows.
+**Symptom:**
+```
+error: failed to remove file `C:\...\voiceAgentEvals\.venv\lib64`:
+Access is denied. (os error 5)
+```
+**Cause:** Linux venvs create a `lib64` symlink; when `uv sync` runs
+under native Windows it tries to prune the existing venv and fails on
+`lib64` because the symlink target is a Linux path Windows can't touch.
+**Fix:**
+```powershell
+Remove-Item -Recurse -Force .venv
+uv sync --extra admin --extra dev
+```
+**For re-runners:** if you develop under both the devcontainer and
+native Windows, never share the same `.venv`. Nuke and re-sync when
+switching.
+
+### pytest test_log_api_serializes_non_json_values fails on Windows
+**Encountered:** pre-existing since Phase A closeout, still open.
+**Symptom:** `assert '\\tmp\\x' == '/tmp/x'` — `Path("/tmp/x")` on
+Windows normalises to `\tmp\x` and the test's expected literal doesn't
+match.
+**Cause:** the test uses a POSIX-style path string as the expected
+literal; on Windows the `default=str` serialiser converts to
+Windows-style separators.
+**Fix:** Not fixed yet. Options for a real fix: (a) use `pathlib.Path`
+for the expected value too, (b) normalise separators before compare,
+(c) skip on Windows. Deferred — not a functional regression, and it
+predates Phase C.
 
 ---
 

@@ -81,6 +81,49 @@ class ProviderError(Exception):
         self.raw = raw or {}
 
 
+def pcm_to_wav(
+    pcm: bytes,
+    sample_rate: int,
+    num_channels: int = 1,
+    sample_width: int = 2,
+) -> bytes:
+    """Wrap raw PCM samples in a standard RIFF/WAVE header.
+
+    Providers that return raw PCM (Google Cloud TTS with encoding
+    LINEAR16, some Cartesia + ElevenLabs configurations) need a WAV
+    header prepended so downstream analyzers (soundfile, TTSDS2, VAD,
+    pyloudnorm) can read the audio without a format guess.
+
+    Args:
+        pcm: raw little-endian PCM samples
+        sample_rate: e.g. 24000 for Chirp3-HD LINEAR16
+        num_channels: 1 for mono (all our providers)
+        sample_width: bytes per sample; 2 = 16-bit signed
+    """
+    byte_rate = sample_rate * num_channels * sample_width
+    block_align = num_channels * sample_width
+    bits_per_sample = sample_width * 8
+    data_size = len(pcm)
+    riff_size = 36 + data_size
+
+    header = (
+        b"RIFF"
+        + riff_size.to_bytes(4, "little")
+        + b"WAVE"
+        + b"fmt "
+        + (16).to_bytes(4, "little")            # PCM format chunk length
+        + (1).to_bytes(2, "little")             # PCM format code
+        + num_channels.to_bytes(2, "little")
+        + sample_rate.to_bytes(4, "little")
+        + byte_rate.to_bytes(4, "little")
+        + block_align.to_bytes(2, "little")
+        + bits_per_sample.to_bytes(2, "little")
+        + b"data"
+        + data_size.to_bytes(4, "little")
+    )
+    return header + pcm
+
+
 def finalize_wav_header(audio: bytes) -> bytes:
     """Rewrite RIFF/data sizes to match the bytes actually received.
 

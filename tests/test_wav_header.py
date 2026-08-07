@@ -22,7 +22,7 @@ from conftest import (
     with_placeholder_size,
 )
 
-from veval.adapters.base import finalize_wav_header
+from veval.adapters.base import finalize_wav_header, pcm_to_wav
 
 
 def _duration(raw: bytes) -> float:
@@ -81,6 +81,29 @@ def test_truncated_input_passes_through() -> None:
 def test_riff_header_with_wrong_magic_passes_through() -> None:
     not_wave = b"RIFF" + (100).to_bytes(4, "little") + b"AVI " + b"\x00" * 100
     assert finalize_wav_header(not_wave) == not_wave
+
+
+def test_pcm_to_wav_wraps_raw_samples_with_a_valid_header() -> None:
+    """Google Cloud TTS LINEAR16 returns raw PCM; pcm_to_wav wraps it."""
+    payload = pcm(seconds=1.0)  # 24000 samples × 2 bytes = 48000 bytes
+    wrapped = pcm_to_wav(payload, sample_rate=24000)
+    # Header is 44 bytes (RIFF + fmt + data chunk headers)
+    assert len(wrapped) == 44 + len(payload)
+    # Round-trip via the wave module
+    with wave.open(io.BytesIO(wrapped)) as w:
+        assert w.getnchannels() == 1
+        assert w.getsampwidth() == 2
+        assert w.getframerate() == 24000
+        assert w.getnframes() == len(payload) // 2
+        assert w.readframes(w.getnframes()) == payload
+
+
+def test_pcm_to_wav_output_is_readable_by_finalize() -> None:
+    """`pcm_to_wav` should produce a header that `finalize_wav_header` treats as
+    already-correct (unchanged) — the two helpers must agree."""
+    payload = pcm(seconds=0.5)
+    wrapped = pcm_to_wav(payload, sample_rate=24000)
+    assert finalize_wav_header(wrapped) == wrapped
 
 
 def test_data_chunk_found_after_an_intervening_chunk() -> None:
