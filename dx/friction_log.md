@@ -204,19 +204,76 @@ in the project (~$22 for one Creator month, spec §8). Doctor probe is
 cheap (~5 characters × per-char cost) but future campaigns will burn
 Creator credits fast.
 
-**Friction events:** (fill in on live probe)
+**Friction events (2026-08-07 live probe):**
+- **First non-zero-fixes event in Phase C.** HTTP 402 payment_required
+  on the free tier:
+  > "Free users cannot use library voices via the API. Please upgrade
+  > your subscription to use this voice."
+- **The friction is not an adapter bug** — ElevenLabs' access model
+  separates browse from API-use. Library voices (community-uploaded)
+  can be browsed on any tier but require a paid subscription to
+  synthesize against via API. Only ElevenLabs' curated "premade"
+  voices work on the free-tier API.
+- **This is a real DX finding** for the case study: a developer
+  picking a voice from the library UI on free tier gets a 402 only
+  when they try to synthesize, not when they browse or copy the ID.
+  Discoverability is misaligned with the access model.
+- **Adapter otherwise correct** — HTTP 402 with a structured JSON
+  error body was properly wrapped in `ProviderError` and the doctor
+  reported it clearly, not a crash.
 
-**Status:** ⏳ Adapter drafted, awaiting first live probe.
+**Resolution (2026-08-07):** upgraded to ElevenLabs Creator plan ($22,
+matches spec §8 budget for "one Creator month"). Re-ran with pinned
+voice unchanged: green ✅. TTFA 565 ms · total 637 ms · 120,416 bytes.
+No prereg amendment — voice + model in voices.yaml are unchanged.
+
+**Subscription clock:** Creator month starts 2026-08-07, ends ~2026-09-07.
+All ElevenLabs generation (campaign + any re-runs) must land inside that
+window. Spec §8 rule: cancel after campaign to avoid auto-renewal charge.
+
+**Status:** ✅ Adapter green end-to-end (after account upgrade).
 
 ---
 
-## Canopy Orpheus (Replicate) — Phase C
+## Canopy Orpheus (Replicate) — Phase C (2026-08-07)
 
-**Wall-clock:** TODO
+**Wall-clock:** TODO — start when you set REPLICATE_API_TOKEN in `.env`
+and run `veval doctor --provider orpheus`.
 
-**Friction events:**
+**Structurally different from the other 5 adapters.** Replicate is
+async by design: POST creates a prediction, response returns an ID +
+status; you either wait (via `Prefer: wait=<sec>` header, max 60s) or
+poll `/v1/predictions/{id}` until terminal, then fetch the audio URL.
+Two HTTP roundtrips minimum. D1 is **N/A-hosted per spec §3.1** — hosted
+inference measures Replicate's cold-start and queue behaviour, not
+Orpheus's first-token time. `ttfa_ms` is always `None`;
+`meta.transport = "hosted-inference-poll"`.
 
-**Status:** ⚪ Not started.
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint pattern `https://api.replicate.com/v1/models/canopyai/orpheus-3b/predictions`
+- [ ] Auth `Authorization: Bearer <REPLICATE_API_TOKEN>` (legacy `Token`
+      scheme also works; Bearer is current)
+- [ ] `Prefer: wait=60` header keeps the create connection open
+- [ ] Input schema uses `prompt` for text and `voice` for
+      tara/leah/jess/leo/dan/mia/zac
+- [ ] Output field is either a URL string or list of URLs to a .wav file
+- [ ] Cold-start on first request may take 20-60s (model spin-up);
+      subsequent requests are faster while the model stays warm
+
+**Version pinning: TODO(Phase-C).** Adapter uses
+`/v1/models/{owner}/{name}/predictions` (auto-latest). For campaign
+reproducibility we should pin a specific version SHA in
+providers.yaml or analyzers.yaml before Phase D, and log to
+DEVIATIONS if the pinned SHA becomes stale during the campaign.
+
+**Cost profile:** ~$0.003/generation at L40S GPU (spec §8 +
+DEFECT_REGISTER 3.6 — corrected from the earlier $0.08 figure that
+was 24× too high). Doctor probe cost: rounding-error negligible.
+
+**Friction events:** (fill in on live probe)
+
+**Status:** ⏳ Adapter drafted, awaiting first live probe. Needs
+REPLICATE_API_TOKEN in `.env` (currently the missing 6/6 env key).
 
 ---
 
