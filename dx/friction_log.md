@@ -119,19 +119,53 @@ in friction log rather than as a prereg deviation** because
   streaming for 15 min first" is deferred to Phase D — first make
   buffered work, then probe.
 
-**Friction events:** (to fill in on live probe)
+**Friction events (2026-08-07 live probe):**
+- **Zero fixes needed on first probe.** All 6 assumptions in the adapter
+  were correct on first live call. Green ✅ against
+  `en-US-Chirp3-HD-Achernar` (conv voice); probe text
+  "The quick brown fox jumps over the lazy dog."
+- **Total: 1099 ms** (buffered REST, TTFA=None as designed). WAV output
+  144,088 bytes.
+- Comparability caveat holds as expected: Google's 1099 ms is the full
+  synthesis-plus-delivery time; Fish's 2851 ms includes only the first
+  audio chunk arrival on the streaming path — the two numbers are NOT
+  comparable as latency. This is exactly the "Google TTFA carries a
+  footnote" story from spec §3.1.
 
-**Status:** ⏳ Adapter drafted, awaiting first live probe.
+**D7 timing caveat:** same as Deepgram + Fish — adapter authored before
+user opened Google docs, so wall-clock time is not a true D7 measurement.
+
+**Status:** ✅ Adapter green end-to-end on first probe.
 
 ---
 
-## Cartesia — Phase C
+## Cartesia — Phase C (2026-08-07)
 
-**Wall-clock:** TODO
+**Wall-clock:** TODO — start when you run `veval doctor --provider cartesia`.
 
-**Friction events:**
+**Assumptions in the adapter to verify:**
+- [ ] Endpoint `https://api.cartesia.ai/tts/bytes`
+- [ ] Auth: `X-API-Key` header (Cartesia's own scheme, not Bearer)
+- [ ] Required header: `Cartesia-Version` — pinned to `"2024-11-13"`.
+      **Most likely friction event** — if Cartesia deprecated this
+      date, HTTP 400 with a version-error body will tell us the current
+      one. Bump + log to DEVIATIONS.md.
+- [ ] Body: `model_id="sonic-2"`, `transcript` (not `text`),
+      `voice.mode="id"`, `voice.id=<uuid>`,
+      `output_format.container="wav"`, `output_format.encoding="pcm_s16le"`,
+      `output_format.sample_rate=24000`, `language="en"`
+- [ ] Response streams WAV chunks; first chunk has placeholder length
+      header (same defect class as Deepgram, `finalize_wav_header`
+      handles it)
+- [ ] Request-id in `x-request-id` header
 
-**Status:** ⚪ Not started.
+**Design constraints not enforced at the adapter level:**
+- Concurrency cap (2 free / 3 Pro) — runner responsibility (Phase D)
+- Free tier is non-commercial — user is on Pro per voices.yaml
+
+**Friction events:** (fill in on live probe)
+
+**Status:** ⏳ Adapter drafted, awaiting first live probe.
 
 ---
 
