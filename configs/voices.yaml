@@ -1,0 +1,149 @@
+# voices.yaml — locked voice AND model per provider × use case, with reasoning.
+#
+# Model moved here from providers.yaml (defect 3.37). Per spec §3.2:
+# "The model string is selected the same way and locked the same way. Several
+#  providers ship a low-latency model and a high-quality model, and a buyer
+#  would deploy the former for a support agent and the latter for narration."
+#
+# Frozen in `prereg-v1`. Locking BEFORE any scoring prevents cherry-picking
+# a voice/model after hearing results.
+#
+# `split_model_from_quality: true` marks providers where quality/WER and
+# latency use DIFFERENT model strings (currently: Fish free vs paid).
+# Requires an on-chart annotation per defect 3.38.
+#
+# Every entry below is a Phase-B DRAFT. Reasoning starting with `TODO:` must
+# be replaced with a real one-liner from the provider's docs before
+# `git tag prereg-v1`.
+
+voices:
+  # ============================================================
+  # Deepgram — Aura-2 English voices, no cloning
+  # ============================================================
+  - provider: deepgram
+    use_case: conversational
+    voice_id: "aura-2-thalia-en"
+    model: "aura-2-thalia-en"  # Deepgram encodes voice in model string
+    reasoning: >-
+      Thalia — warm mid-pitch English female voice from Deepgram's Aura-2
+      lineup. User-verified 2026-08-07 as a conversational fit against
+      Deepgram's voice catalogue.
+  - provider: deepgram
+    use_case: narration
+    voice_id: "aura-2-orion-en"
+    model: "aura-2-orion-en"
+    reasoning: >-
+      Orion — lower-pitch English male voice from Aura-2. User-verified
+      2026-08-07 as a narration/documentary fit against Deepgram's
+      catalogue.
+
+  # ============================================================
+  # Fish Audio — SPLIT MODEL: quality on free, latency on paid
+  # ============================================================
+  - provider: fish
+    use_case: conversational
+    voice_id: "9a9cf47702da476aa4629e2506d4a857"
+    model: "s2.1-pro"  # LATENCY model
+    split_model_from_quality: true
+    quality_model: "s2.1-pro-free"
+    reasoning: >-
+      Fish quality/WER runs on the free `s2.1-pro-free` string (window
+      closes 2026-08-31); latency runs on paid `s2.1-pro`, because
+      free-tier latency is best-effort with no SLA. Voice_id
+      user-selected 2026-08-07 from fish.audio English voice library as
+      the conversational-tagged pick.
+  - provider: fish
+    use_case: narration
+    voice_id: "e3cd384158934cc9a01029cd7d278634"
+    model: "s2.1-pro"
+    split_model_from_quality: true
+    quality_model: "s2.1-pro-free"
+    reasoning: >-
+      Same split as conversational. Voice_id user-selected 2026-08-07
+      from fish.audio English voice library as the
+      narration/audiobook-tagged pick.
+
+  # ============================================================
+  # Google Cloud TTS — Chirp3-HD
+  # ============================================================
+  - provider: google
+    use_case: conversational
+    voice_id: "en-US-Chirp3-HD-Achernar"
+    model: "en-US-Chirp3-HD-Achernar"  # Google encodes voice in name
+    reasoning: >-
+      Achernar — conversational/friendly voice from Google's Chirp3-HD
+      English catalogue. User-verified 2026-08-07 against the current
+      Google Cloud TTS voice list.
+  - provider: google
+    use_case: narration
+    voice_id: "en-US-Chirp3-HD-Charon"
+    model: "en-US-Chirp3-HD-Charon"
+    reasoning: >-
+      Charon — authoritative/narrative voice from Chirp3-HD.
+      User-verified 2026-08-07 against the current Google catalogue.
+
+  # ============================================================
+  # Cartesia — Sonic-2 for conversational; possibly Sonic (base) for narration
+  # ============================================================
+  - provider: cartesia
+    use_case: conversational
+    voice_id: "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4"
+    model: "sonic-2"  # low-latency model — the natural pick for a support agent
+    reasoning: >-
+      Sonic-2 is Cartesia's latency-optimised model. Voice_id
+      user-selected 2026-08-07 from play.cartesia.ai English voice
+      library as the conversational-category pick.
+  - provider: cartesia
+    use_case: narration
+    voice_id: "79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e"
+    model: "sonic-2"
+    reasoning: >-
+      Same model as conversational — Cartesia's current lineup does not
+      ship a distinct higher-quality narration model. Voice_id
+      user-selected 2026-08-07 from the English narration/audiobook
+      category.
+
+  # ============================================================
+  # ElevenLabs — Flash v2.5 for conversational, Multilingual v3 for narration
+  # ============================================================
+  - provider: elevenlabs
+    use_case: conversational
+    voice_id: "g6xIsTj2HwM6VR4iXFCw"
+    model: "eleven_flash_v2_5"  # low-latency model — right for a support agent
+    reasoning: >-
+      Flash v2.5 is ElevenLabs' latency-optimised model, the model a
+      buyer would deploy for a support agent. Voice_id user-selected
+      2026-08-07 from the ElevenLabs voice library, use case =
+      Conversational.
+  - provider: elevenlabs
+    use_case: narration
+    voice_id: "qSeXEcewz7tA0Q0qk9fH"
+    model: "eleven_multilingual_v2"  # or eleven_multilingual_v3 when confirmed
+    reasoning: >-
+      Multilingual v2 (v3 if GA at time of run) is ElevenLabs'
+      quality-optimised model — the model a buyer would deploy for
+      long-form narration. This is a DIFFERENT model from the
+      conversational entry above; the buyer would actually swap them
+      per use case. Voice_id user-selected 2026-08-07 from the
+      ElevenLabs voice library, use case = Narrative Story.
+
+  # ============================================================
+  # Canopy Orpheus — six default voices; same model, no low-latency variant
+  # ============================================================
+  - provider: orpheus
+    use_case: conversational
+    voice_id: "tara"
+    model: "canopyai/orpheus-3b"  # Orpheus ships one model, six voices
+    reasoning: >-
+      Orpheus 3b ships one model with six default voices (tara, leah,
+      jess, leo, dan, mia, zac). Tara is the docs sample voice.
+      Canopy doesn't publish per-use-case guidance. TODO(Phase-B):
+      verify against current Canopy README / model card.
+  - provider: orpheus
+    use_case: narration
+    voice_id: "leo"
+    model: "canopyai/orpheus-3b"
+    reasoning: >-
+      Leo is the lower-pitch male voice in the default set — reasonable
+      narration match. No official per-use-case recommendation from
+      Canopy. TODO(Phase-B): verify.

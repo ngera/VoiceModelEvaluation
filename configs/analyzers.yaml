@@ -1,0 +1,164 @@
+# analyzers.yaml — pinned analyzer parameters.
+#
+# Frozen in `prereg-v1`. Amendments before the campaign are re-tagged
+# `prereg-v1.1` with the reason logged in DEVIATIONS.md. Amending after
+# results exist is not honest and is not done.
+#
+# Corrections in this version (per documentation/DEFECT_REGISTER.md):
+#   3.1  — Judge 1 is Parakeet RNNT (not TDT). TDT exists only on
+#          `transformers` `main`, not in any release.
+#   3.7  — TTSDS2 minimum sample size is 50 (published), not a Phase B
+#          question. 75/use-case clears the floor.
+#   3.9  — TTSDS2 needs a NOISE reference in addition to speech, and
+#          speaker-identity guidance is documented.
+#   3.10 — Audiobox produces FOUR axes; which we report is pre-committed.
+#   3.21 — MDD/power statement recorded before the campaign.
+#   3.20 — Bootstrap is CLUSTERED by item, with a penalty term.
+#   3.23 — WER normaliser pinned by name+hash; band cutpoints live in
+#          gates.yaml.
+
+# --- D3 · TTSDS2 speech references (spec §A.3, R3) ------------------------
+#
+# The reference corpus is PART OF THE MEASUREMENT. A mismatched reference
+# (read speech scoring a conversational corpus, say) compresses exactly
+# the differences the chart needs to show.
+ttsds_references:
+  - use_case: narration
+    dataset_id: daps
+    rationale: >-
+      DAPS — Device And Produced Speech: studio-recorded read English by
+      professional narrators. Closest available match to our long-form
+      narration corpus; using read reference here avoids penalising
+      providers for correctly producing narrative delivery.
+  - use_case: conversational
+    dataset_id: conversational  # TODO(Phase-B): confirm exact TTSDS2 id
+    rationale: >-
+      Spontaneous/conversational reference for the support-agent corpus.
+      Using read reference here would reward providers for a bookish
+      delivery a support caller would find robotic.
+
+# --- D3 · TTSDS2 NOISE reference (spec §A.3 line 852, defect 3.9) --------
+#
+# The benchmark scores against a real-speech reference AND a noise
+# distribution. Both are named; using default noise silently is a
+# configuration decision, not a lack of one.
+ttsds_noise_reference:
+  dataset_id: default  # TODO(Phase-B): confirm exact TTSDS2 default noise id
+  rationale: >-
+    TTSDS2 default noise distribution. Documented explicitly rather than
+    silently defaulted; swap if the campaign shows domain-mismatch effects.
+
+# --- D3 · TTSDS2 minimum sample size (spec §A.3 line 841, defect 3.7) ----
+#
+# The benchmark documents that 50-100 samples suffice. At 75 items per
+# use case this study sits inside the published band.
+ttsds_min_items: 50
+
+# --- D3 · TTSDS2 split-half stability threshold (spec §4.3) ---------------
+#
+# Absolute delta, not relative to the noise floor — split-half runs on
+# the first campaign slice, BEFORE the noise floor is computed (§3.4).
+# Using the noise floor here would be circular.
+ttsds_split_half_threshold: 0.02
+ttsds_split_half_rationale: >-
+  0.02 absolute TTSDS2 delta between random halves of a provider's items.
+  Averaged over ≥100 random splits (spec §A.3 line 847 — a single split
+  is one arbitrary partition). Calibrated on the first per-provider
+  campaign slice (75 items clears TTSDS2's floor; 5-item pilot does
+  not); amendable + re-taggable pre-campaign as `prereg-v1.1`.
+
+# --- D3 · TTSDS2 speaker identity handling (spec §A.3 line 854) ----------
+#
+# TTSDS2 warns results are best when speaker identities match ref↔test.
+# This project locks a DIFFERENT recommended voice per provider by design,
+# so speaker identity CANNOT match the reference exactly. Documented
+# handling: within-use-case provider ranking remains valid; cross-provider
+# absolute distributional distance is not the load-bearing quantity — D4
+# pairwise is (spec §4.3).
+ttsds_speaker_identity_handling: >-
+  Reference speaker identities cannot match test speakers (each provider
+  locks its own recommended voice per §3.2). Consequence: absolute
+  TTSDS2 distance is not comparable across providers as a measurement of
+  synthesis quality alone — it partly reflects speaker-embedding
+  mismatch. Within-provider comparisons across the three variance draws
+  and across use cases remain valid. Cross-provider ranking survives
+  under the assumption that the speaker-mismatch penalty is roughly
+  uniform. D4 pairwise (which is voice-blind by design) is the
+  load-bearing perceptual signal; TTSDS2 is supporting.
+
+# --- D3 secondary · Audiobox Aesthetics (spec B.2, defect 3.10) -----------
+#
+# Meta's aesthetic-quality model produces FOUR axes per clip. Reporting
+# all four unlabelled would invite post-hoc selection. Pre-committing
+# which axes we report is precisely what pre-registration exists to
+# prevent.
+audiobox_model_id: "facebook/audiobox-aesthetics"
+audiobox_revision: TODO_pin_sha_before_campaign
+audiobox_axes_reported:
+  - production_quality
+  - content_enjoyment
+audiobox_axes_rationale: >-
+  Production Quality (PQ) is the most direct proxy for TTS technical
+  cleanliness — the axis most aligned with what a buyer cares about
+  in synthesis output. Content Enjoyment (CE) captures listener
+  preference/naturalness in a way that complements D4 pairwise.
+  Production Complexity is about acoustic density (musical
+  arrangement, etc.) and Content Usefulness is about semantic value
+  of the text itself — both irrelevant to TTS synthesis quality
+  where the text and rendering density are held constant across
+  providers.
+
+# --- D2 · WER judges (spec §4.2, B.3; defect 3.1) ------------------------
+#
+# Two judges, ONE `parakeet` + ONE `faster-whisper`. Canary-1B is NOT
+# admissible as judge 2 — shares NVIDIA's FastConformer encoder family
+# and Canary-1B-v2 training pipeline with Parakeet (arXiv:2509.14128).
+# Enforced by Pydantic model_validator in config.py.
+#
+# Parakeet variant: RNNT (not TDT). `ParakeetForTDT` exists only on
+# `transformers` `main`; RNNT shipped in a release and pins by version.
+# Phase B re-checks whether TDT has landed in a release — if so, TDT is
+# adopted and the change is logged in DEVIATIONS.md.
+judges:
+  - name: parakeet
+    loader: transformers
+    model_id: "nvidia/parakeet-rnnt-0.6b"
+    revision: TODO_pin_sha_before_campaign
+  - name: faster-whisper
+    loader: ctranslate2
+    model_id: "Systran/faster-whisper-large-v3"
+    revision: TODO_pin_sha_before_campaign
+
+# --- D2 · WER normaliser (spec §A.2, defect 3.23) ------------------------
+#
+# Normalisation dominates jargon/edge results (number expansion in
+# particular). Leaving normalisation to the implementer is a decisive
+# silent difference. Pinned by name + hash.
+wer_normaliser: "veval.analyze.wer.normalise_v1"
+wer_normaliser_hash: TODO_compute_hash_when_module_lands  # SHA256 of normaliser fn source
+
+# --- Statistics: D4 bootstrap (spec §4.3, defect 3.20) --------------------
+#
+# Clustered by ITEM (not by individual judgment) — judgments on the same
+# item are not independent. Penalty term keeps all-win/all-loss resamples
+# finite; the fraction of resamples affected is reported alongside.
+bootstrap:
+  resamples: 2000
+  cluster_by: item
+  penalty_term: 0.5
+
+# --- Statistics: MDD / power statement (spec §4.3, defect 3.21) ----------
+#
+# Estimated BEFORE the campaign, by simulating BT fits at both 210 and
+# 126 judgments. mdd_at_* fields fill in after simulation runs.
+mdd:
+  method: "simulated BT with clustered bootstrap (2,000 resamples)"
+  n_judgments_target: 210
+  n_judgments_minimum: 126
+  mdd_at_target: null    # TODO(Phase-D): fill in after simulation
+  mdd_at_minimum: null   # TODO(Phase-D): fill in after simulation
+  rationale: >-
+    Interval-based decision rules without a stated MDD leave "powered to
+    detect X" unstated. If MDD exceeds plausible spread between systems,
+    say so up front — a chart of overlapping bars is not the finding it
+    could be.

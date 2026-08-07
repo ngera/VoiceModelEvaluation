@@ -1,0 +1,192 @@
+# gates.yaml — hard gates per use case, plus measurement + acoustic noise-floor
+# rules, WER threshold + band cutpoints, and catastrophic-event detector thresholds.
+#
+# Frozen in `prereg-v1` BEFORE any results exist. A provider that fails a
+# gate is out of that use case regardless of how good it is elsewhere;
+# domination on the Pareto frontier is a claim about survivors only.
+#
+# Corrections in this version (per documentation/DEFECT_REGISTER.md):
+#   3.19 — `noise_floor_rule` was incoherent by ~17×. Renamed to
+#          `measurement_noise_floor` with the correct formula (1.96 × SE
+#          of the difference of provider aggregates, per-provider).
+#   3.22 — `na_policy` per gate for structurally unmeasurable inputs
+#          (Orpheus latency; Google buffered-REST TTFA).
+#   3.24 — WER failure = 5% agreement error OR any agreed error inside a
+#          numeric/currency/date span. Was 10% rate-only.
+#   3.39 — Hygiene rename: `noise_floor_dbfs_max` → `acoustic_noise_floor_dbfs_max`.
+#   3.40 — Conversational latency rationale rewritten (400ms is deliberate
+#          headroom below the 500-600ms perception threshold, not
+#          contradicting it). Robustness: explicit `robustness_points`
+#          list instead of blanket ±20% (a ±20% sweep of 400ms tops out
+#          at 480ms and never reaches the 500ms the rationale cites).
+
+use_cases:
+  # --- Conversational support agent -----------------------------------------
+  - use_case: conversational
+    gates:
+      - metric: ttfa_p90_ms
+        op: lt
+        threshold: 400.0
+        na_policy: exempt-and-annotate
+        robustness_points: [300, 400, 500, 600]
+        rationale: >-
+          Perception degrades above ~500-600ms (spec A.1); 400ms is a
+          deliberate headroom margin below that, since TTS latency is only
+          one term in an agent's end-to-end budget (LLM + TTS + network).
+          robustness_points span 300-600ms so the sweep actually reaches
+          the perception threshold its own rationale cites — a ±20%
+          sweep of 400ms tops at 480ms and would never test the value
+          that matters (defect 3.40).
+
+      - metric: failure_incidence_pct
+        op: lt
+        threshold: 2.0
+        na_policy: fail
+        robustness_points: [1.0, 2.0, 5.0]
+        rationale: >-
+          A mangled currency amount is a support escalation, not a
+          quality nitpick. Fraction of items exceeding
+          wer_failure.agreement_error_rate_threshold OR containing any
+          agreed error inside a numeric/currency/date span.
+
+      - metric: clipped_samples
+        op: eq
+        threshold: 0.0
+        na_policy: fail
+        robustness_points: [0.0]
+        rationale: >-
+          Waveform clipping is unfixable downstream — a hard fail
+          signal about the provider's gain staging. No robustness
+          points: zero is not negotiable.
+
+      - metric: commercial_use_permitted
+        op: eq
+        threshold: 1.0
+        na_policy: fail
+        robustness_points: [1.0]
+        rationale: >-
+          From D8 capability matrix. Eliminates otherwise-qualified
+          providers before quality is discussed. Some free tiers forbid
+          commercial use — a real procurement fact, not a technical one.
+
+  # --- Long-form narration --------------------------------------------------
+  - use_case: narration
+    gates:
+      - metric: rtf
+        op: gte
+        threshold: 3.0
+        na_policy: exempt-and-annotate
+        robustness_points: [2.0, 3.0, 5.0, 10.0]
+        rationale: >-
+          RTF = audio duration ÷ synthesis time (HIGHER is faster — see
+          A.1 and defect 2.13). Generating hours of audio is
+          throughput-bound, not first-byte-bound; 3× real-time is the
+          practical minimum for narration workflows.
+
+      - metric: monotonic_quality_drift_flag
+        op: eq
+        threshold: 0.0
+        na_policy: exempt-and-annotate
+        robustness_points: [0.0]
+        rationale: >-
+          The measured form of listener fatigue (R6). Per-third TTSDS2
+          must not degrade monotonically across the passage beyond the
+          MEASUREMENT noise floor (defined in `measurement_noise_floor`,
+          not the acoustic one in `hygiene`).
+
+      - metric: long_stratum_acoustic_noise_floor_dbfs
+        op: lte
+        threshold: -40.0
+        na_policy: fail
+        robustness_points: [-30.0, -40.0, -50.0]
+        rationale: >-
+          Corrosive over a 10-minute narration in a way it is not over
+          10 seconds. Applied specifically to the 8 long-stratum items.
+
+      - metric: long_stratum_clipped_samples
+        op: eq
+        threshold: 0.0
+        na_policy: fail
+        robustness_points: [0.0]
+        rationale: >-
+          Clipping is especially damaging in long-form playback.
+
+# --- Measurement noise floor (spec §3.4, defect 3.19) ---------------------
+#
+# WRONG in earlier draft: 2× per-generation SD applied to provider
+# aggregates — off by roughly 17×, would have suppressed essentially every
+# real difference. Correct rule: a between-provider difference counts as a
+# difference only when it exceeds `z_multiplier × SE(difference)`, where
+# SE(difference) is the measured within-provider SD divided by √(item count).
+#
+# Applied per-provider (not pooled). Pooling would export a noisy provider's
+# variance onto everyone else's comparisons. Scope is EXPLICIT (not "any
+# metric") because scope drift is how these rules go silently wrong.
+#
+# This is the STATISTICAL noise floor — the ACOUSTIC one (dBFS hiss) lives
+# in `hygiene`. Two different things called "noise floor" was defect 3.39.
+measurement_noise_floor:
+  z_multiplier: 1.96
+  metrics:
+    - ttsds2
+    - item_wer
+  per_provider: true
+  rationale: >-
+    1.96 = 95% CI on the difference of provider aggregates. Scoped to
+    TTSDS2 and item-level WER — the only metrics where variance is
+    measured via the 3-draw subset. Does NOT apply to D4 (which uses the
+    difference-CI test), latency, cost, hygiene, DX or capability, where
+    no repeat-draw variance exists. Per-provider because the estimate
+    rests on only 2 degrees of freedom per item; its own uncertainty is
+    published beside it.
+
+# --- WER band cutpoints (spec §A.2, defect 3.23) --------------------------
+#
+# The band is a published column. "A / B / C" without stated boundaries
+# is not a measurement.
+wer_bands:
+  A_max: 0.02  # ≤ 2% agreement error rate = band A
+  B_max: 0.05  # ≤ 5% agreement error rate = band B (anything above = C)
+
+# --- Per-item WER failure (spec §A.2, defect 3.24) ------------------------
+#
+# Two-clause rule. Rate-only would miss the case where a single mangled
+# dollar amount matters more than five wrong function words.
+wer_failure:
+  agreement_error_rate_threshold: 0.05
+  span_hard_fail: true
+  span_types:
+    - numeric
+    - currency
+    - date
+  rationale: >-
+    5% per-item agreement error rate matches the band-B boundary — items
+    beyond that are substantively wrong. Second clause: any agreed
+    deletion or substitution inside a numeric/currency/date span is an
+    automatic failure regardless of overall rate, because one mangled
+    dollar amount matters more than five wrong function words.
+
+# --- Catastrophic-event detector thresholds (spec §A.2) -------------------
+#
+# Detector thresholds specified, not left to judgement. Each detected
+# event flags the item for the manual-listen queue.
+catastrophic_events:
+  truncation_duration_ratio_lt: 0.60      # decoded < 60% of predicted duration
+  repetition_loop_ngram: 4                # 4-gram repeated
+  repetition_loop_min_repeats: 3          # ≥ 3 consecutive repeats in BOTH transcripts
+  word_drop_min_run: 2                    # agreed deletion run of ≥ 2 tokens
+  hallucination_min_run: 3                # agreed insertion run of ≥ 3 tokens
+
+# --- Acoustic hygiene thresholds (spec §5, A.5) ---------------------------
+#
+# Renamed from `noise_floor_dbfs_max` (defect 3.39). The word "noise floor"
+# now unambiguously means STATISTICAL (measurement_noise_floor above) vs
+# ACOUSTIC (below), never both.
+hygiene:
+  acoustic_noise_floor_dbfs_max: -40.0
+  max_clipped_samples: 0
+  rationale: >-
+    -40 dBFS is the audibility floor for hiss (spec A.5 — clean synthesis
+    should be below -60 dBFS; above -40 dBFS is audibly hissy). Clipping
+    is unfixable downstream. Both apply across the full corpus but the
+    narration long-stratum gate enforces them at the passage level too.

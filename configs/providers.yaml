@@ -1,11 +1,81 @@
 # providers.yaml — locked BEFORE any results (git tag `prereg-v1`).
-# Phase A stub: only Deepgram registered so `veval doctor` has something to probe.
-# Phase C will add the remaining five providers.
+# All 6 providers per portfolio-edition roster (spec §3.1).
+#
+# `model` is NO LONGER in this file (defect 3.37). Model string is chosen
+# per (provider, use_case) — several providers ship a low-latency model and
+# a high-quality model, and a buyer would deploy the former for a support
+# agent and the latter for narration. Model + voice + reasoning live in
+# `voices.yaml`, keyed by (provider, use_case).
 
 providers:
   - name: deepgram
     display_name: "Deepgram Aura-2"
-    model: "aura-2-thalia-en"
     env_key: DEEPGRAM_API_KEY
     tier: control
-    notes: "Off-index control (Humanness Index excludes non-cloning models)."
+    notes: >-
+      Off-index control (Humanness Index / cloning-required boards exclude
+      non-cloning models). REST /v1/speak — per-request character limit
+      ~2K, so long-stratum items chunk and reassemble with boundaries
+      recorded in the manifest.
+
+  - name: fish
+    display_name: "Fish Audio S2.1-Pro"
+    env_key: FISH_API_KEY
+    tier: core
+    notes: >-
+      Free `s2.1-pro-free` window closes 2026-08-31 — runs first.
+      Quality/WER on the free string; latency on the paid string
+      (free-tier latency is best-effort). This provider has a split
+      model per (provider, use_case) in voices.yaml — an on-chart
+      annotation is required per defect 3.38. R9 task Phase C: confirm
+      whether the two model strings share weights.
+
+  - name: google
+    display_name: "Google Cloud TTS Chirp3-HD"
+    env_key: GOOGLE_API_KEY
+    tier: core
+    notes: >-
+      Chirp3 HD is Google's flagship. Phase C — 15-minute probe:
+      test streaming synthesis before committing to buffered REST
+      (defect 3.15 — the "streaming is Preview only" claim from an
+      earlier draft may be stale; streaming is documented as GA for
+      Chirp3-HD as of 2025). If streaming works, D1 uses it and there
+      is no non-comparability footnote. If it doesn't, D1 falls back
+      to buffered REST with the footnote applied wherever Google TTFA
+      appears.
+
+  - name: cartesia
+    display_name: "Cartesia Sonic-2"
+    env_key: CARTESIA_API_KEY
+    tier: core
+    notes: >-
+      Latency leader — the point on the frontier that trades quality
+      for speed. Concurrency caps are low (2 free / 3 Pro); latency
+      trials serialise anyway (D1 rule) and campaign concurrency
+      capped to match. Header is `X-API-Key`.
+
+  - name: elevenlabs
+    display_name: "ElevenLabs Flash v2.5 + Multilingual v3"
+    env_key: ELEVENLABS_API_KEY
+    tier: core
+    notes: >-
+      Quality leader. Voice + model per use case in voices.yaml
+      (typically Flash v2.5 for conversational / cost, Multilingual v3
+      for narration / quality). Biggest single line item (~$22, one
+      Creator month at 121K credits). Cancel after campaign. Header
+      is `xi-api-key`.
+
+  - name: orpheus
+    display_name: "Canopy Orpheus 3B (Replicate)"
+    endpoint: "https://api.replicate.com/v1/predictions"
+    env_key: REPLICATE_API_TOKEN
+    tier: core
+    notes: >-
+      Open-weights floor — "how close is free?" chart point. Replicate-
+      hosted, billed per GPU-second (~$0.003/generation — defect 3.6
+      corrected from an earlier $0.08 figure). D1 scored N/A-hosted
+      (measures Replicate's cold start, not the model). Runs FULL
+      10-item variance subset — the earlier 5-item reduction was based
+      on the wrong cost estimate and has been reversed (spec §3.4).
+      Licence to confirm Week 1: model card says Apache-2.0, comparison
+      board reports Llama-3.2 community licence.

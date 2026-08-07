@@ -1,0 +1,110 @@
+# pricing.yaml — published rates per provider, date-stamped per cell.
+#
+# D6 rule (spec §A.6): re-pulled and re-date-stamped on analysis day
+# before the frontier chart is rendered.
+#
+# Corrections in this version (per documentation/DEFECT_REGISTER.md):
+#   3.6  — Orpheus/Replicate is ~$0.003/generation (billed per GPU-second),
+#          NOT $0.08. Was 24× too high — had caused a real design concession
+#          (variance subset cut in half) that has now been reversed.
+#   3.14 — ElevenLabs Creator includes ~121K credits/month, not 100K.
+#          21% understatement; matters for the paid-tier headroom check.
+#   Also: Cartesia Pro is $5/mo (was $4).
+#
+# Rate semantics — the `unit` field disambiguates.
+
+pricing:
+  # --- Deepgram (off-index control) ---
+  - provider: deepgram
+    tier: paid
+    unit: per_1M_chars
+    rate_usd: 30.0
+    source_url: https://deepgram.com/pricing
+    date_verified: "2026-08-06"
+    notes: "Aura-2. $200 one-time signup credit covers the full project."
+
+  # --- Fish Audio ---
+  - provider: fish
+    tier: free
+    unit: per_1M_bytes
+    rate_usd: 0.0
+    source_url: https://fish.audio/pricing
+    date_verified: "2026-08-06"
+    notes: "s2.1-pro-free — window closes 2026-08-31. Best-effort latency, no SLA, data may be retained for training."
+
+  - provider: fish
+    tier: paid
+    unit: per_1M_bytes
+    rate_usd: 15.0
+    source_url: https://fish.audio/pricing
+    date_verified: "2026-08-06"
+    notes: "s2.1-pro. Billed per UTF-8 byte (≈ chars for English). Used for D1 latency; free tier used for quality/WER."
+
+  # --- Google Cloud TTS ---
+  - provider: google
+    tier: free
+    unit: per_1M_chars
+    rate_usd: 0.0
+    included_units_per_month: 1000000  # 1M chars free/month on Chirp3 HD
+    source_url: https://cloud.google.com/text-to-speech/pricing
+    date_verified: "2026-08-06"
+    notes: "Chirp3 HD monthly free allowance covers the whole project in one month."
+
+  - provider: google
+    tier: paid
+    unit: per_1M_chars
+    rate_usd: 30.0
+    source_url: https://cloud.google.com/text-to-speech/pricing
+    date_verified: "2026-08-06"
+    notes: "Chirp3 HD. Billing counts spaces and SSML tags."
+
+  # --- Cartesia (defect 3.14 area — corrected to $5/mo) ---
+  - provider: cartesia
+    tier: pro_monthly
+    unit: per_1M_chars
+    rate_usd: 40.0
+    included_units_per_month: 100000  # 100K credits (1 credit ≈ 1 char)
+    minimum_monthly_usd: 5.0
+    source_url: https://play.cartesia.ai/pricing
+    date_verified: "2026-08-06"
+    notes: "Pro $5/mo = 100K credits. Free tier is non-commercial. Concurrency capped at 2 (free) / 3 (Pro)."
+
+  # --- ElevenLabs (defect 3.14 — corrected to 121K credits Creator) ---
+  - provider: elevenlabs
+    tier: creator_monthly
+    unit: per_1M_chars
+    rate_usd: 50.0
+    included_units_per_month: 121000  # 121K credits/mo — was mis-stated as 100K
+    minimum_monthly_usd: 22.0
+    source_url: https://elevenlabs.io/pricing
+    date_verified: "2026-08-06"
+    notes: >-
+      Flash v2.5. Creator $22/mo (121K credits — corrected from earlier
+      100K figure, defect 3.14). Commercial use requires paid tier.
+      Biggest single line item for the project.
+
+  - provider: elevenlabs
+    tier: creator_monthly_v3
+    unit: per_1M_chars
+    rate_usd: 100.0
+    included_units_per_month: 121000
+    minimum_monthly_usd: 22.0
+    source_url: https://elevenlabs.io/pricing
+    date_verified: "2026-08-06"
+    notes: "Multilingual/v3. Same Creator plan; higher per-char rate. Optional if budget allows."
+
+  # --- Canopy Orpheus (defect 3.6 — corrected to ~$0.003/gen) ---
+  - provider: orpheus
+    tier: replicate_l40s
+    unit: per_generation
+    rate_usd: 0.003
+    source_url: https://replicate.com/canopyai/orpheus-3b
+    date_verified: "2026-08-06"
+    notes: >-
+      L40S on Replicate, billed per GPU-second so cost scales with output
+      length; ~$0.003/generation is the observed mean per verification
+      2026-08-06. Earlier draft used $0.08 (24× too high) which drove a
+      design concession — Orpheus variance subset reduced to 5 items —
+      that has now been reversed: all six providers run the full 10-item
+      subset (spec §3.4). Latency scored N/A-hosted (measures Replicate's
+      cold start, not the model).
