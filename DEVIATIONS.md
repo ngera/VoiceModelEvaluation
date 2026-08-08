@@ -40,6 +40,46 @@ receipt.
 
 ---
 
+## D-009 — D4 pairwise repetitions 5 → 3 (compressed default for 8-provider roster) (2026-08-08)
+
+**What changed.** Phase F Bradley-Terry judgment target reduced from the
+original spec's **210 judgments** (7 systems × 21 pairs × 2 use cases ×
+5 reps) to **216 judgments** (9 systems × 36 pairs × 2 use cases × 3
+reps) as the new default for this campaign.
+
+**Why.** Two multipliers moved:
+- **Systems**: 7 → 9 (6 providers + anchor → 8 providers + anchor per
+  D-003). Distinct pairs grew C(9,2) = 36, up from 21.
+- **Reps at 5**: 9 systems × 5 reps × 2 use cases = **360 judgments**
+  (~3-4 hours across 8-10 sessions).
+
+The spec anticipated exactly this trade-off. Spec §7 (line 664)
+explicitly names "pairwise repetitions (5 → 3, with the CI cost
+recorded)" as the first compressible knob when the schedule pressure
+rises. Spec §D4 (line 379) sets the floor: "Minimum acceptable is 3
+repetitions (126 judgments); below that the CIs are too wide to be
+useful." At 3 reps × 8+1 systems the total is 216 — above the original
+minimum floor (126) despite the pair-count growth, and inside the
+original 2-hour session budget the spec targets.
+
+**Impact on results.**
+- **Bootstrap CIs widen** relative to the 5-rep version. The MDD
+  (spec §4.3 line 398) is recomputed against the actual n = 216 rather
+  than n = 210, and reported alongside every Bradley-Terry strength.
+- **Domination rule unchanged**: still asserted only when the
+  pairwise-difference CI excludes zero (spec §5 line 532). Pairs
+  where the CI includes zero remain "no difference detected at this
+  n" — a first-class result category, not a failure.
+- **Consistency re-judge** is still 10% of judgments (~22 items) at
+  ≥1 week gap.
+
+**Where to look.** Enforced in `src/veval/human/pair_builder.py`
+(`REPS_PER_PAIR = 3`); the MDD simulation in
+`configs/analyzers.yaml`'s `mdd` block re-runs with n=216 before the
+campaign starts. Re-tagged **prereg-v1.7**.
+
+---
+
 ## D-008 — Speechify endpoint reverted to `/v1/audio/speech`; TTFA not measurable (2026-08-08)
 
 **What changed.** Speechify adapter now hits `POST /v1/audio/speech`

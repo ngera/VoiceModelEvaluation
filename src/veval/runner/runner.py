@@ -343,13 +343,18 @@ class Runner:
                 run.manifest.items.append(item.id)
             run.manifest.audio_count += 1
 
-            # Cache the successful synthesis (campaign mode only)
+            # Cache the successful synthesis (campaign mode only).
+            # `sample_rate=None` mirrors the get() call above — sample_rate
+            # is a rendered property of the audio, not a request-side
+            # parameter (SynthesisOptions doesn't pass one). Using
+            # result.sample_rate here would silently poison every cache
+            # entry with a key no get() would ever query.
             if use_cache:
                 try:
                     self.cache.put(
                         provider=p.name, model=model, voice_id=voice_id,
                         text=item.text, output_format=result.audio_format,
-                        sample_rate=result.sample_rate, version=p.version,
+                        sample_rate=None, version=p.version,
                         audio_bytes=result.audio_bytes,
                         chars_billed=result.chars_billed,
                         billing_unit=result.billing_unit,

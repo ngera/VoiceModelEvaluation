@@ -76,3 +76,15 @@ documentation/*.txt
 voting/node_modules/
 voting/.vercel/
 voting/dist/
+
+# Phase F rating pipeline — only the source page + tests belong in git.
+# Per-rater manifests, normalized audio, anchor recordings, and judgment
+# CSVs are all ephemeral / personal / regenerable via `veval rate ...`.
+rating/audio/
+rating/anchor/
+rating/manifest.json
+# Judgment CSVs — private per-rater data (may include timing / preference
+# signal that a rater hasn't consented to publish).
+judgments-*.csv
+documentation/judgement_tests/
+documentation/judgment_tests/

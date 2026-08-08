@@ -36,6 +36,7 @@ analyze = [
     "transformers>=4.44,<5.0",
     "ttsds>=2.1",           # TTSDS2 ships under the `ttsds` PyPI name (2.x = TTSDS2)
     "audiobox-aesthetics>=0.0.4",
+    "choix>=0.4",           # Bradley-Terry (spec §4.3, borrow-not-build per spec §5)
 ]
 admin = [
     "streamlit>=1.36",

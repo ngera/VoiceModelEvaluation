@@ -4,6 +4,7 @@ Subcommands (implemented incrementally per Phase in CLAUDE.md):
 - doctor    (Phase A) — smoke-test all/one adapter end-to-end
 - generate  (Phase D) — run the corpus × providers campaign
 - analyze   (Phase E) — WER + quality + hygiene + latency + variance + drift + cost
+- rate      (Phase F) — build rating manifest, normalize audio, fit Bradley-Terry
 - score     (Phase G) — apply gates, build Pareto frontiers
 - report    (Phase G) — render tables, charts, memos
 """
@@ -19,9 +20,9 @@ from rich.table import Table
 
 from veval import __version__
 from veval.adapters import ADAPTERS
+from veval.config import load_pricing
 from veval.doctor import DoctorReport, run_doctor
 from veval.runner import RunMode, Runner, RunSummary, SpendTracker, SynthesisCache
-from veval.config import load_pricing
 
 app = typer.Typer(
     name="veval",
@@ -499,6 +500,335 @@ def analyze(
     console.print()
     console.rule("[bold green]analyze complete[/bold green]")
     console.print(f"outputs in {writer.dir}")
+
+
+rate_app = typer.Typer(name="rate", help="Phase F — human A/B rating pipeline.", no_args_is_help=True)
+app.add_typer(rate_app, name="rate")
+
+
+@rate_app.command("build")
+def rate_build(
+    rater: str = typer.Option(..., "--rater", help="Rater id (per-rater manifest seed)"),
+    run_id: str | None = typer.Option(
+        None,
+        "--run-id",
+        help="Campaign run id to source audio from (default: latest campaign)",
+    ),
+    use_case: list[str] = typer.Option(
+        ["conversational", "narration"], "--use-case", "-u",
+        help="Which use cases to include",
+    ),
+    providers_file: Path = typer.Option(Path("configs/providers.yaml"), "--providers-file"),
+    corpus_dir: Path = typer.Option(Path("corpus"), "--corpus-dir"),
+    audio_root: Path = typer.Option(
+        Path("rating/audio"), "--audio-root",
+        help="Where normalized audio lives (relative to rating/index.html)",
+    ),
+    manifest_out: Path = typer.Option(
+        Path("rating/manifest.json"), "--manifest-out",
+    ),
+    reps: int = typer.Option(
+        3, "--reps",
+        help="Repetitions per pair (default 3 per D-009; original spec was 5)",
+    ),
+    consistency_fraction: float = typer.Option(
+        0.10, "--consistency-fraction",
+        help="Fraction of judgments repeated later for consistency check",
+    ),
+    session_size: int = typer.Option(40, "--session-size"),
+    items: list[str] | None = typer.Option(
+        None, "--items", "-i",
+        help=(
+            "Restrict pair selection to these corpus items (e.g. --items S01 "
+            "--items M01). Match the item set of your source run so no "
+            "pair schedules missing audio."
+        ),
+    ),
+    exclude_system: list[str] | None = typer.Option(
+        None, "--exclude-system",
+        help=(
+            "Drop these systems from pair enumeration (e.g. --exclude-system "
+            "orpheus if Replicate credits are exhausted). Applied AFTER the "
+            "providers.yaml lookup so pair count drops accordingly."
+        ),
+    ),
+) -> None:
+    """Build the per-rater rating manifest.
+
+    Sources the anchor + 8 providers from providers.yaml and the corpus
+    from corpus_dir. Writes `rating/manifest.json`. The static rating
+    page (`rating/index.html`) loads this on boot.
+    """
+    from veval.config import load_corpus, load_providers
+    from veval.human.pair_builder import ANCHOR_SYSTEM, build_manifest, write_manifest
+    from veval.store.run_store import default_run_store
+
+    providers = load_providers(providers_file)
+    systems = [p.name for p in providers.providers] + [ANCHOR_SYSTEM]
+    if exclude_system:
+        systems = [s for s in systems if s not in set(exclude_system)]
+
+    corpora: dict[str, object] = {}
+    for uc in use_case:
+        if uc not in ("conversational", "narration"):
+            console.print(f"[red]--use-case must be conversational|narration, got: {uc}[/red]")
+            raise typer.Exit(code=2)
+        corpora[uc] = load_corpus(corpus_dir / f"{uc}.yaml")
+
+    # Source run for context (not strictly needed by build_manifest;
+    # useful in the printed summary + as a fixture for downstream normalize)
+    if run_id is None:
+        runs = default_run_store().list_runs("campaign")
+        if not runs:
+            console.print("[red]no campaign runs under ./runs/ — generate first[/red]")
+            raise typer.Exit(code=2)
+        run_dir = runs[0]
+    else:
+        run_dir = Path("runs") / run_id
+    if not run_dir.exists():
+        console.print(f"[red]run dir not found: {run_dir}[/red]")
+        raise typer.Exit(code=2)
+
+    manifest = build_manifest(
+        rater_id=rater,
+        systems=systems,
+        use_cases=use_case,  # type: ignore[arg-type]
+        corpora=corpora,  # type: ignore[arg-type]
+        audio_root=audio_root,
+        reps_per_pair=reps,
+        session_size=session_size,
+        consistency_repeat_fraction=consistency_fraction,
+        restrict_to_items=set(items) if items else None,
+    )
+    write_manifest(manifest, manifest_out)
+
+    console.rule(f"[bold]rate build[/bold] --rater {rater}")
+    console.print(f"source run  : {run_dir}")
+    console.print(f"systems     : {len(manifest.systems)}  ({', '.join(manifest.systems)})")
+    console.print(f"pairs       : {len(manifest.systems) * (len(manifest.systems) - 1) // 2}")
+    console.print(f"judgments   : {manifest.total_judgments}")
+    console.print(f"sessions    : {manifest.total_sessions} (~{session_size} judgments each)")
+    console.print(f"manifest -> {manifest_out}")
+    console.print()
+    console.print(
+        "[dim]next: `veval rate normalize --source-run <run_id>` "
+        "then `veval rate serve`[/dim]"
+    )
+
+
+@rate_app.command("normalize")
+def rate_normalize(
+    source_run: str | None = typer.Option(
+        None,
+        "--source-run",
+        help="Run id under ./runs to normalize from (default: latest campaign)",
+    ),
+    audio_root: Path = typer.Option(Path("rating/audio"), "--audio-root"),
+    target_lufs: float = typer.Option(
+        -18.0, "--target-lufs",
+        help="Target integrated loudness (spec §D4: -18)",
+    ),
+    anchor_dir: Path | None = typer.Option(
+        None, "--anchor-dir",
+        help=(
+            "Directory of anchor WAVs named {use_case}_{item_id}.wav. "
+            "Copied + normalized alongside the provider audio."
+        ),
+    ),
+) -> None:
+    """Normalize every provider WAV in a campaign run to -18 LUFS and
+    copy it to `rating/audio/{use_case}/{system}/{item_id}.wav`.
+
+    -18 LUFS is mandatory before rating (spec §D4 line 393) — without
+    it, louder clips systematically win A/B and the test measures gain
+    staging, not voice quality.
+    """
+    from veval.analyze.common import RunReader
+    from veval.human.loudness import normalize_file
+    from veval.store.run_store import default_run_store
+
+    if source_run is None:
+        runs = default_run_store().list_runs("campaign")
+        if not runs:
+            console.print("[red]no campaign runs under ./runs/[/red]")
+            raise typer.Exit(code=2)
+        run_dir = runs[0]
+    else:
+        run_dir = Path("runs") / source_run
+
+    reader = RunReader(run_dir)
+    ok = 0
+    failed = 0
+    console.rule(f"[bold]rate normalize[/bold] from {run_dir.name}")
+    for rec in reader.records():
+        dst = audio_root / rec.use_case / rec.provider / f"{rec.item_id}.wav"
+        r = normalize_file(rec.wav_path, dst, target_lufs=target_lufs)
+        if r.error:
+            failed += 1
+            console.print(f"  [red]FAIL[/red] {rec.provider}/{rec.use_case}/{rec.item_id}: {r.error}")
+        else:
+            ok += 1
+
+    if anchor_dir and anchor_dir.exists():
+        console.print(f"[dim]anchor: normalizing WAVs under {anchor_dir}[/dim]")
+        for wav in anchor_dir.rglob("*.wav"):
+            stem = wav.stem  # {use_case}_{item_id}
+            if "_" not in stem:
+                console.print(f"  [yellow]skip {wav.name} (expected use_case_item_id.wav)[/yellow]")
+                continue
+            uc, item_id = stem.split("_", 1)
+            dst = audio_root / uc / "anchor" / f"{item_id}.wav"
+            r = normalize_file(wav, dst, target_lufs=target_lufs)
+            if r.error:
+                failed += 1
+            else:
+                ok += 1
+
+    console.print()
+    console.print(f"normalized {ok} files -> {audio_root}   ({failed} failed)")
+
+
+@rate_app.command("serve")
+def rate_serve(
+    port: int = typer.Option(8080, "--port"),
+    rating_dir: Path = typer.Option(Path("rating"), "--rating-dir"),
+) -> None:
+    """Serve the static rating page over localhost.
+
+    Browsers block `fetch()` on `file://` URLs; the rating page needs
+    HTTP. Uses Python's built-in HTTP server — no external dependency.
+    Open http://localhost:<port> once it starts.
+    """
+    import http.server
+    import socketserver
+    import webbrowser
+
+    if not (rating_dir / "index.html").exists():
+        console.print(f"[red]{rating_dir}/index.html not found[/red]")
+        raise typer.Exit(code=2)
+    if not (rating_dir / "manifest.json").exists():
+        console.print(
+            f"[yellow]warning: {rating_dir}/manifest.json missing "
+            "- the page will show a build hint.[/yellow]"
+        )
+
+    # Subclass to silence the very common ConnectionResetError /
+    # BrokenPipeError that fires when a browser aborts an in-flight
+    # audio download (user paused, seeked, or moved to the next
+    # judgment mid-transfer). Stock SimpleHTTPRequestHandler dumps a
+    # 20-line traceback to stderr each time; the errors are harmless
+    # and would only distract the rater.
+    class QuietHandler(http.server.SimpleHTTPRequestHandler):
+        def handle_one_request(self) -> None:
+            try:
+                super().handle_one_request()
+            except (ConnectionResetError, BrokenPipeError):
+                pass
+
+        def log_message(self, format: str, *args: object) -> None:
+            # Suppress the per-request access log so the console stays
+            # readable during a rating session. Errors still print.
+            return
+
+    # SimpleHTTPRequestHandler serves from CWD; chdir first
+    import os
+    os.chdir(rating_dir)
+
+    with socketserver.TCPServer(("", port), QuietHandler) as httpd:
+        url = f"http://localhost:{port}"
+        console.rule("[bold]rate serve[/bold]")
+        console.print(f"serving {rating_dir.resolve()} at [bold]{url}[/bold]")
+        console.print("[dim]Ctrl-C to stop[/dim]")
+        try:
+            webbrowser.open(url)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            console.print("\nstopped.")
+
+
+@rate_app.command("fit")
+def rate_fit(
+    judgments_csv: Path = typer.Argument(..., help="CSV downloaded from the rating page"),
+    n_resamples: int = typer.Option(2000, "--n-resamples"),
+    alpha: float = typer.Option(0.5, "--alpha", help="L2 penalty (analyzers.yaml)"),
+    out: Path = typer.Option(
+        Path("analysis/bt_fit.json"), "--out",
+        help="Where to write the fit + CIs",
+    ),
+) -> None:
+    """Bradley-Terry fit + clustered-bootstrap CIs from a judgments CSV.
+
+    One fit per use case (spec §4.3). Domination is asserted only when
+    the pairwise-difference CI excludes zero (spec §5 line 532).
+    """
+    import csv as csvmod
+    import json
+
+    from veval.human.bt import (
+        RawJudgment,
+        consistency_rate,
+        fit_per_use_case,
+    )
+
+    if not judgments_csv.exists():
+        console.print(f"[red]not found: {judgments_csv}[/red]")
+        raise typer.Exit(code=2)
+
+    judgments: list[RawJudgment] = []
+    with judgments_csv.open("r", encoding="utf-8", newline="") as f:
+        for row in csvmod.DictReader(f):
+            judgments.append(RawJudgment(
+                use_case=row["use_case"],
+                item_id=row["item_id"],
+                system_left=row["system_left"],
+                system_right=row["system_right"],
+                winner=row["winner"],  # type: ignore[arg-type]
+                is_consistency_repeat=row["is_consistency_repeat"].lower() == "true",
+            ))
+
+    consistency, n_repeats = consistency_rate(judgments)
+    console.rule("[bold]rate fit[/bold]")
+    console.print(f"loaded {len(judgments)} judgments from {judgments_csv}")
+    console.print(f"consistency: {consistency:.2%}  (n={n_repeats} repeats)")
+
+    fits = fit_per_use_case(judgments, n_resamples=n_resamples, alpha=alpha)
+
+    payload = {
+        "source": str(judgments_csv),
+        "n_judgments": len(judgments),
+        "consistency_rate": consistency,
+        "n_consistency_repeats": n_repeats,
+        "n_resamples": n_resamples,
+        "alpha": alpha,
+        "fits": {
+            uc: {
+                "systems": f.systems,
+                "strengths": f.strengths,
+                "strength_ci_lower": f.strength_ci_lower,
+                "strength_ci_upper": f.strength_ci_upper,
+                "pairwise_diff": {f"{a}__{b}": v for (a, b), v in f.pairwise_diff.items()},
+                "n_judgments": f.n_judgments,
+                "n_items": f.n_items,
+            }
+            for uc, f in fits.items()
+        },
+    }
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    console.print()
+    for uc, f in fits.items():
+        console.print(f"[bold]{uc}[/bold] (n={f.n_judgments} judgments, {f.n_items} items)")
+        for sys_name, strength in sorted(
+            zip(f.systems, f.strengths, strict=True), key=lambda x: -x[1]
+        ):
+            lo = f.strength_ci_lower[sys_name]
+            hi = f.strength_ci_upper[sys_name]
+            console.print(f"  {sys_name:12s} {strength:+.2f}  CI [{lo:+.2f}, {hi:+.2f}]")
+    console.print()
+    console.print(f"written to {out}")
 
 
 if __name__ == "__main__":

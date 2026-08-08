@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>veval — pairwise rating</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+      max-width: 640px; margin: 2em auto; padding: 0 1em;
+      line-height: 1.45;
+    }
+    h1 { font-size: 1.4em; margin-bottom: 0.2em; }
+    .subtitle { color: #666; font-size: 0.9em; margin-bottom: 1.6em; }
+    .card {
+      border: 1px solid #ccc; border-radius: 8px; padding: 1.2em;
+      margin: 1.5em 0;
+    }
+    .prompt { font-size: 1.05em; margin-bottom: 1em; color: #444; }
+    .item-text {
+      background: #f4f4f4; padding: 0.8em 1em; border-radius: 6px;
+      margin: 1em 0; font-family: Georgia, serif; font-style: italic;
+      font-size: 0.95em; color: #333;
+    }
+    @media (prefers-color-scheme: dark) {
+      .item-text { background: #2a2a2a; color: #ddd; }
+    }
+    .clip-row {
+      display: flex; gap: 1em; align-items: center; margin: 0.8em 0;
+    }
+    .clip-label {
+      font-weight: 700; font-size: 1.2em; width: 1.4em;
+      text-align: center;
+    }
+    audio { flex-grow: 1; }
+    .buttons {
+      display: flex; gap: 1em; margin-top: 1.5em;
+    }
+    button {
+      padding: 0.6em 1.2em; font-size: 1em; border-radius: 6px;
+      border: 1px solid #888; cursor: pointer; background: #fafafa;
+    }
+    @media (prefers-color-scheme: dark) {
+      button { background: #333; color: #eee; }
+    }
+    button:hover { background: #eef; }
+    button.primary {
+      background: #226; color: #fff; border-color: #226;
+    }
+    .progress {
+      color: #666; font-size: 0.85em; margin-top: 0.8em;
+    }
+    .badge {
+      display: inline-block; padding: 0.15em 0.5em; border-radius: 3px;
+      background: #ffb; color: #555; font-size: 0.75em; margin-left: 0.5em;
+    }
+    #done {
+      background: #e6f7e6; padding: 1em; border-radius: 6px;
+      border-left: 4px solid #2a6;
+    }
+    @media (prefers-color-scheme: dark) {
+      #done { background: #163; }
+    }
+    .warn { background: #fee; border-left: 4px solid #c33; padding: 1em; }
+    .keyboard { color: #888; font-size: 0.8em; margin-top: 1em; }
+    kbd {
+      background: #eee; padding: 1px 6px; border-radius: 3px;
+      border: 1px solid #ccc; font-family: monospace; font-size: 0.9em;
+    }
+    @media (prefers-color-scheme: dark) {
+      kbd { background: #444; border-color: #555; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Pairwise rating</h1>
+  <div class="subtitle">
+    Listen to both clips. Pick the one that sounds better <em>overall</em>
+    — voice quality, naturalness, cleanness. Ignore the specific words.
+  </div>
+
+  <div id="app"></div>
+
+  <div class="keyboard">
+    Keyboard: <kbd>1</kbd> A wins &middot; <kbd>2</kbd> B wins &middot;
+    <kbd>Space</kbd> play/pause both &middot; <kbd>R</kbd> replay both
+  </div>
+
+<script>
+"use strict";
+
+const state = {
+  manifest: null,
+  judgments: [],       // completed rows
+  currentIndex: 0,     // pointer into manifest.judgments
+  playAtSameTime: false,
+  raterId: null,
+};
+
+const STORAGE_KEY_PREFIX = "veval-rating-";
+
+async function loadManifest() {
+  const r = await fetch("./manifest.json");
+  if (!r.ok) throw new Error("Failed to fetch manifest.json: HTTP " + r.status);
+  return r.json();
+}
+
+function storageKey() {
+  return STORAGE_KEY_PREFIX + state.raterId;
+}
+
+function saveProgress() {
+  const key = storageKey();
+  const payload = {
+    judgments: state.judgments,
+    currentIndex: state.currentIndex,
+  };
+  localStorage.setItem(key, JSON.stringify(payload));
+}
+
+function loadProgress() {
+  const raw = localStorage.getItem(storageKey());
+  if (!raw) return;
+  try {
+    const p = JSON.parse(raw);
+    state.judgments = p.judgments || [];
+    state.currentIndex = p.currentIndex || 0;
+  } catch { /* corrupt = start fresh */ }
+}
+
+function csvEscape(v) {
+  const s = String(v);
+  if (s.includes(",") || s.includes('"') || s.includes("\n")) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+function downloadCSV() {
+  const cols = [
+    "rater_id", "judgment_id", "session_index", "use_case", "item_id",
+    "system_left", "system_right", "winner", "winner_system",
+    "is_consistency_repeat", "timestamp_ms",
+  ];
+  const rows = [cols.join(",")];
+  for (const j of state.judgments) {
+    rows.push(cols.map(c => csvEscape(j[c] === undefined ? "" : j[c])).join(","));
+  }
+  const blob = new Blob([rows.join("\n") + "\n"], { type: "text/csv" });
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15);
+  a.download = `judgments-${state.raterId}-${stamp}.csv`;
+  a.href = URL.createObjectURL(blob);
+  a.click();
+}
+
+function render() {
+  const app = document.getElementById("app");
+  if (state.currentIndex >= state.manifest.judgments.length) {
+    app.innerHTML = `
+      <div id="done">
+        <h2>Session complete</h2>
+        <p>Recorded <strong>${state.judgments.length}</strong> judgments.
+        Download the CSV now — nothing is uploaded automatically.</p>
+        <div class="buttons">
+          <button class="primary" onclick="downloadCSV()">Download CSV</button>
+          <button onclick="if(confirm('Reset all local judgments for this rater?')) { localStorage.removeItem(storageKey()); location.reload(); }">Reset session</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  const j = state.manifest.judgments[state.currentIndex];
+  const badge = j.is_consistency_repeat
+    ? '<span class="badge">consistency repeat</span>' : "";
+  app.innerHTML = `
+    <div class="card">
+      <div class="prompt">
+        Judgment ${state.currentIndex + 1} of ${state.manifest.judgments.length}
+        &middot; session ${j.session_index + 1} of ${state.manifest.total_sessions}
+        &middot; use case: <strong>${j.use_case}</strong>${badge}
+      </div>
+      <div class="item-text">${escapeHtml(getItemText(j))}</div>
+      <div class="clip-row">
+        <div class="clip-label">A</div>
+        <audio id="audio-a" controls preload="auto" src="${j.wav_left}"></audio>
+      </div>
+      <div class="clip-row">
+        <div class="clip-label">B</div>
+        <audio id="audio-b" controls preload="auto" src="${j.wav_right}"></audio>
+      </div>
+      <div class="buttons">
+        <button onclick="pick('left')">A is better <kbd>1</kbd></button>
+        <button onclick="pick('right')">B is better <kbd>2</kbd></button>
+        <button onclick="replay()">Replay both <kbd>R</kbd></button>
+      </div>
+      <div class="progress">
+        ${state.judgments.length} completed &middot;
+        <a href="javascript:downloadCSV()">download progress CSV</a>
+      </div>
+    </div>
+  `;
+}
+
+function getItemText(j) {
+  // Item text is not embedded in the manifest by default — the reader
+  // reviews the reference text separately. Placeholder for now; the
+  // pair builder can extend the manifest to embed short-stratum texts.
+  return `[${j.item_id}] Play both clips before deciding.`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+function pick(winner) {
+  const j = state.manifest.judgments[state.currentIndex];
+  state.judgments.push({
+    rater_id: state.raterId,
+    judgment_id: j.judgment_id,
+    session_index: j.session_index,
+    use_case: j.use_case,
+    item_id: j.item_id,
+    system_left: j.system_left,
+    system_right: j.system_right,
+    winner: winner,
+    winner_system: winner === "left" ? j.system_left : j.system_right,
+    is_consistency_repeat: j.is_consistency_repeat,
+    timestamp_ms: Date.now(),
+  });
+  state.currentIndex += 1;
+  saveProgress();
+  render();
+}
+
+function replay() {
+  ["audio-a", "audio-b"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.currentTime = 0; el.play(); }
+  });
+}
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (e.key === "1") pick("left");
+  else if (e.key === "2") pick("right");
+  else if (e.key === "r" || e.key === "R") replay();
+  else if (e.key === " ") {
+    e.preventDefault();
+    replay();
+  }
+});
+
+async function boot() {
+  const app = document.getElementById("app");
+  app.innerHTML = "<p>Loading manifest…</p>";
+  try {
+    state.manifest = await loadManifest();
+  } catch (e) {
+    app.innerHTML = `
+      <div class="warn">
+        <strong>Could not load manifest.json.</strong><br>
+        Either it doesn't exist yet (run <code>veval rate build --rater YOU</code>)
+        or you opened this page directly from the filesystem — browsers
+        block <code>fetch()</code> over <code>file://</code>. Serve locally:
+        <pre>python -m http.server --directory rating 8080
+open http://localhost:8080</pre>
+        ${e.message}
+      </div>
+    `;
+    return;
+  }
+  state.raterId = state.manifest.rater_id;
+  loadProgress();
+  render();
+}
+
+boot();
+</script>
+</body>
+</html>

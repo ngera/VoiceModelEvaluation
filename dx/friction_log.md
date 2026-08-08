@@ -175,7 +175,26 @@ user opened Google docs, so wall-clock time is not a true D7 measurement.
 **D7 timing caveat:** same as prior three — adapter authored before
 user opened Cartesia docs.
 
-**Status:** ✅ Adapter green end-to-end on first probe.
+**Friction events (2026-08-08 Phase E + F):**
+- **Cartesia inserts a `LIST` metadata chunk between `fmt ` and
+  `data`.** The WAV is fully valid; standard `soundfile.read()`
+  handles it. But naive parsers that trust bytes 40-44 as the
+  data-chunk size read the LIST chunk size instead and report
+  0-second duration. Caught by Phase E acceptance gate (my own bug
+  in the chunk reader; fixed with a proper RIFF chunk walker).
+  Portable-across-parsers gotcha — worth publishing so nobody else
+  falls in.
+- **Pro plan ($5/mo, 100K credits) exhausts fast under iterative
+  pilots.** HTTP 402 during Phase F smoke re-runs:
+  *"Model credits limit reached: Please upgrade your subscription
+  at https://play.cartesia.ai/subscription to increase your credit
+  limit or enable overages for your account."* Error body is
+  actionable (URL included, clear next steps). But **overages are
+  NOT enabled by default** — the account hits a hard wall instead of
+  paying-per-request. For a research-project budget rhythm, plan
+  either a higher tier or explicit overage-enable.
+
+**Status:** ✅ Adapter green; ⚠️ credit budget requires monitoring.
 
 ---
 
@@ -324,7 +343,31 @@ handles better than answer-by-rationale.
 **D7 timing caveat:** same as the other adapters — authored offline
 from prior API knowledge, so wall-clock isn't a valid D7 measurement.
 
-**Status:** ✅ Adapter green end-to-end on first probe.
+**Friction events (2026-08-08 Phase D + E — doctor probe was green, campaign was not):**
+- **Doctor probe defaults to `conversational` and only exercised
+  `gpt-4o-mini-tts`.** Narration uses `gpt-4o-tts` per voices.yaml,
+  and that model 404'd for the account: *"The model `gpt-4o-tts` does
+  not exist or you do not have access to..."*. `veval doctor` needs
+  narration-use-case coverage to catch this pre-campaign (TODO).
+  Amended to `tts-1-hd` (D-006, prereg-v1.4).
+- **`cedar` voice not in `tts-1-hd` voice enum.** After D-006 the
+  next pilot re-run also failed 5/10 narration: HTTP 400 *"Input
+  should be 'nova', 'shimmer', 'echo', 'onyx', 'fable', 'alloy',
+  'ash', 'sage' or 'coral'"*. `cedar` exists only on the `gpt-4o-*`
+  model family. Model swap without voice re-verification was the
+  process gap. Amended to `onyx` (D-007, prereg-v1.5).
+- **Streaming WAV shipped a `0xFFFFFFFF` placeholder header** — the
+  Phase A "streamed header lies about duration" defect class recurring.
+  Adapter never called `finalize_wav_header()`. Caught by the Phase E
+  WAV acceptance gate on its first live run. One-line fix (D-008
+  context).
+- **Portfolio-worthy lesson:** OpenAI's per-model voice enums are NOT
+  a superset; classic `tts-1` family accepts 9 voices, `gpt-4o-*`
+  family accepts 11 including 2 new ones (`ballad`, `verse`, `cedar`).
+  A voice that works in one model can 400 in another. Two-step
+  verification: model exists → voice enum for that model.
+
+**Status:** ✅ Adapter green after D-006 + D-007 + acceptance-gate fix.
 
 ---
 
@@ -375,12 +418,50 @@ required. Doctor probe: rounding-error cost.
   notably high for a paid-tier provider — comparable to Fish's free
   tier. Worth isolating in the 50-trial D1 campaign whether it's
   cold-start, regional routing, or a persistent characteristic of
-  simba-3.2.
+  simba-3.2. **Retracted (2026-08-08)**: this "TTFA" was actually
+  full-response time — Speechify's docs describe streaming but the
+  `/v1/audio/speech` endpoint returns a buffered JSON envelope (see
+  D-008 below). Real streaming TTFA is not measurable.
 - **Audio bytes ~372KB** — much larger than the other 6 providers
-  for the same probe text (~140-270KB range). Likely a higher sample
-  rate or different encoding; Phase E hygiene analyzer will confirm.
+  for the same probe text. Explained retrospectively: the "audio"
+  written to disk was the JSON envelope (base64-encoded WAV inside a
+  JSON string), NOT the decoded audio. Real WAV is ~140KB; the 4/3
+  base64 inflation + JSON keys pushed it to 372KB.
 
-**Status:** ✅ Adapter green end-to-end on first probe.
+**Friction events (2026-08-08 Phase D + E):**
+- **HTTP 429 concurrency_limit_reached** — Starter plan allows exactly
+  1 concurrent request (verified via error body). Adapter-side default
+  was 3 (matched Fish/ElevenLabs); had to lower to 1 in
+  `DEFAULT_PROVIDER_CONCURRENCY`. D-006 (prereg-v1.4).
+- **JSON envelope, not raw bytes.** Speechify's docs describe `/v1/audio/speech`
+  as returning audio; it actually returns
+  `{"audio_data": "<base64WAV>", "billable_characters_count": N}`.
+  Original adapter treated it as a raw byte stream and wrote the JSON
+  envelope verbatim to `.wav` files. Every clip failed acceptance-gate
+  decode with `LibsndfileError`. Caught by the Phase E WAV acceptance
+  gate on its first live run.
+- **`/v1/audio/stream` returns MP3 regardless of `audio_format`.** The
+  first attempted fix (switch to `/stream` for TTFA parity) revealed
+  that endpoint ignores the `audio_format: "wav"` body field and
+  returns MP3 (ID3/Lavf-tagged) always. WAV is only available via the
+  buffered JSON envelope on `/v1/audio/speech`.
+- **Endpoint choice = D8 latency trade-off**. Reverted to `/v1/audio/speech`
+  and accepted that TTFA is not measurable for Speechify (D-008,
+  prereg-v1.6). Precedent set by Fish's split-model annotation.
+- **Header carries 0xFFFFFFFF placeholder** even after base64 decode
+  — Speechify's streaming backend never finalizes the RIFF size. Same
+  Phase A defect class Deepgram/OpenAI had. `finalize_wav_header()`
+  applied post-decode.
+
+**Portfolio-worthy lesson:** three sequential defects on one provider,
+all silent until the WAV acceptance gate caught them. Speechify sits
+at HI's #1 rank (score 99). The audit answer isn't "HI is wrong" — it
+is "these numbers are only measurable end-to-end if the pipeline
+catches provider-side idiosyncrasies the docs don't warn about." Two
+of the three defects (JSON envelope, format ignored) are things a
+one-shot integration would never catch until production traffic.
+
+**Status:** ✅ Adapter green after D-006 + D-008 + acceptance-gate fix.
 
 ---
 
@@ -444,3 +525,157 @@ Categories to score per provider on the final case-study DX friction table:
 Each provider gets a one-liner in the final results table:
 *"Provider X — 11 minutes; Provider Y — 74 minutes and an undocumented header."*
 That's the artifact spec §A.7 exists to produce.
+
+---
+
+## Audio format fact-sheet (per-provider, verified through Phase F)
+
+Compact reference for the final case-study table. Every row is either
+observed empirically or read from the adapter source; nothing here is
+inferred from provider marketing.
+
+### Deepgram (Aura-2)
+- **Requested:** `encoding=linear16`, `container=wav`, `sample_rate` optional
+- **Returned:** WAV/PCM_16 · sample rate honors request (default 24kHz for Aura-2)
+- **Streams:** yes (chunked HTTP over `/v1/speak`)
+- **Header gotcha:** first chunk ships `0x7FFFAC00` placeholder length (44,737s
+  declared for a 2.8s clip). `finalize_wav_header()` in adapters/base.py
+  rewrites RIFF size + data-chunk size once the full byte stream is buffered.
+- **Also supports:** mp3, ogg-opus, aac, mulaw — not exercised by this eval
+- **File size (S01, 25 chars):** ~61 KB
+
+### Fish Audio (s2.1-pro)
+- **Requested:** `format=wav`
+- **Returned:** WAV · 24kHz PCM_16
+- **Streams:** yes (chunked)
+- **Header gotcha:** none observed (adapter still runs `finalize_wav_header()` defensively)
+- **Also supports:** mp3, opus — not exercised
+- **Split model quirk (D-004):** the `-free` variant returns identical
+  bytes to paid `s2.1-pro` when tested on the same input (verified
+  once — worth spot-checking on longer inputs). Free vs paid differs
+  in *latency SLA* + *training-data retention policy*, not audio.
+
+### Google Cloud TTS (Chirp3-HD)
+- **Requested:** `audioEncoding=LINEAR16`, `sampleRateHertz=24000`
+- **Returned:** raw PCM_16 bytes (NO WAV header). Adapter wraps in a
+  fresh 44-byte WAV header via `pcm_to_wav()` in adapters/base.py.
+  This is the ONE provider where the adapter *fabricates* the header
+  rather than parsing/finalizing one from the response.
+- **Streams:** buffered REST for `Chirp3-HD` (streaming synthesis exists
+  but adds a caveat we chose not to take in v1); TTFA is total_ms, not
+  first-byte.
+- **Also supports:** MP3, OGG_OPUS, MULAW — not exercised
+- **File size (S01, 25 chars):** ~85 KB
+- **Auth choice (D-002 friction):** raw HTTPS + API key
+  (`?key=<GOOGLE_API_KEY>`) instead of the official Python SDK. Path A
+  chosen for D1 transport uniformity — SDK's transport is opaque and
+  would not compare like-for-like to the other providers' raw httpx.
+
+### Cartesia (Sonic-2)
+- **Requested:** `output_format={container:wav, encoding:pcm_s16le, sample_rate:24000}`
+- **Returned:** WAV · PCM_16 · 24kHz · **`LIST` metadata chunk between
+  `fmt ` and `data`** — valid RIFF, but naive parsers reading bytes
+  40-44 as data-chunk size misfire (see friction event above).
+- **Streams:** yes (over `/tts/bytes`)
+- **Header gotcha:** LIST chunk placement; no length placeholder.
+- **Also supports:** raw (headerless PCM), mp3 — not exercised
+- **File size (S01, 25 chars):** ~71 KB (WAV incl LIST chunk)
+
+### ElevenLabs (Flash v2.5 / Multilingual v2)
+- **Requested:** `output_format=pcm_24000` (query param) → returns
+  raw PCM which the adapter wraps via `pcm_to_wav()`, OR
+  `output_format=mp3_44100_128` for MP3
+- **Returned by default (this eval):** WAV wrapper around 24kHz PCM_16
+- **Streams:** yes (`/v1/text-to-speech/{voice_id}/stream`)
+- **Header gotcha:** none (adapter constructs a fresh header, no placeholder to finalize)
+- **Also supports:** many mp3 bitrates, ulaw_8000, pcm_16000/22050/44100
+- **File size (S01, 25 chars):** ~76 KB
+
+### Canopy Orpheus (via Replicate)
+- **Requested:** JSON body `{ input: { prompt: <text>, voice: <tara|dan|josh|emma> } }`
+- **Returned:** signed URL pointing to a WAV file on Replicate CDN;
+  adapter follows the URL and downloads bytes. Adds one HTTP round-trip.
+- **Streams:** no (Replicate is inherently request/response with a
+  polled prediction — labelled `N/A-hosted` for D1 in spec)
+- **Header gotcha:** none observed on the downloaded bytes
+- **Sample rate:** 24kHz (community fork default; not user-tunable)
+- **Also supports:** none — the lucataco fork exposes only these params
+- **Cost model gotcha:** Replicate bills per GPU-second, not per
+  request; a 30-word prompt takes ~0.5s of L40S time → ~$0.003/gen
+  (see DEVIATIONS D-004). Bulk work with parallel requests is FAR
+  cheaper than the naive per-call estimate.
+
+### OpenAI (gpt-4o-mini-tts / tts-1-hd)
+- **Requested:** `response_format=wav` in the JSON body
+- **Returned:** WAV · PCM_16 · 24kHz (gpt-4o family); 24kHz (tts-1-hd)
+- **Streams:** yes (chunked HTTP over `/v1/audio/speech`)
+- **Header gotcha:** ships `0xFFFFFFFF` placeholder in BOTH RIFF size
+  and data-chunk size — the classic streaming-WAV pattern. Requires
+  `finalize_wav_header()`. Same defect class Deepgram + Speechify have.
+- **Also supports:** mp3, opus, aac, flac, pcm
+- **Voice enum by model** (verified 2026-08-08):
+  - `tts-1` / `tts-1-hd`: nova, shimmer, echo, onyx, fable, alloy,
+    ash, sage, coral
+  - `gpt-4o-mini-tts` / `gpt-4o-tts` (where available):
+    all 9 above + ballad, verse, cedar
+- **File size (S01, 25 chars):** ~115 KB
+
+### Speechify (Simba 3.2)
+- **Requested:** `audio_format=wav` in the JSON body
+- **Returned:** JSON envelope `{"audio_data": "<base64WAV>",
+  "billable_characters_count": N, ...}` — NOT raw bytes. Adapter
+  parses JSON, base64-decodes, then runs `finalize_wav_header()`
+  (yes, the decoded WAV still has the streaming placeholder).
+- **Streams:** endpoint discipline is inverted from the other providers:
+  - `/v1/audio/speech` — BUFFERED, returns WAV (via JSON envelope)
+  - `/v1/audio/stream` — STREAMED, returns MP3 regardless of the
+    `audio_format` body field
+  There is NO "streamed WAV" option. We took `/audio/speech` for D3/D4
+  parity (lossless everywhere) and accepted that D8 TTFA is not
+  measurable for Speechify (D-008 annotation).
+- **Header gotcha:** `0xFFFFFFFF` in RIFF + data-chunk size, even
+  after base64 decode — Speechify's backend never finalized the header
+  before base64-encoding.
+- **Native sample rate (observed):** 48 kHz PCM_16 (Speechify's
+  "48" suffix in `geffen_32` etc. was NOT the sample rate — it's a
+  Simba-3.2 version marker; native SR is 48k regardless).
+- **Also supports:** mp3, ogg, aac (per the buffered endpoint's
+  `audio_format` field)
+- **File size (S01, 25 chars):** ~148 KB (higher — 48 kHz vs
+  24 kHz elsewhere)
+
+### Cross-provider pattern: `0xFFFFFFFF` streamed-header placeholder
+Four of eight providers (Deepgram · OpenAI · Speechify · [Cartesia
+partial with LIST chunk]) ship placeholder-length WAV headers when
+audio is streamed. RTF, VAD, LUFS, TTSDS2 all read duration from that
+header. `finalize_wav_header()` in `adapters/base.py` rewrites both
+the RIFF size field and the `data` chunk size once the full stream is
+received. **Publishable observation: it's easier to list the providers
+that DON'T have this defect than the ones that do.** Every streaming
+adapter needs the finalize step.
+
+### Cross-provider pattern: cache put/get symmetry
+The runner's content-hash cache broke silently for 4 of 8 providers
+during Phase E → F because `put()` stored with the RESULT's
+`sample_rate` (e.g. 24000 for Cartesia/Google/OpenAI) while `get()`
+looked up with `sample_rate=None` from the request. The mismatched
+keys meant those providers' cache entries could never be found. Fixed
+by using `sample_rate=None` on both sides — sample_rate is a rendered
+property, not a request-side cache-key ingredient. **Portable-across-
+projects lesson: any content-hash cache should be keyed on request
+parameters ONLY, never on response metadata.**
+
+### Environment gotcha: ttsds transitive dep cliff
+`ttsds >= 2.1` pulls in `s3prl → wespeaker → torchaudio`, and s3prl
+still calls `torchaudio.set_audio_backend("sox_io")` — a function
+removed in torchaudio 2.5+. `transformers >= 5.0` similarly has
+breaking API changes vs the ttsds contract. Upper-bounds pinned in
+`pyproject.toml`:
+```
+torch >= 2.2, < 2.5
+torchaudio >= 2.2, < 2.5
+transformers >= 4.44, < 5.0
+```
+Without those bounds `uv sync --extra analyze` resolves to broken
+imports on first run. Publishable observation: TTSDS2's transitive
+dep depth is ~40 packages; version constraints propagate widely.
