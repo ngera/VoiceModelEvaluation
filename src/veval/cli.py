@@ -184,6 +184,14 @@ def generate(
         3, "--n-draws",
         help="Draws per item for --mode variance (default 3 per spec §3.4)",
     ),
+    latency_item: str = typer.Option(
+        "S01", "--latency-item",
+        help="Which corpus item's text for --mode latency (default S01)",
+    ),
+    trials: int = typer.Option(
+        50, "--trials",
+        help="Serial trials per provider for --mode latency (default 50)",
+    ),
 ) -> None:
     """Run the campaign: adapter.synthesize() across (provider, use_case, item)."""
     try:
@@ -243,8 +251,22 @@ def generate(
             n_draws=n_draws,
         )
     else:  # latency
-        console.print("[red]--mode latency lands in Phase D.4[/red]")
-        raise typer.Exit(code=2)
+        # Latency mode uses a single use case + single item (spec §D1).
+        # If the caller passed multiple use cases, take the first; if none,
+        # default to conversational.
+        latency_use_case = (use_case[0] if use_case else "conversational")
+        if use_case and len(use_case) > 1:
+            console.print(
+                f"[yellow]--mode latency takes one use case; using '{latency_use_case}'[/yellow]"
+            )
+        if items:
+            console.print("[yellow]--items ignored for latency mode; use --latency-item[/yellow]")
+        summary = runner.run_latency(
+            provider_names=provider,
+            use_case=latency_use_case,  # type: ignore[arg-type]
+            item_id=latency_item,
+            trials=trials,
+        )
 
     _print_generate_summary(summary)
     if summary.failed > 0:

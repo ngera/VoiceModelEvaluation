@@ -246,9 +246,53 @@ Cost estimate for the full 480-generation variance run: **~$1–2**
 total (mostly Orpheus's ~$0.003/gen × 60; character-billed providers
 absorbed in free tiers or trivial paid usage). Spec §8 line item.
 
-### 2.6 Generate: latency mode (D.4 — later)
+### 2.6 Generate: latency mode (D.4 — 50 serial trials per provider)
 
-`--mode latency` is stubbed — lands in D.4.
+```powershell
+uv run veval generate --mode latency
+```
+
+Runs **50 serial trials** per provider on **one short item** (default
+S01 conversational). Strictly serial per spec §D1 — concurrent load
+contaminates TTFA. Total: 50 × 7 providers = **350 calls** (Orpheus
+skipped: D1 is N/A-hosted per spec §3.1).
+
+**Provider-specific behaviour:**
+- **Fish** uses the paid `s2.1-pro` model, NOT the free tier. Free
+  tier latency is best-effort with no SLA and would not represent a
+  deployment.
+- **Google** returns buffered REST — TTFA ≈ total_ms; results carry
+  `meta.transport = "buffered-rest"` and get a non-comparability
+  footnote in the D1 results table (spec §3.1).
+- **Orpheus** skipped entirely.
+- **Cache is FORCED OFF** — measurement IS the fresh call.
+
+**Filters:**
+
+```powershell
+# One provider only, 50 trials
+uv run veval generate --mode latency --provider deepgram
+
+# Different corpus item (e.g. a medium item to check TTFA vs input length)
+uv run veval generate --mode latency --latency-item M01
+
+# Narration use case
+uv run veval generate --mode latency --use-case narration
+
+# Shorter trial run for smoke test
+uv run veval generate --mode latency --provider deepgram --trials 5
+```
+
+**Scheduling across days / times of day is a manual operator step**,
+per spec §D1: "50 trials per provider, split across ≥2 days and ≥2
+times of day." Run this command a few times over 48+ hours; Phase E's
+`latency.py` analyzer stitches results from all `runs/latency-*/`
+directories.
+
+**Cost:** ~$0.10 for a full 350-trial run at defaults. Char-billed
+providers absorb this; ElevenLabs pulls ~50 chars × 50 trials × their
+per-char rate; Fish uses paid tier so slight paid usage there too.
+Rounding-error small.
 
 ---
 

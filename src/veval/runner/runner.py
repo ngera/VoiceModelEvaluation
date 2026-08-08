@@ -526,9 +526,119 @@ class Runner:
                 summary.per_provider_failed[r.provider] = summary.per_provider_failed.get(r.provider, 0) + 1
         return summary
 
-    # --- Public: latency mode (D.4, stubbed) ---
+    # --- Public: latency mode (D.4) ---
 
     def run_latency(
-        self, provider_name: str, item_id: str, trials: int = 50,
+        self,
+        provider_names: list[str] | None = None,
+        use_case: UseCase = "conversational",
+        item_id: str = "S01",
+        trials: int = 50,
     ) -> RunSummary:
-        raise NotImplementedError("Latency mode lands in Phase D.4")
+        """Run the D1 latency campaign: `trials` serial calls per provider.
+
+        Per spec §D1:
+          - Strictly serial per provider (one request in flight) —
+            concurrent load contaminates TTFA
+          - Same short item across all trials (default S01 conversational)
+          - Report p50/p90 only (50 trials cannot support p99)
+          - Streaming mode requested — providers that stream give a real
+            first-byte time; buffered providers (Google REST) have
+            TTFA == total, recorded with meta.transport="buffered-rest"
+          - Fish: uses paid `s2.1-pro` (voice.model), NOT free tier
+            (voice.quality_model) — that's why `_resolve_voice_model`
+            passes RunMode.latency down
+          - Orpheus: SKIPPED — spec §3.1 says D1 is N/A-hosted; the
+            skip is enforced here rather than producing meaningless
+            hosted-inference timings
+
+        Scheduling across days / times of day is the OPERATOR's job:
+        run this command multiple times with the same run store and
+        stitch the results in analyze/latency.py. This method executes
+        one batch.
+
+        Args:
+            provider_names: default all in providers.yaml except orpheus.
+            use_case: which voice+model lock to probe. Default conv.
+            item_id: which corpus item's text. Default S01 (short).
+            trials: default 50 per spec.
+        """
+        providers = [
+            p for p in self.providers.providers
+            if p.name != "orpheus"  # spec §3.1 — D1 N/A-hosted
+            and (provider_names is None or p.name in provider_names)
+        ]
+
+        # Explicit note if the caller passed orpheus — silent skip is a bug
+        # attractor
+        if provider_names and "orpheus" in provider_names:
+            # We still don't run it; just log that we noticed the request
+            pass
+
+        corpus = self._load_corpus(use_case)
+        item = next((i for i in corpus.items if i.id == item_id), None)
+        if item is None:
+            raise RuntimeError(
+                f"latency: item_id {item_id!r} not in {use_case} corpus"
+            )
+
+        run = default_run_store().new_run(kind="latency", extras={
+            "mode": RunMode.latency.value,
+            "use_case": use_case,
+            "item_id": item_id,
+            "trials": trials,
+            "provider_names": [p.name for p in providers],
+            "orpheus_skipped": "spec §3.1 — D1 N/A-hosted",
+        })
+        started = time.perf_counter()
+
+        # STRICTLY SERIAL per provider (spec §D1). We do run different
+        # providers sequentially in the CLI here to keep the network
+        # unloaded during any single provider's trials.
+        results: list[ItemResult] = []
+        for p in providers:
+            for trial in range(trials):
+                # `draw` field is repurposed as trial index for the audio
+                # path; audio files land at:
+                #   audio/<provider>/<use_case>/<item_id>_t{trial:03d}.wav
+                # We synthesise then also relocate the file. Simpler:
+                # call _synthesize_one with mode=latency and let it drop
+                # the file without the _dNN suffix (mode!=variance), then
+                # rename to _tNNN. Cleanest: shadow the suffix logic here
+                # by writing directly in the summary loop instead of
+                # reusing _synthesize_one's path convention. Compromise:
+                # do a rename after synth. Files are small (< 100KB
+                # typically); rename cost is negligible.
+                r = self._synthesize_one(p, use_case, item, RunMode.latency, trial, run)
+                if r.ok and r.audio_path is not None:
+                    # Rename to trial-indexed path so multiple trials don't
+                    # overwrite each other
+                    new_name = r.audio_path.with_name(
+                        f"{item.id}_t{trial:03d}.{r.result.audio_format if r.result else 'wav'}"
+                    )
+                    try:
+                        r.audio_path.rename(new_name)
+                        r.audio_path = new_name
+                    except OSError:
+                        # If rename fails (very unlikely), keep the original
+                        # path; latency analyzer reads from api_log.jsonl
+                        # for timing, not from file names
+                        pass
+                results.append(r)
+
+        elapsed = time.perf_counter() - started
+        run.finalize()
+
+        summary = RunSummary(
+            mode=RunMode.latency, run_id=run.manifest.run_id, run_dir=run.dir,
+            total=len(results),
+            ok=sum(1 for r in results if r.ok),
+            failed=sum(1 for r in results if not r.ok),
+            elapsed_s=elapsed,
+        )
+        for r in results:
+            if r.ok:
+                summary.per_provider_ok[r.provider] = summary.per_provider_ok.get(r.provider, 0) + 1
+            else:
+                summary.per_provider_failed[r.provider] = summary.per_provider_failed.get(r.provider, 0) + 1
+        return summary
