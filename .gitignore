@@ -66,9 +66,10 @@ Thumbs.db
 # lives in configs/ and corpus/, so raw notes are redundant.
 documentation/*.txt
 
-# Editors
+# Editors / IDE / Claude Code session state
 .vscode/
 .idea/
+.claude/
 *.swp
 
 # Vercel

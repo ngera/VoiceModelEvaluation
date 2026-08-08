@@ -47,6 +47,7 @@ from veval.adapters.base import (
     ProviderError,
     SynthesisOptions,
     SynthesisResult,
+    finalize_wav_header,
 )
 
 DEFAULT_ENDPOINT = "https://api.openai.com/v1/audio/speech"
@@ -113,7 +114,10 @@ class OpenAIAdapter(ProviderAdapter):
             ) from e
 
         total_ms = (time.perf_counter() - start) * 1000.0
-        audio_bytes = b"".join(audio_chunks)
+        # Streamed WAV carries a 0xFFFFFFFF placeholder length header — patch
+        # to reality (same defect class Deepgram had; caught by the Phase E
+        # acceptance gate on the second-pilot audio).
+        audio_bytes = finalize_wav_header(b"".join(audio_chunks))
 
         if not audio_bytes:
             raise ProviderError(

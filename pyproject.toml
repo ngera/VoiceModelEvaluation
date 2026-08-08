@@ -14,7 +14,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Analyzer deps are Linux/CUDA-first. Install inside the devcontainer only.
+# Analyzer stack. Native Windows works throughout (v2 plan) — VERSA and
+# NeMo are gone; every dep here has Windows wheels. GPU strongly recommended.
+# Parakeet loaded via HuggingFace `transformers` (RNNT release; TDT re-check
+# per analyzers.yaml). faster-whisper via CTranslate2. TTSDS2 + Audiobox
+# Aesthetics via their PyPI packages.
 analyze = [
     "jiwer>=3.0",
     "faster-whisper>=1.0",
@@ -23,8 +27,15 @@ analyze = [
     "numpy>=1.26",
     "scipy>=1.13",
     "soundfile>=0.12",
-    # VERSA, NeMo (Parakeet), TTSDS2, Audiobox pinned via Dockerfile due to
-    # non-PyPI or heavy install patterns; see .devcontainer/Dockerfile.
+    # Upper bounds: ttsds pulls in s3prl/wespeaker which use
+    # `torchaudio.set_audio_backend()` — removed in torchaudio 2.x newer
+    # revisions. transformers 5.x has breaking API changes vs the ttsds
+    # dep contract. Pinned below those cliffs; re-check on drift re-run.
+    "torch>=2.2,<2.5",
+    "torchaudio>=2.2,<2.5",
+    "transformers>=4.44,<5.0",
+    "ttsds>=2.1",           # TTSDS2 ships under the `ttsds` PyPI name (2.x = TTSDS2)
+    "audiobox-aesthetics>=0.0.4",
 ]
 admin = [
     "streamlit>=1.36",

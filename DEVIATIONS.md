@@ -40,6 +40,65 @@ receipt.
 
 ---
 
+## D-008 — Speechify endpoint reverted to `/v1/audio/speech`; TTFA not measurable (2026-08-08)
+
+**What changed.** Speechify adapter now hits `POST /v1/audio/speech`
+(JSON envelope) instead of `/v1/audio/stream` (raw bytes). The envelope
+delivers base64-encoded WAV; the adapter decodes it before writing to
+disk. `ttfa_ms` is set to `None`; `total_ms` is the whole
+request/response duration.
+
+**Why.** The Phase E WAV acceptance gate (built 2026-08-08, first live
+run against the second D.7 pilot) surfaced two Speechify defects in
+sequence:
+
+1. **Original state**: adapter hit `/v1/audio/speech` but treated the
+   response as raw bytes — wrote the JSON envelope verbatim to
+   `.wav` files. soundfile decode error on every clip.
+2. **First fix attempt (same day)**: switched to `/v1/audio/stream`
+   for real streaming + TTFA parity with the other adapters. But
+   `/stream` returns MP3 (ID3/Lavf-tagged) regardless of the
+   `audio_format` field in the body. WAV is only available via
+   the JSON envelope.
+
+Third option — accept MP3 on disk and let analyzers handle both
+formats — was rejected: a comparability study should hold audio
+format constant across providers. MP3 compression artifacts would
+contaminate WER, TTSDS2, and hygiene metrics for one provider only.
+
+**Choice.** Take WAV via `/v1/audio/speech`, accept that Speechify
+D8 latency is `total_ms` (buffered) rather than TTFA. Speechify
+gets an on-chart annotation on the latency frontier — the same
+pattern precedent set by Fish's split-model annotation (D-004
+paradigm: log the constraint, don't pretend it isn't there).
+
+**Impact on results.**
+- Every provider ships lossless WAV to analyzers → no
+  format-comparability caveat needed on WER, TTSDS2, hygiene.
+- Speechify latency: `total_ms` (full request/response). Not
+  directly comparable to other providers' `ttfa_ms`. Reported as
+  "N/A — no streaming WAV endpoint" on the conversational-latency
+  gate; the `exempt-and-annotate` `na_policy` in gates.yaml
+  handles this without dropping Speechify from the use case.
+- Adapter code carries a comment explaining the endpoint choice
+  so a future reader doesn't "helpfully" switch back to /stream.
+
+**How the gate caught it.** By design. The Phase A defect class was
+"streamed WAV headers lie about duration"; the acceptance gate exists
+to catch any regression in that class before downstream analyzers
+(RTF, LUFS, TTSDS2, VAD) read a lying header. It caught OpenAI
+missing `finalize_wav_header()` (fixed 2026-08-08 in the same session)
+and Speechify's format mismatch on the same first run. Two silent-
+corruption defects, both surfaced before any analysis output was
+written. Portfolio-worthy — the guardrail paid for itself the day
+it landed.
+
+**Where to look.** `src/veval/adapters/speechify.py` (endpoint,
+JSON parse, base64 decode); `src/veval/analyze/acceptance.py`
+(the gate that caught it); commits [tbd]. Re-tagged **prereg-v1.6**.
+
+---
+
 ## D-007 — OpenAI narration voice cedar → onyx (not in tts-1-hd enum) (2026-08-08)
 
 **What changed.** Second pilot re-run after D-006 still showed 5/10

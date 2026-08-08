@@ -3,7 +3,7 @@
 Subcommands (implemented incrementally per Phase in CLAUDE.md):
 - doctor    (Phase A) — smoke-test all/one adapter end-to-end
 - generate  (Phase D) — run the corpus × providers campaign
-- analyze   (Phase E) — VERSA-backed WER/quality/hygiene/latency
+- analyze   (Phase E) — WER + quality + hygiene + latency + variance + drift + cost
 - score     (Phase G) — apply gates, build Pareto frontiers
 - report    (Phase G) — render tables, charts, memos
 """
@@ -335,6 +335,170 @@ def _print_generate_summary(summary: RunSummary) -> None:
         failed = summary.per_provider_failed.get(prov, 0)
         per_provider.add_row(prov, str(ok), str(failed) if failed else "—")
     console.print(per_provider)
+
+
+@app.command()
+def analyze(
+    run_id: str | None = typer.Argument(
+        None,
+        help="Run id under ./runs (e.g. campaign-20260808T173545Z). Default: latest campaign.",
+    ),
+    stages: str = typer.Option(
+        "all",
+        "--stages",
+        help=(
+            "Comma-separated: acceptance,hygiene,latency,cost,wer,quality,"
+            "variance,drift, or 'all'. Cheap stages default; wer/quality "
+            "download models on first run."
+        ),
+    ),
+    skip_ttsds: bool = typer.Option(
+        False, "--skip-ttsds", help="Skip TTSDS2 inside quality stage (fast iteration)"
+    ),
+    skip_audiobox: bool = typer.Option(
+        False, "--skip-audiobox", help="Skip Audiobox inside quality stage"
+    ),
+    n_split_half: int = typer.Option(
+        100, "--n-split-half", help="Split-half partitions for TTSDS2 stability"
+    ),
+    gates_file: Path = typer.Option(Path("configs/gates.yaml"), "--gates-file"),
+    analyzers_file: Path = typer.Option(
+        Path("configs/analyzers.yaml"), "--analyzers-file"
+    ),
+    pricing_file: Path = typer.Option(Path("configs/pricing.yaml"), "--pricing-file"),
+    corpus_dir: Path = typer.Option(Path("corpus"), "--corpus-dir"),
+    analysis_dir: Path = typer.Option(
+        Path("analysis"), "--analysis-dir",
+        help="Where to write analysis/<run_id>/ outputs",
+    ),
+) -> None:
+    """Run the Phase E analyzer chain over one run dir.
+
+    Reads from `runs/<run_id>/` and writes JSON outputs to
+    `analysis/<run_id>/`. All analyzers are pure functions of the run
+    store — safe to re-run without regenerating audio.
+    """
+    from veval.analyze import (
+        acceptance,
+        cost,
+        drift,
+        hygiene,
+        latency,
+        quality,
+        variance,
+        wer,
+    )
+    from veval.analyze.common import AnalysisWriter
+    from veval.config import load_analyzers, load_corpus, load_gates
+    from veval.store.run_store import default_run_store
+
+    if run_id is None:
+        runs = default_run_store().list_runs("campaign")
+        if not runs:
+            console.print("[red]no campaign runs under ./runs/[/red]")
+            raise typer.Exit(code=2)
+        run_dir = runs[0]
+    else:
+        run_dir = Path("runs") / run_id
+    if not run_dir.exists():
+        console.print(f"[red]run dir not found: {run_dir}[/red]")
+        raise typer.Exit(code=2)
+
+    all_stages = ["acceptance", "hygiene", "latency", "cost", "wer", "quality", "variance", "drift"]
+    requested = all_stages if stages.lower() == "all" else [s.strip() for s in stages.split(",")]
+    unknown = [s for s in requested if s not in all_stages]
+    if unknown:
+        console.print(f"[red]unknown stages: {unknown}. Valid: {all_stages}[/red]")
+        raise typer.Exit(code=2)
+
+    writer = AnalysisWriter(run_dir.name, base_dir=analysis_dir)
+    console.rule(f"[bold]veval analyze {run_dir.name}[/bold]")
+    console.print(f"[dim]stages: {', '.join(requested)}[/dim]")
+    console.print(f"[dim]output: {writer.dir}[/dim]")
+    console.print()
+
+    results: dict[str, dict] = {}
+    gates = load_gates(gates_file)
+
+    if "acceptance" in requested:
+        console.print("[bold]acceptance[/bold] - WAV header/decoded/LUFS/VAD/chars check")
+        results["acceptance"] = acceptance.run(run_dir, writer=writer)
+        console.print(
+            f"  gate_ok={results['acceptance']['gate_ok']} "
+            f"passed={results['acceptance']['passed']}/"
+            f"{results['acceptance']['total_files']}"
+        )
+
+    if "hygiene" in requested:
+        console.print("[bold]hygiene[/bold] - clipping / LUFS / noise floor / pauses")
+        results["hygiene"] = hygiene.run(run_dir, gates=gates, writer=writer)
+        console.print(
+            f"  files={results['hygiene']['total_files']} errors={results['hygiene']['n_errors']}"
+        )
+
+    if "latency" in requested:
+        console.print("[bold]latency[/bold] - TTFA percentiles + RTF on long items")
+        results["latency"] = latency.run(run_dir, writer=writer)
+        console.print(f"  items={results['latency']['total_items']}")
+
+    if "cost" in requested:
+        console.print("[bold]cost[/bold] - pricing.yaml x char counts -> cost_model.json")
+        results["cost"] = cost.run(run_dir, pricing_path=pricing_file, writer=writer)
+        console.print(
+            f"  observed spend: ${results['cost']['total_observed_cost_usd']:.4f}"
+        )
+
+    if "wer" in requested:
+        console.print("[bold]wer[/bold] - Parakeet + faster-whisper agreement (loads models)")
+        analyzers = load_analyzers(analyzers_file)
+        corpus_by_use_case = {}
+        for uc in ("conversational", "narration"):
+            p = corpus_dir / f"{uc}.yaml"
+            if p.exists():
+                corpus_by_use_case[uc] = load_corpus(p)
+        results["wer"] = wer.run(
+            run_dir, gates=gates, analyzers=analyzers,
+            corpus_by_use_case=corpus_by_use_case, writer=writer,
+        )
+        console.print(f"  items={len(results['wer']['items'])}")
+
+    if "quality" in requested:
+        console.print("[bold]quality[/bold] - TTSDS2 + Audiobox (heavy)")
+        analyzers = load_analyzers(analyzers_file)
+        results["quality"] = quality.run(
+            run_dir, analyzers=analyzers,
+            compute_ttsds=not skip_ttsds,
+            compute_audiobox=not skip_audiobox,
+            n_split_half=n_split_half, writer=writer,
+        )
+        console.print(
+            f"  ran_ttsds={results['quality']['ran_ttsds']} "
+            f"ran_audiobox={results['quality']['ran_audiobox']}"
+        )
+
+    if "variance" in requested:
+        console.print("[bold]variance[/bold] - within-provider SD -> noise floor + determinism")
+        wer_path = writer.dir / "wer.json"
+        quality_path = writer.dir / "quality.json"
+        results["variance"] = variance.run(
+            run_dir, gates=gates,
+            wer_analysis_path=wer_path if wer_path.exists() else None,
+            quality_analysis_path=quality_path if quality_path.exists() else None,
+            writer=writer,
+        )
+        console.print(f"  providers={len(results['variance']['by_provider'])}")
+
+    if "drift" in requested:
+        console.print("[bold]drift[/bold] - per-third analysis on long narration items")
+        results["drift"] = drift.run(run_dir, gates=gates, writer=writer)
+        n_flagged = sum(
+            r["n_monotonic_degradation"] for r in results["drift"]["by_provider"]
+        )
+        console.print(f"  flagged={n_flagged}")
+
+    console.print()
+    console.rule("[bold green]analyze complete[/bold green]")
+    console.print(f"outputs in {writer.dir}")
 
 
 if __name__ == "__main__":
