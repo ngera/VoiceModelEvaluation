@@ -35,7 +35,7 @@ st.markdown(
     | Run    | D | ✅ live — click **Run** in sidebar |
     | Results | E | ✅ live — click **Results** in sidebar |
     | Rate   | F | ✅ live — click **Rate** in sidebar |
-    | Frontier | G | ⏳ pending |
+    | Frontier | G | ✅ live — click **Frontier** in sidebar |
 
     ---
 

@@ -42,6 +42,17 @@ admin = [
     "streamlit>=1.36",
     "plotly>=5.22",
     "pandas>=2.2",
+    # Chart libs for Phase G (hybrid, per the "chart library" decision):
+    #   Plotly powers the interactive admin page 5 (Frontier). Kept
+    #   interactive-only: kaleido (its static-PNG helper) 0.2.x has no
+    #   Windows wheels and 1.x pulls Chrome. Static output flows via
+    #   Altair instead.
+    #   Altair produces the frozen-in-time PNGs for the case study;
+    #   vl-convert-python is the pure-Python replacement for the
+    #   deprecated altair-saver / vega-node toolchain and works
+    #   cross-platform.
+    "altair>=5.0",
+    "vl-convert-python>=1.7",
 ]
 dev = [
     "pytest>=8.2",

@@ -88,3 +88,8 @@ rating/manifest.json
 judgments-*.csv
 documentation/judgement_tests/
 documentation/judgment_tests/
+
+# Phase G rendered outputs — derivative of `analysis/score.json`,
+# regenerable via `veval report`. The score JSON (in analysis/) IS
+# committed as the receipt; the rendered memos + charts are not.
+site/

@@ -831,5 +831,268 @@ def rate_fit(
     console.print(f"written to {out}")
 
 
+@app.command()
+def score(
+    run_id: str | None = typer.Argument(
+        None,
+        help="Analysis directory under ./analysis (default: latest by mtime)",
+    ),
+    bt_fit_path: Path = typer.Option(
+        Path("analysis/bt_fit.json"), "--bt-fit",
+        help="Bradley-Terry fit JSON from `veval rate fit`",
+    ),
+    cost_axis_projection: str = typer.Option(
+        "100K_words_per_month", "--cost-projection",
+        help="Which cost_model column to use for the cost axis",
+    ),
+    gates_file: Path = typer.Option(Path("configs/gates.yaml"), "--gates-file"),
+    hi_snapshot: Path | None = typer.Option(
+        None, "--hi-snapshot",
+        help="Optional Humanness Index snapshot JSON (skips HI comparison if omitted)",
+    ),
+    out: Path = typer.Option(
+        Path("analysis/score.json"), "--out",
+        help="Where to write the combined score payload",
+    ),
+) -> None:
+    """Phase G scoring: gates -> survivors -> frontiers with CI domination
+    -> robustness sweep -> HI reproduces column -> Spearman rho.
+    """
+    from veval.config import load_analyzers, load_gates
+    from veval.human.bt import BTFit
+    from veval.score import correlations, frontier, gates as gates_mod, hi_loader, robustness
+    from veval.store.run_store import default_run_store
+
+    # Discover latest analysis dir if not provided
+    if run_id is None:
+        runs = default_run_store().list_runs("campaign")
+        if not runs:
+            console.print("[red]no campaign runs under ./runs/[/red]")
+            raise typer.Exit(code=2)
+        analysis_dir = Path("analysis") / runs[0].name
+    else:
+        analysis_dir = Path("analysis") / run_id
+    if not analysis_dir.exists():
+        console.print(f"[red]analysis dir not found: {analysis_dir}[/red]")
+        raise typer.Exit(code=2)
+
+    console.rule(f"[bold]veval score[/bold] {analysis_dir.name}")
+
+    analyses = gates_mod.load_analyses(analysis_dir)
+    console.print(f"loaded {len(analyses)} analyzer output(s): {sorted(analyses)}")
+
+    gates = load_gates(gates_file)
+    # Provider set: union across analyzer outputs
+    providers: set[str] = set()
+    for payload in analyses.values():
+        for row in payload.get("by_provider", []):
+            if "provider" in row:
+                providers.add(row["provider"])
+    provider_list = sorted(providers)
+    console.print(f"providers: {provider_list}")
+
+    # --- Gates ---
+    console.print("[bold]gates[/bold] - apply per-use-case, honor na_policy")
+    survivals = gates_mod.apply_gates(provider_list, gates, analyses)
+    survivors_by_uc: dict[str, list[str]] = {}
+    exempt_by_provider: dict[str, dict[str, list[str]]] = {}
+    for s in survivals:
+        survivors_by_uc.setdefault(s.use_case, [])
+        exempt_by_provider.setdefault(s.use_case, {}).setdefault(s.provider, [])
+        if s.survives:
+            survivors_by_uc[s.use_case].append(s.provider)
+        exempt_by_provider[s.use_case][s.provider].extend(s.exempt_gates)
+    for uc, sv in survivors_by_uc.items():
+        console.print(f"  {uc}: {len(sv)} survivor(s) - {sv}")
+
+    # --- Robustness ---
+    console.print("[bold]robustness[/bold] - sweep gates over their robustness_points")
+    robustness_results = robustness.sweep_all(provider_list, gates, analyses)
+    for r in robustness_results:
+        flag = "stable" if r.is_stable else "UNSTABLE"
+        console.print(f"  {r.use_case}.{r.gate_metric}: {flag} across {r.robustness_points}")
+
+    # --- BT + frontiers ---
+    frontiers: dict[str, dict[str, Any]] = {}
+    bt_data = None
+    if bt_fit_path.exists():
+        import json
+        bt_data = json.loads(bt_fit_path.read_text(encoding="utf-8"))
+        console.print(f"[bold]frontiers[/bold] - Pareto + CI domination from {bt_fit_path}")
+        cost_payload = analyses.get("cost_model.json")
+        latency_payload = analyses.get("latency.json")
+        for uc_name, fit_data in bt_data.get("fits", {}).items():
+            # Reconstruct a BTFit-shaped object with pairwise_diff intact
+            pairwise = {}
+            for key, d in fit_data.get("pairwise_diff", {}).items():
+                a, b = key.split("__")
+                pairwise[(a, b)] = d
+            bt_fit = BTFit(
+                use_case=uc_name,
+                systems=fit_data["systems"],
+                strengths=fit_data["strengths"],
+                strength_ci_lower=fit_data.get("strength_ci_lower", {}),
+                strength_ci_upper=fit_data.get("strength_ci_upper", {}),
+                pairwise_diff=pairwise,
+                n_judgments=fit_data.get("n_judgments", 0),
+                n_items=fit_data.get("n_items", 0),
+            )
+            survivors = survivors_by_uc.get(uc_name, [])
+            exempts = exempt_by_provider.get(uc_name, {})
+            frontiers[uc_name] = {}
+            for axis_name in ("cost", "latency"):
+                fr = frontier.build_frontier(
+                    bt_fit, survivors=survivors, axis=axis_name,
+                    cost_payload=cost_payload if axis_name == "cost" else None,
+                    latency_payload=latency_payload if axis_name == "latency" else None,
+                    cost_projection=cost_axis_projection,
+                    exempt_providers=exempts,
+                )
+                frontiers[uc_name][axis_name] = frontier.as_dict(fr)
+                on = [p.provider for p in fr.points if p.on_frontier]
+                console.print(f"  {uc_name}.{axis_name} frontier: {on}")
+    else:
+        console.print(f"[yellow]no BT fit at {bt_fit_path} - skipping frontiers[/yellow]")
+
+    # --- HI comparison ---
+    hi_output: dict[str, Any] | None = None
+    if hi_snapshot and hi_snapshot.exists() and bt_data:
+        console.print("[bold]HI[/bold] - Humanness Index reproduces column")
+        snap = hi_loader.load_snapshot(hi_snapshot)
+        # Conventionally compare against the conversational use case
+        conv_fit = bt_data.get("fits", {}).get("conversational")
+        if conv_fit:
+            strengths = dict(zip(conv_fit["systems"], conv_fit["strengths"]))
+            comparisons = hi_loader.compare(snap, strengths)
+            hi_output = {
+                "snapshot": {"captured_at": snap.captured_at, "source": snap.source},
+                "comparisons": hi_loader.as_dicts(comparisons),
+            }
+    elif hi_snapshot and not hi_snapshot.exists():
+        console.print(f"[yellow]HI snapshot not found: {hi_snapshot}[/yellow]")
+
+    # --- Spearman correlations ---
+    correlations_out: list[dict[str, Any]] = []
+    if bt_data:
+        console.print("[bold]correlations[/bold] - Spearman rho")
+        conv_fit = bt_data.get("fits", {}).get("conversational")
+        if conv_fit:
+            d4 = dict(zip(conv_fit["systems"], conv_fit["strengths"]))
+            # D3 (TTSDS2) - convention: use audiobox PQ mean when TTSDS2
+            # per-provider score isn't available (Phase E quality.py note).
+            quality_payload = analyses.get("quality.json")
+            if quality_payload:
+                d3 = {
+                    r["provider"]: r["audiobox_means"].get("production_quality")
+                    for r in quality_payload.get("audiobox_by_provider", [])
+                    if r["use_case"] == "conversational"
+                    and r["audiobox_means"].get("production_quality") is not None
+                }
+                if d3:
+                    r = correlations.spearman(
+                        d3, d4, left_axis="D3_PQ", right_axis="D4_BT",
+                    )
+                    correlations_out.append(correlations.as_dict(r))
+                    console.print(f"  D3 <-> D4: rho={r.rho} n={r.n_shared} ({r.interpretation})")
+            if hi_output:
+                hi_scores = {
+                    p: c["hi_score"]
+                    for p, c in hi_output["comparisons"].items()
+                    if c["hi_score"] is not None
+                }
+                if hi_scores:
+                    r_d4_hi = correlations.spearman(
+                        d4, hi_scores, left_axis="D4_BT", right_axis="HI",
+                    )
+                    correlations_out.append(correlations.as_dict(r_d4_hi))
+                    console.print(
+                        f"  D4 <-> HI: rho={r_d4_hi.rho} n={r_d4_hi.n_shared} "
+                        f"({r_d4_hi.interpretation})"
+                    )
+
+    # --- Write score.json ---
+    payload = {
+        "analysis_dir": str(analysis_dir),
+        "bt_fit_source": str(bt_fit_path) if bt_data else None,
+        "hi_snapshot_source": str(hi_snapshot) if hi_output else None,
+        "survivals": gates_mod.as_dicts(survivals),
+        "robustness": robustness.as_dicts(robustness_results),
+        "frontiers": frontiers,
+        "hi": hi_output,
+        "correlations": correlations_out,
+    }
+    out.parent.mkdir(parents=True, exist_ok=True)
+    import json
+    out.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+    console.print()
+    console.rule("[bold green]score complete[/bold green]")
+    console.print(f"written to {out}")
+
+
+@app.command()
+def report(
+    score_json: Path = typer.Argument(
+        Path("analysis/score.json"),
+        help="Path to score.json produced by `veval score`",
+    ),
+    out_dir: Path = typer.Option(
+        Path("site"), "--out",
+        help="Where to write memos + charts + case study markdown",
+    ),
+) -> None:
+    """Render tables + Altair PNGs + interactive Plotly HTML from
+    `score.json`. Case study + per-use-case memos land in `site/`.
+    """
+    import json
+    from veval.report.charts import (
+        altair_frontier, altair_to_png,
+        plotly_frontier, plotly_to_html,
+    )
+    from veval.report.memos import case_study_markdown, memo_markdown
+
+    if not score_json.exists():
+        console.print(f"[red]score.json not found: {score_json}[/red]")
+        console.print("[dim]run `veval score` first[/dim]")
+        raise typer.Exit(code=2)
+
+    score = json.loads(score_json.read_text(encoding="utf-8"))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "interactive").mkdir(exist_ok=True)
+
+    console.rule(f"[bold]veval report[/bold] from {score_json}")
+
+    # --- Memos ---
+    for uc in ("conversational", "narration"):
+        memo_path = out_dir / f"memo_{uc}.md"
+        memo_path.write_text(memo_markdown(score, uc), encoding="utf-8")
+        console.print(f"  wrote {memo_path}")
+
+    # --- Case study ---
+    cs_path = out_dir / "case_study.md"
+    cs_path.write_text(case_study_markdown(score), encoding="utf-8")
+    console.print(f"  wrote {cs_path}")
+
+    # --- Charts (per use case, per axis) ---
+    for uc in ("conversational", "narration"):
+        for axis in ("cost", "latency"):
+            frontier_payload = (
+                score.get("frontiers", {}).get(uc, {}).get(axis)
+            )
+            if not frontier_payload or not frontier_payload.get("points"):
+                console.print(
+                    f"  [dim]skip {uc}.{axis} chart (no frontier data)[/dim]"
+                )
+                continue
+            png_path = out_dir / f"{uc}_{axis}.png"
+            html_path = out_dir / "interactive" / f"{uc}_{axis}.html"
+            altair_to_png(altair_frontier(frontier_payload), png_path)
+            plotly_to_html(plotly_frontier(frontier_payload), html_path)
+            console.print(f"  wrote {png_path} + {html_path}")
+
+    console.print()
+    console.rule("[bold green]report complete[/bold green]")
+    console.print(f"outputs in {out_dir}")
+
+
 if __name__ == "__main__":
     app()
