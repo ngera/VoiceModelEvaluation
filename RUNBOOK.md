@@ -339,8 +339,15 @@ uv run streamlit run src/veval/admin/app.py
 ```
 
 **What it does:** starts a Streamlit server on `http://localhost:8501`.
-Currently has one page (**Doctor**) that wraps `run_doctor()`. More
-pages land per Phase (Run page in D.6, Results in E, Frontier in G).
+
+**Live pages:**
+- **Doctor** — wraps `run_doctor()` (Phase A live)
+- **Run** — wraps `Runner.run_campaign()` / `run_variance()` /
+  `run_latency()` (Phase D.6 live). Same knobs as `veval generate`:
+  mode picker, provider + use-case filters, item filter (campaign),
+  n_draws (variance), latency-item + trials (latency), cache toggle,
+  spend-cap override. Big red **Run** button + live status + final
+  summary + per-provider spend table.
 
 **When to use:** interactive verification without CLI verbosity, or
 demoing the flow to a reviewer.

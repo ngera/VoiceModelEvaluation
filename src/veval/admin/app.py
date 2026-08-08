@@ -32,16 +32,17 @@ st.markdown(
     | Page | Phase | Status |
     |---|---|---|
     | Doctor | A | ✅ live — click **Doctor** in sidebar |
-    | Run    | D | ⏳ pending |
+    | Run    | D | ✅ live — click **Run** in sidebar |
     | Results | E | ⏳ pending |
     | Frontier | G | ⏳ pending |
 
     ---
 
     **Reference docs:**
-    - `documentation/voice_ai_eval_portfolio_edition.md` — current build scope
-    - `documentation/voice_ai_eval_plan_v1_descoped.md` — full methodology
+    - `documentation/voice_ai_eval_spec_v2.md` — WHAT + HOW
+    - `documentation/IMPLEMENTATION_PLAN.md` — BUILD phases
     - `CLAUDE.md` — locked decisions and conventions
+    - `RUNBOOK.md` — operational commands (build/dev)
     """
 )
 
