@@ -172,13 +172,17 @@ voices:
   - provider: openai
     use_case: narration
     voice_id: "cedar"
-    model: "gpt-4o-tts"
+    model: "tts-1-hd"  # D-006: gpt-4o-tts was 404 for this account (2026-08-08)
     reasoning: >-
-      gpt-4o-tts is OpenAI's quality-optimised model — the model a
-      buyer would deploy for long-form narration. This is a DIFFERENT
-      model from the conversational entry above; a buyer would
-      actually swap them. Voice_id user-selected 2026-08-07 as the
-      narration-fit pick.
+      tts-1-hd is OpenAI's higher-quality standard TTS model — used
+      by audiobook / narration pipelines where quality matters more
+      than latency. Different model from the conversational entry
+      above (gpt-4o-mini-tts); a buyer would swap them per use case.
+      D-006 correction: the earlier pin on `gpt-4o-tts` was HTTP 404
+      for this account — that model appears to be gated / not
+      generally available. tts-1-hd IS available (confirmed via
+      /v1/models 2026-08-08). Voice_id `cedar` unchanged (works on
+      both models).
 
   # ============================================================
   # Speechify (added prereg-v1.1, DEVIATIONS.md D-003)

@@ -69,7 +69,7 @@ DEFAULT_PROVIDER_CONCURRENCY = {
     "elevenlabs": 3,
     "deepgram": 3,
     "google": 5,
-    "speechify": 3,
+    "speechify": 1,  # Starter plan is 1 (verified via HTTP 429 body 2026-08-08)
     "orpheus": 1,    # Replicate rate-limits without payment method
 }
 

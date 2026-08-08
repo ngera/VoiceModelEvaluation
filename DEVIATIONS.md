@@ -40,6 +40,56 @@ receipt.
 
 ---
 
+## D-006 — OpenAI narration model gpt-4o-tts → tts-1-hd; Speechify concurrency 3 → 1 (2026-08-08)
+
+**What changed.** Two adjacent fixes discovered when the D.7 $1 pilot
+returned 60/80 pass:
+
+1. **OpenAI narration model: `gpt-4o-tts` → `tts-1-hd`.** The pilot
+   showed 5/10 fail on OpenAI, all in the narration use case; error
+   body: *"The model `gpt-4o-tts` does not exist or you do not have
+   access to..."*. Doctor probe hadn't caught it because doctor
+   defaults to `--use-case conversational` which uses
+   `gpt-4o-mini-tts`. Query of `/v1/models` confirmed the account has:
+   `gpt-4o-mini-tts` · `tts-1` · `tts-1-hd` (plus dated variants).
+   Swapped to `tts-1-hd` — OpenAI's classic HD TTS model, still the
+   standard audiobook/narration pick. Voice `cedar` unchanged (works
+   on both models).
+2. **Speechify concurrency 3 → 1** in `DEFAULT_PROVIDER_CONCURRENCY`.
+   Pilot showed 5/10 Speechify fail with HTTP 429
+   `"concurrency_limit_reached"` — Starter plan allows exactly 1
+   simultaneous request (verified via error body). Not a prereg
+   change (concurrency is runtime config), but bundled here since
+   both surfaced in the same pilot.
+
+**Why.**
+- OpenAI: `gpt-4o-tts` may exist for some accounts / at some
+  tiers, but it 404'd here. Rather than gate the whole campaign on
+  a maybe-available model, we swap to something confirmed
+  available. `tts-1-hd` is a legitimate choice for the
+  narration-quality slot — it's been OpenAI's HD TTS since 2023.
+- Speechify: adapter-side default was 3 (matched Fish/ElevenLabs);
+  Starter's actual limit is 1. Bump-up costs a plan tier upgrade
+  we don't need for the campaign volume.
+
+**Impact on results.**
+- OpenAI narration measurements will use `tts-1-hd`, not
+  `gpt-4o-mini-tts`. The two are meaningfully different models
+  (different architecture family, different sampling behaviour) —
+  so the "different model per use case" story is preserved.
+- Speechify campaign runtime will be longer (1 concurrent vs 3),
+  but the concurrency cap is a floor on completion time not the
+  measurements themselves. Same audio quality, same TTFA per
+  call. Total campaign time slightly higher on Speechify.
+- No cost impact.
+
+**Where to look.** commits [tbd]; `configs/voices.yaml` (OpenAI
+narration model row), `src/veval/runner/runner.py`
+(DEFAULT_PROVIDER_CONCURRENCY['speechify']). Re-tagged
+**prereg-v1.4**.
+
+---
+
 ## D-005 — Orpheus version SHA pinned; adapter uses version-explicit endpoint (2026-08-07)
 
 **What changed.** Two related fixes to Orpheus discovered when D-004's
