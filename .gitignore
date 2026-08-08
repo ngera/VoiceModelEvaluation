@@ -46,6 +46,9 @@ analysis/
 judgments/
 decisions/
 
+# Content-hash cache for synthesis (Phase D.2) — regenerable, safe to nuke
+.cache/
+
 # Deviations from prereg — versioned, kept
 !DEVIATIONS.md
 

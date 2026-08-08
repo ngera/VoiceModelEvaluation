@@ -20,7 +20,7 @@ from rich.table import Table
 from veval import __version__
 from veval.adapters import ADAPTERS
 from veval.doctor import DoctorReport, run_doctor
-from veval.runner import RunMode, Runner, RunSummary
+from veval.runner import RunMode, Runner, RunSummary, SynthesisCache
 
 app = typer.Typer(
     name="veval",
@@ -169,6 +169,13 @@ def generate(
     corpus_dir: Path = typer.Option(
         Path("corpus"), "--corpus-dir",
     ),
+    no_cache: bool = typer.Option(
+        False, "--no-cache",
+        help="Bypass the content-hash cache (default: cache enabled for campaign mode)",
+    ),
+    cache_dir: Path = typer.Option(
+        Path(".cache/synthesis"), "--cache-dir",
+    ),
 ) -> None:
     """Run the campaign: adapter.synthesize() across (provider, use_case, item)."""
     try:
@@ -183,10 +190,19 @@ def generate(
                 console.print(f"[red]--use-case must be conversational|narration, got: {uc}[/red]")
                 raise typer.Exit(code=2)
 
+    cache: SynthesisCache | None
+    if no_cache or parsed_mode != RunMode.campaign:
+        # Variance/latency modes MUST skip the cache (fresh calls are the
+        # measurement); campaign mode uses cache unless --no-cache.
+        cache = None
+    else:
+        cache = SynthesisCache(cache_dir=cache_dir)
+
     runner = Runner(
         providers_file=providers_file,
         voices_file=voices_file,
         corpus_dir=corpus_dir,
+        cache=cache,
     )
 
     console.rule(f"[bold]veval generate --mode {parsed_mode.value}[/bold]")
@@ -196,6 +212,11 @@ def generate(
         console.print(f"[yellow]Restricted providers: {provider}[/yellow]")
     if use_case:
         console.print(f"[yellow]Restricted use cases: {use_case}[/yellow]")
+    if cache is not None:
+        stats = cache.stats()
+        console.print(f"[dim]Cache: {cache_dir} ({stats['entries']} entries, {stats['total_bytes']:,} bytes)[/dim]")
+    else:
+        console.print("[dim]Cache: disabled[/dim]")
     console.print()
 
     if parsed_mode == RunMode.campaign:

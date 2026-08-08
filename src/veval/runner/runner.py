@@ -47,6 +47,7 @@ from veval.config import (
     load_providers,
     load_voices,
 )
+from veval.runner.cache import SynthesisCache
 from veval.store.run_store import Run, default_run_store
 
 # --- Retry policy ---
@@ -117,11 +118,16 @@ class Runner:
         voices_file: Path = Path("configs/voices.yaml"),
         corpus_dir: Path = Path("corpus"),
         provider_concurrency: dict[str, int] | None = None,
+        cache: SynthesisCache | None = None,
     ) -> None:
         self.providers: ProvidersFile = load_providers(providers_file)
         self.voices: VoicesFile = load_voices(voices_file)
         self.corpus_dir = corpus_dir
         self.provider_concurrency = provider_concurrency or DEFAULT_PROVIDER_CONCURRENCY
+        # Cache is optional. None = no caching (fresh call every time).
+        # Campaign mode enables it by default; variance/latency must skip
+        # it (fresh measurement is the whole point).
+        self.cache: SynthesisCache | None = cache
 
     # --- Config resolution ---
 
@@ -185,6 +191,58 @@ class Runner:
         run: Run,
     ) -> ItemResult:
         voice_id, model = self._resolve_voice_model(p.name, use_case, mode)
+
+        # Cache check (campaign mode only — variance/latency need fresh calls).
+        # We check BEFORE building the adapter or opening any HTTP connection.
+        use_cache = self.cache is not None and mode == RunMode.campaign
+        if use_cache:
+            entry = self.cache.get(
+                provider=p.name, model=model, voice_id=voice_id,
+                text=item.text, output_format="wav",
+                sample_rate=None, version=p.version,
+            )
+            if entry is not None:
+                # Cache HIT — write to run store, log as cache hit, return.
+                provider_dir = run.dir / "audio" / p.name / use_case
+                provider_dir.mkdir(parents=True, exist_ok=True)
+                suffix = f"_d{draw:02d}" if mode == RunMode.variance else ""
+                audio_path = provider_dir / f"{item.id}{suffix}.{entry.audio_format}"
+                audio_path.write_bytes(entry.audio_bytes)
+                if p.name not in run.manifest.providers:
+                    run.manifest.providers.append(p.name)
+                if item.id not in run.manifest.items:
+                    run.manifest.items.append(item.id)
+                run.manifest.audio_count += 1
+                run.log_api({
+                    "provider": p.name, "use_case": use_case, "item_id": item.id,
+                    "draw": draw, "status": "ok",
+                    "ttfa_ms": None, "total_ms": 0,
+                    "chars_billed": entry.chars_billed,
+                    "billing_unit": entry.billing_unit,
+                    "audio_bytes": len(entry.audio_bytes),
+                    "audio_path": str(audio_path.relative_to(run.dir)),
+                    "voice_id": voice_id, "model": model,
+                    "attempts": 0, "cache": "hit",
+                    "meta": entry.meta,
+                })
+                # Manufacture a SynthesisResult for the caller
+                cached_result = SynthesisResult(
+                    audio_bytes=entry.audio_bytes,
+                    audio_format=entry.audio_format,
+                    sample_rate=entry.sample_rate,
+                    ttfa_ms=None, total_ms=0,
+                    chars_billed=entry.chars_billed,
+                    billing_unit=entry.billing_unit,
+                    provider=entry.provider,
+                    model=entry.model,
+                    voice_id=entry.voice_id,
+                    meta={**entry.meta, "cache": "hit"},
+                )
+                return ItemResult(
+                    provider=p.name, use_case=use_case, item_id=item.id, draw=draw,
+                    ok=True, result=cached_result, attempts=0, audio_path=audio_path,
+                )
+
         try:
             adapter = self._build_adapter_for_call(p, model)
         except Exception as e:  # noqa: BLE001
@@ -241,7 +299,7 @@ class Runner:
                     ok=False, error=last_error, attempts=attempt,
                 )
 
-            # Success — write audio, log, return
+            # Success — write audio, log, cache, return
             # Path layout: audio/<provider>/<use_case>/<item_id>[_dNN].wav
             provider_dir = run.dir / "audio" / p.name / use_case
             provider_dir.mkdir(parents=True, exist_ok=True)
@@ -256,6 +314,22 @@ class Runner:
                 run.manifest.items.append(item.id)
             run.manifest.audio_count += 1
 
+            # Cache the successful synthesis (campaign mode only)
+            if use_cache:
+                try:
+                    self.cache.put(
+                        provider=p.name, model=model, voice_id=voice_id,
+                        text=item.text, output_format=result.audio_format,
+                        sample_rate=result.sample_rate, version=p.version,
+                        audio_bytes=result.audio_bytes,
+                        chars_billed=result.chars_billed,
+                        billing_unit=result.billing_unit,
+                        meta=result.meta,
+                    )
+                except OSError:
+                    # Never let a cache-write failure fail the run
+                    pass
+
             run.log_api({
                 "provider": p.name, "use_case": use_case, "item_id": item.id,
                 "draw": draw, "status": "ok",
@@ -265,7 +339,9 @@ class Runner:
                 "audio_bytes": len(result.audio_bytes),
                 "audio_path": str(audio_path.relative_to(run.dir)),
                 "voice_id": voice_id, "model": model,
-                "attempts": attempt, "meta": result.meta,
+                "attempts": attempt,
+                "cache": "miss" if use_cache else "off",
+                "meta": result.meta,
             })
             return ItemResult(
                 provider=p.name, use_case=use_case, item_id=item.id, draw=draw,

@@ -8,6 +8,7 @@ Three modes:
   latency:  50 serial trials per provider from pinned VM (D.4)
 """
 
+from veval.runner.cache import CacheEntry, SynthesisCache
 from veval.runner.runner import (
     ItemResult,
     RunMode,
@@ -15,4 +16,11 @@ from veval.runner.runner import (
     RunSummary,
 )
 
-__all__ = ["ItemResult", "RunMode", "Runner", "RunSummary"]
+__all__ = [
+    "CacheEntry",
+    "ItemResult",
+    "RunMode",
+    "Runner",
+    "RunSummary",
+    "SynthesisCache",
+]
