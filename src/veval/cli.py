@@ -176,6 +176,14 @@ def generate(
     cache_dir: Path = typer.Option(
         Path(".cache/synthesis"), "--cache-dir",
     ),
+    variance_subset_file: Path = typer.Option(
+        Path("corpus/variance_subset.yaml"), "--variance-subset-file",
+        help="Item IDs for --mode variance (default: prereg-v1 subset)",
+    ),
+    n_draws: int = typer.Option(
+        3, "--n-draws",
+        help="Draws per item for --mode variance (default 3 per spec §3.4)",
+    ),
 ) -> None:
     """Run the campaign: adapter.synthesize() across (provider, use_case, item)."""
     try:
@@ -226,8 +234,14 @@ def generate(
             item_ids=items,
         )
     elif parsed_mode == RunMode.variance:
-        console.print("[red]--mode variance lands in Phase D.3[/red]")
-        raise typer.Exit(code=2)
+        if items:
+            console.print("[yellow]--items ignored for variance mode; using variance_subset.yaml[/yellow]")
+        summary = runner.run_variance(
+            use_cases=use_case,  # type: ignore[arg-type]
+            provider_names=provider,
+            variance_subset_file=variance_subset_file,
+            n_draws=n_draws,
+        )
     else:  # latency
         console.print("[red]--mode latency lands in Phase D.4[/red]")
         raise typer.Exit(code=2)

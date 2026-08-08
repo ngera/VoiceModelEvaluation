@@ -41,10 +41,12 @@ from veval.config import (
     ProviderConfig,
     ProvidersFile,
     UseCase,
+    VarianceSubset,
     VoiceSelection,
     VoicesFile,
     load_corpus,
     load_providers,
+    load_variance_subset,
     load_voices,
 )
 from veval.runner.cache import SynthesisCache
@@ -428,10 +430,101 @@ class Runner:
                 summary.per_provider_failed[r.provider] = summary.per_provider_failed.get(r.provider, 0) + 1
         return summary
 
-    # --- Public: variance mode (D.3, stubbed) ---
+    # --- Public: variance mode (D.3) ---
 
-    def run_variance(self, use_cases: list[UseCase] | None = None) -> RunSummary:
-        raise NotImplementedError("Variance mode lands in Phase D.3")
+    def run_variance(
+        self,
+        use_cases: list[UseCase] | None = None,
+        provider_names: list[str] | None = None,
+        variance_subset_file: Path = Path("corpus/variance_subset.yaml"),
+        n_draws: int = 3,
+    ) -> RunSummary:
+        """Run the variance campaign: n_draws per (provider, use_case, item).
+
+        Per spec §3.4: 10 items × 3 draws × N providers × 2 use cases →
+        measurement noise floor via pooled within-provider SD on TTSDS2
+        and item-level WER. Cache is FORCED OFF here (fresh draws are
+        the measurement) — Runner._synthesize_one already enforces this
+        via `mode == RunMode.campaign` check.
+
+        Item set comes from corpus/variance_subset.yaml — the 10 items
+        per use case were frozen in prereg-v1 as a stratified sample.
+
+        Args:
+            use_cases: default both.
+            provider_names: default all in providers.yaml.
+            variance_subset_file: default configs-relative.
+            n_draws: draws per (provider, use_case, item). Default 3
+                    per spec; 2-degrees-of-freedom-per-item minimum.
+        """
+        use_cases = use_cases or ["conversational", "narration"]
+        providers = [
+            p for p in self.providers.providers
+            if provider_names is None or p.name in provider_names
+        ]
+        subsets: VarianceSubset = load_variance_subset(variance_subset_file)
+
+        run = default_run_store().new_run(kind="variance", extras={
+            "mode": RunMode.variance.value,
+            "use_cases": use_cases,
+            "provider_names": [p.name for p in providers],
+            "n_draws": n_draws,
+            "variance_subset_file": str(variance_subset_file),
+        })
+        started = time.perf_counter()
+
+        # Build work list: (provider, use_case, item, draw) tuples.
+        # The same 10 items are used across all providers so noise floor
+        # is comparable — this is the spec §3.4 pooling requirement.
+        work: list[tuple[ProviderConfig, UseCase, CorpusItem, int]] = []
+        for uc in use_cases:
+            corpus = self._load_corpus(uc)  # type: ignore[arg-type]
+            subset_ids = subsets.item_ids_for(uc)  # type: ignore[arg-type]
+            items_by_id = {i.id: i for i in corpus.items}
+            missing = [iid for iid in subset_ids if iid not in items_by_id]
+            if missing:
+                raise RuntimeError(
+                    f"variance_subset.yaml references items not in {uc} corpus: {missing}"
+                )
+            items = [items_by_id[iid] for iid in subset_ids]
+            for p in providers:
+                for item in items:
+                    for draw in range(n_draws):
+                        work.append((p, uc, item, draw))
+
+        # Parallelise per provider, same as campaign
+        results: list[ItemResult] = []
+        for p in providers:
+            provider_work = [w for w in work if w[0].name == p.name]
+            if not provider_work:
+                continue
+            cap = self.provider_concurrency.get(p.name, 3)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=cap) as pool:
+                futures = [
+                    pool.submit(
+                        self._synthesize_one, prov, uc, item, RunMode.variance, draw, run,
+                    )
+                    for (prov, uc, item, draw) in provider_work
+                ]
+                for fut in concurrent.futures.as_completed(futures):
+                    results.append(fut.result())
+
+        elapsed = time.perf_counter() - started
+        run.finalize()
+
+        summary = RunSummary(
+            mode=RunMode.variance, run_id=run.manifest.run_id, run_dir=run.dir,
+            total=len(results),
+            ok=sum(1 for r in results if r.ok),
+            failed=sum(1 for r in results if not r.ok),
+            elapsed_s=elapsed,
+        )
+        for r in results:
+            if r.ok:
+                summary.per_provider_ok[r.provider] = summary.per_provider_ok.get(r.provider, 0) + 1
+            else:
+                summary.per_provider_failed[r.provider] = summary.per_provider_failed.get(r.provider, 0) + 1
+        return summary
 
     # --- Public: latency mode (D.4, stubbed) ---
 

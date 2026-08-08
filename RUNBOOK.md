@@ -211,10 +211,44 @@ uv run veval generate --mode campaign --provider deepgram --items S01 --no-cache
 it loses only compute cost, not measurement data. Cache stats show at
 the top of every `generate` invocation.
 
-### 2.5 Generate: variance + latency modes (later Phase D sub-phases)
+### 2.5 Generate: variance mode (D.3 — noise-floor measurement)
 
-`--mode variance` and `--mode latency` are stubbed — will land in
-D.3 and D.4 respectively.
+```powershell
+uv run veval generate --mode variance
+```
+
+Runs the 10-item variance subset × 3 draws × 8 providers × 2 use cases
+= **480 generations**. Feeds into Phase E's `variance.py` analyzer to
+compute the per-provider within-provider SD (the measurement noise
+floor) — every reported D2/D3 between-provider difference must exceed
+`1.96 × SE(difference)` to count (spec §3.4).
+
+**Cache is FORCED OFF for variance mode** — fresh draws are the entire
+point. Do not use `--no-cache` (it's already off).
+
+Filters same as campaign:
+
+```powershell
+# One provider only (still all 10 items × 3 draws × both use cases = 60 files)
+uv run veval generate --mode variance --provider deepgram
+
+# One use case only (10 items × 3 draws × 8 providers = 240 files)
+uv run veval generate --mode variance --use-case conversational
+```
+
+Adjust `--n-draws` if experimenting (default 3, minimum meaningful):
+
+```powershell
+uv run veval generate --mode variance --n-draws 5
+```
+
+Cost estimate for the full 480-generation variance run: **~$1–2**
+total (mostly Orpheus's ~$0.003/gen × 60; character-billed providers
+absorbed in free tiers or trivial paid usage). Spec §8 line item.
+
+### 2.6 Generate: latency mode (D.4 — later)
+
+`--mode latency` is stubbed — lands in D.4.
 
 ---
 
