@@ -66,7 +66,7 @@ providers:
       is `xi-api-key`.
 
   - name: orpheus
-    display_name: "Canopy Orpheus 3B (Replicate)"
+    display_name: "Orpheus 3B (Replicate — lucataco/orpheus-3b-0.1-ft fork)"
     endpoint: "https://api.replicate.com/v1/predictions"
     env_key: REPLICATE_API_TOKEN
     tier: core
@@ -75,10 +75,15 @@ providers:
       hosted, billed per GPU-second (~$0.003/generation — defect 3.6
       corrected from an earlier $0.08 figure). D1 scored N/A-hosted
       (measures Replicate's cold start, not the model). Runs FULL
-      10-item variance subset — the earlier 5-item reduction was based
-      on the wrong cost estimate and has been reversed (spec §3.4).
-      Licence to confirm Week 1: model card says Apache-2.0, comparison
-      board reports Llama-3.2 community licence.
+      10-item variance subset (spec §3.4). **The actual reachable
+      Replicate deployment is `lucataco/orpheus-3b-0.1-ft`** — a
+      community fine-tune of Canopy's open weights. Canopy has no
+      official Replicate deployment; the pre-v1.1 slug
+      `canopyai/orpheus-3b` returns 404. See DEVIATIONS D-004 for the
+      full amendment. Voice enum on the fork is 4 (tara/dan/josh/emma)
+      not 7. Licence to confirm Week 1: fine-tune inherits Canopy's
+      Apache-2.0 (model card) vs Llama-3.2 community licence
+      (comparison board) ambiguity.
 
   # Added in prereg-v1.1 (2026-08-07, DEVIATIONS.md D-003).
   - name: openai

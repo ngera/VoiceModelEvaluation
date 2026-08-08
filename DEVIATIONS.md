@@ -40,6 +40,62 @@ receipt.
 
 ---
 
+## D-004 — Orpheus pinned to community fork; voice + adapter corrected (2026-08-07)
+
+**What changed.** Three related corrections to the Orpheus provider,
+discovered when the Replicate model schema was queried before the live
+probe:
+
+1. **Model slug: `canopyai/orpheus-3b` → `lucataco/orpheus-3b-0.1-ft`.**
+   The pre-v1.1 slug returns 404 on Replicate — Canopy Labs has no
+   official Replicate deployment of Orpheus. The actually-reachable
+   Orpheus model is `lucataco/orpheus-3b-0.1-ft`, a community
+   fine-tune of Canopy's open weights (36K runs, latest version
+   `79f2a473...`, verified 2026-08-07 via `GET /v1/models/lucataco/orpheus-3b-0.1-ft`).
+2. **Narration voice: `leo` → `dan`.** The fork's voice enum is 4
+   (`tara`, `dan`, `josh`, `emma`), not the 7 (`tara`/`leah`/`jess`/
+   `leo`/`dan`/`mia`/`zac`) documented against pure Canopy weights.
+   `leo` was picked pre-verification; the actual enum does not include
+   it. `dan` swapped in as the best narrator archetype from the
+   available 4 (male, generic-narrator fit — mirrors the
+   "lower-pitch male for narration" intent behind `leo`).
+3. **Adapter input field: `prompt` → `text`.** Model schema names the
+   input field `text`, not `prompt`. Would have failed at first
+   synthesis call with HTTP 422 unprocessable-entity otherwise.
+
+Conversational voice `tara` unchanged (present in both the old and
+new voice enums; still Canopy's original sample voice).
+
+**Why.** The pre-v1.1 Orpheus config was based on knowledge about
+Canopy's own model documentation rather than what Replicate actually
+hosts. Verification against the live schema surfaced all three errors
+before the first probe would have hit them.
+
+**Impact on results.**
+- **Measurement scope change.** Results for "Orpheus" now measure the
+  `lucataco/orpheus-3b-0.1-ft` community fine-tune specifically, not
+  pure Canopy weights. This is a real methodological caveat that must
+  travel with every Orpheus row in the results table: *"Reference
+  implementation caveat — Orpheus was evaluated through the
+  lucataco/0.1-ft community fine-tune, which is the reachable
+  Replicate deployment. Pure Canopy weights would require self-hosting
+  (out of scope for this build)."*
+- **Archetype label.** "Open-weights floor" is still accurate — the
+  fine-tune inherits the weights' Apache-2.0 licence per the model
+  card. The archetype gap the provider fills is preserved.
+- **No cost delta.** Same Replicate billing model (~$0.003/gen).
+- **Portfolio-worthy DX finding.** Community forks being the actual
+  deployment surface for open-weights models is a real DX
+  observation. Logged in dx/friction_log.md.
+
+**Where to look.** commits [tbd]; `configs/providers.yaml` (notes
+rewritten), `configs/voices.yaml` (model + narration voice),
+`src/veval/adapters/orpheus.py` (`prompt` → `text`),
+`dx/friction_log.md` Orpheus section, spec §3.1 Orpheus row updated.
+Re-tagged **prereg-v1.2**.
+
+---
+
 ## D-003 — Provider roster expanded 6 → 8 (2026-08-07)
 
 **What changed.** Two providers added to the locked portfolio-edition

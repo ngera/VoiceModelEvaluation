@@ -69,14 +69,16 @@ class OrpheusAdapter(ProviderAdapter):
         else:
             endpoint = DEFAULT_ENDPOINT_TEMPLATE.format(model=self.model)
 
-        # Orpheus input schema — subject to verification on first live probe:
-        #   prompt: the text to synthesize
-        #   voice:  one of {tara, leah, jess, leo, dan, mia, zac}
-        # Sampling parameters (temperature, top_p, max_new_tokens) left at
-        # documented defaults per spec §3.4.
+        # Orpheus (lucataco/orpheus-3b-0.1-ft) input schema — verified
+        # 2026-08-07 via GET /v1/models/lucataco/orpheus-3b-0.1-ft:
+        #   text: the text to synthesize (NOT `prompt` — earlier draft
+        #         had this wrong; fixed in D-004)
+        #   voice: one of {tara, dan, josh, emma}
+        #   top_p, temperature, max_new_tokens, repetition_penalty:
+        #     left at documented defaults per spec §3.4
         body: dict[str, object] = {
             "input": {
-                "prompt": opts.text,
+                "text": opts.text,
                 "voice": opts.voice_id,
             },
         }

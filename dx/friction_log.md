@@ -270,10 +270,24 @@ DEVIATIONS if the pinned SHA becomes stale during the campaign.
 DEFECT_REGISTER 3.6 — corrected from the earlier $0.08 figure that
 was 24× too high). Doctor probe cost: rounding-error negligible.
 
-**Friction events:** (fill in on live probe)
+**Friction events (2026-08-07 pre-probe verification):**
+- **Real portfolio-worthy DX finding:** `canopyai/orpheus-3b` (the
+  slug documented on Canopy's site + used in our pre-v1.1 config)
+  returns HTTP 404 on Replicate. Canopy has no official Replicate
+  deployment. The actually-reachable model is
+  `lucataco/orpheus-3b-0.1-ft` — a community fine-tune of Canopy's
+  Apache-2.0 weights (36K runs, well-established). Discovered via
+  `GET /v1/models/lucataco/orpheus-3b-0.1-ft` after the canonical
+  slug returned 404.
+- **Voice enum reduced to 4:** the fork exposes only `tara`, `dan`,
+  `josh`, `emma` — not the 7 voices in pure Canopy weights. `leo`
+  (our pre-v1.1 narration pick) is not available. Swapped to `dan`.
+- **Input field is `text`, not `prompt`:** adapter had `prompt` from
+  prior-knowledge assumption; corrected before first probe.
+- All three corrections logged as DEVIATIONS.md D-004; re-tagged
+  prereg-v1.2.
 
-**Status:** ⏳ Adapter drafted, awaiting first live probe. Needs
-REPLICATE_API_TOKEN in `.env` (currently the missing 6/6 env key).
+**Status:** ⏳ Config corrected pre-probe, awaiting first live probe.
 
 ---
 
@@ -353,9 +367,20 @@ required. Doctor probe: rounding-error cost.
   - Narration: `wyatt_32` (en-US, male, sophisticated/textured,
     middle-aged; all three narration tags present)
 
-**Friction events (live probe pending):** (fill in when probed)
+**Friction events (2026-08-07 live probe):**
+- **Zero fixes needed on first probe.** All 6 assumptions in the
+  adapter correct including `simba-3.2` model string. Green ✅ against
+  `geffen_32` (conv voice).
+- **TTFA: 1992 ms · Total: 2059 ms · 372,277 bytes.** TTFA is
+  notably high for a paid-tier provider — comparable to Fish's free
+  tier. Worth isolating in the 50-trial D1 campaign whether it's
+  cold-start, regional routing, or a persistent characteristic of
+  simba-3.2.
+- **Audio bytes ~372KB** — much larger than the other 6 providers
+  for the same probe text (~140-270KB range). Likely a higher sample
+  rate or different encoding; Phase E hygiene analyzer will confirm.
 
-**Status:** ⏳ Voices locked; awaiting first live synthesis probe.
+**Status:** ✅ Adapter green end-to-end on first probe.
 
 ---
 

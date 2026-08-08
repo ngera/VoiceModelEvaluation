@@ -133,20 +133,26 @@ voices:
   - provider: orpheus
     use_case: conversational
     voice_id: "tara"
-    model: "canopyai/orpheus-3b"  # Orpheus ships one model, six voices
+    model: "lucataco/orpheus-3b-0.1-ft"  # community fork — see DEVIATIONS D-004
     reasoning: >-
-      Orpheus 3b ships one model with six default voices (tara, leah,
-      jess, leo, dan, mia, zac). Tara is the docs sample voice.
-      Canopy doesn't publish per-use-case guidance. TODO(Phase-B):
-      verify against current Canopy README / model card.
+      Orpheus (as reached via Replicate) is `lucataco/orpheus-3b-0.1-ft`
+      — a community fine-tune of Canopy's open weights (Canopy has no
+      official Replicate deployment; the pre-v1.1 `canopyai/orpheus-3b`
+      slug 404s). Voice enum on the fork is 4: tara/dan/josh/emma
+      (verified via /v1/models schema 2026-08-07). Tara is Canopy's
+      original sample voice and the only warm/general fit in the 4.
+      Reference-implementation caveat: results measure this specific
+      fine-tune, not pure Canopy weights. See DEVIATIONS D-004.
   - provider: orpheus
     use_case: narration
-    voice_id: "leo"
-    model: "canopyai/orpheus-3b"
+    voice_id: "dan"
+    model: "lucataco/orpheus-3b-0.1-ft"
     reasoning: >-
-      Leo is the lower-pitch male voice in the default set — reasonable
-      narration match. No official per-use-case recommendation from
-      Canopy. TODO(Phase-B): verify.
+      Same lucataco fine-tune. `leo` was picked pre-verification; the
+      actual voice enum does not include `leo`. Swapped to `dan` — the
+      best narrator archetype from the available 4 (tara/dan/josh/emma).
+      Male voice mirrors the earlier "lower-pitch male for narration"
+      selection intent. See DEVIATIONS D-004.
 
   # ============================================================
   # OpenAI (added prereg-v1.1, DEVIATIONS.md D-003)
