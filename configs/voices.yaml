@@ -171,18 +171,19 @@ voices:
       conversational-fit pick.
   - provider: openai
     use_case: narration
-    voice_id: "cedar"
-    model: "tts-1-hd"  # D-006: gpt-4o-tts was 404 for this account (2026-08-08)
+    voice_id: "onyx"  # D-007: cedar not in tts-1-hd's voice enum
+    model: "tts-1-hd"  # D-006: gpt-4o-tts was 404 for this account
     reasoning: >-
       tts-1-hd is OpenAI's higher-quality standard TTS model — used
       by audiobook / narration pipelines where quality matters more
       than latency. Different model from the conversational entry
       above (gpt-4o-mini-tts); a buyer would swap them per use case.
-      D-006 correction: the earlier pin on `gpt-4o-tts` was HTTP 404
-      for this account — that model appears to be gated / not
-      generally available. tts-1-hd IS available (confirmed via
-      /v1/models 2026-08-08). Voice_id `cedar` unchanged (works on
-      both models).
+      D-006 corrected the pre-v1.4 model pin from `gpt-4o-tts` (404
+      for this account) to `tts-1-hd`. D-007 then corrected the
+      voice pin from `cedar` (not in tts-1-hd's enum: nova/shimmer/
+      echo/onyx/fable/alloy/ash/sage/coral) to `onyx` — the classic
+      OpenAI narrator archetype: deep male, present in every
+      OpenAI TTS model's voice enum.
 
   # ============================================================
   # Speechify (added prereg-v1.1, DEVIATIONS.md D-003)

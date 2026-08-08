@@ -40,6 +40,43 @@ receipt.
 
 ---
 
+## D-007 — OpenAI narration voice cedar → onyx (not in tts-1-hd enum) (2026-08-08)
+
+**What changed.** Second pilot re-run after D-006 still showed 5/10
+OpenAI narration failures. New error body: HTTP 400
+*"Input should be 'nova', 'shimmer', 'echo', 'onyx', 'fable', 'alloy',
+'ash', 'sage' or 'coral'"*. `cedar` is not in `tts-1-hd`'s voice enum
+— it exists only on the newer `gpt-4o-*` model family.
+
+Swapped voice_id from `cedar` → `onyx`. Model pin (`tts-1-hd`)
+unchanged — that fix in D-006 was correct; the trailing bug was that
+D-006 didn't check whether the previously-picked voice_id survived the
+model swap.
+
+**Why `onyx` specifically.** Traditional OpenAI narrator archetype:
+deep male, present in every OpenAI TTS model's voice enum (both the
+classic `tts-1`/`tts-1-hd` family and the newer `gpt-4o-*` family),
+which makes it robust to future model pin changes.
+
+**Why not just swap the model back?** Options considered:
+- Swap model back to `gpt-4o-mini-tts` (same as conversational,
+  cedar works there): loses the "different model per use case" story.
+- Swap model to a specific dated variant that includes `cedar`
+  (e.g. `gpt-4o-mini-tts-2025-12-15`): would work but pins to a
+  dated variant with unclear support lifetime.
+- Keep tts-1-hd, swap voice: cleanest — preserves the model
+  differentiation, uses a voice that's universally available.
+
+**Impact on results.** OpenAI narration measures now use `tts-1-hd +
+onyx`. Perceived quality vs the conversational entry (`gpt-4o-mini-tts
++ fable`) will differ across model AND voice — a buyer would swap
+both per use case in practice.
+
+**Where to look.** commits [tbd]; `configs/voices.yaml` OpenAI
+narration row. Re-tagged **prereg-v1.5**.
+
+---
+
 ## D-006 — OpenAI narration model gpt-4o-tts → tts-1-hd; Speechify concurrency 3 → 1 (2026-08-08)
 
 **What changed.** Two adjacent fixes discovered when the D.7 $1 pilot
