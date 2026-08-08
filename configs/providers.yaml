@@ -67,11 +67,16 @@ providers:
 
   - name: orpheus
     display_name: "Orpheus 3B (Replicate — lucataco/orpheus-3b-0.1-ft fork)"
-    # endpoint intentionally UNSET — adapter constructs the auto-latest
-    # URL from self.model. Setting endpoint to /v1/predictions would
-    # switch to the version-explicit endpoint which requires a version
-    # SHA in the body (bugfix 2026-08-07).
+    # Adapter always uses the version-explicit endpoint /v1/predictions
+    # with the pinned SHA in the body — the auto-latest
+    # /v1/models/{owner}/{name}/predictions returns HTTP 404 for this
+    # community model (verified 2026-08-07). Endpoint left unset;
+    # adapter uses its DEFAULT_ENDPOINT constant.
     env_key: REPLICATE_API_TOKEN
+    # Pinned version SHA — D-005 (prereg-v1.3). Bump requires a new
+    # DEVIATIONS entry (drift accountability). Snapshot was 2026-08-07,
+    # version created 2025-03-20.
+    version: "79f2a473e6a9720716a473d9b2f2951437dbf91dc02ccb7079fb3d89b881207f"
     tier: core
     notes: >-
       Open-weights floor — "how close is free?" chart point. Replicate-
@@ -82,16 +87,14 @@ providers:
       Replicate deployment is `lucataco/orpheus-3b-0.1-ft`** — a
       community fine-tune of Canopy's open weights. Canopy has no
       official Replicate deployment; the pre-v1.1 slug
-      `canopyai/orpheus-3b` returns 404. See DEVIATIONS D-004 for the
-      full amendment. Voice enum on the fork is 4 (tara/dan/josh/emma)
-      not 7. **TODO(before Phase D):** pin version SHA — current
-      latest as of 2026-08-07 is
-      `79f2a473e6a9720716a473d9b2f2951437dbf91dc02ccb7079fb3d89b881207f`
-      (created 2025-03-20). Requires switching to /v1/predictions
-      endpoint + adding `version` field to body; log as DEVIATION when
-      done. Licence to confirm Week 1: fine-tune inherits Canopy's
-      Apache-2.0 (model card) vs Llama-3.2 community licence
-      (comparison board) ambiguity.
+      `canopyai/orpheus-3b` returns 404. See DEVIATIONS D-004 and D-005
+      for the amendment trail. Voice enum on the fork is 4
+      (tara/dan/josh/emma) not 7. Licence to confirm Week 1: fine-tune
+      inherits Canopy's Apache-2.0 (model card) vs Llama-3.2 community
+      licence (comparison board) ambiguity.
+      **Rate-limit warning:** Replicate reduces to 6 req/min with a
+      burst of 1 until a payment method is added. Phase D's 900-item
+      campaign requires the payment method.
 
   # Added in prereg-v1.1 (2026-08-07, DEVIATIONS.md D-003).
   - name: openai

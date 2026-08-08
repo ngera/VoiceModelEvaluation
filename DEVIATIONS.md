@@ -40,6 +40,57 @@ receipt.
 
 ---
 
+## D-005 — Orpheus version SHA pinned; adapter uses version-explicit endpoint (2026-08-07)
+
+**What changed.** Two related fixes to Orpheus discovered when D-004's
+corrected slug still hit HTTP 404 on the first live probe:
+
+1. **Endpoint pattern changed** from auto-latest
+   `/v1/models/{owner}/{name}/predictions` to version-explicit
+   `/v1/predictions` with `version` in the request body. Direct
+   verification against the Replicate API 2026-08-07 confirmed the
+   auto-latest endpoint returns HTTP 404 for this community model
+   (works for some Replicate-featured models only). Only the
+   version-explicit path succeeds.
+2. **Version SHA pinned in providers.yaml** as
+   `79f2a473e6a9720716a473d9b2f2951437dbf91dc02ccb7079fb3d89b881207f`
+   (created 2025-03-20; current latest as of the snapshot). New
+   `version` field on `ProviderConfig` + `ProviderAdapter.__init__`
+   threads it through cleanly for any future provider that needs
+   version pinning; today only Orpheus uses it. Adapter now raises a
+   clear ProviderError if `version` is missing on Orpheus.
+
+**Why.** The auto-latest bug was the immediate blocker, but pinning
+the SHA is a genuine tightening of the prereg discipline: what was
+implicitly "whatever Replicate serves right now" is now explicitly
+"this specific version, in providers.yaml, under git." Any change to
+the SHA requires a new DEVIATIONS entry — drift accountability.
+
+**Impact on results.**
+- **Reproducibility strengthened.** The drift re-run (+4 wks per
+  spec) will now measure the same Orpheus version SHA. If Replicate
+  removes or supersedes this version between runs, we catch it via
+  ProviderError rather than silently measuring a different model.
+- **Config schema addition.** `ProviderConfig` gains an optional
+  `version` field. All other providers leave it `None`; no
+  behavioural change to Deepgram/Fish/Google/Cartesia/ElevenLabs/
+  OpenAI/Speechify.
+- **Payment-method dependency (not a prereg change but flagged
+  here).** Replicate rate-limits to 6 req/min with a burst of 1
+  until a payment method is added. Doctor probes work; Phase D's
+  900-item campaign will not — payment method must be added before
+  the campaign run.
+
+**Where to look.** commits [tbd]; `configs/providers.yaml` (Orpheus
+gains `version` field + rate-limit note), `src/veval/config.py`
+(`ProviderConfig.version`), `src/veval/adapters/base.py`
+(`ProviderAdapter.__init__` accepts `version`),
+`src/veval/adapters/orpheus.py` (uses version-explicit endpoint;
+requires self.version), `src/veval/doctor.py` (passes
+`p.version` to adapter). Re-tagged **prereg-v1.3**.
+
+---
+
 ## D-004 — Orpheus pinned to community fork; voice + adapter corrected (2026-08-07)
 
 **What changed.** Three related corrections to the Orpheus provider,

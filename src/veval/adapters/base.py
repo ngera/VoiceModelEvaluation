@@ -159,12 +159,19 @@ class ProviderAdapter(ABC):
     #: Short key; must match the `name` field in providers.yaml
     name: str = ""
 
-    def __init__(self, api_key: str, model: str, endpoint: str | None = None) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        endpoint: str | None = None,
+        version: str | None = None,
+    ) -> None:
         if not api_key:
             raise ValueError(f"{self.name}: api_key is required")
         self.api_key = api_key
         self.model = model
         self.endpoint = endpoint
+        self.version = version
 
     @abstractmethod
     def synthesize(self, opts: SynthesisOptions) -> SynthesisResult:

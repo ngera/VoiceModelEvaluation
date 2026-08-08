@@ -182,7 +182,9 @@ def _probe_adapter(
     model = _model_for_probe(voice)
 
     try:
-        adapter = adapter_cls(api_key=api_key, model=model, endpoint=p.endpoint)
+        adapter = adapter_cls(
+            api_key=api_key, model=model, endpoint=p.endpoint, version=p.version,
+        )
     except Exception as e:  # noqa: BLE001
         return AdapterCheck(provider=p.name, ok=False, notes=f"adapter init failed: {e}")
 

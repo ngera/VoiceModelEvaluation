@@ -61,6 +61,14 @@ class ProviderConfig(BaseModel):
         default=None, description="Base URL override; adapter default if None"
     )
     env_key: str = Field(description="Env var holding the API key, e.g. `DEEPGRAM_API_KEY`")
+    version: str | None = Field(
+        default=None,
+        description=(
+            "Provider-specific version pin (currently used only for Replicate model "
+            "SHAs). Adapter interprets this per its API's version semantics; may be "
+            "None for providers that don't version by pin (most)."
+        ),
+    )
     tier: Literal["core", "control", "stretch"] = "core"
     notes: str = ""
 

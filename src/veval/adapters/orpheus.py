@@ -51,7 +51,7 @@ from veval.adapters.base import (
     SynthesisResult,
 )
 
-DEFAULT_ENDPOINT_TEMPLATE = "https://api.replicate.com/v1/models/{model}/predictions"
+DEFAULT_ENDPOINT = "https://api.replicate.com/v1/predictions"
 DEFAULT_TIMEOUT_S = 120.0
 DEFAULT_WAIT_SEC = 60         # Prefer: wait= up to 60s (Replicate cap)
 POLL_INTERVAL_S = 2.0
@@ -63,11 +63,24 @@ class OrpheusAdapter(ProviderAdapter):
     name = "orpheus"
 
     def synthesize(self, opts: SynthesisOptions) -> SynthesisResult:
-        # self.model is `canopyai/orpheus-3b` (from voices.yaml)
-        if self.endpoint:
-            endpoint = self.endpoint
-        else:
-            endpoint = DEFAULT_ENDPOINT_TEMPLATE.format(model=self.model)
+        # Always use the version-explicit endpoint /v1/predictions with
+        # `version` in the body. The auto-latest pattern
+        # `/v1/models/{owner}/{name}/predictions` returns HTTP 404 for
+        # this community model (verified 2026-08-07 — see D-005). Version
+        # SHA is pinned in providers.yaml -> ProviderConfig.version and
+        # threaded through as self.version, which also strengthens the
+        # prereg (specific SHA in config rather than "whatever Replicate
+        # serves right now").
+        if not self.version:
+            raise ProviderError(
+                "Orpheus requires a pinned version SHA (providers.yaml "
+                "`version`). The auto-latest endpoint returns 404 for "
+                "community models.",
+                provider=self.name,
+                status_code=None,
+                retryable=False,
+            )
+        endpoint = self.endpoint or DEFAULT_ENDPOINT
 
         # Orpheus (lucataco/orpheus-3b-0.1-ft) input schema — verified
         # 2026-08-07 via GET /v1/models/lucataco/orpheus-3b-0.1-ft:
@@ -77,6 +90,7 @@ class OrpheusAdapter(ProviderAdapter):
         #   top_p, temperature, max_new_tokens, repetition_penalty:
         #     left at documented defaults per spec §3.4
         body: dict[str, object] = {
+            "version": self.version,
             "input": {
                 "text": opts.text,
                 "voice": opts.voice_id,
@@ -102,7 +116,7 @@ class OrpheusAdapter(ProviderAdapter):
                         provider=self.name,
                         status_code=resp.status_code,
                         retryable=resp.status_code in (429, 500, 502, 503, 504),
-                        raw={"body": body_text, "model": self.model},
+                        raw={"body": body_text, "model": self.model, "version": self.version},
                     )
                 prediction = resp.json()
                 pred_id = prediction.get("id", "")
@@ -195,6 +209,7 @@ class OrpheusAdapter(ProviderAdapter):
                 "prediction_id": pred_id,
                 "output_url": audio_url,
                 "endpoint": endpoint,
+                "version": self.version,
                 "transport": "hosted-inference-poll",
             },
         )
