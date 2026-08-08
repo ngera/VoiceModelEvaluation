@@ -20,6 +20,7 @@ from rich.table import Table
 from veval import __version__
 from veval.adapters import ADAPTERS
 from veval.doctor import DoctorReport, run_doctor
+from veval.runner import RunMode, Runner, RunSummary
 
 app = typer.Typer(
     name="veval",
@@ -139,6 +140,108 @@ def _print_doctor_report(results: DoctorReport) -> None:
                       f"Fix before Phase 1 campaign.")
     if results.run_dir:
         console.print(f"[dim]Run written to: {results.run_dir}[/dim]")
+
+
+@app.command()
+def generate(
+    mode: str = typer.Option(
+        "campaign", "--mode", "-m",
+        help="campaign | variance | latency (D.3/D.4 land later)",
+    ),
+    provider: list[str] | None = typer.Option(
+        None, "--provider", "-p",
+        help="Restrict to one or more provider names (default: all in providers.yaml)",
+    ),
+    use_case: list[str] | None = typer.Option(
+        None, "--use-case", "-u",
+        help="Restrict to conversational|narration (default: both)",
+    ),
+    items: list[str] | None = typer.Option(
+        None, "--items", "-i",
+        help="Restrict to specific item IDs (e.g. --items S01 --items M03). Used for the $1 pilot",
+    ),
+    providers_file: Path = typer.Option(
+        Path("configs/providers.yaml"), "--providers-file",
+    ),
+    voices_file: Path = typer.Option(
+        Path("configs/voices.yaml"), "--voices-file",
+    ),
+    corpus_dir: Path = typer.Option(
+        Path("corpus"), "--corpus-dir",
+    ),
+) -> None:
+    """Run the campaign: adapter.synthesize() across (provider, use_case, item)."""
+    try:
+        parsed_mode = RunMode(mode)
+    except ValueError:
+        console.print(f"[red]--mode must be campaign|variance|latency, got: {mode}[/red]")
+        raise typer.Exit(code=2) from None
+
+    if use_case:
+        for uc in use_case:
+            if uc not in ("conversational", "narration"):
+                console.print(f"[red]--use-case must be conversational|narration, got: {uc}[/red]")
+                raise typer.Exit(code=2)
+
+    runner = Runner(
+        providers_file=providers_file,
+        voices_file=voices_file,
+        corpus_dir=corpus_dir,
+    )
+
+    console.rule(f"[bold]veval generate --mode {parsed_mode.value}[/bold]")
+    if items:
+        console.print(f"[yellow]Pilot / restricted item set: {items}[/yellow]")
+    if provider:
+        console.print(f"[yellow]Restricted providers: {provider}[/yellow]")
+    if use_case:
+        console.print(f"[yellow]Restricted use cases: {use_case}[/yellow]")
+    console.print()
+
+    if parsed_mode == RunMode.campaign:
+        summary = runner.run_campaign(
+            use_cases=use_case,  # type: ignore[arg-type]
+            provider_names=provider,
+            item_ids=items,
+        )
+    elif parsed_mode == RunMode.variance:
+        console.print("[red]--mode variance lands in Phase D.3[/red]")
+        raise typer.Exit(code=2)
+    else:  # latency
+        console.print("[red]--mode latency lands in Phase D.4[/red]")
+        raise typer.Exit(code=2)
+
+    _print_generate_summary(summary)
+    if summary.failed > 0:
+        raise typer.Exit(code=1)
+
+
+def _print_generate_summary(summary: RunSummary) -> None:
+    """Compact summary table for a generate run."""
+    console.print()
+    console.rule(f"[bold]Summary — {summary.mode.value}[/bold]")
+
+    header = Table(show_header=False, box=None, padding=(0, 2))
+    header.add_row("run_id", summary.run_id)
+    header.add_row("run_dir", str(summary.run_dir))
+    header.add_row("elapsed", f"{summary.elapsed_s:.1f}s")
+    header.add_row("total items", str(summary.total))
+    color = "green" if summary.failed == 0 else ("yellow" if summary.ok > 0 else "red")
+    header.add_row("results", f"[{color}]{summary.ok} ok · {summary.failed} failed[/{color}]")
+    console.print(header)
+    console.print()
+
+    per_provider = Table(title="Per provider", show_header=True)
+    per_provider.add_column("Provider", style="bold")
+    per_provider.add_column("OK", justify="right", style="green")
+    per_provider.add_column("Failed", justify="right", style="red")
+
+    providers = sorted(set(summary.per_provider_ok) | set(summary.per_provider_failed))
+    for prov in providers:
+        ok = summary.per_provider_ok.get(prov, 0)
+        failed = summary.per_provider_failed.get(prov, 0)
+        per_provider.add_row(prov, str(ok), str(failed) if failed else "—")
+    console.print(per_provider)
 
 
 if __name__ == "__main__":
