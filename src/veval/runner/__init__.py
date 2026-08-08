@@ -15,6 +15,7 @@ from veval.runner.runner import (
     Runner,
     RunSummary,
 )
+from veval.runner.spend import SpendCapExceeded, SpendTracker
 
 __all__ = [
     "CacheEntry",
@@ -22,5 +23,7 @@ __all__ = [
     "RunMode",
     "Runner",
     "RunSummary",
+    "SpendCapExceeded",
+    "SpendTracker",
     "SynthesisCache",
 ]

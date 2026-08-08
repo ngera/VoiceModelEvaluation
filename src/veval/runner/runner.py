@@ -38,6 +38,7 @@ from veval.adapters.base import (
 from veval.config import (
     CorpusFile,
     CorpusItem,
+    PricingFile,
     ProviderConfig,
     ProvidersFile,
     UseCase,
@@ -45,11 +46,13 @@ from veval.config import (
     VoiceSelection,
     VoicesFile,
     load_corpus,
+    load_pricing,
     load_providers,
     load_variance_subset,
     load_voices,
 )
 from veval.runner.cache import SynthesisCache
+from veval.runner.spend import SpendCapExceeded, SpendTracker
 from veval.store.run_store import Run, default_run_store
 
 # --- Retry policy ---
@@ -119,17 +122,26 @@ class Runner:
         providers_file: Path = Path("configs/providers.yaml"),
         voices_file: Path = Path("configs/voices.yaml"),
         corpus_dir: Path = Path("corpus"),
+        pricing_file: Path = Path("configs/pricing.yaml"),
         provider_concurrency: dict[str, int] | None = None,
         cache: SynthesisCache | None = None,
+        spend_tracker: SpendTracker | None = None,
     ) -> None:
         self.providers: ProvidersFile = load_providers(providers_file)
         self.voices: VoicesFile = load_voices(voices_file)
         self.corpus_dir = corpus_dir
+        self.pricing: PricingFile = load_pricing(pricing_file)
         self.provider_concurrency = provider_concurrency or DEFAULT_PROVIDER_CONCURRENCY
         # Cache is optional. None = no caching (fresh call every time).
         # Campaign mode enables it by default; variance/latency must skip
         # it (fresh measurement is the whole point).
         self.cache: SynthesisCache | None = cache
+        # Spend cap is optional but recommended. None = no cap enforced.
+        # When set, every successful synthesis charges the tracker; if
+        # the projected cap would be exceeded, subsequent submits stop
+        # (already-in-flight calls complete normally).
+        self.spend_tracker: SpendTracker | None = spend_tracker
+        self._spend_cap_hit = False  # set when SpendCapExceeded first raised
 
     # --- Config resolution ---
 
@@ -192,6 +204,21 @@ class Runner:
         draw: int,
         run: Run,
     ) -> ItemResult:
+        # Spend cap short-circuit: if a prior call already tripped the cap,
+        # every subsequent submission returns a fast failure without
+        # touching the network. In-flight calls that already made it past
+        # this check still complete normally.
+        if self._spend_cap_hit:
+            run.log_api({
+                "provider": p.name, "use_case": use_case, "item_id": item.id,
+                "draw": draw, "status": "skipped",
+                "reason": "spend_cap_exceeded",
+            })
+            return ItemResult(
+                provider=p.name, use_case=use_case, item_id=item.id, draw=draw,
+                ok=False, error="spend cap exceeded; call skipped",
+            )
+
         voice_id, model = self._resolve_voice_model(p.name, use_case, mode)
 
         # Cache check (campaign mode only — variance/latency need fresh calls).
@@ -332,6 +359,27 @@ class Runner:
                     # Never let a cache-write failure fail the run
                     pass
 
+            # Charge the spend tracker (fresh synth only; cache hits are $0
+            # already paid). If the cap is exceeded we've already burned this
+            # one call — mark the run so subsequent submits stop.
+            this_call_usd: float | None = None
+            running_total_usd: float | None = None
+            if self.spend_tracker is not None:
+                try:
+                    this_call_usd, running_total_usd = self.spend_tracker.charge(
+                        p.name, result.billing_unit,  # type: ignore[arg-type]
+                        result.chars_billed,
+                    )
+                except SpendCapExceeded:
+                    # The synthesis already happened; log the overshoot and
+                    # set the shutdown flag so pending futures stop submitting
+                    self._spend_cap_hit = True
+                    this_call_usd = self.spend_tracker.estimate_cost(
+                        p.name, result.billing_unit,  # type: ignore[arg-type]
+                        result.chars_billed,
+                    )
+                    running_total_usd = self.spend_tracker.total_usd
+
             run.log_api({
                 "provider": p.name, "use_case": use_case, "item_id": item.id,
                 "draw": draw, "status": "ok",
@@ -343,6 +391,8 @@ class Runner:
                 "voice_id": voice_id, "model": model,
                 "attempts": attempt,
                 "cache": "miss" if use_cache else "off",
+                "estimated_call_usd": this_call_usd,
+                "running_total_usd": running_total_usd,
                 "meta": result.meta,
             })
             return ItemResult(

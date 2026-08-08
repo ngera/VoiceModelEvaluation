@@ -20,7 +20,8 @@ from rich.table import Table
 from veval import __version__
 from veval.adapters import ADAPTERS
 from veval.doctor import DoctorReport, run_doctor
-from veval.runner import RunMode, Runner, RunSummary, SynthesisCache
+from veval.runner import RunMode, Runner, RunSummary, SpendTracker, SynthesisCache
+from veval.config import load_pricing
 
 app = typer.Typer(
     name="veval",
@@ -192,6 +193,17 @@ def generate(
         50, "--trials",
         help="Serial trials per provider for --mode latency (default 50)",
     ),
+    spend_cap: float | None = typer.Option(
+        None, "--spend-cap",
+        help="USD cap for this run (overrides VEVAL_SPEND_CAP_USD env var; default $100)",
+    ),
+    no_spend_cap: bool = typer.Option(
+        False, "--no-spend-cap",
+        help="Disable spend cap entirely (default: cap enforced)",
+    ),
+    pricing_file: Path = typer.Option(
+        Path("configs/pricing.yaml"), "--pricing-file",
+    ),
 ) -> None:
     """Run the campaign: adapter.synthesize() across (provider, use_case, item)."""
     try:
@@ -214,11 +226,21 @@ def generate(
     else:
         cache = SynthesisCache(cache_dir=cache_dir)
 
+    # Spend tracker
+    tracker: SpendTracker | None
+    if no_spend_cap:
+        tracker = None
+    else:
+        pricing = load_pricing(pricing_file)
+        tracker = SpendTracker.from_env(pricing=pricing, cap_usd_override=spend_cap)
+
     runner = Runner(
         providers_file=providers_file,
         voices_file=voices_file,
         corpus_dir=corpus_dir,
+        pricing_file=pricing_file,
         cache=cache,
+        spend_tracker=tracker,
     )
 
     console.rule(f"[bold]veval generate --mode {parsed_mode.value}[/bold]")
@@ -233,6 +255,10 @@ def generate(
         console.print(f"[dim]Cache: {cache_dir} ({stats['entries']} entries, {stats['total_bytes']:,} bytes)[/dim]")
     else:
         console.print("[dim]Cache: disabled[/dim]")
+    if tracker is not None:
+        console.print(f"[dim]Spend cap: ${tracker.cap_usd:.2f}[/dim]")
+    else:
+        console.print("[dim]Spend cap: disabled (--no-spend-cap)[/dim]")
     console.print()
 
     if parsed_mode == RunMode.campaign:
@@ -269,6 +295,16 @@ def generate(
         )
 
     _print_generate_summary(summary)
+    if tracker is not None:
+        console.print()
+        spend_table = Table(title="Estimated spend (USD)", show_header=True)
+        spend_table.add_column("Provider", style="bold")
+        spend_table.add_column("Spend", justify="right")
+        for prov, usd in sorted(tracker.per_provider_usd.items()):
+            spend_table.add_row(prov, f"${usd:.4f}")
+        spend_table.add_row("[bold]TOTAL[/bold]", f"[bold]${tracker.total_usd:.4f}[/bold]")
+        spend_table.add_row("[dim]cap[/dim]", f"[dim]${tracker.cap_usd:.2f}[/dim]")
+        console.print(spend_table)
     if summary.failed > 0:
         raise typer.Exit(code=1)
 

@@ -188,6 +188,37 @@ uv run veval generate --mode campaign --provider deepgram --provider openai --us
 uv run veval generate --mode campaign --items S01 --items S02 --items S03
 ```
 
+### 2.4b Generate: spend cap (D.5)
+
+Every generate run is gated by a USD spend cap. The tracker estimates
+per-call cost from `configs/pricing.yaml` (conservatively — highest
+rate row wins when a provider has multiple pricing tiers, so estimate
+overshoots rather than undershoots).
+
+**Default cap: $100** (from `VEVAL_SPEND_CAP_USD` in `.env`).
+
+**Override per-run:**
+
+```powershell
+# Tight cap for a smoke test
+uv run veval generate --mode campaign --provider deepgram --items S01 --spend-cap 0.10
+
+# Disable entirely (careful!)
+uv run veval generate --mode campaign --no-spend-cap
+```
+
+**Behaviour when cap trips:** the call that would have exceeded the
+cap is refused (no API call made). Any calls already in flight
+complete normally; all subsequent submissions are skipped and logged
+as `"status": "skipped", "reason": "spend_cap_exceeded"`. The run
+finalizes normally with a partial result.
+
+**Every generate summary shows an "Estimated spend (USD)" table** at
+the end so you can see where the money went.
+
+**Warning at 80%:** printed once when running total crosses 80% of the
+cap. Not another chance to gate; just a heads-up.
+
 ### 2.5 Generate: bypass cache
 
 By default, campaign mode uses a **content-hash cache** at
