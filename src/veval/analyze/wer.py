@@ -242,21 +242,25 @@ def detect_truncation(
 # --- Judge loaders (lazy) ------------------------------------------------
 
 
-_PARAKEET: Any = None
+_JUDGE_1: Any = None
 _WHISPER: Any = None
 
 
-def _load_parakeet(model_id: str, revision: str) -> Any:
-    global _PARAKEET
-    if _PARAKEET is None:
+def _load_judge_1(model_id: str, revision: str) -> Any:
+    """Load judge 1 via `transformers.pipeline`. Works for both wav2vec2
+    (current per D-010) and parakeet (if NeMo integration is added
+    later). Model architecture is auto-detected by transformers.
+    """
+    global _JUDGE_1
+    if _JUDGE_1 is None:
         from transformers import pipeline
 
-        _PARAKEET = pipeline(
+        _JUDGE_1 = pipeline(
             "automatic-speech-recognition",
             model=model_id,
             revision=revision if not revision.startswith("TODO") else None,
         )
-    return _PARAKEET
+    return _JUDGE_1
 
 
 def _load_whisper(model_id: str, revision: str) -> Any:
@@ -271,7 +275,7 @@ def _load_whisper(model_id: str, revision: str) -> Any:
     return _WHISPER
 
 
-def _transcribe_parakeet(pipeline_obj: Any, wav_path: Path) -> str:
+def _transcribe_judge_1(pipeline_obj: Any, wav_path: Path) -> str:
     out = pipeline_obj(str(wav_path))
     return str(out.get("text", "")).strip() if isinstance(out, dict) else str(out).strip()
 
@@ -292,7 +296,10 @@ class WerItem:
     draw: int
     stratum: str | None
     reference: str
-    parakeet: str
+    # Judge 1 transcript. Field name is generic because judge 1 is
+    # configurable (spec §4.2): currently `wav2vec2` per D-010,
+    # historically `parakeet` (renamed 2026-08-09).
+    judge_1_transcript: str
     whisper: str
     agreement_wer: float | None
     per_judge_wer: dict[str, float] = field(default_factory=dict)
@@ -323,10 +330,11 @@ def analyze_file(
     record: AudioRecord,
     *,
     reference_text: str,
-    parakeet_pipe: Any,
+    judge_1_pipe: Any,
     whisper_model: Any,
     gates: GatesFile,
     decoded_seconds: float | None = None,
+    judge_1_name: str = "judge_1",
 ) -> WerItem:
     from jiwer import wer as jiwer_wer
 
@@ -337,7 +345,7 @@ def analyze_file(
         draw=record.draw,
         stratum=_stratum(record.item_id),
         reference=reference_text,
-        parakeet="",
+        judge_1_transcript="",
         whisper="",
         agreement_wer=None,
     )
@@ -346,25 +354,25 @@ def analyze_file(
         return r
 
     try:
-        r.parakeet = _transcribe_parakeet(parakeet_pipe, record.wav_path)
+        r.judge_1_transcript = _transcribe_judge_1(judge_1_pipe, record.wav_path)
         r.whisper = _transcribe_whisper(whisper_model, record.wav_path)
     except Exception as e:  # noqa: BLE001 — model errors are data
         r.error = f"asr_error={e.__class__.__name__}: {e}"
         return r
 
     ref_n = normalise_v1(reference_text)
-    par_n = normalise_v1(r.parakeet)
+    j1_n = normalise_v1(r.judge_1_transcript)
     whi_n = normalise_v1(r.whisper)
 
     r.per_judge_wer = {
-        "parakeet": float(jiwer_wer(ref_n, par_n)) if ref_n else None,
+        judge_1_name: float(jiwer_wer(ref_n, j1_n)) if ref_n else None,
         "whisper": float(jiwer_wer(ref_n, whi_n)) if ref_n else None,
     }
 
     # Agreement WER: score reference vs the agreed tokens between judges.
     # Disputed tokens between judges become "errors" against the reference
     # — the conservative direction.
-    agreed, _disputed = agreed_tokens(par_n, whi_n)
+    agreed, _disputed = agreed_tokens(j1_n, whi_n)
     agreed_hyp = " ".join(agreed)
     r.agreement_wer = float(jiwer_wer(ref_n, agreed_hyp)) if ref_n else None
     r.band = (
@@ -391,8 +399,8 @@ def analyze_file(
         "truncation": detect_truncation(
             decoded_seconds, len(reference_text), ce.truncation_duration_ratio_lt
         ),
-        "repetition_loop_parakeet": detect_repetition_loop(
-            par_n.split(), ce.repetition_loop_ngram, ce.repetition_loop_min_repeats
+        "repetition_loop_judge_1": detect_repetition_loop(
+            j1_n.split(), ce.repetition_loop_ngram, ce.repetition_loop_min_repeats
         ),
         "repetition_loop_whisper": detect_repetition_loop(
             whi_n.split(), ce.repetition_loop_ngram, ce.repetition_loop_min_repeats
@@ -445,7 +453,7 @@ def _aggregate(rows: list[WerItem]) -> list[dict[str, Any]]:
                 "repetition_loop": sum(
                     1
                     for i in valid
-                    if i.events.get("repetition_loop_parakeet")
+                    if i.events.get("repetition_loop_judge_1")
                     or i.events.get("repetition_loop_whisper")
                 ),
                 "word_drop": sum(
@@ -477,12 +485,17 @@ def run(
     corpus_by_use_case: dict[str, CorpusFile],
     writer: AnalysisWriter | None = None,
 ) -> dict[str, Any]:
-    """Run WER analysis. Downloads Parakeet + faster-whisper on first call
+    """Run WER analysis. Downloads judge 1 + faster-whisper on first call
     (cached thereafter). Writes `wer.json`.
+
+    Judge 1 comes from analyzers.yaml: currently `wav2vec2` per D-010,
+    with `parakeet` still admissible pending NeMo integration.
     """
-    parakeet_cfg = next(j for j in analyzers.judges if j.name == "parakeet")
+    # Pick judge 1 (the non-whisper judge). D-010 admissible set:
+    # {parakeet, wav2vec2}; Pydantic validator enforces the choice.
+    judge_1_cfg = next(j for j in analyzers.judges if j.name != "faster-whisper")
     whisper_cfg = next(j for j in analyzers.judges if j.name == "faster-whisper")
-    parakeet_pipe = _load_parakeet(parakeet_cfg.model_id, parakeet_cfg.revision)
+    judge_1_pipe = _load_judge_1(judge_1_cfg.model_id, judge_1_cfg.revision)
     whisper_model = _load_whisper(whisper_cfg.model_id, whisper_cfg.revision)
 
     reader = RunReader(run_dir)
@@ -493,7 +506,7 @@ def run(
             rows.append(WerItem(
                 provider=record.provider, use_case=record.use_case,
                 item_id=record.item_id, draw=record.draw, stratum=_stratum(record.item_id),
-                reference="", parakeet="", whisper="", agreement_wer=None,
+                reference="", judge_1_transcript="", whisper="", agreement_wer=None,
                 error="reference_not_in_corpus",
             ))
             continue
@@ -507,10 +520,11 @@ def run(
         rows.append(analyze_file(
             record,
             reference_text=reference,
-            parakeet_pipe=parakeet_pipe,
+            judge_1_pipe=judge_1_pipe,
             whisper_model=whisper_model,
             gates=gates,
             decoded_seconds=decoded_seconds,
+            judge_1_name=judge_1_cfg.name,
         ))
 
     payload = {

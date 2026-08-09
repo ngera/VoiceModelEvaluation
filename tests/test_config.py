@@ -510,11 +510,13 @@ def test_shipped_analyzers_yaml_is_valid() -> None:
     repo_root = Path(__file__).resolve().parent.parent
     analyzers = load_analyzers(repo_root / "configs" / "analyzers.yaml")
     names = sorted(j.name for j in analyzers.judges)
-    assert names == ["faster-whisper", "parakeet"]
-    # Defect 3.1: judge 1 model_id must be RNNT (TDT with TODO revision is rejected)
-    parakeet = next(j for j in analyzers.judges if j.name == "parakeet")
-    assert "rnnt" in parakeet.model_id.lower(), (
-        f"Judge 1 should be Parakeet RNNT per defect 3.1, got {parakeet.model_id}"
+    # D-010 (prereg-v1.9): judge 1 swapped from `parakeet` (didn't load via
+    # released `transformers`) to `wav2vec2`. Test tolerates either.
+    admissible_judge_1 = {"parakeet", "wav2vec2"}
+    assert "faster-whisper" in names
+    other = [n for n in names if n != "faster-whisper"][0]
+    assert other in admissible_judge_1, (
+        f"Judge 1 must be one of {admissible_judge_1}; got {other!r}"
     )
     # Defect 3.7: min items must clear the published floor (50-100)
     assert analyzers.ttsds_min_items >= 50

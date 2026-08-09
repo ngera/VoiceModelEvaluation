@@ -361,15 +361,20 @@ class JudgeRevision(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    name: Literal["parakeet", "faster-whisper"] = Field(
-        description="Judge identity; the two must remain independent per spec §4.2"
+    name: Literal["parakeet", "wav2vec2", "faster-whisper"] = Field(
+        description=(
+            "Judge identity; the two must remain independent per spec §4.2. "
+            "`wav2vec2` added in D-010 (prereg-v1.9) after `parakeet_rnnt` "
+            "was found to not load via released `transformers`."
+        )
     )
     loader: Literal["transformers", "ctranslate2"]
     model_id: str = Field(
         description=(
-            "HF model id. For Parakeet: RNNT variant (`nvidia/parakeet-rnnt-*`) — "
-            "TDT is not in a released `transformers` version yet (spec B.3, "
-            "verified 2026-08-06). Phase B re-checks."
+            "HF model id. `wav2vec2` variant (Meta AI, CTC head, LibriSpeech-"
+            "trained) is the current judge 1 per D-010. Parakeet still allowed "
+            "as an alternative once NeMo integration is added; TDT is not in a "
+            "released `transformers` version yet (spec B.3, verified 2026-08-06)."
         )
     )
     revision: str = Field(
@@ -489,27 +494,49 @@ class AnalyzersFile(BaseModel):
 
     @model_validator(mode="after")
     def _validate_judges_independent(self) -> AnalyzersFile:
-        """Enforce spec §4.2: one Parakeet + one faster-whisper.
+        """Enforce spec §4.2 judge independence: two ASRs must differ in
+        organization, architecture family, and training pipeline.
 
-        Also flag if judge 1 model_id looks like TDT — the released variant is
-        RNNT (defect 3.1, verified 2026-08-06). This is a soft warning encoded
-        as a validation because ParakeetForTDT still requires installing
-        transformers from source.
+        Admissible judge 1 options: `parakeet` (NeMo/NVIDIA, once NeMo
+        integration is added) OR `wav2vec2` (Meta AI, CTC, LibriSpeech —
+        the current choice per D-010 after `parakeet_rnnt` proved to not
+        load via released `transformers`).
+
+        Judge 2 must be `faster-whisper` (OpenAI Whisper via CTranslate2).
+        Canary is NOT admissible — shares NVIDIA's FastConformer encoder
+        family and Canary-1B-v2 training pipeline with Parakeet
+        (arXiv:2509.14128).
         """
         names = sorted(j.name for j in self.judges)
-        if names != ["faster-whisper", "parakeet"]:
+        admissible_judge_1 = {"parakeet", "wav2vec2"}
+        # exactly one faster-whisper + exactly one from admissible_judge_1
+        if len(self.judges) != 2:
             raise ValueError(
-                "analyzers.yaml judges must be exactly one `parakeet` + one "
-                "`faster-whisper` (spec §4.2). Canary is not admissible as judge 2."
+                "analyzers.yaml judges must be exactly two entries."
             )
-        parakeet = next(j for j in self.judges if j.name == "parakeet")
-        if "tdt" in parakeet.model_id.lower() and parakeet.revision.startswith("TODO"):
+        if "faster-whisper" not in names:
             raise ValueError(
-                f"analyzers.yaml judge 1 uses TDT ({parakeet.model_id}) with an "
-                "unpinned revision. ParakeetForTDT exists only on transformers `main` "
-                "(spec B.3). Use `nvidia/parakeet-rnnt-*` unless TDT has landed in a "
-                "release and you have pinned the exact SHA."
+                "analyzers.yaml must include `faster-whisper` as one of the "
+                "two judges (spec §4.2 judge 2)."
             )
+        other = [n for n in names if n != "faster-whisper"][0]
+        if other not in admissible_judge_1:
+            raise ValueError(
+                f"analyzers.yaml judge 1 `{other}` not admissible. "
+                f"Allowed: {sorted(admissible_judge_1)}. "
+                "Canary is not admissible (shares NVIDIA FastConformer with Parakeet)."
+            )
+        # TDT-loadability soft-fail (unchanged, spec B.3)
+        parakeet_entries = [j for j in self.judges if j.name == "parakeet"]
+        if parakeet_entries:
+            p = parakeet_entries[0]
+            if "tdt" in p.model_id.lower() and p.revision.startswith("TODO"):
+                raise ValueError(
+                    f"analyzers.yaml judge 1 uses TDT ({p.model_id}) with an "
+                    "unpinned revision. ParakeetForTDT exists only on "
+                    "transformers `main` (spec B.3). Pin the SHA or switch "
+                    "to `wav2vec2` per D-010."
+                )
         return self
 
     def reference_for(self, use_case: UseCase) -> TtsdsReferenceSet:

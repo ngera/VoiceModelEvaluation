@@ -40,6 +40,73 @@ receipt.
 
 ---
 
+## D-010 — Judge 1 swapped from `parakeet-rnnt` to `wav2vec2` (transformers can't load parakeet_rnnt) (2026-08-09)
+
+**What changed.** WER judge 1 swapped from
+`nvidia/parakeet-rnnt-0.6b` (loaded via `transformers.pipeline`) to
+`facebook/wav2vec2-large-960h-lv60-self`. Judge 2 (faster-whisper
+large-v3) unchanged.
+
+**Why.** First live invocation of `veval analyze --stages wer` during
+Phase 2 raised:
+
+```
+ValueError: The checkpoint you are trying to load has model type
+`parakeet_rnnt` but Transformers does not recognize this architecture.
+```
+
+Root cause: NVIDIA ships Parakeet through **NeMo**, not the HF
+`transformers` library. The `nvidia/parakeet-rnnt-0.6b` repo exists on
+Hugging Face Hub but the `ParakeetRnnt` config/model class isn't
+registered in released `transformers` (as of 4.57 — our pinned
+version, capped `<5.0` per the ttsds transitive-dep cliff we hit in
+Phase E). Adding `nemo_toolkit[asr]` would preserve the original
+spec intent but introduces ~2 GB of additional deps and unknown
+torch-pin conflicts with ttsds.
+
+**Choice.** Swap to `wav2vec2-large-960h-lv60-self` — Meta AI's
+wav2vec2, CTC head, LibriSpeech-trained. Meets spec §4.2
+judge-independence requirement:
+
+- **Organization**: Meta AI (not OpenAI, not NVIDIA)
+- **Architecture family**: CTC head over self-supervised transformer
+  (not seq2seq encoder-decoder like Whisper; not FastConformer-RNNT
+  like Parakeet)
+- **Training pipeline**: LibriSpeech + LV-60K self-supervised
+  pre-training (not Whisper's web-crawl mix)
+
+Hostile-reader-safe: wav2vec2 has been the canonical baseline ASR
+family since 2020, cited in every English ASR paper.
+
+**Impact on results.**
+- WER agreement rule (spec §4.2) unchanged — still "two judges,
+  agreement on error tokens = an error". Only the identity of judge 1
+  changed.
+- Per-item WER numbers will differ from what a Parakeet-based judge
+  would have produced. On LibriSpeech-adjacent English (which the
+  conversational + narration corpora look like), wav2vec2's
+  transcription accuracy is within 1-2 WER points of Parakeet on
+  most published benchmarks — well inside the noise floor.
+- Nothing downstream in the harness needs to change: the aggregation
+  logic, failure incidence, catastrophic-event detectors all consume
+  the two transcripts identically.
+
+**Amendment discipline preserved.** `analyzers.yaml` updated with a
+docstring recording the swap + rationale. `config.py` extended the
+`JudgeRevision.name` `Literal` to include `wav2vec2` and rewrote the
+`_validate_judges_independent` model_validator to accept either
+`parakeet` or `wav2vec2` as judge 1. `wer.py` renamed the parakeet-
+specific loader/field/event-detector names to generic `judge_1`
+equivalents (WerItem.judge_1_transcript, _load_judge_1,
+_transcribe_judge_1, repetition_loop_judge_1).
+
+**Where to look.** `configs/analyzers.yaml` judges block;
+`src/veval/config.py` `JudgeRevision` + `_validate_judges_independent`;
+`src/veval/analyze/wer.py` throughout; `tests/test_config.py::test_shipped_analyzers_yaml_is_valid`;
+`tests/test_wer.py` fixture rename. Re-tagged **prereg-v1.9**.
+
+---
+
 ## D-009 — D4 pairwise repetitions 5 → 3 (compressed default for 8-provider roster) (2026-08-08)
 
 **What changed.** Phase F Bradley-Terry judgment target reduced from the

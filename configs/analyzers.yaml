@@ -120,9 +120,18 @@ audiobox_axes_rationale: >-
 # Phase B re-checks whether TDT has landed in a release — if so, TDT is
 # adopted and the change is logged in DEVIATIONS.md.
 judges:
-  - name: parakeet
+  # D-010 (prereg-v1.9): swapped from `nvidia/parakeet-rnnt-0.6b` to
+  # `facebook/wav2vec2-large-960h-lv60-self`. Parakeet_rnnt has model_type
+  # not registered in released `transformers`; NVIDIA ships Parakeet via
+  # NeMo, not the HF `transformers` library. wav2vec2 large-960h-lv60-self
+  # meets spec §4.2 judge independence: different organization (Meta AI,
+  # not OpenAI), different architecture family (CTC head over
+  # self-supervised transformer, not seq2seq encoder-decoder),
+  # different training data (LibriSpeech + LV-60K, not the Whisper
+  # web-crawl mix).
+  - name: wav2vec2
     loader: transformers
-    model_id: "nvidia/parakeet-rnnt-0.6b"
+    model_id: "facebook/wav2vec2-large-960h-lv60-self"
     revision: TODO_pin_sha_before_campaign
   - name: faster-whisper
     loader: ctranslate2

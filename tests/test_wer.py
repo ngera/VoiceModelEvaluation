@@ -167,7 +167,7 @@ def test_analyze_file_band_A_when_both_judges_agree_with_reference(
     para = _FakePara(reference)
     whi = _FakeWhisper(reference)
 
-    r = analyze_file(rec, reference_text=reference, parakeet_pipe=para,
+    r = analyze_file(rec, reference_text=reference, judge_1_pipe=para,
                      whisper_model=whi, gates=_gates)
     assert r.error is None
     assert r.agreement_wer == pytest.approx(0.0)
@@ -182,7 +182,7 @@ def test_analyze_file_band_C_and_failure_when_wildly_wrong(
     reference = "the quick brown fox jumps over the lazy dog"
     para = _FakePara("cat")
     whi = _FakeWhisper("cat")
-    r = analyze_file(rec, reference_text=reference, parakeet_pipe=para,
+    r = analyze_file(rec, reference_text=reference, judge_1_pipe=para,
                      whisper_model=whi, gates=_gates)
     assert r.agreement_wer is not None and r.agreement_wer > 0.5
     assert r.band == "C"
@@ -198,7 +198,7 @@ def test_analyze_file_span_hard_fail_on_currency_miss(
     # Both judges agree but drop the currency amount
     para = _FakePara("the invoice total is due friday")
     whi = _FakeWhisper("the invoice total is due friday")
-    r = analyze_file(rec, reference_text=reference, parakeet_pipe=para,
+    r = analyze_file(rec, reference_text=reference, judge_1_pipe=para,
                      whisper_model=whi, gates=_gates)
     assert r.failure
     assert "span_agreed_miss" in r.failure_reasons
@@ -225,7 +225,7 @@ def test_run_writes_wer_json_with_stubbed_judges(
 ) -> None:
     # Stub the loaders so no models are pulled
     reference = "the quick brown fox"
-    monkeypatch.setattr(wer, "_load_parakeet", lambda mid, rev: _FakePara(reference))
+    monkeypatch.setattr(wer, "_load_judge_1", lambda mid, rev: _FakePara(reference))
     monkeypatch.setattr(wer, "_load_whisper", lambda mid, rev: _FakeWhisper(reference))
 
     # Minimal run dir
