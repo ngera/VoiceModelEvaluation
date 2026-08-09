@@ -278,7 +278,19 @@ class Runner:
                 # Cache HIT — write to run store, log as cache hit, return.
                 provider_dir = run.dir / "audio" / p.name / use_case
                 provider_dir.mkdir(parents=True, exist_ok=True)
-                suffix = f"_d{draw:02d}" if mode == RunMode.variance else ""
+                # variance uses _dNN per draw; latency uses _tNNN per trial;
+                # campaign has no suffix. Applying the suffix here (rather
+                # than renaming after write) means the api_log audio_path
+                # points at the actual file the first time — the earlier
+                # rename-after-write approach silently broke acceptance
+                # gate because api_log rows were immutable by the time
+                # the rename happened. Fix landed 2026-08-09.
+                if mode == RunMode.variance:
+                    suffix = f"_d{draw:02d}"
+                elif mode == RunMode.latency:
+                    suffix = f"_t{draw:03d}"
+                else:
+                    suffix = ""
                 audio_path = provider_dir / f"{item.id}{suffix}.{entry.audio_format}"
                 audio_path.write_bytes(entry.audio_bytes)
                 if p.name not in run.manifest.providers:
@@ -705,32 +717,12 @@ class Runner:
         results: list[ItemResult] = []
         for p in providers:
             for trial in range(trials):
-                # `draw` field is repurposed as trial index for the audio
-                # path; audio files land at:
-                #   audio/<provider>/<use_case>/<item_id>_t{trial:03d}.wav
-                # We synthesise then also relocate the file. Simpler:
-                # call _synthesize_one with mode=latency and let it drop
-                # the file without the _dNN suffix (mode!=variance), then
-                # rename to _tNNN. Cleanest: shadow the suffix logic here
-                # by writing directly in the summary loop instead of
-                # reusing _synthesize_one's path convention. Compromise:
-                # do a rename after synth. Files are small (< 100KB
-                # typically); rename cost is negligible.
+                # `draw` field is repurposed as trial index; _synthesize_one
+                # applies the `_tNNN` suffix internally when mode=latency
+                # (mirrors the `_dNN` suffix for variance). Both the disk
+                # write and the api_log record the same suffixed path in
+                # one operation.
                 r = self._synthesize_one(p, use_case, item, RunMode.latency, trial, run)
-                if r.ok and r.audio_path is not None:
-                    # Rename to trial-indexed path so multiple trials don't
-                    # overwrite each other
-                    new_name = r.audio_path.with_name(
-                        f"{item.id}_t{trial:03d}.{r.result.audio_format if r.result else 'wav'}"
-                    )
-                    try:
-                        r.audio_path.rename(new_name)
-                        r.audio_path = new_name
-                    except OSError:
-                        # If rename fails (very unlikely), keep the original
-                        # path; latency analyzer reads from api_log.jsonl
-                        # for timing, not from file names
-                        pass
                 results.append(r)
 
         elapsed = time.perf_counter() - started
