@@ -109,7 +109,12 @@ class OrpheusAdapter(ProviderAdapter):
         try:
             with httpx.Client(timeout=DEFAULT_TIMEOUT_S) as client:
                 resp = client.post(endpoint, headers=create_headers, json=body)
-                if resp.status_code not in (200, 201):
+                # Replicate returns 200 or 201 when Prefer:wait terminates
+                # inside the wait window; 202 Accepted when it hands back
+                # a `status: "starting"` prediction to poll. All three are
+                # valid create-responses; the polling loop below handles
+                # the 202 case.
+                if resp.status_code not in (200, 201, 202):
                     body_text = resp.text[:500]
                     raise ProviderError(
                         f"Replicate HTTP {resp.status_code}: {body_text}",

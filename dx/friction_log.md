@@ -306,7 +306,34 @@ was 24× too high). Doctor probe cost: rounding-error negligible.
 - All three corrections logged as DEVIATIONS.md D-004; re-tagged
   prereg-v1.2.
 
-**Status:** ⏳ Config corrected pre-probe, awaiting first live probe.
+**Friction events (2026-08-09 first live probe — Phase 0 pre-flight):**
+- **Replicate returns HTTP 202 Accepted for async predictions.** The
+  adapter accepted only `(200, 201)` on the create-prediction POST
+  and treated 202 as a hard failure — meaning it never even entered
+  the polling loop that was already written to handle exactly this
+  case. Response body was correctly shaped
+  (`{"status": "starting", "urls": {"get": "..."}}`), just wrapped
+  in a status code the adapter didn't recognise. **All three of
+  200/201/202 are valid create-responses depending on whether
+  `Prefer:wait=` terminates inside its window.** Fix: extend the
+  accepted set. One-line change.
+- **Cold-start reality check:** first successful probe took
+  **72.8 s** total (`ttfa_ms=None` by spec §3.1 N/A-hosted rule).
+  Consistent with the plan's L40S cold-start expectation. Subsequent
+  requests should be faster while the model stays warm.
+- **Portfolio-worthy DX pattern:** every prior pilot in this project
+  returned `orpheus 0/10`. It was never a Replicate credit problem
+  (credits were topped up before this probe). It was an adapter bug
+  masquerading as an account problem for weeks. **Lesson: when a
+  provider fails 100% and every other adapter passes, treat it as an
+  adapter bug FIRST, account issue second — the acceptance-gate /
+  friction-log pattern is exactly the guardrail that catches this
+  class of failure attribution.**
+- No DEVIATIONS entry — adapter bug fix, not a prereg config change.
+  Commit stands as the receipt.
+
+**Status:** ✅ Adapter green end-to-end. First real Orpheus audio in
+the project's history: 72.8 s cold, 151,596 bytes.
 
 ---
 
