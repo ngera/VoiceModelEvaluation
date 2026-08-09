@@ -73,12 +73,20 @@ class ProviderError(Exception):
         status_code: int | None = None,
         retryable: bool = False,
         raw: dict[str, Any] | None = None,
+        retry_after_s: float | None = None,
     ) -> None:
         super().__init__(message)
         self.provider = provider
         self.status_code = status_code
         self.retryable = retryable
         self.raw = raw or {}
+        # When the provider tells us HOW LONG to wait (e.g. HTTP 429
+        # with a Retry-After header, or Replicate's per-minute throttle),
+        # the runner should honor that instead of its exponential
+        # fallback. Otherwise a 60-second window with a 4-second
+        # exponential cap will just re-hit the throttle three times
+        # and give up.
+        self.retry_after_s = retry_after_s
 
 
 def pcm_to_wav(

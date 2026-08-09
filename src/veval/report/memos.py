@@ -241,8 +241,85 @@ def case_study_markdown(score_payload: dict) -> str:
     parts.append("- `narration_latency.png` -- narration quality vs RTF")
     parts.append("")
     parts.append(
-        "Interactive versions (`*.html`) are in `site/interactive/`. "
-        "See also the friction-log summary in the case study appendix."
+        "Interactive versions (`*.html`) are in `site/interactive/`."
     )
+    parts.append("")
+
+    # --- D7 DX friction findings (from dx/friction_log.md) --------------
+    parts.append("## D7 -- developer-experience findings")
+    parts.append(
+        "Every provider was integrated by the same developer against the "
+        "same interface. Notable per-provider friction and cross-provider "
+        "patterns from `dx/friction_log.md`:"
+    )
+    parts.append("")
+    parts.append(dx_friction_section())
+    parts.append("")
 
     return "\n".join(parts)
+
+
+def dx_friction_section() -> str:
+    """Inline the cross-provider friction patterns from dx/friction_log.md.
+
+    Static excerpts of the "portable-across-projects" findings the log
+    frames as first-class results. Kept in code (not a file read) so a
+    stranger cloning the repo can regenerate the case study without
+    needing the friction log file present, and so the report layer
+    never breaks silently if the log file gets moved.
+    """
+    lines = [
+        "### Cross-provider patterns (publishable)",
+        "",
+        "- **`0xFFFFFFFF` streamed-header placeholder** -- 4 of 8 providers "
+        "(Deepgram, OpenAI, Speechify, Cartesia partial) ship WAV files "
+        "with a placeholder length in the streaming header. RTF, VAD, "
+        "LUFS, and TTSDS2 all read duration from that header. "
+        "`finalize_wav_header()` in `adapters/base.py` is required, not "
+        "optional.",
+        "",
+        "- **Cache put/get symmetry** -- the runner's content-hash cache "
+        "silently broke for 4 of 8 providers because `put()` stored "
+        "with the response's rendered `sample_rate` while `get()` looked "
+        "up with `sample_rate=None`. Portable lesson: any content-hash "
+        "cache should key on request parameters ONLY, never response "
+        "metadata.",
+        "",
+        "- **Per-minute throttles + exponential backoff** -- Replicate "
+        "throttles predictions at 6/minute for non-enterprise accounts. "
+        "The runner's default exponential backoff capped at 4 seconds "
+        "vs a 60-second reset window, so retries just re-hit the "
+        "throttle three times and gave up. Fix: `ProviderError` carries "
+        "an optional `retry_after_s`; adapters supply it (Orpheus "
+        "defaults to 60s on 429). Portable lesson: exponential backoff "
+        "is the wrong knob for fixed-window throttles.",
+        "",
+        "### Per-provider notes worth calling out",
+        "",
+        "- **Speechify** -- `/v1/audio/speech` returns a JSON envelope "
+        "with a base64-encoded WAV; `/v1/audio/stream` returns MP3 "
+        "regardless of the `audio_format` body field. There is no "
+        "streamed-WAV option. D8 latency for Speechify is `total_ms` "
+        "(buffered), annotated on the chart per D-008.",
+        "",
+        "- **OpenAI** -- per-model voice enums are NOT a superset. "
+        "`cedar` works on `gpt-4o-mini-tts` but 400s on `tts-1-hd`. "
+        "Model swaps require voice re-verification. D-006 + D-007.",
+        "",
+        "- **Cartesia** -- WAV emits a `LIST` metadata chunk between "
+        "`fmt ` and `data`. Chunk walker required; naive bytes 40-44 "
+        "read the wrong chunk size. Also: Pro plan (100K credits) "
+        "does not enable overages by default -- hard-wall HTTP 402 on "
+        "exhaustion.",
+        "",
+        "- **Orpheus (Replicate)** -- canonical `canopyai/orpheus-3b` "
+        "slug returns 404; use community fork "
+        "`lucataco/orpheus-3b-0.1-ft`. Prediction create returns "
+        "**200, 201, or 202** depending on whether `Prefer:wait=` "
+        "terminates inside its window; adapter must poll on 202.",
+        "",
+        "See `dx/friction_log.md` for the full per-provider log, "
+        "including onboarding-time measurements + audio-format "
+        "fact-sheet per provider.",
+    ]
+    return "\n".join(lines)

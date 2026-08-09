@@ -332,8 +332,36 @@ was 24× too high). Doctor probe cost: rounding-error negligible.
 - No DEVIATIONS entry — adapter bug fix, not a prereg config change.
   Commit stands as the receipt.
 
-**Status:** ✅ Adapter green end-to-end. First real Orpheus audio in
-the project's history: 72.8 s cold, 151,596 bytes.
+**Friction events (2026-08-09 first full-scope campaign — Phase 1):**
+- **Replicate throttles predictions per-minute for non-enterprise
+  accounts** — error body: *"Your rate limit for creating predictions
+  is reduced to 6 requests per minute."* First 1,200-file campaign
+  came back as Orpheus **127/150** (23 throttled); a re-run with
+  cache-hits handling the 127 already-done still lost **10/23** to
+  further throttling because the runner's exponential backoff caps
+  at 4 seconds — nowhere near Replicate's per-minute reset window.
+- **The throttle NEVER surfaces via `Retry-After` header** on any
+  429 we saw. Adapter now defaults to a fixed **60-second wait** on
+  429 (one throttle window) unless the header is populated, in which
+  case we honor that instead.
+- **Runner-side fix generalised:** `ProviderError` gained an optional
+  `retry_after_s` field; the runner honors it when set, falls back to
+  exponential otherwise. Any adapter can now supply a "the provider
+  told us how long to wait" hint without a per-provider special case
+  in the retry loop. First adapter to use it is Orpheus; any future
+  per-minute-throttled provider gets this treatment for free.
+- After the throttle fix: **150/150 Orpheus in ~10 min** (waits are
+  real but the campaign completes clean).
+- **Portfolio-worthy pattern to publish:** exponential backoff is
+  wrong for per-minute-window throttles. A 60-second reset window +
+  a 4-second backoff cap means the runner just re-hits the throttle
+  three times and gives up. Retry-After (when supplied) OR a wait
+  matched to the throttle-window period is the right knob.
+
+**Status:** ✅ Adapter green end-to-end. Full campaign 150/150 after
+D-004 (community fork), D-005 (SHA pin), 202-Accepted fix, and
+per-minute throttle honor. Cost of the full campaign: **$0.42** for
+150 items + 23 + 10 retries = 183 predictions × ~$0.003/gen.
 
 ---
 
@@ -691,6 +719,30 @@ by using `sample_rate=None` on both sides — sample_rate is a rendered
 property, not a request-side cache-key ingredient. **Portable-across-
 projects lesson: any content-hash cache should be keyed on request
 parameters ONLY, never on response metadata.**
+
+### Cross-provider pattern: per-minute throttles + exponential backoff
+The runner originally handled all 429s with exponential backoff
+capped at 4 seconds (1s → 2s → 4s across 3 retries = 7s total).
+Replicate throttles predictions at **6/minute** for non-enterprise
+accounts; a 60-second reset window and a 4-second cap means the
+runner just re-hits the throttle three times and gives up. Real
+consequence: **10 of 150 Orpheus items** stayed in a permanent-fail
+state across a first re-run because the wait was never long enough.
+
+Fix (adapter + runner):
+- `ProviderError` gained an optional `retry_after_s` field
+- Runner honors it when set, exponential fallback otherwise
+- Orpheus adapter reads `Retry-After` header when present and
+  defaults to **60s on 429** when it isn't (matches Replicate's
+  reset window)
+
+**Portable-across-projects lesson: exponential backoff is the wrong
+knob for per-minute-window throttles.** A provider that reset every
+60s needs a wait matched to that window, not a doubling that caps
+before the window elapses. Any adapter for a per-minute-throttled
+provider should carry a fixed-per-throttle wait; the framework just
+needs to make that hint expressible without a per-provider special
+case in the retry loop.
 
 ### Environment gotcha: ttsds transitive dep cliff
 `ttsds >= 2.1` pulls in `s3prl → wespeaker → torchaudio`, and s3prl

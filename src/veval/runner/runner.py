@@ -26,7 +26,7 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from veval.adapters import ADAPTERS
 from veval.adapters.base import (
@@ -144,6 +144,50 @@ class Runner:
         self._spend_cap_hit = False  # set when SpendCapExceeded first raised
 
     # --- Config resolution ---
+
+    def _write_provenance(self, run: Any) -> None:
+        """If the run leaned on the synthesis cache, record that in
+        manifest.extras.provenance so a reader can tell at a glance
+        that the audio bytes were re-played from earlier runs vs.
+        freshly synthesised. Preserves the "runs are receipts"
+        discipline when a canonical run is regenerated to consolidate
+        earlier partial runs.
+
+        Silent no-op when the api_log has zero cache hits (a
+        fully-fresh campaign needs no annotation).
+        """
+        import json
+
+        log_path = run.api_log_path
+        if not log_path.exists():
+            return
+        cache_hits = 0
+        fresh_calls = 0
+        with log_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                if row.get("status") != "ok":
+                    continue
+                if row.get("cache") == "hit":
+                    cache_hits += 1
+                else:
+                    fresh_calls += 1
+        if cache_hits == 0:
+            return
+        run.manifest.extras["provenance"] = {
+            "cache_hits": cache_hits,
+            "fresh_calls": fresh_calls,
+            "note": (
+                "This run reused cached bytes for cache_hits rows. Those "
+                "bytes were produced by earlier fresh API calls whose "
+                "receipts live in other runs/ subdirectories. When "
+                "cache_hits >> fresh_calls, this run is a canonical "
+                "rollup rather than a fresh campaign."
+            ),
+        }
 
     def _load_corpus(self, use_case: UseCase) -> CorpusFile:
         return load_corpus(self.corpus_dir / f"{use_case}.yaml")
@@ -301,7 +345,13 @@ class Runner:
             except ProviderError as e:
                 last_error = f"{type(e).__name__}: {e}"
                 if e.retryable and attempt < MAX_RETRIES:
-                    time.sleep(BACKOFF_BASE_S * (2 ** (attempt - 1)))
+                    # Honor provider-supplied retry_after_s when present
+                    # (Replicate's per-minute throttle, Retry-After header
+                    # on any 429). Fall back to exponential otherwise.
+                    if e.retry_after_s is not None:
+                        time.sleep(e.retry_after_s)
+                    else:
+                        time.sleep(BACKOFF_BASE_S * (2 ** (attempt - 1)))
                     continue
                 run.log_api({
                     "provider": p.name, "use_case": use_case, "item_id": item.id,
@@ -469,6 +519,7 @@ class Runner:
                     results.append(fut.result())
 
         elapsed = time.perf_counter() - started
+        self._write_provenance(run)
         run.finalize()
 
         summary = RunSummary(
@@ -565,6 +616,7 @@ class Runner:
                     results.append(fut.result())
 
         elapsed = time.perf_counter() - started
+        self._write_provenance(run)
         run.finalize()
 
         summary = RunSummary(
@@ -682,6 +734,7 @@ class Runner:
                 results.append(r)
 
         elapsed = time.perf_counter() - started
+        self._write_provenance(run)
         run.finalize()
 
         summary = RunSummary(

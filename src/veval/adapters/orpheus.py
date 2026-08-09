@@ -116,11 +116,31 @@ class OrpheusAdapter(ProviderAdapter):
                 # the 202 case.
                 if resp.status_code not in (200, 201, 202):
                     body_text = resp.text[:500]
+                    # Replicate throttles by predictions-per-minute; the
+                    # 429 body contains a JSON `detail` string but rarely
+                    # a numeric wait. When Retry-After IS in the response
+                    # header we honor it; otherwise default to a 60s
+                    # wait for 429 (one throttle window). Any other
+                    # status uses the runner's exponential fallback.
+                    retry_after: float | None = None
+                    if resp.status_code == 429:
+                        header_val = (
+                            resp.headers.get("retry-after")
+                            or resp.headers.get("Retry-After")
+                        )
+                        if header_val:
+                            try:
+                                retry_after = float(header_val)
+                            except ValueError:
+                                retry_after = 60.0
+                        else:
+                            retry_after = 60.0
                     raise ProviderError(
                         f"Replicate HTTP {resp.status_code}: {body_text}",
                         provider=self.name,
                         status_code=resp.status_code,
                         retryable=resp.status_code in (429, 500, 502, 503, 504),
+                        retry_after_s=retry_after,
                         raw={"body": body_text, "model": self.model, "version": self.version},
                     )
                 prediction = resp.json()
