@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import platform
+import threading
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -52,12 +53,25 @@ def _run_id(kind: str) -> str:
 
 
 class Run:
-    """A single run directory. Instantiate via `RunStore.new_run()`."""
+    """A single run directory. Instantiate via `RunStore.new_run()`.
+
+    Thread-safety: the runner submits per-item work to a ThreadPoolExecutor,
+    so `write_audio` and `log_api` are called concurrently from multiple
+    workers. Both mutate shared state (`manifest.audio_count`,
+    `manifest.error_count`, and — critically — append to the same
+    `api_log.jsonl` file). On Windows, unlocked concurrent appends to a
+    single file drop rows silently (verified 2026-08-09: a 1,200-file
+    cache-hit re-run wrote all 1,200 audio files but only 1,194 api_log
+    rows). The lock below serialises those operations. The audio-bytes
+    write itself is atomic (each file is unique per (provider, item, draw))
+    so `path.write_bytes` stays outside the critical section.
+    """
 
     def __init__(self, dir: Path, manifest: Manifest) -> None:
         self.dir = dir
         self.manifest = manifest
         self.api_log_path = dir / "api_log.jsonl"
+        self._lock = threading.Lock()
 
     def write_audio(
         self,
@@ -69,21 +83,24 @@ class Run:
         provider_dir = self.dir / "audio" / provider
         provider_dir.mkdir(parents=True, exist_ok=True)
         path = provider_dir / f"{item_id}.{ext}"
-        path.write_bytes(audio_bytes)
-        if provider not in self.manifest.providers:
-            self.manifest.providers.append(provider)
-        if item_id not in self.manifest.items:
-            self.manifest.items.append(item_id)
-        self.manifest.audio_count += 1
+        path.write_bytes(audio_bytes)  # unique path per item; safe unlocked
+        with self._lock:
+            if provider not in self.manifest.providers:
+                self.manifest.providers.append(provider)
+            if item_id not in self.manifest.items:
+                self.manifest.items.append(item_id)
+            self.manifest.audio_count += 1
         return path
 
     def log_api(self, entry: dict[str, Any]) -> None:
         """Append one JSON line. Errors are data — log them here, not by crashing."""
         record = {"ts_utc": _utc_now_iso(), **entry}
-        with self.api_log_path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(record, default=str) + "\n")
-        if entry.get("status") == "error":
-            self.manifest.error_count += 1
+        line = json.dumps(record, default=str) + "\n"
+        with self._lock:
+            with self.api_log_path.open("a", encoding="utf-8") as f:
+                f.write(line)
+            if entry.get("status") == "error":
+                self.manifest.error_count += 1
 
     def finalize(self) -> Path:
         """Write manifest.json and return its path. Run dir is immutable after this."""

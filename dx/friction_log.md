@@ -744,6 +744,32 @@ provider should carry a fixed-per-throttle wait; the framework just
 needs to make that hint expressible without a per-provider special
 case in the retry loop.
 
+### Cross-platform gotcha: Windows concurrent-append silently drops rows
+The runner submits per-item synthesis work to a `ThreadPoolExecutor`;
+every worker calls `run.log_api()` to append one JSON line to
+`api_log.jsonl`. `log_api` opened the file in append mode without
+a lock, on the assumption that append semantics were atomic.
+That assumption holds on POSIX but not on Windows — a full-scope
+1,200-file cache-hit re-run wrote all 1,200 audio files to disk
+but only **1,194 rows** to the api_log. Acceptance gate counted
+1194/1194 clean (correctly, from what the log said existed); the
+6 audio files with no receipt were invisible to every downstream
+analyzer.
+
+Fix: `Run` acquired a `threading.Lock` gating both `log_api` and
+the manifest-mutation portion of `write_audio`. Audio bytes still
+write outside the lock (unique path per (provider, item, draw)
+means no contention on the actual file). After the fix a second
+canonical rollup: 1200/1200.
+
+**Portable-across-projects lesson:** treat "append is atomic"
+as POSIX-only folklore. Any log or ledger that will see
+concurrent writers needs an explicit synchronization primitive,
+even for line-oriented formats. Windows filesystem docs are
+explicit that concurrent-write ordering is undefined; the
+practical failure mode is silent row-drop, not corruption, which
+makes it easy to miss at small scale.
+
 ### Environment gotcha: ttsds transitive dep cliff
 `ttsds >= 2.1` pulls in `s3prl → wespeaker → torchaudio`, and s3prl
 still calls `torchaudio.set_audio_backend("sox_io")` — a function
