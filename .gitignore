@@ -83,6 +83,10 @@ voting/dist/
 rating/audio/
 rating/anchor/
 rating/manifest.json
+# Generated derivative of the corpus (regeneratable via `uv run python
+# scripts/anchor_script.py`). Committing would just be noise churn on
+# every corpus tweak.
+rating/anchor_script.md
 # Judgment CSVs — private per-rater data (may include timing / preference
 # signal that a rater hasn't consented to publish).
 judgments-*.csv
