@@ -500,6 +500,51 @@ human protocol never reached, and it is the one pre-registered as confirmatory. 
 of analysis is fixed now**, because choosing it after seeing the data would be the cleanest
 available way to manufacture a favourable correlation.
 
+### 5.4 Compute environment
+
+All analyzers, all generation calls and all Bradley–Terry fits were executed on a single
+Windows 11 laptop with an entry-level CPU and no GPU acceleration
+(`torch 2.4.1+cpu`). This is a deliberate choice with three consequences worth stating
+before results appear.
+
+**First, most results are hardware-independent.** Audio bytes returned by providers are
+computed server-side and are identical regardless of the client. The analyzers on those
+bytes — WER, Audiobox, UTMOS, NISQA, hygiene metrics, cost calculations, Bradley–Terry
+fits, Spearman correlations — are deterministic transforms. A reproducer running the same
+code on a GPU-equipped machine should observe the same scores up to fp32/fp16 precision
+differences, and the same provider ranking without qualification. Wall-clock times differ:
+WER on 1,200 files takes roughly overnight on this CPU and roughly 30–40 minutes on a
+mid-tier GPU. **Numeric identity is preserved; only the runtime changes.**
+
+**Second, client-side latency measurements are environment-dependent** and should be read
+as upper bounds. TTFA and RTF are timed from the client's perspective and include ISP
+jitter, OS scheduling, antivirus interference, and the geographic distance to the
+provider's serving region. An enterprise deployment on a dedicated VM co-located with the
+provider's serving region will typically see 10–30% lower TTFA on the same voice + model +
+text. Provider *ranking* on latency is stable across environments in our experience;
+absolute figures should carry a "measured from" qualifier every time they appear.
+
+**Third, subscription-tier serving priority differs from enterprise contracts.** All
+eight providers were measured on their smallest paid tier (Cartesia Pro $5/mo, ElevenLabs
+Creator $22/mo, Speechify Starter $10/mo, OpenAI pre-paid, Google post-pay, Deepgram
+signup credit, Fish free-window, Replicate pay-per-second). Enterprise contracts
+typically include SLA guarantees, dedicated capacity and volume discounts that may
+change the reliability behaviour and cost ordering the report presents. Volume discounts
+in particular could shift Speechify or ElevenLabs from mid-cost to competitive with the
+Orpheus floor at scale, and we did not measure this.
+
+The full environment is captured in
+[`configs/hardware.yaml`](../configs/hardware.yaml) as a reproducibility receipt: OS,
+CPU, RAM, Python + torch build, per-provider concurrency caps used at measurement time,
+measurement session timestamps, and network context.
+
+**Why this matters for enterprise readers.** Provider *rankings* on quality, WER,
+cost and drift are portable to enterprise deployments without qualification.
+Absolute latency figures should be treated as ceilings that co-located enterprise
+deployments will improve on. Cost projections at the reported subscription tiers are
+accurate to those tiers; enterprise volume-discount contracts may change absolute
+figures but rarely re-order the ranking by more than one position.
+
 ---
 
 ## 6. Decision framework
@@ -890,6 +935,9 @@ in response to what the data showed.
 | Two use cases, one language, one voice per system | Stated scope limit; not generalised beyond |
 | Six of many available providers | Archetype-based selection disclosed; five named systems explicitly deferred |
 | Findings are a dated snapshot | Every measurement date-stamped; the +4-week re-run quantifies drift directly |
+| **Client-side latency measured from a residential Windows 11 environment** | Absolute TTFA / RTF numbers are upper bounds; enterprise deployments on co-located VMs typically see 10–30% lower TTFA on identical inputs. Relative provider ranking on latency is stable across environments. Explicit "measured from" qualifier attached to every latency figure caption. Full environment in `configs/hardware.yaml`. See §5.4 |
+| **Subscription-tier serving priority may differ from enterprise contracts** | All providers measured on smallest paid tier (Cartesia Pro / ElevenLabs Creator / Speechify Starter / OpenAI pre-paid / Fish free-window / Deepgram signup credit / Replicate pay-per-second). Enterprise SLA + volume-discount contracts may change reliability behaviour and cost ordering. Explicit per-provider disclosure in memo tables |
+| **CPU-only analyzer execution vs enterprise GPU** | Analyzer outputs are deterministic transforms of audio bytes; a reproducer on GPU should observe identical scores at 5–10× wall-clock speed. No effect on validity of scores or rankings; only on reproducer time budget |
 
 ### 9.4 Conclusion validity
 

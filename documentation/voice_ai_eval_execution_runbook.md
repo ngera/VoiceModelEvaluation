@@ -80,6 +80,8 @@ It'll rebuild during Phase 1. Confirm it's empty:
 ```powershell
 ls .cache/synthesis 2>$null
 # Empty or "not found" is the correct state
+# otherwise clean out the cache
+Remove-Item -Recurse -Force .cache/synthesis
 ```
 
 **Go/no-go gate:** all 8 providers green on `veval doctor`, all

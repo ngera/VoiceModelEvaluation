@@ -37,6 +37,21 @@ analyze = [
     "ttsds>=2.1",           # TTSDS2 ships under the `ttsds` PyPI name (2.x = TTSDS2)
     "audiobox-aesthetics>=0.0.4",
     "hf_xet>=1.0",          # Xet-backed HF downloads (faster than HTTP fallback)
+    # D3 supplementary MOS predictors (per RESEARCH_LOG D-B, runbook v2 Phase 2b).
+    # NISQA rejected: PyPI wheel hard-pins torch==2.2.1, breaking our torch<2.5 envelope.
+    # utmos: SSL-based overall MOS naturalness (sarulab-speech; torch + pytorch-lightning).
+    # speechmos: Microsoft DNSMOS P.835 (SIG/BAK/OVRL) + PLCMOS/AECMOS; ONNX runtime,
+    #   no torch dependency at all — clean cross-pipeline independence from Audiobox
+    #   and UTMOS.
+    # utmos NOT included: pulls fairseq 0.10.2 which fails to build on
+    # Windows with `PermissionError: [WinError 5] Access is denied:
+    # 'fairseq\\examples'` even with Windows Developer Mode enabled AND
+    # an elevated shell. Well-known fairseq/Windows source-build bug;
+    # no PyPI version of fairseq ships Windows wheels. Documented as
+    # attempted-and-rejected in RESEARCH_LOG D-B revision.
+    # A reproducer on Linux/macOS should uncomment the line below.
+    # "utmos>=1.1,<2.0",
+    "speechmos>=0.0.1,<0.1",
     "choix>=0.4",           # Bradley-Terry (spec §4.3, borrow-not-build per spec §5)
 ]
 admin = [
