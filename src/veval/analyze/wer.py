@@ -266,22 +266,63 @@ def _load_judge_1(model_id: str, revision: str) -> Any:
 def _load_whisper(model_id: str, revision: str) -> Any:
     global _WHISPER
     if _WHISPER is None:
+        from pathlib import Path as _Path
         from faster_whisper import WhisperModel
 
-        # faster-whisper takes the model id directly; revision pin lives
-        # in analyzers.yaml but ctranslate2 doesn't accept it as a param —
-        # we pin the huggingface_hub cache by hash separately.
-        _WHISPER = WhisperModel(model_id, device="cpu", compute_type="int8")
+        # `download_root` bypasses huggingface_hub's default cache which
+        # relies on symlinks. On Windows without Developer Mode / admin,
+        # symlink creation raises, and huggingface_hub 0.34+ doesn't
+        # fall back to copy cleanly on that path. Storing the model
+        # bytes in `.cache/whisper/` sidesteps the whole issue. Windows-
+        # friendly workaround; POSIX users just get a plain directory
+        # too, which is fine.
+        download_root = _Path(".cache/whisper")
+        download_root.mkdir(parents=True, exist_ok=True)
+        _WHISPER = WhisperModel(
+            model_id, device="cpu", compute_type="int8",
+            download_root=str(download_root),
+        )
     return _WHISPER
 
 
+def _load_audio_16k_mono(wav_path: Path) -> "np.ndarray":  # type: ignore[name-defined]
+    """Decode a WAV to mono float32 samples at 16 kHz.
+
+    Both faster-whisper and wav2vec2 want 16 kHz input. Providers ship at
+    24 kHz (most) or 48 kHz (Speechify), so we resample in Python via
+    scipy. Doing the decode + resample here means neither judge needs an
+    external audio decoder (faster-whisper's default path shells out to
+    ffmpeg, which isn't on the box; wav2vec2 tolerates arrays natively).
+    """
+    import numpy as np
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    samples, sr = sf.read(str(wav_path), dtype="float32", always_2d=False)
+    if samples.ndim > 1:
+        samples = samples.mean(axis=1)  # mono
+    if sr != 16000:
+        # Rational resample: 24k -> 16k = 2:3; 48k -> 16k = 1:3; 44.1k -> 16k
+        # uses the nearest rational approximation resample_poly picks.
+        from math import gcd
+        g = gcd(sr, 16000)
+        up, down = 16000 // g, sr // g
+        samples = resample_poly(samples, up, down).astype(np.float32)
+    return samples
+
+
 def _transcribe_judge_1(pipeline_obj: Any, wav_path: Path) -> str:
-    out = pipeline_obj(str(wav_path))
+    # transformers ASR pipeline accepts a numpy array via `{"array": ..., "sampling_rate": ...}`
+    samples = _load_audio_16k_mono(wav_path)
+    out = pipeline_obj({"array": samples, "sampling_rate": 16000})
     return str(out.get("text", "")).strip() if isinstance(out, dict) else str(out).strip()
 
 
 def _transcribe_whisper(model: Any, wav_path: Path) -> str:
-    segments, _info = model.transcribe(str(wav_path), language="en", beam_size=1)
+    # faster-whisper accepts a numpy array of samples at 16 kHz — avoids
+    # ffmpeg entirely
+    samples = _load_audio_16k_mono(wav_path)
+    segments, _info = model.transcribe(samples, language="en", beam_size=1)
     return " ".join(seg.text.strip() for seg in segments).strip()
 
 

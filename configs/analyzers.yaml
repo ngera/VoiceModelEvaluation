@@ -131,7 +131,14 @@ judges:
   # web-crawl mix).
   - name: wav2vec2
     loader: transformers
-    model_id: "facebook/wav2vec2-large-960h-lv60-self"
+    # Was `wav2vec2-large-960h-lv60-self` on first D-010 attempt.
+    # That repo ships only pytorch_model.bin (2020). transformers 4.57
+    # refuses .bin loads when torch < 2.6 (CVE-2025-32434) and we're
+    # pinned torch<2.5 because of the ttsds/s3prl set_audio_backend
+    # cliff. Switched to the "robust" variant which ships safetensors —
+    # same Meta AI wav2vec2 family, LibriSpeech fine-tune,
+    # equivalent accuracy, meets §4.2 independence identically.
+    model_id: "facebook/wav2vec2-large-robust-ft-libri-960h"
     revision: TODO_pin_sha_before_campaign
   - name: faster-whisper
     loader: ctranslate2
