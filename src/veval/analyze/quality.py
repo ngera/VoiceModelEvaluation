@@ -54,22 +54,23 @@ def _load_audiobox(ckpt: str | None = None) -> Any:
 def _load_ttsds_reference(dataset_id: str) -> Any:
     """Resolve a TTSDS2 reference id to a `ttsds.util.dataset.Dataset`.
 
-    `dataset_id` from analyzers.yaml is a friendly name (e.g. `daps`);
-    TTSDS2 ships a few named references (DAPS, VCTK, LJSpeech). If the
-    id isn't a bundled reference, treat it as a filesystem path to a
-    directory of WAVs.
+    TTSDS2 2.1.3 does NOT bundle reference downloaders. Named references
+    like `daps` must be downloaded and expanded to a local directory,
+    then referenced by that directory path in analyzers.yaml. If
+    `dataset_id` is not a resolvable filesystem path, this returns None
+    and TTSDS2 scoring silently no-ops for that use case — the caller
+    marks it as skipped and the report annotates.
     """
-    from ttsds.util.dataset import Dataset
+    from ttsds.util.dataset import DirectoryDataset
 
-    # TTSDS2 bundles named references; try that first
     p = Path(dataset_id)
     if p.exists() and p.is_dir():
-        return Dataset.from_directory(str(p))
-    # Otherwise, hand the id to TTSDS2 for its own resolution — it
-    # downloads on demand if the name is one of the bundled references.
-    # (Actual API may differ per ttsds version; centralised here so a
-    # change lives in one place.)
-    return Dataset.from_name(dataset_id) if hasattr(Dataset, "from_name") else None
+        return DirectoryDataset(
+            root_dir=str(p),
+            sample_rate=22050,  # TTSDS2 default
+            name=p.name,
+        )
+    return None
 
 
 # --- Audiobox: per-file inference ---------------------------------------
@@ -89,25 +90,20 @@ class FileQuality:
 def _audiobox_axes_for(record: AudioRecord, predictor: Any) -> dict[str, float]:
     """Return {axis: score} for one WAV. Axis names use Audiobox's short
     codes (CE/CU/PC/PQ). Caller filters to the pre-committed subset.
-    """
-    from audiobox_aesthetics.infer import make_inference_batch
 
-    batch = make_inference_batch([str(record.wav_path)])
-    with_no_grad(predictor)  # noqa — see helper
-    result = predictor(batch)
-    # audiobox returns per-item dict of axis→score
+    Correct API (verified against audiobox_aesthetics 0.0.4):
+    `predictor.forward([{"path": "<wav>"}])` returns a list of
+    per-item dicts with 4 axis keys. Not `predictor(...)` — AesPredictor
+    doesn't implement `__call__`.
+    """
+    # AesPredictor.forward expects a list of dicts keyed by `data_col`
+    # (default "path"). Feed one dict per call — batching over N files
+    # would be an optimization but complicates error-per-file attribution.
+    batch = [{"path": str(record.wav_path)}]
+    result = predictor.forward(batch)
     if isinstance(result, list) and result:
         return {k: float(v) for k, v in result[0].items()}
     return {}
-
-
-def with_no_grad(predictor: Any) -> None:  # pragma: no cover — trivial guard
-    """No-grad context: Audiobox forward is inference-only. If the model
-    was created in eval mode this is a no-op, but the explicit guard
-    keeps the intent readable in the trace."""
-    import torch
-    if isinstance(predictor, torch.nn.Module):
-        predictor.eval()
 
 
 def analyze_file_audiobox(
@@ -160,17 +156,21 @@ def compute_ttsds_score(
         return None
     try:
         from ttsds import BenchmarkSuite
-        from ttsds.util.dataset import Dataset
+        from ttsds.util.dataset import WavListDataset
     except ImportError:
         return None
 
-    test_ds = (
-        Dataset.from_paths([str(p) for p in wav_paths])
-        if hasattr(Dataset, "from_paths")
-        else None
+    test_ds = WavListDataset(
+        wavs=[Path(p) for p in wav_paths],
+        sample_rate=22050,  # TTSDS2 will resample as needed
+        name="test",
     )
     ref_ds = _load_ttsds_reference(reference_dataset_id)
-    if test_ds is None or ref_ds is None:
+    if ref_ds is None:
+        # Reference not resolvable — return None so the caller marks
+        # this (provider, use_case) as TTSDS2-skipped. Documented
+        # behavior; the report annotates when TTSDS2 was skipped for
+        # lack of a downloaded reference set (spec §A.3).
         return None
 
     suite = BenchmarkSuite(
