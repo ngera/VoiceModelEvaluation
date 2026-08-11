@@ -5,8 +5,7 @@ Two panels:
     - Score: pick an analysis dir + BT fit, click Score -> writes score.json
     - Frontier: pick a use case + axis, view interactive Plotly chart
                 with the survivor set, dominated set, and anchor
-                distinguished. Robustness + correlations + HI tables
-                below.
+                distinguished. Robustness + correlations tables below.
 """
 
 from __future__ import annotations
@@ -20,7 +19,7 @@ from dotenv import load_dotenv
 
 from veval.report.charts import plotly_frontier
 from veval.report.tables import (
-    correlations_table, hi_table, robustness_table, survivors_table,
+    correlations_table, robustness_table, survivors_table,
 )
 
 load_dotenv()
@@ -50,8 +49,8 @@ st.divider()
 
 # --- Frontier tabs --------------------------------------------------
 
-tab_conv, tab_narr, tab_robust, tab_corr, tab_hi = st.tabs([
-    "Conversational", "Narration", "Robustness", "Correlations", "HI",
+tab_conv, tab_narr, tab_robust, tab_corr = st.tabs([
+    "Conversational", "Narration", "Robustness", "Correlations",
 ])
 
 
@@ -109,6 +108,3 @@ with tab_corr:
     st.markdown("**Spearman rho** - rank agreement across quality axes.")
     st.markdown(correlations_table(score))
 
-with tab_hi:
-    st.markdown("**Humanness Index cross-check** - our BT rank vs. HI's rank.")
-    st.markdown(hi_table(score))

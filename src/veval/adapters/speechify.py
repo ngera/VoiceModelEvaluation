@@ -15,7 +15,7 @@ Endpoint choice (2026-08-08, DEVIATIONS.md D-008):
   the frontier charts annotate this the same way Fish's split-model
   is annotated.
 
-Model:     `simba-3.2` (Speechify's flagship — HI #1 at score 99).
+Model:     `simba-3.2` (Speechify's flagship model).
            Passed in JSON body via `model` field.
 
 Voice:     `voice_id` in the body. Simba voice IDs are typically short
@@ -33,7 +33,7 @@ Billing:   Per character. `chars_billed = len(opts.text)`;
            for campaign volume.
 
 Added in prereg-v1.1 (2026-08-07, DEVIATIONS.md D-003) as the
-"audit HI #1" archetype.
+consumer-storytelling / warm-narrator archetype.
 """
 
 from __future__ import annotations

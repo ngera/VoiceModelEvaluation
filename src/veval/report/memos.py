@@ -10,7 +10,7 @@ and a robustness note (does the recommendation change if a threshold
 moves within its pre-registered sweep points?).
 
 Case study is a separate longer document that composes the two memos +
-methodology + friction findings + Delta-vs-HI.
+methodology + friction findings.
 """
 
 from __future__ import annotations
@@ -20,7 +20,6 @@ from datetime import date
 from veval.report.tables import (
     correlations_table,
     frontier_table,
-    hi_table,
     robustness_table,
     survivors_table,
 )
@@ -228,10 +227,6 @@ def case_study_markdown(score_payload: dict) -> str:
 
     parts.append("## Cross-metric agreement (Spearman rho)")
     parts.append(correlations_table(score_payload))
-    parts.append("")
-
-    parts.append("## Humanness Index cross-check")
-    parts.append(hi_table(score_payload))
     parts.append("")
 
     parts.append("## Charts")

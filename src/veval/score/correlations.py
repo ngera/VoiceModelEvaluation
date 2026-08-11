@@ -1,16 +1,16 @@
-"""Spearman rho correlations across D3 (TTSDS2/Audiobox), D4 (BT), HI.
+"""Spearman rho correlations across machine-quality signals + D4.
 
-Spec Sec 4.3 / Sec 5: "Spearman rho published for D3 <-> D4, D3 <-> HI,
-D4 <-> HI, each with n and an exact interpretation."
+Used for cross-metric agreement analysis (e.g., Audiobox vs DNSMOS
+per F-8). Also intended for D3 <-> D4 comparison if the D4 BT panel
+is executed in v2.
 
 Spearman is rank-order agreement - the right measure here because:
     - D3 (distributional score) is on an unbounded scale.
     - D4 (BT strength) is log-odds centered at 0.
-    - HI is a 0-100 index.
-Neither Pearson r nor magnitude comparison makes sense across these
-scales. Rank agreement does.
+Neither Pearson r nor magnitude comparison makes sense across
+different scales. Rank agreement does.
 
-Interpretation guide (spec convention):
+Interpretation guide:
     |rho| >= 0.9: strong agreement
     0.7 <= |rho| < 0.9: substantial
     0.5 <= |rho| < 0.7: moderate

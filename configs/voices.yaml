@@ -187,20 +187,20 @@ voices:
 
   # ============================================================
   # Speechify (added prereg-v1.1, DEVIATIONS.md D-003)
-  # Simba 3.2 is Speechify's flagship model (HI #1 · score 99).
+  # Simba 3.2 is Speechify's flagship model.
   # ============================================================
   - provider: speechify
     use_case: conversational
     voice_id: "geffen_32"
     model: "simba-3.2"
     reasoning: >-
-      Simba 3.2 is Speechify's flagship model — the same model that
-      earned HI's #1 rank (score 99). Only 8 of 956 voices in the
-      Speechify library carry the simba-3.2 model (verified 2026-08-07
-      via API /v1/voices). Selected `geffen_32` — en-US female, style
-      "intriguing", timbre "warm" — the only voice in the 8 tagged with
-      BOTH `use-case:conversational` AND `use-case:customer-service-ivr`.
-      Direct fit for the support-agent archetype.
+      Simba 3.2 is Speechify's flagship model. Only 8 of 956 voices
+      in the Speechify library carry the simba-3.2 model (verified
+      2026-08-07 via API /v1/voices). Selected `geffen_32` — en-US
+      female, style "intriguing", timbre "warm" — the only voice in
+      the 8 tagged with BOTH `use-case:conversational` AND
+      `use-case:customer-service-ivr`. Direct fit for the
+      support-agent archetype.
   - provider: speechify
     use_case: narration
     voice_id: "wyatt_32"

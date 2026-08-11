@@ -862,21 +862,17 @@ def score(
         help="Which cost_model column to use for the cost axis",
     ),
     gates_file: Path = typer.Option(Path("configs/gates.yaml"), "--gates-file"),
-    hi_snapshot: Path | None = typer.Option(
-        None, "--hi-snapshot",
-        help="Optional Humanness Index snapshot JSON (skips HI comparison if omitted)",
-    ),
     out: Path = typer.Option(
         Path("analysis/score.json"), "--out",
         help="Where to write the combined score payload",
     ),
 ) -> None:
     """Phase G scoring: gates -> survivors -> frontiers with CI domination
-    -> robustness sweep -> HI reproduces column -> Spearman rho.
+    -> robustness sweep -> Spearman rho across quality signals.
     """
     from veval.config import load_analyzers, load_gates
     from veval.human.bt import BTFit
-    from veval.score import correlations, frontier, gates as gates_mod, hi_loader, robustness
+    from veval.score import correlations, frontier, gates as gates_mod, robustness
     from veval.store.run_store import default_run_store
 
     # Discover latest analysis dir if not provided
@@ -970,24 +966,7 @@ def score(
     else:
         console.print(f"[yellow]no BT fit at {bt_fit_path} - skipping frontiers[/yellow]")
 
-    # --- HI comparison ---
-    hi_output: dict[str, Any] | None = None
-    if hi_snapshot and hi_snapshot.exists() and bt_data:
-        console.print("[bold]HI[/bold] - Humanness Index reproduces column")
-        snap = hi_loader.load_snapshot(hi_snapshot)
-        # Conventionally compare against the conversational use case
-        conv_fit = bt_data.get("fits", {}).get("conversational")
-        if conv_fit:
-            strengths = dict(zip(conv_fit["systems"], conv_fit["strengths"]))
-            comparisons = hi_loader.compare(snap, strengths)
-            hi_output = {
-                "snapshot": {"captured_at": snap.captured_at, "source": snap.source},
-                "comparisons": hi_loader.as_dicts(comparisons),
-            }
-    elif hi_snapshot and not hi_snapshot.exists():
-        console.print(f"[yellow]HI snapshot not found: {hi_snapshot}[/yellow]")
-
-    # --- Spearman correlations ---
+    # --- Spearman correlations (D3 <-> D4 when both exist) ---
     correlations_out: list[dict[str, Any]] = []
     if bt_data:
         console.print("[bold]correlations[/bold] - Spearman rho")
@@ -1010,31 +989,14 @@ def score(
                     )
                     correlations_out.append(correlations.as_dict(r))
                     console.print(f"  D3 <-> D4: rho={r.rho} n={r.n_shared} ({r.interpretation})")
-            if hi_output:
-                hi_scores = {
-                    p: c["hi_score"]
-                    for p, c in hi_output["comparisons"].items()
-                    if c["hi_score"] is not None
-                }
-                if hi_scores:
-                    r_d4_hi = correlations.spearman(
-                        d4, hi_scores, left_axis="D4_BT", right_axis="HI",
-                    )
-                    correlations_out.append(correlations.as_dict(r_d4_hi))
-                    console.print(
-                        f"  D4 <-> HI: rho={r_d4_hi.rho} n={r_d4_hi.n_shared} "
-                        f"({r_d4_hi.interpretation})"
-                    )
 
     # --- Write score.json ---
     payload = {
         "analysis_dir": str(analysis_dir),
         "bt_fit_source": str(bt_fit_path) if bt_data else None,
-        "hi_snapshot_source": str(hi_snapshot) if hi_output else None,
         "survivals": gates_mod.as_dicts(survivals),
         "robustness": robustness.as_dicts(robustness_results),
         "frontiers": frontiers,
-        "hi": hi_output,
         "correlations": correlations_out,
     }
     out.parent.mkdir(parents=True, exist_ok=True)

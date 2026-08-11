@@ -79,10 +79,10 @@ def robustness_table(score_payload: dict) -> str:
 
 
 def correlations_table(score_payload: dict) -> str:
-    """Spearman rho table (D3 <-> D4, D3 <-> HI, D4 <-> HI)."""
+    """Spearman rho table (D3 <-> D4 when both exist)."""
     corr = score_payload.get("correlations", [])
     if not corr:
-        return "_(no correlation data — needs D3 quality + BT fit + HI snapshot)_"
+        return "_(no correlation data — needs D3 quality + BT fit)_"
     lines = ["| Left axis | Right axis | rho | p | n | Interpretation |",
              "|---|---|---|---|---|---|"]
     for c in corr:
@@ -95,25 +95,3 @@ def correlations_table(score_payload: dict) -> str:
     return "\n".join(lines)
 
 
-def hi_table(score_payload: dict) -> str:
-    """Humanness Index comparison table."""
-    hi = score_payload.get("hi")
-    if not hi:
-        return "_(no HI comparison — pass `--hi-snapshot` to score)_"
-    snap = hi.get("snapshot", {})
-    lines = [
-        f"_HI snapshot captured {snap.get('captured_at')} from "
-        f"{snap.get('source')}_\n",
-        "| Provider | HI rank | Our rank | Delta | HI score | Our BT | Reproduces? |",
-        "|---|---|---|---|---|---|---|",
-    ]
-    for provider, c in sorted(hi.get("comparisons", {}).items()):
-        lines.append(
-            f"| `{provider}` | "
-            f"{_fmt(c.get('hi_rank'), 'd') if c.get('hi_rank') is not None else '--'} | "
-            f"{_fmt(c.get('our_rank'), 'd') if c.get('our_rank') is not None else '--'} | "
-            f"{_fmt(c.get('delta_rank'), '+d') if c.get('delta_rank') is not None else '--'} | "
-            f"{_fmt(c.get('hi_score'))} | {_fmt(c.get('our_strength'))} | "
-            f"{c.get('reproduces', 'unknown')} |"
-        )
-    return "\n".join(lines)

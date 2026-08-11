@@ -45,7 +45,7 @@
 | GPU | Local NVIDIA recommended for Phase E; spot instance ($5–10) as contingency |
 | Analyzer backbone | **Direct library calls** — jiwer · TTSDS2 · Audiobox Aesthetics · silero-VAD · pyloudnorm; Parakeet TDT loaded via HuggingFace `transformers` |
 | ASR judges | **Parakeet TDT (HF) + faster-whisper large-v3, locked.** Judges must differ in **all three** of: originating organisation, encoder architecture family, and training-data pipeline. Canary-1B is **not admissible as judge 2** (shares NVIDIA's FastConformer encoder + data pipeline with Parakeet) — admissible only as an optional third judge |
-| Statistics | Bootstrap 95% CIs (2,000 resamples) on all D4 Bradley–Terry scores; noise-floor rule from the variance subset (any between-provider difference smaller than 2× pooled within-provider SD is *within noise floor*, not a difference); Spearman ρ for D3↔D4, D3↔HI, D4↔HI |
+| Statistics | Bootstrap 95% CIs (2,000 resamples) on all D4 Bradley–Terry scores; noise-floor rule from the variance subset (any between-provider difference smaller than 2× pooled within-provider SD is *within noise floor*, not a difference); Spearman ρ for D3↔D4 when both exist, plus cross-metric ρ within the D3 stack (Audiobox ↔ DNSMOS per F-8) |
 | CLI | `veval <subcommand>` — doctor / generate / analyze / **invites** / score / report |
 | Admin panel | Streamlit, local-only, wraps CLI functions |
 | Voting UI | Vercel Hobby, static, audio in /public |
@@ -61,8 +61,8 @@ Cloud TTS · Deepgram (off-index control) · Canopy Orpheus
 (Replicate-hosted)
 
 Added 2 in `prereg-v1.1` (2026-08-07, DEVIATIONS.md D-003):
-**OpenAI** (LLM-ecosystem default archetype) · **Speechify** (audit
-HI's #1 story)
+**OpenAI** (LLM-ecosystem default archetype) · **Speechify**
+(consumer-storytelling / warm-narrator archetype)
 
 ## Conventions
 
@@ -150,8 +150,9 @@ artifact in the repo. Add liberally as the project progresses.
 ### Quotable data points (fill in as results arrive)
 - (TBD) The public leaderboard we audit still ranks PlayHT — a company
   shut down Dec 31, 2025. Ours re-runs in one command.
-- (TBD) Δ vs Humanness Index per provider — where do their published
-  numbers reproduce, where don't they.
+- (TBD) Cross-pipeline rank inversions per provider — where do the
+  two independent MOS pipelines disagree, and what does that say
+  about the "one leaderboard, one number" convention?
 - (TBD) DX friction log: "Provider X — 11 minutes; Provider Y — 74
   minutes and an undocumented header."
 - (TBD) $ spread across providers at 1M words/mo — expected to be

@@ -1,4 +1,4 @@
-"""Regression tests for score/{robustness,hi_loader,correlations}.py."""
+"""Regression tests for score/{robustness,correlations}.py."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ import pytest
 
 from veval.config import load_gates
 from veval.score.correlations import spearman
-from veval.score.hi_loader import compare, load_snapshot, HISnapshot
 from veval.score.robustness import sweep_all, sweep_gate
 
 
@@ -69,67 +68,6 @@ def test_sweep_all_only_returns_gates_with_robustness_points_defined() -> None:
         assert r.robustness_points
 
 
-# --- hi_loader ---------------------------------------------------------
-
-
-def test_hi_snapshot_round_trip(tmp_path: Path) -> None:
-    p = tmp_path / "hi.json"
-    p.write_text(json.dumps({
-        "captured_at": "2026-08-08",
-        "source": "https://example.com",
-        "scores": {
-            "openai": {"rank": 3, "score": 91.5},
-            "cartesia": {"rank": 5, "score": 88.2},
-        },
-    }))
-    snap = load_snapshot(p)
-    assert snap.captured_at == "2026-08-08"
-    assert snap.scores["openai"]["rank"] == 3
-
-
-def test_compare_reports_reproduces_yes_when_top3_matches() -> None:
-    snap = HISnapshot(
-        captured_at="x", source="x",
-        scores={
-            "openai": {"rank": 1, "score": 95},
-            "cartesia": {"rank": 2, "score": 92},
-            "elevenlabs": {"rank": 3, "score": 89},
-            "google": {"rank": 4, "score": 85},
-        },
-    )
-    # Our ranking has the same top-3 in the same order
-    our = {"openai": 1.5, "cartesia": 1.0, "elevenlabs": 0.5, "google": 0.0}
-    result = compare(snap, our)
-    top3 = [p for p in ("openai", "cartesia", "elevenlabs") if p in result]
-    assert all(result[p].reproduces == "yes" for p in top3)
-
-
-def test_compare_reports_reproduces_no_when_top3_differs() -> None:
-    snap = HISnapshot(
-        captured_at="x", source="x",
-        scores={
-            "openai": {"rank": 1, "score": 95},
-            "cartesia": {"rank": 2, "score": 92},
-            "elevenlabs": {"rank": 3, "score": 89},
-        },
-    )
-    our = {"deepgram": 2.0, "fish": 1.5, "google": 1.0, "openai": 0.5}
-    result = compare(snap, our)
-    # top-3 completely different -> reproduces = "no" for those in the union
-    assert result["openai"].reproduces == "no"
-
-
-def test_compare_excludes_anchor_from_ranking() -> None:
-    snap = HISnapshot(
-        captured_at="x", source="x",
-        scores={"openai": {"rank": 1, "score": 95}},
-    )
-    our = {"anchor": 5.0, "openai": 1.0}
-    result = compare(snap, our)
-    # Anchor gets a rank position but should not push openai out of top3
-    assert result["openai"].our_rank in (1, 2)
-
-
 # --- spearman ----------------------------------------------------------
 
 
@@ -145,7 +83,7 @@ def test_spearman_perfect_positive_agreement() -> None:
 def test_spearman_perfect_negative_agreement() -> None:
     left = {"a": 1.0, "b": 2.0, "c": 3.0, "d": 4.0}
     right = {"a": 40.0, "b": 30.0, "c": 20.0, "d": 10.0}
-    r = spearman(left, right, left_axis="D3", right_axis="HI")
+    r = spearman(left, right, left_axis="D3", right_axis="D4")
     assert r.rho == pytest.approx(-1.0)
 
 

@@ -2,7 +2,7 @@
 
 Consumes `analysis/score.json` and emits `site/`:
     charts.py  - Plotly (interactive HTML) + Altair (static PNG)
-    tables.py  - markdown tables (survivors, robustness, correlations, HI Delta)
+    tables.py  - markdown tables (survivors, robustness, correlations)
     memos.py   - memo templates with data slots
 
 The chart division:

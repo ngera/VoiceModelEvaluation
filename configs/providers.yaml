@@ -13,8 +13,9 @@ providers:
     env_key: DEEPGRAM_API_KEY
     tier: control
     notes: >-
-      Off-index control (Humanness Index / cloning-required boards exclude
-      non-cloning models). REST /v1/speak — per-request character limit
+      Off-index control — a mid-tier enterprise-ASR shop that also
+      ships TTS; conservative pick against which the newer entrants
+      are compared. REST /v1/speak — per-request character limit
       ~2K, so long-stratum items chunk and reassemble with boundaries
       recorded in the manifest.
 
@@ -114,8 +115,9 @@ providers:
     env_key: SPEECHIFY_API_KEY
     tier: core
     notes: >-
-      Audit-HI-#1 archetype: Speechify sits at HI #1 (score 99); the
-      direct like-for-like run against that ranking is the "does the
-      top of the leaderboard hold up?" story. Starter plan ($10/mo)
+      Consumer-storytelling / warm-narrator archetype. Speechify's
+      Simba-3.2 targets audiobook + long-form content and is a
+      distinct positioning from the enterprise/latency-optimised
+      voices in the rest of the roster. Starter plan ($10/mo)
       required — free tier 50K chars/mo does not cover the campaign.
       Bearer auth. Added in prereg-v1.1.

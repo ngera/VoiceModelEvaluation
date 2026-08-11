@@ -430,10 +430,10 @@ from prior API knowledge, so wall-clock isn't a valid D7 measurement.
 
 **Wall-clock:** TODO — start when you run `veval doctor --provider speechify`.
 
-**Rationale for addition:** audit HI #1 archetype (see DEVIATIONS.md
-D-003). Speechify sits at HI #1 (score 99); the direct like-for-like
-run against that ranking is the "does the top of the leaderboard
-hold up?" story.
+**Rationale for addition:** consumer-storytelling / warm-narrator
+archetype (see DEVIATIONS.md D-003). Simba-3.2 targets audiobook +
+long-form content, a distinct positioning from the enterprise /
+latency-optimised voices in the rest of the roster.
 
 **Assumptions in the adapter to verify:**
 - [ ] Endpoint `https://api.sws.speechify.com/v1/audio/speech`
@@ -509,10 +509,10 @@ required. Doctor probe: rounding-error cost.
   applied post-decode.
 
 **Portfolio-worthy lesson:** three sequential defects on one provider,
-all silent until the WAV acceptance gate caught them. Speechify sits
-at HI's #1 rank (score 99). The audit answer isn't "HI is wrong" — it
-is "these numbers are only measurable end-to-end if the pipeline
-catches provider-side idiosyncrasies the docs don't warn about." Two
+all silent until the WAV acceptance gate caught them. The lesson isn't
+about any one vendor — it is "quality claims are only measurable
+end-to-end if the pipeline catches provider-side idiosyncrasies the
+docs don't warn about." Two
 of the three defects (JSON envelope, format ignored) are things a
 one-shot integration would never catch until production traffic.
 

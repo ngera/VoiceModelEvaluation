@@ -254,6 +254,10 @@ OpenAI's latency as a point estimate.
 
 ## What the verification pack surfaced
 
+> Test IDs (T1–T8, N1, N2) are defined in
+> [04_RESULTS.md § Verification pack outcomes](04_RESULTS.md#verification-pack-outcomes-phase-2c).
+> Each has a per-test evidence file under `analysis/verification/`.
+
 After the primary campaign, a Phase 2c pack of 9 targeted tests
 re-checked every "outlier" from the first pass — winners AND losers,
 same scrutiny. Four verdicts worth naming:
@@ -378,9 +382,9 @@ explicitly beats a vague "premium feels worth it."
 ## What the exercise actually proved about the industry
 
 **Public voice AI leaderboards pick one quality definition and
-publish one number.** The most-cited one — the Humanness Index — is
-a human-rated Bradley-Terry-style aggregate at n≈100 raters. Others
-use UTMOS or WavLM or vendor-specific MOS. Every leaderboard is
+publish one number.** Some use human-rated Bradley-Terry-style
+aggregates at n≈100 raters. Others use UTMOS or WavLM or
+vendor-specific MOS. Every leaderboard is
 internally coherent; every leaderboard implicitly claims to be the
 definition of quality.
 

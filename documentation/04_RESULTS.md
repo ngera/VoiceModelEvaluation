@@ -30,35 +30,48 @@ noise-floor, WER via two-judge agreement, latency (conversational
 only, 50-trial session), and public-tier cost per 1K words at 100K
 words/month.
 
+**Colour legend (per column, direction-normalized):**
+- 🟢 = top 2 within the column (best 2 of 8)
+- 🟡 = middle 4 within the column (rank 3-6)
+- 🔴 = bottom 2 within the column (worst 2 of 8)
+
+For lower-is-better columns (clip samples, noise floor dBFS, WER %,
+TTFA ms, $/1K words) the colour flips direction — 🟢 = lowest = best.
+For `clip samples`, values of 0 are always 🟢 (perfect); any value
+≥100 is 🔴 regardless of ranking. TTFA cells marked "—" indicate
+adapters that don't stream (Speechify, Fish, Google, Orpheus per D-008
+and adapter-shape).
+
 ### Conversational
 
 | Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | TTFA p50 (ms) | $/1K words |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| speechify | **7.90** | **6.46** | 3.98 | 3.30 | 3.56 | 4.07 | 1 | −57.0 | 14.3 | — | 0.100 |
-| elevenlabs | 7.76 | 5.96 | **4.12** | 3.47 | 3.69 | 4.18 | 0 | −52.0 | 14.1 | **439** | 0.220 |
-| openai | 7.74 | 6.11 | 4.01 | **3.49** | **3.70** | **4.19** | 0 | −52.5 | 13.7 | 736 | **0.075** |
-| fish | 7.70 | 6.24 | 3.86 | 3.15 | 3.41 | 4.05 | 0 | −39.7 | 13.8 | — | **0.075** |
-| deepgram | 7.62 | 6.21 | 3.77 | 3.31 | 3.58 | 4.07 | 0 | −46.2 | 16.6 | 583 | 0.150 |
-| google | 7.62 | 6.18 | 3.82 | 3.27 | 3.57 | 4.02 | 0 | −33.7 | 15.1 | — | 0.150 |
-| cartesia | 7.44 | 5.96 | 3.89 | 3.25 | 3.48 | 4.13 | **406** | −57.1 | 16.4 | 467 | 0.160 |
-| orpheus | 7.41 | 6.01 | 3.87 | 3.33 | 3.62 | 4.10 | 0 | −53.2 | **26.9** | — | **0.030** |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| speechify | 🟢 7.90 | 🟢 6.46 | 🟡 3.98 | 🟡 3.30 | 🟡 3.56 | 🟡 4.07 | 🟡 1 | 🟢 -57.0 | 🟡 14.3 | — | 🟡 0.100 |
+| elevenlabs | 🟢 7.76 | 🔴 5.96 | 🟢 4.12 | 🟢 3.47 | 🟢 3.69 | 🟢 4.18 | 🟢 0 | 🟡 -52.0 | 🟡 14.1 | 🟢 439 | 🔴 0.220 |
+| openai | 🟡 7.74 | 🟡 6.11 | 🟢 4.01 | 🟢 3.49 | 🟢 3.70 | 🟢 4.19 | 🟢 0 | 🟡 -52.5 | 🟢 13.7 | 🔴 736 | 🟢 0.075 |
+| fish | 🟡 7.70 | 🟢 6.24 | 🟡 3.86 | 🔴 3.15 | 🔴 3.41 | 🔴 4.05 | 🟢 0 | 🔴 -39.7 | 🟢 13.8 | — | 🟡 0.075 |
+| google | 🟡 7.62 | 🟡 6.18 | 🔴 3.82 | 🟡 3.27 | 🟡 3.57 | 🔴 4.02 | 🟢 0 | 🔴 -33.7 | 🟡 15.1 | — | 🟡 0.150 |
+| deepgram | 🟡 7.62 | 🟡 6.21 | 🔴 3.77 | 🟡 3.31 | 🟡 3.58 | 🟡 4.07 | 🟢 0 | 🟡 -46.2 | 🔴 16.6 | 🔴 583 | 🟡 0.150 |
+| cartesia | 🔴 7.44 | 🔴 5.96 | 🟡 3.89 | 🔴 3.25 | 🔴 3.48 | 🟡 4.13 | 🔴 406 | 🟢 -57.1 | 🟡 16.4 | 🟢 467 | 🔴 0.160 |
+| orpheus | 🔴 7.41 | 🟡 6.01 | 🟡 3.87 | 🟡 3.33 | 🟡 3.62 | 🟡 4.10 | 🟢 0 | 🟡 -53.2 | 🔴 26.9 | — | 🟢 0.030 |
 
 ### Narration
 
 | Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | $/1K words |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| speechify | **8.15** | **6.66** | 4.05 | 3.42 | 3.63 | 4.17 | 5 | −55.2 | 13.0 | 0.100 |
-| orpheus | 8.00 | 6.26 | 4.06 | 3.45 | 3.64 | **4.21** | 0 | −78.7 | **27.2** | **0.030** |
-| cartesia | 7.99 | 6.32 | **4.13** | 3.20 | 3.45 | 4.05 | **429** | −55.3 | 12.4 | 0.160 |
-| google | 7.97 | 6.44 | 4.02 | 3.35 | 3.60 | 4.11 | 39 | −36.8 | 13.0 | 0.150 |
-| elevenlabs | 7.93 | 6.47 | 4.05 | 3.34 | 3.61 | 4.07 | 0 | −41.5 | 12.8 | 0.220 |
-| deepgram | 7.86 | 6.40 | 4.07 | 3.44 | 3.68 | 4.15 | 0 | −46.8 | 13.5 | 0.150 |
-| fish | 7.63 | 6.31 | 4.12 | 3.40 | 3.67 | 4.10 | 0 | −46.6 | 14.0 | 0.075 |
-| openai | 7.62 | 6.18 | 3.98 | **3.46** | **3.68** | 4.18 | 0 | −54.5 | 13.3 | **0.075** |
+|---|---|---|---|---|---|---|---|---|---|---|
+| speechify | 🟢 8.15 | 🟢 6.66 | 🟡 4.05 | 🟡 3.42 | 🟡 3.63 | 🟡 4.17 | 🟡 5 | 🟡 -55.2 | 🟡 13.0 | 🟡 0.100 |
+| orpheus | 🟢 8.00 | 🔴 6.26 | 🟡 4.06 | 🟢 3.45 | 🟡 3.64 | 🟢 4.21 | 🟢 0 | 🟢 -78.7 | 🔴 27.2 | 🟢 0.030 |
+| cartesia | 🟡 7.99 | 🟡 6.32 | 🟢 4.13 | 🔴 3.20 | 🔴 3.45 | 🔴 4.05 | 🔴 429 | 🟢 -55.3 | 🟢 12.4 | 🔴 0.160 |
+| google | 🟡 7.97 | 🟡 6.44 | 🔴 4.02 | 🟡 3.35 | 🔴 3.60 | 🟡 4.11 | 🟡 39 | 🔴 -36.8 | 🟡 13.0 | 🟡 0.150 |
+| elevenlabs | 🟡 7.93 | 🟢 6.47 | 🟡 4.05 | 🔴 3.34 | 🟡 3.61 | 🔴 4.07 | 🟢 0 | 🔴 -41.5 | 🟢 12.8 | 🔴 0.220 |
+| deepgram | 🟡 7.86 | 🟡 6.40 | 🟡 4.07 | 🟡 3.44 | 🟢 3.68 | 🟡 4.15 | 🟢 0 | 🟡 -46.8 | 🟡 13.5 | 🟡 0.150 |
+| fish | 🔴 7.63 | 🟡 6.31 | 🟢 4.12 | 🟡 3.40 | 🟡 3.67 | 🟡 4.10 | 🟢 0 | 🟡 -46.6 | 🔴 14.0 | 🟢 0.075 |
+| openai | 🔴 7.62 | 🔴 6.18 | 🔴 3.98 | 🟢 3.46 | 🟢 3.68 | 🟢 4.18 | 🟢 0 | 🟡 -54.5 | 🟡 13.3 | 🟡 0.075 |
 
-Rows sorted by AB.PQ (Audiobox production_quality) descending.
-Bold cells = axis winner (best or, for cost/WER/latency, most
-favorable). See [08 · Glossary](#glossary) for column definitions.
+Rows sorted by AB.PQ (Audiobox production_quality) descending. See
+[Glossary](#glossary) for column definitions and
+[scripts/_color_code_tables.py](../scripts/_color_code_tables.py) for
+the ranking rules.
 
 ---
 
@@ -183,10 +196,16 @@ and [T7](../analysis/verification/T7_elevenlabs_ttfa.md).
 
 ---
 
-## Verification pack outcomes (Phase 2c)
+## <a name="verification-pack-outcomes-phase-2c"></a>Verification pack outcomes (Phase 2c)
+
+**This is the index of what T1–T8 and N1–N2 mean.** All references
+to a "T-test" or "N-test" elsewhere in the documentation point back
+to this table. Each test has a per-test evidence file
+(hypothesis + method + criterion + result + verdict) linked in the
+`Evidence` column.
 
 9 targeted tests re-checked the primary campaign's headline
-outliers on fresh data.
+outliers on fresh data:
 
 | # | Outlier | Vendor | Verdict | Evidence |
 |---|---|---|---|---|

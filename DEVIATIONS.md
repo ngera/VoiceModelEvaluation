@@ -488,10 +488,10 @@ roster after the prereg-v1 tag but before any campaign result exists:
   team building GPT-adjacent products already has credentials for. This
   archetype is not represented by any of the original 6 providers and
   is a foreseeable reviewer question ("why not test OpenAI?").
-- **Speechify** — `simba-3.2`. Fills the *"audit the top of the HI
-  leaderboard"* story. Speechify sits at HI #1 (score 99) by their own
-  measure; a direct like-for-like run against that ranking is a
-  differentiator no other provider on our list offers.
+- **Speechify** — `simba-3.2`. Fills the *"consumer-storytelling /
+  warm-narrator"* archetype. Simba-3.2 targets audiobook +
+  long-form content, a distinct positioning from the
+  enterprise/latency-optimised voices in the rest of the roster.
 
 Roster after amendment (8):
 ElevenLabs · Cartesia · Fish Audio · Google · Deepgram · Canopy Orpheus
