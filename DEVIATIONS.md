@@ -22,6 +22,83 @@ Format:
 
 ---
 
+## D-011 — D3 stack extended with DNSMOS; UTMOS attempted and blocked on Windows (2026-08-11)
+
+**What changed.** `analyzers.yaml` grew a new pre-registered block:
+
+- `dnsmos_axes_reported: [p808_mos, ovrl_mos, sig_mos, bak_mos]`
+  (all four axes speechmos.dnsmos.run emits)
+- `dnsmos_axes_rationale` — orthogonal concepts, no aggregation
+- `dnsmos_error_policy` — two documented classes:
+  `input_peak_out_of_range` (peak > 1, F-4a's independent
+  corroboration of the hygiene clipping finding) and `other`
+
+`src/veval/config.py` extended with a `DnsmosAxis` `Literal` type +
+three fields on `AnalyzersFile`. `src/veval/analyze/quality.py`
+already loads DNSMOS via `speechmos.dnsmos` (landed in Phase 2b.2);
+the config now pins the axis names + error taxonomy so a silent
+rename in `speechmos` fails at config-load rather than silently
+shifting which columns appear in downstream tables.
+
+**Why.**
+
+- **F-8 is a headline finding.** Cross-pipeline mean Spearman ρ
+  between Audiobox and DNSMOS is negative on both use cases (conv
+  −0.13, narr −0.27). A single-pipeline MOS report would have
+  masked this. Documenting the second pipeline in the prereg — not
+  just in the code — is the whole point of pre-registration.
+- **UTMOS was the first-choice second pipeline** (RESEARCH_LOG D-B
+  revision 1). Blocked on Windows: UTMOS pulls fairseq 0.10.2 which
+  fails to build with `PermissionError: [WinError 5] Access is
+  denied: 'fairseq\\examples'` even with Windows Developer Mode
+  enabled and an elevated shell. No fairseq version ships Windows
+  wheels; the source build cliff has no clean workaround. Recording
+  the attempt + reason for the honest reader who asks "why not UTMOS?"
+- **NISQA was the fallback.** Pins `torch==2.2.1`, which would
+  downgrade our torch 2.4.1 and cascade-break torchaudio, ttsds,
+  audiobox. Rejected.
+- **speechmos** — Microsoft's P.835 MOS suite. ONNX runtime, no
+  torch conflict. ~10 MB weights ship with the pip package. Adopted.
+
+**Impact on results.**
+
+- **6 quality signals now reported** per (provider, use_case) —
+  Audiobox {PQ, CE} + DNSMOS {p808, ovrl, sig, bak}. Reported
+  side-by-side, never aggregated into a single quality score.
+- **F-4a evidence chain strengthened.** DNSMOS refuses 32/75 conv +
+  37/75 narr Cartesia items outright for `peak_out_of_range` — an
+  independent-pipeline corroboration of the hygiene analyzer's
+  clipping finding on non-overlapping code paths.
+- **Cross-pipeline Spearman ρ** now the load-bearing statistic for
+  §8B of the paper: "which construct does your listener use case
+  map to — aesthetic quality or clean signal separation?"
+- **Retires Phase 2c T3** (Orpheus PQ conv→narr artifact) — DNSMOS
+  OVRL ranks Orpheus #2 on narration, satisfying the pre-registered
+  exit criterion. See F-9.
+- **Reshuffles Phase 2c pack**: T1 downgraded (corroborated already),
+  T6 hypothesis narrowed to "Audiobox rewards Speechify voice
+  signature," N1 + N2 added. Runbook v2 §2c updated.
+
+**Amendment discipline preserved.** No campaign results existed for
+DNSMOS before this amendment — the 2b re-run against
+`campaign-20260809T204608Z` produced them as part of applying the
+amendment. Rerunning the analyzer on the same immutable run store
+does not violate spec §6 (run store is unmutated; only
+`analysis/*.json` is regenerated as a pure function of the store).
+Amendment is honest.
+
+**Where to look.** `configs/analyzers.yaml` (dnsmos block after the
+Audiobox block); `src/veval/config.py` (`DnsmosAxis` + three fields
+on `AnalyzersFile`); `src/veval/analyze/quality.py` (DNSMOS loader,
+error classification); `src/veval/analyze/cross_metric.py` (F-8
+computation); `tests/test_quality.py` (DNSMOS coverage);
+`tests/test_cross_metric.py` (matrix + rank tests);
+`documentation/RESEARCH_LOG.md` (D-B, F-4a, F-8, F-9);
+`documentation/voice_ai_eval_execution_runbook_v2.md` §2c
+(reshuffled roster). Re-tagged **prereg-v1.10**.
+
+---
+
 ## D-001 — Interpreter pinned to stable 3.11 (2026-08-05)
 
 **What changed.** The devcontainer base originally installed Ubuntu 22.04's

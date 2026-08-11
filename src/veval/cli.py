@@ -349,8 +349,8 @@ def analyze(
         "--stages",
         help=(
             "Comma-separated: acceptance,hygiene,latency,cost,wer,quality,"
-            "variance,drift, or 'all'. Cheap stages default; wer/quality "
-            "download models on first run."
+            "cross_metric,variance,drift, or 'all'. Cheap stages default; "
+            "wer/quality download models on first run."
         ),
     ),
     skip_ttsds: bool = typer.Option(
@@ -358,6 +358,10 @@ def analyze(
     ),
     skip_audiobox: bool = typer.Option(
         False, "--skip-audiobox", help="Skip Audiobox inside quality stage"
+    ),
+    skip_dnsmos: bool = typer.Option(
+        False, "--skip-dnsmos",
+        help="Skip Microsoft DNSMOS P.835 inside quality stage (Phase 2b addition)",
     ),
     n_split_half: int = typer.Option(
         100, "--n-split-half", help="Split-half partitions for TTSDS2 stability"
@@ -382,6 +386,7 @@ def analyze(
     from veval.analyze import (
         acceptance,
         cost,
+        cross_metric,
         drift,
         hygiene,
         latency,
@@ -405,7 +410,7 @@ def analyze(
         console.print(f"[red]run dir not found: {run_dir}[/red]")
         raise typer.Exit(code=2)
 
-    all_stages = ["acceptance", "hygiene", "latency", "cost", "wer", "quality", "variance", "drift"]
+    all_stages = ["acceptance", "hygiene", "latency", "cost", "wer", "quality", "cross_metric", "variance", "drift"]
     requested = all_stages if stages.lower() == "all" else [s.strip() for s in stages.split(",")]
     unknown = [s for s in requested if s not in all_stages]
     if unknown:
@@ -464,18 +469,29 @@ def analyze(
         console.print(f"  items={len(results['wer']['items'])}")
 
     if "quality" in requested:
-        console.print("[bold]quality[/bold] - TTSDS2 + Audiobox (heavy)")
+        console.print("[bold]quality[/bold] - TTSDS2 + Audiobox + DNSMOS (heavy)")
         analyzers = load_analyzers(analyzers_file)
         results["quality"] = quality.run(
             run_dir, analyzers=analyzers,
             compute_ttsds=not skip_ttsds,
             compute_audiobox=not skip_audiobox,
+            compute_dnsmos=not skip_dnsmos,
             n_split_half=n_split_half, writer=writer,
         )
         console.print(
             f"  ran_ttsds={results['quality']['ran_ttsds']} "
-            f"ran_audiobox={results['quality']['ran_audiobox']}"
+            f"ran_audiobox={results['quality']['ran_audiobox']} "
+            f"ran_dnsmos={results['quality']['ran_dnsmos']}"
         )
+
+    if "cross_metric" in requested:
+        console.print("[bold]cross_metric[/bold] - Spearman rho across 6 quality signals (needs quality.json)")
+        results["cross_metric"] = cross_metric.run(run_dir, writer=writer)
+        for uc_row in results["cross_metric"]["by_use_case"]:
+            console.print(
+                f"  {uc_row['use_case']}: n_providers={uc_row['n_providers']} "
+                f"cross_pipeline_mean_rho={uc_row['cross_pipeline_mean_rho']:.3f}"
+            )
 
     if "variance" in requested:
         console.print("[bold]variance[/bold] - within-provider SD -> noise floor + determinism")

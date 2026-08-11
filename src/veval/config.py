@@ -39,6 +39,12 @@ AudioboxAxis = Literal[
     "production_quality",
 ]
 
+# Microsoft DNSMOS P.835 (via speechmos) — the four axes speechmos.dnsmos.run
+# emits. All four are reported per D-011 / prereg-v1.10 (all four measure
+# orthogonal concepts, no aggregation into a single score). Pinning here
+# so a silent rename in `speechmos` surfaces at config-load time.
+DnsmosAxis = Literal["p808_mos", "ovrl_mos", "sig_mos", "bak_mos"]
+
 NaPolicy = Literal["exempt-and-annotate", "exclude-from-use-case", "fail"]
 
 
@@ -474,6 +480,24 @@ class AnalyzersFile(BaseModel):
         ),
     )
     audiobox_axes_rationale: str
+
+    # DNSMOS via speechmos (D3 supplementary, D-011 / prereg-v1.10)
+    dnsmos_axes_reported: list[DnsmosAxis] = Field(
+        min_length=4,
+        max_length=4,
+        description=(
+            "All four axes speechmos.dnsmos.run() emits. Pre-committed "
+            "here so a silent rename in `speechmos` surfaces at config-"
+            "load time. See DEVIATIONS.md D-011 for rationale."
+        ),
+    )
+    dnsmos_axes_rationale: str
+    dnsmos_error_policy: dict[str, str] = Field(
+        description=(
+            "Documented error classes for DNSMOS inference: "
+            "`input_peak_out_of_range` (clipping) and `other`."
+        ),
+    )
 
     # WER judges (D2)
     judges: list[JudgeRevision] = Field(min_length=2, max_length=2)

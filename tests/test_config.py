@@ -111,6 +111,11 @@ audiobox_model_id: "facebook/audiobox-aesthetics"
 audiobox_revision: "abc123"
 audiobox_axes_reported: [production_quality, content_enjoyment]
 audiobox_axes_rationale: "PQ tracks synthesis cleanliness; CE tracks preference."
+dnsmos_axes_reported: [p808_mos, ovrl_mos, sig_mos, bak_mos]
+dnsmos_axes_rationale: "All four axes; orthogonal concepts, no aggregation."
+dnsmos_error_policy:
+  input_peak_out_of_range: "peak_abs > 1 → speechmos refuses"
+  other: "any other exception, classified with ExceptionType"
 judges:
   - name: parakeet
     loader: transformers

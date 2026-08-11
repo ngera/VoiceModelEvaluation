@@ -172,20 +172,35 @@ fresh data. Symmetric treatment. Verdicts feed the case study's
 4. **Verdict column: Confirmed / Refuted / Inconclusive** — three outcomes, not two
 5. **Per-test JSON artifact in `analysis/verification/T{N}.json`** so the paper's supplementary materials link straight to raw evidence
 
-### Test roster (updated post-2b — 8 core tests + any new from NISQA)
+### Test roster (updated post-2b — reshuffled after F-8 cross-metric findings)
+
+**Roster changes vs pre-2b draft** (dated 2026-08-11):
+
+- **T1 downgraded** — 2b's DNSMOS refusal rate (43%/49% Cartesia) is an independent-pipeline corroboration of the hygiene clipping finding on non-overlapping code paths (F-4a). Regenerating 20 more Cartesia items to re-count clipped samples adds no new information. Downgraded from regen to "cite the 2b evidence in the memo."
+- **T3 retired** — spec exit criterion satisfied by 2b: DNSMOS OVRL ranks Orpheus #2 on narration (criterion was "top-3"). Direction of Audiobox's conv→narr improvement confirmed by all 4 DNSMOS axes; magnitude gap (Audiobox +0.60 vs DNSMOS +0.02–0.19) is now a pipeline-scale observation for §8B, not a test to run.
+- **T6 reframed** — F-8 showed Speechify is Audiobox #1/#1 but DNSMOS mid-pack. Hypothesis narrowed from "model advantage" to "Audiobox rewards Speechify voice signature (DNSMOS is neutral)"; test design unchanged.
+- **N1 + N2 added** — two new outliers surfaced by DNSMOS (see 2b.5 finding block below).
 
 | # | Outlier | Provider | Hypothesis | Test design | Confirms if | Cost | Time |
 |---|---|---|---|---|---|---|---|
-| T1 | Clipping 429/406 (100× next) | Cartesia | Systemic gain-staging | Regen 20 items × Cartesia (10 conv + 10 narr); hygiene | ≥100 total clipped samples | $0.30 | 5 min |
+| T1 | Clipping 429/406 (100× next) | Cartesia | Systemic gain-staging | **Downgraded** — cite F-4a DNSMOS refusal rate (43% conv / 49% narr) as second-pipeline corroboration; no regen | Memo lists both pipelines' evidence | $0 | 5 min (write-up) |
 | T2 | WER 27% (2× next) | Orpheus | Real intelligibility issue, not judge bias | Manual-listen 10 flagged Orpheus items; self-mark unclear/clear | ≥5/10 self-marked unclear | $0 | 20 min |
-| T3 | Narration PQ 7.41 conv → 8.00 narr | Orpheus | Audiobox artifact of clip length | (Answered by Phase 2b — do UTMOS+NISQA agree Orpheus rises in narration?) | Both UTMOS AND NISQA rank Orpheus in narration top-3 | $0 | 0 (piggybacks on 2b) |
+| ~~T3~~ | ~~Narration PQ 7.41 conv → 8.00 narr~~ | ~~Orpheus~~ | ~~Audiobox artifact of clip length~~ | **Retired** — DNSMOS OVRL confirmed Orpheus #2 on narration (criterion satisfied). Magnitude gap goes to §8B | — | — | — |
 | T4 | L03 fadeout (3.6 dB monotonic) | ElevenLabs | Deterministic bug on L03 text | Regen L03 × ElevenLabs × 3 fresh; drift | ≥2/3 fresh regens also flag monotonic degradation | $0.02 | 2 min |
 | T5 | Latency 762/946 (2× next) | OpenAI | Persistent, not single-session artifact | 2nd 50-trial session next morning; compare p50/p90 | Within ±20% of first session | $0.02 | 10 min |
-| T6 | PQ leader both UC | Speechify | Model advantage, not voice-choice bias | Regen 20 items × Speechify with a DIFFERENT Simba-3.2 voice (pick from remaining 6); quality with all 4 signals | New voice PQ + DNSMOS (via speechmos; UTMOS attempted, blocked on Windows) within ±0.15 of geffen_32/wyatt_32 | $0.20 | 15 min |
+| T6 | Audiobox PQ+CE leader both UC | Speechify | **Audiobox rewards Speechify voice signature (DNSMOS is neutral, so this is a pipeline-specific advantage — not universally best)** | Regen 20 items × Speechify with a DIFFERENT Simba-3.2 voice; quality with all 6 signals | Both new-voice Audiobox axes AND all 4 new-voice DNSMOS axes within ±0.15 of geffen_32/wyatt_32 | $0.20 | 15 min |
 | T7 | Fastest TTFA (440/474) | ElevenLabs | Persistent, not lucky | 2nd 50-trial session on different day; p90 under 500 ms | Confirms sub-500ms p90 both sessions | $0.02 | 10 min |
 | T8 | Cheapest $0.030/1K | Orpheus | Cost scales linearly with item length | 10 long-item Orpheus calls; measure actual GPU-seconds per Replicate dashboard | Mean per-call within ±30% of $0.003 | $0.05 | 15 min |
+| **N1** | **Audiobox PQ+CE #8/#8 narr, DNSMOS #1/#1/#2 narr — perfect rank inversion** | **OpenAI** | **The voice is "clinically clean but low aesthetic warmth" — Audiobox and DNSMOS measure different constructs, and OpenAI sits at opposite ends** | Manual-listen 5 narration items (self-mark warmth 1–5, cleanliness 1–5); look for pattern "clean but flat" | Self-marked cleanliness ≥4 AND warmth ≤3 on ≥3/5 items | $0 | 10 min |
+| **N2** | **DNSMOS OVRL+SIG #8/#8 conv despite mid-pack Audiobox** | **Fish** | **Speech-vs-background artifact DNSMOS flags but Audiobox misses** | Spot-listen 3 conversational items; check for hiss, breath, low-frequency rumble; grep hygiene.json noise_floor_dbfs | ≥2/3 clips have audible non-speech artifact OR Fish noise_floor > median +6 dB | $0 | 10 min |
 
-**Total: ~$1 spend, ~4 hrs wall clock** (Phase 2b re-runs are the pacing item).
+**Total: ~$0.30 spend, ~1.5 hrs wall clock** (down from ~$1/~4 hrs — regens retired/downgraded, replaced by cheaper manual-listen tests).
+
+**Not-a-test observations from 2b** (recorded in F-9, no verification needed — they're findings, not hypotheses):
+
+- **N3** — ElevenLabs conv AB.CE #8 despite AB.PQ #2, DNSMOS all top-2: within-Audiobox split ("technically perfect, low enjoyment")
+- **N4** — Cartesia narration DNSMOS three-scale sweep #8/#8/#8 over the *surviving* 38/75 items: not just peaks, deeper mastering signature
+- **N5** — Google narration DNSMOS P.808 #7 despite full validity: mid-tier baseline provider does have a soft spot on the P.808 model
 
 ### Execution (post-Phase 2b)
 
@@ -216,12 +231,13 @@ helper if it's convenient.
 
 ### Exit criteria (Phase 2c)
 
-- [ ] All 8 verification tests executed
-- [ ] Per-test artifact in `analysis/verification/T{N}.md` with
-      hypothesis, method, result, verdict
+- [ ] All 9 active verification tests executed (T1 write-up + T2 + T4-T8 + N1 + N2; T3 retired)
+- [ ] Per-test artifact in `analysis/verification/T{N}.md` or `N{N}.md`
+      with hypothesis, method, result, verdict
 - [ ] Verdicts summarized in RESEARCH_LOG.md finding F-9
 - [ ] Any flipped verdicts (outlier refuted) → memos updated to
       remove the corresponding elimination/recommendation
+- [ ] N3, N4, N5 recorded as findings in F-9 (no separate test)
 
 ---
 

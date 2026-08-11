@@ -108,6 +108,43 @@ audiobox_axes_rationale: >-
   where the text and rendering density are held constant across
   providers.
 
+# --- D3 supplementary · Microsoft DNSMOS P.835 (D-011, prereg-v1.10) -----
+#
+# Added post-Phase-2 as the second independent MOS pipeline. Rationale
+# in DEVIATIONS.md D-011. Six quality signals total from two
+# independent pipelines (Audiobox + DNSMOS) → cross-pipeline agreement
+# is itself a headline finding (F-8).
+#
+# Loader: `speechmos.dnsmos.run()` — ONNX runtime; no torch conflict
+# with the Audiobox stack. Weights (~10 MB) ship with the pip package.
+# UTMOS was the first-choice second pipeline; blocked on Windows by
+# the fairseq 0.10.2 source-build cliff (no Windows wheels for any
+# fairseq version). RESEARCH_LOG D-B revision 2 has the full trail.
+dnsmos_axes_reported:
+  - p808_mos    # ITU-T P.808 crowd-rated overall MOS
+  - ovrl_mos    # ITU-T P.835 three-scale — overall
+  - sig_mos     # ITU-T P.835 three-scale — speech signal cleanliness
+  - bak_mos     # ITU-T P.835 three-scale — background noise absence
+dnsmos_axes_rationale: >-
+  All four axes speechmos.dnsmos.run() emits. Pre-committing all four
+  (rather than a subset) because they measure orthogonal concepts and
+  the plan is to publish the full 6-signal matrix, not aggregate into
+  a single "DNSMOS score." Reporting all four with labels ≠ post-hoc
+  selection because the labels + axis constants are pinned in
+  DNSMOS_AXES + test_quality.py before the paper is written.
+dnsmos_error_policy:
+  input_peak_out_of_range: >-
+    speechmos raises `ValueError: np.ndarray values must be between -1
+    and 1` when peak_abs > 1 (e.g. Cartesia's mastering + resample
+    filter ringing). Wrapper classifies as `input_peak_out_of_range`
+    with the observed peak_abs attached; the file contributes to the
+    error rate but not to the DNSMOS mean. This is F-4a's independent
+    corroboration of the hygiene clipping finding.
+  other: >-
+    Any other exception. Classified as `other=<ExceptionType>: <msg>`
+    so a re-run analyzer can group failures by cause rather than
+    parsing raw exception strings.
+
 # --- D2 · WER judges (spec §4.2, B.3; defect 3.1) ------------------------
 #
 # Two judges, ONE `parakeet` + ONE `faster-whisper`. Canary-1B is NOT

@@ -19,9 +19,15 @@ import pytest
 from veval.analyze import quality
 from veval.analyze.common import AudioRecord
 from veval.analyze.quality import (
+    DNSMOS_AXES,
+    DNSMOS_ERROR_INPUT_CLIPPED,
+    DNSMOS_ERROR_OTHER,
     FileQuality,
     _aggregate_audiobox,
+    _aggregate_dnsmos,
+    _merge_file_streams,
     analyze_file_audiobox,
+    analyze_file_dnsmos,
     run,
     split_half_delta,
 )
@@ -97,8 +103,8 @@ def test_analyze_file_audiobox_flags_missing_wav(tmp_path: Path) -> None:
 def test_run_writes_quality_json_with_mocked_stages(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """End-to-end: skip both heavy stages, verify the JSON scaffold is
-    written correctly (axes committed, ran_ttsds/ran_audiobox flags)."""
+    """End-to-end: skip all three heavy stages, verify the JSON scaffold
+    is written correctly (axes committed + all three ran_* flags)."""
     from veval.config import load_analyzers
     from veval.analyze.common import AnalysisWriter
 
@@ -111,10 +117,149 @@ def test_run_writes_quality_json_with_mocked_stages(
     writer = AnalysisWriter(run_dir.name, base_dir=tmp_path / "analysis")
 
     payload = run(run_dir, analyzers=analyzers,
-                  compute_ttsds=False, compute_audiobox=False, writer=writer)
+                  compute_ttsds=False, compute_audiobox=False,
+                  compute_dnsmos=False, writer=writer)
 
     assert payload["ran_ttsds"] is False
     assert payload["ran_audiobox"] is False
+    assert payload["ran_dnsmos"] is False
     assert set(payload["audiobox_axes_reported"]) == {"production_quality", "content_enjoyment"}
+    assert set(payload["dnsmos_axes_reported"]) == set(DNSMOS_AXES)
     out = tmp_path / "analysis" / run_dir.name / "quality.json"
     assert out.exists()
+
+
+# --- DNSMOS tests (Phase 2b) ------------------------------------------
+
+
+def test_dnsmos_axes_constant_lists_all_four() -> None:
+    """DNSMOS_AXES enumerates the 4 axes speechmos.dnsmos.run returns.
+    Changing this silently would shift which columns appear in the
+    frontier + memo tables."""
+    assert set(DNSMOS_AXES) == {"p808_mos", "ovrl_mos", "sig_mos", "bak_mos"}
+
+
+def test_analyze_file_dnsmos_populates_dnsmos_field(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Real speechmos call is monkeypatched; verify field wiring."""
+    from veval.analyze import quality as q
+    monkeypatch.setattr(q, "_dnsmos_axes_for",
+                        lambda rec: {"p808_mos": 3.5, "ovrl_mos": 3.7,
+                                     "sig_mos": 3.9, "bak_mos": 4.1})
+    wav = tmp_path / "S01.wav"
+    wav.write_bytes(b"RIFF" + b"\x00" * 40)
+    rec = AudioRecord("faux", "conv", "S01", 0, wav, api_row={})
+    r = analyze_file_dnsmos(rec)
+    assert r.dnsmos_error is None
+    assert set(r.dnsmos.keys()) == set(DNSMOS_AXES)
+    assert r.dnsmos["p808_mos"] == 3.5
+
+
+def test_analyze_file_dnsmos_flags_missing_wav(tmp_path: Path) -> None:
+    rec = AudioRecord("faux", "conv", "S01", 0, tmp_path / "nope.wav", api_row={})
+    r = analyze_file_dnsmos(rec)
+    assert r.error == "wav_missing"
+    assert not r.dnsmos
+
+
+def test_analyze_file_dnsmos_captures_inference_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Inference errors go to dnsmos_error (not top-level error) so a
+    file with successful Audiobox + failed DNSMOS still contributes
+    to the Audiobox aggregate."""
+    from veval.analyze import quality as q
+
+    def boom(rec: Any) -> dict[str, float]:
+        raise RuntimeError("onnx failed")
+
+    monkeypatch.setattr(q, "_dnsmos_axes_for", boom)
+    wav = tmp_path / "S01.wav"
+    wav.write_bytes(b"RIFF" + b"\x00" * 40)
+    rec = AudioRecord("faux", "conv", "S01", 0, wav, api_row={})
+    r = analyze_file_dnsmos(rec)
+    assert r.dnsmos_error is not None
+    assert r.dnsmos_error.startswith(f"{DNSMOS_ERROR_OTHER}=")
+    assert "RuntimeError" in r.dnsmos_error
+    assert r.error is None  # top-level unchanged; Audiobox on same file still counts
+
+
+def test_analyze_file_dnsmos_classifies_clipping_specifically(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Clipped audio (peaks > 1) trips speechmos's `must be between -1
+    and 1` ValueError. Our wrapper detects that specific case and
+    classifies as `input_clipped_out_of_range` so the report can
+    group Cartesia's DNSMOS failures by cause rather than parsing
+    raw exception strings. Peak amplitude is captured for the
+    'how far over' reporting angle."""
+    from veval.analyze import quality as q
+
+    def clipped_ValueError(rec: Any) -> dict[str, float]:
+        raise ValueError("np.ndarray values must be between -1 and 1.")
+
+    monkeypatch.setattr(q, "_dnsmos_axes_for", clipped_ValueError)
+    # Write a real WAV with peak > 1 so _peak_abs_amplitude returns
+    # a value the wrapper can attach to the error string.
+    import numpy as np
+    import soundfile as sf
+    wav = tmp_path / "hot.wav"
+    samples = np.array([1.2, -1.15, 0.9], dtype=np.float32)
+    sf.write(str(wav), samples, 24000, subtype="FLOAT")
+
+    rec = AudioRecord("faux", "conv", "S01", 0, wav, api_row={})
+    r = analyze_file_dnsmos(rec)
+    assert r.dnsmos_error is not None
+    assert r.dnsmos_error.startswith(f"{DNSMOS_ERROR_INPUT_CLIPPED}=")
+    assert "peak_abs=1.2" in r.dnsmos_error  # peak amplitude captured
+    assert r.error is None
+
+
+def test_aggregate_dnsmos_means_by_provider_and_use_case() -> None:
+    items = [
+        FileQuality("faux", "conv", "S01", 0, "p1",
+                    dnsmos={"p808_mos": 3.5, "ovrl_mos": 3.6}),
+        FileQuality("faux", "conv", "M01", 0, "p2",
+                    dnsmos={"p808_mos": 3.7, "ovrl_mos": 3.8}),
+    ]
+    out = _aggregate_dnsmos(items)
+    conv = next(r for r in out if r["use_case"] == "conv")
+    assert conv["dnsmos_means"]["p808_mos"] == pytest.approx(3.6)
+    assert conv["dnsmos_means"]["ovrl_mos"] == pytest.approx(3.7)
+    assert conv["n_valid"] == 2
+
+
+def test_aggregate_dnsmos_ignores_dnsmos_errored_rows() -> None:
+    items = [
+        FileQuality("faux", "conv", "S01", 0, "p1",
+                    dnsmos={"p808_mos": 3.5}),
+        FileQuality("faux", "conv", "M01", 0, "p2",
+                    dnsmos_error="RuntimeError: onnx failed"),
+    ]
+    out = _aggregate_dnsmos(items)
+    assert out[0]["n_valid"] == 1
+
+
+def test_merge_file_streams_combines_by_key() -> None:
+    audiobox = [
+        FileQuality("faux", "conv", "S01", 0, "p1",
+                    audiobox={"production_quality": 4.2}),
+    ]
+    dnsmos = [
+        FileQuality("faux", "conv", "S01", 0, "p1",
+                    dnsmos={"p808_mos": 3.5}),
+    ]
+    merged = _merge_file_streams(audiobox, dnsmos)
+    assert len(merged) == 1
+    assert merged[0].audiobox["production_quality"] == 4.2
+    assert merged[0].dnsmos["p808_mos"] == 3.5
+
+
+def test_merge_file_streams_falls_back_when_one_stream_empty() -> None:
+    only_dnsmos = [FileQuality("faux", "conv", "S01", 0, "p1",
+                                dnsmos={"p808_mos": 3.5})]
+    assert _merge_file_streams([], only_dnsmos) is only_dnsmos
+    only_audiobox = [FileQuality("faux", "conv", "S01", 0, "p1",
+                                  audiobox={"production_quality": 4.2})]
+    assert _merge_file_streams(only_audiobox, []) is only_audiobox

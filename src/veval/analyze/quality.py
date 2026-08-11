@@ -1,4 +1,4 @@
-"""Quality analyzer — TTSDS2 + Audiobox Aesthetics + split-half stability.
+"""Quality analyzer — TTSDS2 + Audiobox Aesthetics + DNSMOS + split-half.
 
 D3 primary: TTSDS2 aggregate score per provider per use case, against
 the pre-registered reference set from analyzers.yaml (`daps` for
@@ -6,9 +6,19 @@ narration; conversational reference TBD in Phase B, defect 3.7). Uses
 `ttsds.BenchmarkSuite` — the full published benchmark suite; picking a
 subset would be a silent methodology change.
 
-D3 secondary: Audiobox Aesthetics — 4 axes emitted (CE/CU/PC/PQ), we
+D3 supplementary #1: Audiobox Aesthetics — 4 axes emitted (CE/CU/PC/PQ), we
 REPORT PQ + CE only per analyzers.yaml. Reporting all 4 unlabelled
 would invite post-hoc selection (spec B.2).
+
+D3 supplementary #2 (Phase 2b addition, per RESEARCH_LOG D-B): Microsoft
+DNSMOS P.835 via `speechmos.dnsmos`. 4 axes per clip:
+    - `p808_mos`: overall MOS predicted from ITU P.808 model
+    - `ovrl_mos`, `sig_mos`, `bak_mos`: ITU P.835 three-scale MOS
+      (overall / speech signal / background noise)
+DNSMOS runs on ONNX runtime — no torch conflict with our env.
+Independent pipeline from Audiobox (Meta/torch) → 6 quality signals
+from 2 independent pipelines total. UTMOS was attempted (RESEARCH_LOG
+D-B revision 2) but blocked by fairseq's Windows source-build cliff.
 
 Split-half stability (spec §4.3, defect 3.7): random split of a
 provider's items into two halves, TTSDS2 on each half, absolute delta
@@ -18,7 +28,8 @@ threshold in analyzers.yaml (0.02) — not the noise floor, because the
 noise floor doesn't exist until variance.py runs.
 
 Model loading is lazy — first live call downloads references and
-benchmark weights (~5-10 GB across the TTSDS2 suite). Tests mock the
+benchmark weights (~5-10 GB across the TTSDS2 suite; DNSMOS ONNX
+weights are ~10 MB and ship with the pip package). Tests mock the
 heavy calls; every reader / aggregator function is exercised in
 isolation.
 """
@@ -73,7 +84,7 @@ def _load_ttsds_reference(dataset_id: str) -> Any:
     return None
 
 
-# --- Audiobox: per-file inference ---------------------------------------
+# --- Audiobox + DNSMOS: per-file inference -----------------------------
 
 
 @dataclass
@@ -84,7 +95,13 @@ class FileQuality:
     draw: int
     wav_path: str
     audiobox: dict[str, float] = field(default_factory=dict)
+    dnsmos: dict[str, float] = field(default_factory=dict)
     error: str | None = None
+    # Per-analyzer error strings — audiobox and dnsmos are independent
+    # pipelines and one failing shouldn't blank both. Populated only
+    # when the specific analyzer errored on this file.
+    audiobox_error: str | None = None
+    dnsmos_error: str | None = None
 
 
 def _audiobox_axes_for(record: AudioRecord, predictor: Any) -> dict[str, float]:
@@ -136,6 +153,131 @@ def analyze_file_audiobox(
     for short, long in long_from_short.items():
         if long in axes_reported and short in all_axes:
             r.audiobox[long] = all_axes[short]
+    return r
+
+
+# --- DNSMOS (Microsoft P.835 MOS suite via speechmos, ONNX runtime) ----
+
+
+def _load_audio_16k_mono(wav_path: Path) -> np.ndarray:
+    """Decode a WAV to mono float32 samples at 16 kHz.
+
+    Duplicated intentionally from wer.py's helper — quality.py should
+    not depend on wer.py. When we have >2 users of this helper, hoist
+    to `analyze/common.py`.
+    """
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    samples, sr = sf.read(str(wav_path), dtype="float32", always_2d=False)
+    if samples.ndim > 1:
+        samples = samples.mean(axis=1)
+    if sr != 16000:
+        from math import gcd
+        g = gcd(sr, 16000)
+        up, down = 16000 // g, sr // g
+        samples = resample_poly(samples, up, down).astype(np.float32)
+    return samples
+
+
+DNSMOS_AXES = ("p808_mos", "ovrl_mos", "sig_mos", "bak_mos")
+
+
+def _dnsmos_axes_for(record: AudioRecord) -> dict[str, float]:
+    """Return {axis: score} for one WAV via Microsoft DNSMOS P.835.
+
+    speechmos.dnsmos loads ONNX weights on first call and caches them
+    at import; no lazy-loader wrapper needed here. Expected sample
+    rate is 16 kHz mono.
+
+    Note: speechmos raises `ValueError: np.ndarray values must be
+    between -1 and 1` on any WAV that contains clipped samples
+    (|amplitude| > 1). We DO NOT pre-clip the audio here; the
+    validation refusal IS a first-class quality finding (see
+    RESEARCH_LOG F-4a — independent corroboration of the D5 hygiene
+    clipping finding). Callers handle the ValueError via
+    `analyze_file_dnsmos` which classifies it as
+    `input_clipped_out_of_range` and captures peak amplitude.
+    """
+    from speechmos import dnsmos
+
+    samples = _load_audio_16k_mono(record.wav_path)
+    out = dnsmos.run(samples, 16000)
+    if not isinstance(out, dict):
+        return {}
+    # speechmos returns np.float32/64; coerce to plain float for JSON safety
+    return {k: float(v) for k, v in out.items() if k in DNSMOS_AXES}
+
+
+# Structured error codes for DNSMOS failures. Reported into
+# quality.json per file so case-study rendering can group by cause
+# rather than parsing raw exception strings.
+#
+# `input_peak_out_of_range`: sample values reach or exceed the ±1
+# ceiling speechmos accepts. Two causes contribute — genuine
+# clipping (samples pinned at ±1.0 by upstream mastering) AND
+# post-resample filter ringing that pushes near-full-scale samples
+# fractionally past 1.0. In practice these are entangled — a
+# provider that leaves zero headroom will trigger both. Per-file
+# `peak_abs=` value captured for the "how hot was it" reporting angle.
+DNSMOS_ERROR_INPUT_CLIPPED = "input_peak_out_of_range"
+DNSMOS_ERROR_OTHER = "other"
+
+
+def _peak_abs_amplitude(wav_path: Path) -> float | None:
+    """Read a WAV and return max(|samples|). Used to quantify how far
+    over the [-1, 1] threshold a DNSMOS-refused clip actually was.
+    Returns None on decode failure (caller has already logged the error).
+    """
+    import soundfile as sf
+    try:
+        samples, _ = sf.read(str(wav_path), dtype="float32", always_2d=False)
+    except (RuntimeError, sf.LibsndfileError):
+        return None
+    if samples.size == 0:
+        return None
+    if samples.ndim > 1:
+        samples = samples.mean(axis=1)
+    return float(np.max(np.abs(samples)))
+
+
+def analyze_file_dnsmos(record: AudioRecord) -> FileQuality:
+    """Standalone per-file DNSMOS analyzer. Used when Audiobox is
+    disabled but DNSMOS is enabled. When both run, `run()` merges the
+    two FileQuality streams by (provider, use_case, item_id, draw).
+
+    Error classification:
+        - `wav_missing` (top-level `error`): file not on disk
+        - `dnsmos_error` starts with `input_clipped_out_of_range=`:
+          audio contains |amplitude| > 1 (speechmos ValueError).
+          Peak amplitude appended for reporting. NOT a bug — this IS
+          the finding (F-4a).
+        - `dnsmos_error` starts with `other=`: any other exception,
+          class + message truncated.
+    """
+    r = FileQuality(
+        provider=record.provider,
+        use_case=record.use_case,
+        item_id=record.item_id,
+        draw=record.draw,
+        wav_path=str(record.wav_path),
+    )
+    if not record.wav_path.exists():
+        r.error = "wav_missing"
+        return r
+    try:
+        r.dnsmos = _dnsmos_axes_for(record)
+    except ValueError as e:
+        # speechmos raises ValueError specifically on out-of-range input;
+        # classify structurally so the report can group by cause.
+        if "between -1 and 1" in str(e):
+            peak = _peak_abs_amplitude(record.wav_path)
+            peak_str = f" peak_abs={peak:.4f}" if peak is not None else ""
+            r.dnsmos_error = f"{DNSMOS_ERROR_INPUT_CLIPPED}={str(e)[:80]}{peak_str}"
+        else:
+            r.dnsmos_error = f"{DNSMOS_ERROR_OTHER}=ValueError: {str(e)[:150]}"
+    except Exception as e:  # noqa: BLE001 — other inference errors are data
+        r.dnsmos_error = f"{DNSMOS_ERROR_OTHER}={e.__class__.__name__}: {str(e)[:150]}"
     return r
 
 
@@ -250,6 +392,60 @@ def _aggregate_audiobox(files: list[FileQuality]) -> list[dict[str, Any]]:
     return out
 
 
+def _aggregate_dnsmos(files: list[FileQuality]) -> list[dict[str, Any]]:
+    """Same shape as _aggregate_audiobox but reads the dnsmos field.
+
+    A file is "valid" for the DNSMOS aggregate iff it has at least one
+    dnsmos axis populated AND no top-level wav_missing error. A file
+    whose Audiobox errored but DNSMOS succeeded still contributes.
+    """
+    groups: dict[tuple[str, str], list[FileQuality]] = {}
+    for f in files:
+        groups.setdefault((f.provider, f.use_case), []).append(f)
+
+    out: list[dict[str, Any]] = []
+    for (provider, use_case), items in sorted(groups.items()):
+        valid = [
+            i for i in items
+            if i.error != "wav_missing" and i.dnsmos_error is None and i.dnsmos
+        ]
+        axis_names = sorted({a for i in valid for a in i.dnsmos})
+        means = {
+            axis: float(np.mean([i.dnsmos[axis] for i in valid if axis in i.dnsmos]))
+            for axis in axis_names
+        } if valid else {}
+        out.append({
+            "provider": provider,
+            "use_case": use_case,
+            "n_items": len(items),
+            "n_valid": len(valid),
+            "dnsmos_means": means,
+        })
+    return out
+
+
+def _merge_file_streams(
+    audiobox_files: list[FileQuality], dnsmos_files: list[FileQuality]
+) -> list[FileQuality]:
+    """When both analyzers ran, produce a single stream keyed by
+    (provider, use_case, item_id, draw) with both `audiobox` and
+    `dnsmos` fields populated. If only one ran, return that stream.
+    """
+    if not audiobox_files:
+        return dnsmos_files
+    if not dnsmos_files:
+        return audiobox_files
+    dn_by_key = {(f.provider, f.use_case, f.item_id, f.draw): f for f in dnsmos_files}
+    merged: list[FileQuality] = []
+    for a in audiobox_files:
+        d = dn_by_key.get((a.provider, a.use_case, a.item_id, a.draw))
+        if d is not None:
+            a.dnsmos = d.dnsmos
+            a.dnsmos_error = d.dnsmos_error
+        merged.append(a)
+    return merged
+
+
 # --- run() --------------------------------------------------------------
 
 
@@ -259,14 +455,17 @@ def run(
     analyzers: AnalyzersFile,
     compute_ttsds: bool = True,
     compute_audiobox: bool = True,
+    compute_dnsmos: bool = True,
     n_split_half: int = 100,
     writer: AnalysisWriter | None = None,
 ) -> dict[str, Any]:
-    """Run TTSDS2 + Audiobox over one run dir. Writes `quality.json`.
+    """Run TTSDS2 + Audiobox + DNSMOS over one run dir. Writes `quality.json`.
 
-    Both compute flags default to True; set to False to skip a heavy
-    stage (useful for iterative development). The output JSON records
-    which stages actually ran.
+    All three compute flags default to True; set to False to skip a
+    stage (useful for iterative development or environment constraints).
+    The output JSON records which stages actually ran. Ordering of
+    per-file inference is Audiobox → DNSMOS → merged; each is
+    independent so one failing doesn't block the other.
     """
     reader = RunReader(run_dir)
     records = list(reader.records())
@@ -278,6 +477,14 @@ def run(
         axes = list(analyzers.audiobox_axes_reported)
         for rec in records:
             audiobox_files.append(analyze_file_audiobox(rec, predictor, axes))
+
+    # --- DNSMOS per file (Phase 2b addition, RESEARCH_LOG D-B) ---
+    dnsmos_files: list[FileQuality] = []
+    if compute_dnsmos and records:
+        for rec in records:
+            dnsmos_files.append(analyze_file_dnsmos(rec))
+
+    merged_files = _merge_file_streams(audiobox_files, dnsmos_files)
 
     # --- TTSDS2 per (provider, use_case) ---
     ttsds_scores: list[dict[str, Any]] = []
@@ -318,10 +525,16 @@ def run(
         "run_id": run_dir.name,
         "ran_ttsds": compute_ttsds,
         "ran_audiobox": compute_audiobox,
+        "ran_dnsmos": compute_dnsmos,
         "audiobox_axes_reported": list(analyzers.audiobox_axes_reported),
+        "dnsmos_axes_reported": list(DNSMOS_AXES),
         "ttsds_by_provider": ttsds_scores,
         "audiobox_by_provider": _aggregate_audiobox(audiobox_files),
-        "audiobox_files": [asdict(f) for f in audiobox_files],
+        "dnsmos_by_provider": _aggregate_dnsmos(dnsmos_files),
+        # Files are the MERGED stream so per-file variance analysis
+        # (Phase 2b.5 + variance.py) can see both signal families
+        # side-by-side per (provider, use_case, item_id, draw).
+        "audiobox_files": [asdict(f) for f in merged_files],
     }
     if writer is None:
         writer = AnalysisWriter(run_dir.name)

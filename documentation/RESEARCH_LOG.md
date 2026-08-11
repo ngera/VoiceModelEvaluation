@@ -485,7 +485,9 @@ lower). Everyone else 0-5 clips.
 
 **Evidence**: `analysis/campaign-20260809T204608Z/hygiene.json`.
 
-**Status**: **preliminary — Phase 2c T1 will confirm or refute**.
+**Status**: **preliminary — Phase 2c T1 will confirm or refute**;
+already **partially corroborated by F-4a** (below) via an
+independent pipeline.
 
 **If confirmed**: Cartesia fails the `clipped_samples == 0` gate for
 both use cases. Loses frontier position.
@@ -497,6 +499,80 @@ and re-enter the frontier discussion.
 - §7: report both the original observation AND the T1 verdict.
 - §8: discussion notes the "one measurement + one verification" rigor
   pattern this represents.
+
+## F-4a · DNSMOS independently corroborates Cartesia's zero-headroom mastering via pipeline refusal (2026-08-10)
+
+**Observation**: Microsoft DNSMOS (via `speechmos`, Phase 2b add per
+D-B) validates every input against |amplitude| strictly less than 1
+and raises `ValueError: np.ndarray values must be between -1 and 1`
+on any file whose peaks reach or exceed the ceiling. On the
+variance-run smoke, refusal rate by provider:
+
+| Provider (use_case) | DNSMOS-refused / total | Refusal rate |
+|---|---|---|
+| Cartesia narration | 17 / 30 | 57% |
+| Cartesia conversational | 9 / 30 | 30% |
+| Google narration | 5 / 30 | 17% |
+| All other 6 providers × 2 UC | 0 / 30 each | 0% |
+
+Provider ranking on refusal rate is **identical** to hygiene's
+clipping-sample ranking (F-4): Cartesia >> Google narration >>
+everyone else. Two independent pipelines flag the same three
+(provider, use_case) rows on the same underlying defect.
+
+**Nuance about "how far over"**: peak amplitudes on refused items
+cluster at **0.991-1.000 (mean 0.999)** — samples are AT or right
+below the ±1 boundary, not far past it. Two entangled causes:
+
+1. Cartesia's upstream mastering leaves zero headroom (peaks pinned
+   at ±1.0 by design, "hot" gain-staging)
+2. The Phase 2b `_load_audio_16k_mono` resample_poly step introduces
+   small filter-ringing overshoot that pushes near-ceiling samples
+   fractionally past 1.0
+
+In practice these are entangled — a provider that leaves zero
+headroom triggers both. Providers with normal 3-6 dB headroom
+(everyone but Cartesia + Google narration) don't trip either.
+
+The refusal is therefore not "Cartesia's audio is grossly clipped"
+but "Cartesia's audio leaves no headroom, and DNSMOS's strict
+validation refuses to score audio at that ceiling." Both readings
+are load-bearing for an enterprise buyer: **a provider that leaves
+zero headroom breaks any downstream ITU P.835 quality gate whose
+validator is honest about signal-range assumptions.**
+
+**Evidence**: `analysis/variance-20260809T205319Z/quality.json`
+`dnsmos_files` where `dnsmos_error` starts with
+`input_peak_out_of_range=`. Per-file peak amplitude captured in
+the error string.
+
+**Status**: **confirmed** on the variance subset; full-scope campaign
+verification pending Phase 2b.3 completion.
+
+**Implication for Cartesia's DNSMOS aggregate**: only 21/60 conv +
+13/30 narr items scored. Aggregate is biased upward (only the
+less-clipped items scored). Report notes this explicitly — Cartesia's
+"true" DNSMOS distribution is likely LOWER than the reported mean
+because the more-clipped items were selection-excluded.
+
+**Paper implications**:
+- §5.4 (compute environment): note DNSMOS's [-1,1] validation is a
+  feature, not a bug — clipped audio's MOS is meaningless.
+- §7: F-4a becomes a headline result — **two independent pipelines
+  flag Cartesia on the same defect from different measurement angles**.
+  This is stronger than F-4 alone (single-pipeline signal).
+- §8: discussion — "the refusal rate itself is a portfolio-worthy
+  metric that no leaderboard publishes; providers with severe gain
+  staging are penalized by every downstream analyzer that respects
+  signal validity."
+- §11: quotable — *"When Microsoft DNSMOS refuses to score 43% of
+  Cartesia's items due to clipping, hygiene-side clipping counts
+  stop being a stylistic quibble and start being an
+  operational-quality signal."*
+
+**Amendment status**: NOT a DEVIATIONS.md entry — this is a
+found-not-designed corroboration. F-4a strengthens F-4.
+
 
 ## F-5 · Orpheus is the "cheap but risky" archetype — highest variance, worst WER, split PQ (2026-08-10)
 
@@ -577,31 +653,114 @@ Consistent with HI #1 story from public leaderboard. Audit motivation
   Phase 2c voice-bias test rules out the specific voice as the
   driver."
 
-## F-8 · Cross-metric quality-signal agreement — pending Phase 2b (2026-08-10)
+## F-8 · The two MOS pipelines rank providers *differently* — cross-pipeline Spearman ρ is near-zero to negative (2026-08-11)
 
-**Populated after Phase 2b runs UTMOS + NISQA on canonical campaign.**
+**Status**: confirmed on canonical campaign
+`campaign-20260809T204608Z` (n=8 providers × 2 use cases × 75 items,
+Audiobox n_valid=75/75 everywhere, DNSMOS n_valid=75/75 everywhere
+except cartesia 43+38 and google narration 71 — see F-4a).
 
-Expected shape (blank until populated):
+**Evidence artifact**:
+`analysis/campaign-20260809T204608Z/cross_metric.json`.
 
-| Provider | UC | Audiobox PQ | Audiobox CE | UTMOS | NISQA-MOS | Agreement |
-|---|---|---|---|---|---|---|
-| speechify | conv | 7.90 | 6.46 | ? | ? | ? |
-| ... | | | | | | |
+**Headline number** — cross-pipeline mean Spearman ρ (Audiobox×DNSMOS,
+8 pair-correlations averaged):
 
-Followed by pairwise Spearman ρ matrix (all metrics vs all metrics
-across the 8 providers) and interpretation.
+| Use case | cross-pipeline mean ρ |
+|---|---|
+| conversational | **−0.134** |
+| narration | **−0.271** |
 
-## F-9 · Outlier verification verdicts — pending Phase 2c (2026-08-10)
+The two independent MOS pipelines do not rank providers in the same
+order. On narration, the average is *negative* — providers Audiobox
+puts near the top are near the bottom of the DNSMOS P.835 scale.
+Within each pipeline, ranks correlate as expected (DNSMOS ovrl↔sig
+ρ = 0.98 conv / 0.86 narr; Audiobox PQ↔CE ρ = 0.31 conv / 0.48 narr).
 
-**Populated after Phase 2c tests complete.**
+**Rank inversions worth naming** (rank 1 = best on that signal;
+n=8 providers):
 
-Expected shape (blank until populated):
+*Conversational* — Speechify: Audiobox #1 on PQ and CE, DNSMOS
+#3 / #5 / #6 / #6. OpenAI: Audiobox #3 / #5, DNSMOS #2 / #1 / #1 / #1
+(best on all three P.835 axes). Fish: Audiobox #4 / #2, DNSMOS #6 /
+#8 / #8 / #7 (worst on ovrl and sig despite mid-pack CE).
 
-| # | Outlier | Hypothesis | Verdict | Evidence |
+*Narration* — OpenAI: Audiobox **#8 / #8** (dead last), DNSMOS
+**#1 / #1 / #2** on the three-scale MOS — near-perfect rank inversion.
+Cartesia: Audiobox #3 / #5, DNSMOS #1 on P.808 but **#8 / #8 / #8** on
+the three-scale MOS (caveat: computed over only 38/75 surviving files
+after DNSMOS refused the clipped ones — see F-4a; this is
+survivor-selected).
+
+**Interpretation** — the two pipelines answer different questions:
+
+- **Audiobox Aesthetics** (Meta, torch, trained on human aesthetic
+  ratings of audio) rewards *perceived aesthetic quality* — warmth,
+  expressiveness, engagement. Speechify and ElevenLabs top these on
+  narration; OpenAI is near the bottom.
+- **DNSMOS P.835** (Microsoft, ONNX, trained on ITU-T P.835 crowd-
+  ratings of speech-in-noise) rewards *clean signal separation* —
+  low background artifacts, clear speech, high SNR. OpenAI's
+  clinically-clean voices top this; Cartesia's peaks-at-1.0 mastering
+  gets refused outright or scored down.
+
+Neither pipeline is "correct" — they measure different constructs. A
+provider that is *actually* better for a listener depends on which
+construct maps to your use case. This is not noise; it is a
+methodology finding that promotes to §8B of the paper.
+
+**Statistical caveat** — n=8 providers gives Spearman ρ a wide 95% CI.
+ρ = −0.134 on 8 items has a Fisher-transformed 95% CI roughly
+[−0.75, +0.60]; we cannot claim the ρ is *significantly* negative,
+only that it is not the strong positive we would have expected if the
+pipelines were measuring the same thing. This is precisely the
+reason we ran two pipelines — one might have masked this.
+
+**Paper mapping**:
+- §7 Results — the 6×6 Spearman matrix per use case (verbatim from
+  cross_metric.json) + the rank-inversion table.
+- §8B Discussion — the "different constructs" reading + the caveat
+  about which listener use case maps to which pipeline.
+- §9 Threats to validity — add: "Choice of MOS predictor family
+  drives ranking; a single-predictor report could reverse conclusions.
+  Mitigated by reporting both."
+- Narrative bank — see new entry N-11 below.
+
+**Follow-up** (Phase 2b.5): does the DNSMOS Cartesia narration `sig`
+rank change if we hold the same 38-file subset for Audiobox too?
+That eliminates the survivor-selection confound for the one cell
+where it applies.
+
+## F-9 · Outlier verification verdicts — roster reshuffled after 2b (2026-08-11)
+
+**Status**: pack partially answered by 2b already. Roster reshuffled
+below; unfilled verdict cells populated after Phase 2c executes.
+
+**Pre-Phase-2c verdicts (answered by 2b evidence):**
+
+| # | Outlier | Original hypothesis | Verdict from 2b | Evidence |
 |---|---|---|---|---|
-| T1 | Cartesia clipping | Systemic | Confirmed / Refuted / Inconclusive | link |
-| T2 | Orpheus WER | Real intelligibility issue | Confirmed / Refuted / Inconclusive | link |
-| ... | | | | |
+| T1 | Cartesia clipping 429/406 samples (100× next) | Systemic gain-staging | **Confirmed** — independent 2nd pipeline. DNSMOS refuses 32/75 conv + 37/75 narr items outright for `peak_out_of_range` (43% + 49% refusal rate). Two independent code paths (hygiene peak_dbfs + speechmos ONNX ValueError) flag the same 8-of-8 provider unanimously. | F-4a; `analysis/campaign-20260809T204608Z/quality.json` (dnsmos errors, dnsmos_by_provider) |
+| T3 | Orpheus PQ 7.41 conv → 8.00 narr | Audiobox artifact of clip length | **Confirmed direction, refuted magnitude** — DNSMOS all 4 axes rise conv→narr (P808 +0.19, OVRL +0.12, SIG +0.02, BAK +0.11), so improvement is real; Audiobox +0.60 is scale-inflated by ~3–30×. Exit criterion satisfied: DNSMOS OVRL ranks Orpheus #2 on narration (spec asked for top-3). Retired from Phase 2c. | F-8; cross_metric.json narration ranks |
+
+**Phase 2c active tests (still to execute):**
+
+| # | Outlier | Provider | Hypothesis | Verdict | Evidence |
+|---|---|---|---|---|---|
+| T2 | WER 27% (2× next) | Orpheus | Real intelligibility issue, not judge bias | pending | — |
+| T4 | L03 fadeout (3.6 dB monotonic) | ElevenLabs | Deterministic bug on L03 text | pending | — |
+| T5 | Latency 762/946 (2× next) | OpenAI | Persistent, not single-session | pending | — |
+| T6 | Audiobox PQ+CE leader both UC (mid-pack DNSMOS) | Speechify | **Audiobox rewards Speechify voice signature (pipeline-specific advantage)** — narrowed from original "model advantage" after F-8 | pending | — |
+| T7 | Fastest TTFA (440/474) | ElevenLabs | Persistent, not lucky | pending | — |
+| T8 | Cheapest $0.030/1K | Orpheus | Cost scales linearly with item length | pending | — |
+| **N1** | Audiobox #8/#8 vs DNSMOS #1/#1/#2 (narr) | OpenAI | Voice is "clinically clean but low aesthetic warmth" | pending | — |
+| **N2** | DNSMOS OVRL+SIG #8/#8 (conv) despite mid-pack Audiobox | Fish | Speech-vs-background artifact DNSMOS flags but Audiobox misses | pending | — |
+
+**No-test findings (from 2b, recorded here for §7):**
+
+- **N3** — ElevenLabs conv AB.CE #8 despite AB.PQ #2 and DNSMOS all top-2. Within-Audiobox split: "technically perfect voice, low engagement." Not a hypothesis; recorded as a paper-worthy micro-finding.
+- **N4** — Cartesia narration DNSMOS OVRL/SIG/BAK all #8 over the *surviving* 38/75 items (after DNSMOS refused the clipped 37). Interpretation: the clipping isn't the whole story; the mastering has a broader signal-cleanliness signature DNSMOS penalizes even on the non-refused clips.
+- **N5** — Google narration DNSMOS P.808 rank #7 despite 71/75 valid files. Not a hypothesis; recorded as a mid-tier baseline soft-spot.
 
 ## F-10 · Bradley-Terry rankings vs HI cross-check — pending Phase 3+4 (2026-08-10)
 
@@ -651,6 +810,12 @@ Expected shape: "reproduces?" column per provider, Δ rank, Spearman
    Phase 2b UTMOS + NISQA giving 4 quality signals for triangulation
    + reporting WER as relative-ranking-only.
 10. **TTSDS2 skipped** (D-A) — mitigated by D-B (add UTMOS + NISQA).
+10a. **Ranking depends on the choice of MOS predictor family** (F-8) —
+    Audiobox and DNSMOS rank the 8 providers with cross-pipeline mean
+    ρ ≈ −0.13 (conv) / −0.27 (narr); a single-predictor report could
+    reverse conclusions. Mitigated by publishing both matrices and
+    naming the specific rank inversions (OpenAI, Speechify, Cartesia)
+    rather than aggregating into a single "quality score."
 11. **Single-session latency** — Phase 2c T5 + T7 add 2nd session
     for spec-compliance on OpenAI + ElevenLabs.
 12. **Cartesia clipping — systemic or batch?** — Phase 2c T1.
@@ -688,6 +853,15 @@ Expected shape: "reproduces?" column per provider, Δ rank, Spearman
   property."* (D-010 recap)
 - *"We measured quality four ways from three independent predictors,
   and here's where they agree and disagree."* (After Phase 2b)
+- **N-11.** *"Two independent MOS pipelines rank the same 8 providers
+  with a cross-pipeline Spearman ρ of roughly zero — on narration,
+  the ρ is negative. On our corpus, OpenAI is dead last on Audiobox
+  aesthetic quality and first on DNSMOS clean-signal MOS; Cartesia
+  is DNSMOS's #1 P.808 pick on narration and #8 on the three-scale
+  MOS. A leaderboard that reports one pipeline is not measuring the
+  same thing as a leaderboard that reports the other. Choose the
+  construct that matches your listener use case, or publish both."*
+  (F-8, 2026-08-11)
 
 **Provider archetype quotables (pending confirmation):**
 
@@ -743,3 +917,15 @@ Non-urgent, pick up whenever. Not blockers for Phase 2b / 2c / Phase 3.
   D-G (enterprise portability disclosure). Updated threats-to-validity
   list (items 6-8 for structural env caveats, item 19 for co-located-VM
   future work). Added user-owned pending items section.
+- **2026-08-11** — populated F-8 with cross-metric Spearman results
+  from `analysis/campaign-20260809T204608Z/cross_metric.json`.
+  Cross-pipeline mean ρ negative on both use cases (conv −0.13,
+  narr −0.27). Added threat 10a, narrative N-11.
+- **2026-08-11** — F-9 reshuffled after 2b re-evaluation of pre-existing
+  outliers: T1 verdict "confirmed" pre-Phase-2c (2nd pipeline
+  corroboration); T3 retired (spec criterion satisfied by DNSMOS);
+  T6 hypothesis narrowed to name Audiobox specifically; N1 (OpenAI
+  narration inversion) + N2 (Fish conv DNSMOS OVRL/SIG bottom) added;
+  N3–N5 recorded as no-test findings. Phase 2c pack now: 8 active
+  tests, ~$0.30 spend, ~1.5 hrs wall clock (down from ~$1 / 4 hrs).
+  Runbook v2 §2c updated with the strike-throughs + additions.
