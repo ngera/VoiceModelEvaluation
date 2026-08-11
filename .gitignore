@@ -42,9 +42,16 @@ dist/
 
 # Run artifacts (generated audio + logs — regenerable, not versioned)
 runs/
-analysis/
 judgments/
 decisions/
+
+# analysis/*.json outputs are pure functions of runs/ — regenerable,
+# not versioned. BUT `analysis/verification/*.md` holds human-written
+# Phase 2c verdict artefacts (hypothesis + criterion + result). Those
+# ARE paper evidence — keep them in git. Uses `analysis/*` (not
+# `analysis/`) so the un-ignore below works.
+analysis/*
+!analysis/verification/
 
 # Content-hash cache for synthesis (Phase D.2) — regenerable, safe to nuke
 .cache/

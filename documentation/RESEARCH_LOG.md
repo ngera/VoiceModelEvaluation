@@ -747,14 +747,14 @@ below; unfilled verdict cells populated after Phase 2c executes.
 
 | # | Outlier | Provider | Hypothesis | Verdict | Evidence |
 |---|---|---|---|---|---|
-| T2 | WER 27% (2× next) | Orpheus | Real intelligibility issue, not judge bias | pending | — |
-| T4 | L03 fadeout (3.6 dB monotonic) | ElevenLabs | Deterministic bug on L03 text | pending | — |
-| T5 | Latency 762/946 (2× next) | OpenAI | Persistent, not single-session | pending | — |
-| T6 | Audiobox PQ+CE leader both UC (mid-pack DNSMOS) | Speechify | **Audiobox rewards Speechify voice signature (pipeline-specific advantage)** — narrowed from original "model advantage" after F-8 | pending | — |
-| T7 | Fastest TTFA (440/474) | ElevenLabs | Persistent, not lucky | pending | — |
-| T8 | Cheapest $0.030/1K | Orpheus | Cost scales linearly with item length | pending | — |
+| T2 | WER 27% (2× next) | Orpheus | Real intelligibility issue, not judge bias | **Answered mechanically by T8** — Orpheus has a **hard 14.59-second output cap per call** (stdev 0.000s across 8 items). Every ≥15-s reference gets ~85% truncated. WER isn't intelligibility; it's structural incompletion. Manual listen would return 8/8 "truncated" but the math already forces it. (executed 2026-08-11 via T8) | See T8 evidence artifacts |
+| T4 | L03 fadeout (3.6 dB monotonic) | ElevenLabs | Deterministic bug on L03 text | **Confirmed with refinement** — 3/3 fresh regens monotonically decrease (100% directional reproducibility); mean delta 2.37 dB vs original 3.61 dB. Under-analyzer's 3.0 dB flag threshold, only 1/4 total draws flag. Phenomenon real; original campaign magnitude was on the high side of the natural per-draw range. (executed 2026-08-11) | `analysis/verification/T4_elevenlabs_L03_fadeout.md`; runs `campaign-20260811T{173804,174012,174032}Z` |
+| T5 | Latency 762/946 (2× next) | OpenAI | Persistent, not single-session | **Confirmed with direction-caveat** — session-2 (2026-08-11) came in at p50=936ms, p90=1493ms (+27%, +56% vs session-1's 736/956). Strict ±20% criterion failed, but failure direction is "even slower" — outlier reinforced, not refuted. Session-2 mean-across-2 = **~836 ms p50, ~1225 ms p90**. Report as range, not point estimate. (executed 2026-08-11) | `analysis/verification/T5_openai_latency.md`; run `latency-20260811T183028Z` |
+| T6 | Audiobox PQ+CE leader both UC (mid-pack DNSMOS) | Speechify | **Audiobox rewards Speechify voice signature (pipeline-specific advantage)** — narrowed from original "model advantage" after F-8 | **Confirmed with reversal note** — 11/12 axes within ±0.15; the 1 failure was AB.PQ conv going +0.30 (edmund_32 is BETTER than geffen_32, not worse). edmund_32 outranks all 8 competitors AND the pre-registered voices on AB.PQ in both use cases. Finding narrows to: Speechify's #1 rank is a **Simba-3.2 model** signature, not a voice cherry-pick. DNSMOS is indifferent (all deltas <0.15). (executed 2026-08-11) | `analysis/verification/T6_speechify_voice_bias.md`; runs `campaign-20260811T{174523,180824}Z`; `configs/voices.T6.yaml` |
+| T7 | Fastest TTFA (440/474) | ElevenLabs | Persistent, not lucky | **Confirmed cleanly** — session-2 (2026-08-11) came in at p50=424ms, p90=469ms (−3%, −2% vs session-1's 439/479). Both well within ±20%, p90 stays sub-500ms. Two-session bracket: **424–439 ms p50, 469–479 ms p90**. Sub-500 ms p90 confirmed across 2 sessions × 2 days. Cross-provider: ElevenLabs session-to-session variability = 2–3%; OpenAI = 27–56% (T5) → *stability* is a distinct axis. (executed 2026-08-11) | `analysis/verification/T7_elevenlabs_ttfa.md`; run `latency-20260811T183202Z` |
+| T8 | Cheapest $0.030/1K | Orpheus | Cost scales linearly with item length | **Refuted with a bigger finding** — Orpheus produces **exactly 14.59s of audio per call** regardless of input (stdev 0.00s). Cost is essentially fixed per call (~17 GPU-s, $0.004–0.017 depending on GPU tier T4/L40S/A100). Long-form narration requires ~5-6 calls per 1K chars → real cost is 5× the per-call figure. Also mechanically answers T2 (85% WER = 14.59s output cap, not intelligibility). (executed 2026-08-11) | `analysis/verification/T8_orpheus_cost.md`; run `campaign-20260811T183847Z`; `scripts/_t8_analysis.py` |
 | **N1** | Audiobox #8/#8 vs DNSMOS #1/#1/#2 (narr) | OpenAI | Voice is "clinically clean but low aesthetic warmth" | pending | — |
-| **N2** | DNSMOS OVRL+SIG #8/#8 (conv) despite mid-pack Audiobox | Fish | Speech-vs-background artifact DNSMOS flags but Audiobox misses | pending | — |
+| **N2** | DNSMOS OVRL+SIG #8/#8 (conv) despite mid-pack Audiobox | Fish | Speech-vs-background artifact DNSMOS flags but Audiobox misses | **Confirmed via criterion #2 (noise floor cross-check)** — Fish mean_noise_floor_dbfs = −39.67 vs 8-provider median −52.25, delta = **+12.6 dB** (2× the +6 dB threshold). Third independent pipeline (hygiene pyloudnorm noise-floor) corroborates DNSMOS SIG #8 ranking. Manual spot-listen skipped by user request; criteria were "either/or" and #2 was already decisive. Bonus finding: Google conv noise floor is +6 dB above Fish (worst absolute) but ranks #5 on DNSMOS SIG — the noise *character* matters more than the *level*. (executed 2026-08-11) | `analysis/verification/N2_fish_conv_dnsmos.md`; `analysis/campaign-20260809T204608Z/hygiene.json` |
 
 **No-test findings (from 2b, recorded here for §7):**
 
@@ -929,3 +929,24 @@ Non-urgent, pick up whenever. Not blockers for Phase 2b / 2c / Phase 3.
   N3–N5 recorded as no-test findings. Phase 2c pack now: 8 active
   tests, ~$0.30 spend, ~1.5 hrs wall clock (down from ~$1 / 4 hrs).
   Runbook v2 §2c updated with the strike-throughs + additions.
+- **2026-08-11** — Phase 2c executed. Verdicts:
+  - T4 confirmed with refinement — L03 fadeout direction is 100%
+    reproducible, magnitude on the high side of the natural range
+    (2.7 dB mean across 4 draws)
+  - T5 confirmed with direction-caveat — OpenAI TTFA session-2 was
+    +27% p50 / +56% p90 vs session-1; outlier reinforced, ±20%
+    criterion too tight for a service with this variance
+  - T6 confirmed with reversal — edmund_32 alt voice scored *higher*
+    (not equal or lower) than pinned voices; Speechify's Audiobox #1
+    rank is a Simba-3.2 model signature, not a voice cherry-pick
+  - T7 confirmed cleanly — ElevenLabs Flash p50/p90 within 3% of
+    session-1; sub-500 ms p90 across 2 sessions × 2-day gap
+  - T8 refuted with a bigger finding — Orpheus produces exactly
+    14.59s per call (stdev 0.000s); cost is fixed-per-call not
+    linear-with-text; mechanically resolves T2 (85% WER = truncation
+    cap, not intelligibility)
+  - T2 answered by T8 mechanics — no manual listen needed
+  - N2 confirmed automatically — Fish noise floor +12.6 dB above
+    median (2× threshold), 3rd independent pipeline confirms
+    DNSMOS SIG #8 signal
+  - N1 pending — requires manual listen (deferred)

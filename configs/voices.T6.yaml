@@ -1,0 +1,151 @@
+# voices.T6.yaml — T6 verification-test-only overlay.
+#
+# **NOT PRE-REGISTERED.** This file is used exclusively by Phase 2c
+# test T6 (Speechify voice-signature bias). It swaps the two Speechify
+# voice_ids from the pre-registered picks (geffen_32 conv / wyatt_32
+# narr) to `edmund_32` for BOTH use cases.
+#
+# See analysis/verification/T6_speechify_voice_bias.md for hypothesis
+# and criterion. The rest of the file is a verbatim copy of
+# configs/voices.yaml (locked prereg-v1.10) — all other providers'
+# voices are unchanged so the run store is comparable if a full
+# re-analysis is ever needed. In practice T6 only regenerates
+# Speechify.
+#
+# Usage:
+#   uv run veval generate --mode campaign --provider speechify \
+#     --items ... --voices-file configs/voices.T6.yaml --no-cache
+#
+# **DO NOT** use this file for the actual campaign. It is
+# .gitignore-adjacent conceptually — kept in git only so T6 evidence
+# is reproducible.
+
+voices:
+  # ============================================================
+  # Deepgram — Aura-2 English voices, no cloning  (UNCHANGED)
+  # ============================================================
+  - provider: deepgram
+    use_case: conversational
+    voice_id: "aura-2-thalia-en"
+    model: "aura-2-thalia-en"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: deepgram
+    use_case: narration
+    voice_id: "aura-2-orion-en"
+    model: "aura-2-orion-en"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # Fish Audio — SPLIT MODEL  (UNCHANGED)
+  # ============================================================
+  - provider: fish
+    use_case: conversational
+    voice_id: "9a9cf47702da476aa4629e2506d4a857"
+    model: "s2.1-pro"
+    split_model_from_quality: true
+    quality_model: "s2.1-pro-free"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: fish
+    use_case: narration
+    voice_id: "e3cd384158934cc9a01029cd7d278634"
+    model: "s2.1-pro"
+    split_model_from_quality: true
+    quality_model: "s2.1-pro-free"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # Google Cloud TTS — Chirp3-HD  (UNCHANGED)
+  # ============================================================
+  - provider: google
+    use_case: conversational
+    voice_id: "en-US-Chirp3-HD-Achernar"
+    model: "en-US-Chirp3-HD-Achernar"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: google
+    use_case: narration
+    voice_id: "en-US-Chirp3-HD-Charon"
+    model: "en-US-Chirp3-HD-Charon"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # Cartesia — Sonic-2  (UNCHANGED)
+  # ============================================================
+  - provider: cartesia
+    use_case: conversational
+    voice_id: "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4"
+    model: "sonic-2"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: cartesia
+    use_case: narration
+    voice_id: "79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e"
+    model: "sonic-2"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # ElevenLabs  (UNCHANGED)
+  # ============================================================
+  - provider: elevenlabs
+    use_case: conversational
+    voice_id: "g6xIsTj2HwM6VR4iXFCw"
+    model: "eleven_flash_v2_5"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: elevenlabs
+    use_case: narration
+    voice_id: "qSeXEcewz7tA0Q0qk9fH"
+    model: "eleven_multilingual_v2"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # Canopy Orpheus  (UNCHANGED)
+  # ============================================================
+  - provider: orpheus
+    use_case: conversational
+    voice_id: "tara"
+    model: "lucataco/orpheus-3b-0.1-ft"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: orpheus
+    use_case: narration
+    voice_id: "dan"
+    model: "lucataco/orpheus-3b-0.1-ft"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # OpenAI  (UNCHANGED)
+  # ============================================================
+  - provider: openai
+    use_case: conversational
+    voice_id: "fable"
+    model: "gpt-4o-mini-tts"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+  - provider: openai
+    use_case: narration
+    voice_id: "onyx"
+    model: "tts-1-hd"
+    reasoning: "See configs/voices.yaml — unchanged in T6 overlay."
+
+  # ============================================================
+  # Speechify — T6 SWAP: geffen_32/wyatt_32 → edmund_32 for both UCs
+  # ============================================================
+  - provider: speechify
+    use_case: conversational
+    voice_id: "edmund_32"     # T6 swap (original: geffen_32)
+    model: "simba-3.2"
+    reasoning: >-
+      T6 alternate voice — see
+      analysis/verification/T6_speechify_voice_bias.md. edmund_32 is
+      en-GB male young-adult pitch:high timbre:bright style:dynamic,
+      tagged for use-case:conversational among other tags. Original
+      was geffen_32 (en-US female intriguing warm) — big-signature
+      swap by design to test whether Audiobox's Speechify #1 ranking
+      is voice-signature-specific or Simba-3.2-model-signature.
+  - provider: speechify
+    use_case: narration
+    voice_id: "edmund_32"     # T6 swap (original: wyatt_32)
+    model: "simba-3.2"
+    reasoning: >-
+      T6 alternate voice — same edmund_32 voice used across both use
+      cases so the two comparisons hold voice constant while the
+      reference (geffen_32 / wyatt_32) varies. Original was wyatt_32
+      (en-US male middle-aged low-pitch textured sophisticated) —
+      moderate-signature swap (still male, different accent + pitch +
+      timbre + age). See T6 scaffold for interpretation framework.
