@@ -30,43 +30,290 @@ noise-floor, WER via two-judge agreement, latency (conversational
 only, 50-trial session), and public-tier cost per 1K words at 100K
 words/month.
 
-**Colour legend (per column, direction-normalized):**
-- 🟢 = top 2 within the column (best 2 of 8)
-- 🟡 = middle 4 within the column (rank 3-6)
-- 🔴 = bottom 2 within the column (worst 2 of 8)
+**Colour legend** (per column, direction-normalized):
+
+<table>
+<tr>
+<td bgcolor="#c8e6c9" align="center">&nbsp;green&nbsp;</td>
+<td>top 2 within the column (best 2 of 8)</td>
+</tr>
+<tr>
+<td bgcolor="#fff9c4" align="center">&nbsp;yellow&nbsp;</td>
+<td>middle 4 within the column (rank 3–6)</td>
+</tr>
+<tr>
+<td bgcolor="#ffcdd2" align="center">&nbsp;red&nbsp;</td>
+<td>bottom 2 within the column (worst 2 of 8)</td>
+</tr>
+</table>
 
 For lower-is-better columns (clip samples, noise floor dBFS, WER %,
-TTFA ms, $/1K words) the colour flips direction — 🟢 = lowest = best.
-For `clip samples`, values of 0 are always 🟢 (perfect); any value
-≥100 is 🔴 regardless of ranking. TTFA cells marked "—" indicate
+TTFA ms, $/1K words) the colour flips direction — **green = lowest = best**.
+For `clip samples`, values of 0 are always green (perfect); any value
+≥100 is red regardless of ranking. TTFA cells marked "—" indicate
 adapters that don't stream (Speechify, Fish, Google, Orpheus per D-008
 and adapter-shape).
 
 ### Conversational
 
-| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | TTFA p50 (ms) | $/1K words |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| speechify | 🟢 7.90 | 🟢 6.46 | 🟡 3.98 | 🟡 3.30 | 🟡 3.56 | 🟡 4.07 | 🟡 1 | 🟢 -57.0 | 🟡 14.3 | — | 🟡 0.100 |
-| elevenlabs | 🟢 7.76 | 🔴 5.96 | 🟢 4.12 | 🟢 3.47 | 🟢 3.69 | 🟢 4.18 | 🟢 0 | 🟡 -52.0 | 🟡 14.1 | 🟢 439 | 🔴 0.220 |
-| openai | 🟡 7.74 | 🟡 6.11 | 🟢 4.01 | 🟢 3.49 | 🟢 3.70 | 🟢 4.19 | 🟢 0 | 🟡 -52.5 | 🟢 13.7 | 🔴 736 | 🟢 0.075 |
-| fish | 🟡 7.70 | 🟢 6.24 | 🟡 3.86 | 🔴 3.15 | 🔴 3.41 | 🔴 4.05 | 🟢 0 | 🔴 -39.7 | 🟢 13.8 | — | 🟡 0.075 |
-| google | 🟡 7.62 | 🟡 6.18 | 🔴 3.82 | 🟡 3.27 | 🟡 3.57 | 🔴 4.02 | 🟢 0 | 🔴 -33.7 | 🟡 15.1 | — | 🟡 0.150 |
-| deepgram | 🟡 7.62 | 🟡 6.21 | 🔴 3.77 | 🟡 3.31 | 🟡 3.58 | 🟡 4.07 | 🟢 0 | 🟡 -46.2 | 🔴 16.6 | 🔴 583 | 🟡 0.150 |
-| cartesia | 🔴 7.44 | 🔴 5.96 | 🟡 3.89 | 🔴 3.25 | 🔴 3.48 | 🟡 4.13 | 🔴 406 | 🟢 -57.1 | 🟡 16.4 | 🟢 467 | 🔴 0.160 |
-| orpheus | 🔴 7.41 | 🟡 6.01 | 🟡 3.87 | 🟡 3.33 | 🟡 3.62 | 🟡 4.10 | 🟢 0 | 🟡 -53.2 | 🔴 26.9 | — | 🟢 0.030 |
+<table>
+<thead>
+<tr>
+<th>Vendor</th>
+<th>AB.PQ</th>
+<th>AB.CE</th>
+<th>DN.p808</th>
+<th>DN.ovrl</th>
+<th>DN.sig</th>
+<th>DN.bak</th>
+<th>clip samples</th>
+<th>noise floor (dBFS)</th>
+<th>WER %</th>
+<th>TTFA p50 (ms)</th>
+<th>$/1K words</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><b>speechify</b></td>
+<td align="right" bgcolor="#c8e6c9">7.90</td>
+<td align="right" bgcolor="#c8e6c9">6.46</td>
+<td align="right" bgcolor="#fff9c4">3.98</td>
+<td align="right" bgcolor="#fff9c4">3.30</td>
+<td align="right" bgcolor="#fff9c4">3.56</td>
+<td align="right" bgcolor="#fff9c4">4.07</td>
+<td align="right" bgcolor="#fff9c4">1</td>
+<td align="right" bgcolor="#c8e6c9">-57.0</td>
+<td align="right" bgcolor="#fff9c4">14.3</td>
+<td align="right">—</td>
+<td align="right" bgcolor="#fff9c4">0.100</td>
+</tr>
+<tr>
+<td><b>elevenlabs</b></td>
+<td align="right" bgcolor="#c8e6c9">7.76</td>
+<td align="right" bgcolor="#ffcdd2">5.96</td>
+<td align="right" bgcolor="#c8e6c9">4.12</td>
+<td align="right" bgcolor="#c8e6c9">3.47</td>
+<td align="right" bgcolor="#c8e6c9">3.69</td>
+<td align="right" bgcolor="#c8e6c9">4.18</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-52.0</td>
+<td align="right" bgcolor="#fff9c4">14.1</td>
+<td align="right" bgcolor="#c8e6c9">439</td>
+<td align="right" bgcolor="#ffcdd2">0.220</td>
+</tr>
+<tr>
+<td><b>openai</b></td>
+<td align="right" bgcolor="#fff9c4">7.74</td>
+<td align="right" bgcolor="#fff9c4">6.11</td>
+<td align="right" bgcolor="#c8e6c9">4.01</td>
+<td align="right" bgcolor="#c8e6c9">3.49</td>
+<td align="right" bgcolor="#c8e6c9">3.70</td>
+<td align="right" bgcolor="#c8e6c9">4.19</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-52.5</td>
+<td align="right" bgcolor="#c8e6c9">13.7</td>
+<td align="right" bgcolor="#ffcdd2">736</td>
+<td align="right" bgcolor="#c8e6c9">0.075</td>
+</tr>
+<tr>
+<td><b>fish</b></td>
+<td align="right" bgcolor="#fff9c4">7.70</td>
+<td align="right" bgcolor="#c8e6c9">6.24</td>
+<td align="right" bgcolor="#fff9c4">3.86</td>
+<td align="right" bgcolor="#ffcdd2">3.15</td>
+<td align="right" bgcolor="#ffcdd2">3.41</td>
+<td align="right" bgcolor="#ffcdd2">4.05</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#ffcdd2">-39.7</td>
+<td align="right" bgcolor="#c8e6c9">13.8</td>
+<td align="right">—</td>
+<td align="right" bgcolor="#fff9c4">0.075</td>
+</tr>
+<tr>
+<td><b>google</b></td>
+<td align="right" bgcolor="#fff9c4">7.62</td>
+<td align="right" bgcolor="#fff9c4">6.18</td>
+<td align="right" bgcolor="#ffcdd2">3.82</td>
+<td align="right" bgcolor="#fff9c4">3.27</td>
+<td align="right" bgcolor="#fff9c4">3.57</td>
+<td align="right" bgcolor="#ffcdd2">4.02</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#ffcdd2">-33.7</td>
+<td align="right" bgcolor="#fff9c4">15.1</td>
+<td align="right">—</td>
+<td align="right" bgcolor="#fff9c4">0.150</td>
+</tr>
+<tr>
+<td><b>deepgram</b></td>
+<td align="right" bgcolor="#fff9c4">7.62</td>
+<td align="right" bgcolor="#fff9c4">6.21</td>
+<td align="right" bgcolor="#ffcdd2">3.77</td>
+<td align="right" bgcolor="#fff9c4">3.31</td>
+<td align="right" bgcolor="#fff9c4">3.58</td>
+<td align="right" bgcolor="#fff9c4">4.07</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-46.2</td>
+<td align="right" bgcolor="#ffcdd2">16.6</td>
+<td align="right" bgcolor="#ffcdd2">583</td>
+<td align="right" bgcolor="#fff9c4">0.150</td>
+</tr>
+<tr>
+<td><b>cartesia</b></td>
+<td align="right" bgcolor="#ffcdd2">7.44</td>
+<td align="right" bgcolor="#ffcdd2">5.96</td>
+<td align="right" bgcolor="#fff9c4">3.89</td>
+<td align="right" bgcolor="#ffcdd2">3.25</td>
+<td align="right" bgcolor="#ffcdd2">3.48</td>
+<td align="right" bgcolor="#fff9c4">4.13</td>
+<td align="right" bgcolor="#ffcdd2">406</td>
+<td align="right" bgcolor="#c8e6c9">-57.1</td>
+<td align="right" bgcolor="#fff9c4">16.4</td>
+<td align="right" bgcolor="#c8e6c9">467</td>
+<td align="right" bgcolor="#ffcdd2">0.160</td>
+</tr>
+<tr>
+<td><b>orpheus</b></td>
+<td align="right" bgcolor="#ffcdd2">7.41</td>
+<td align="right" bgcolor="#fff9c4">6.01</td>
+<td align="right" bgcolor="#fff9c4">3.87</td>
+<td align="right" bgcolor="#fff9c4">3.33</td>
+<td align="right" bgcolor="#fff9c4">3.62</td>
+<td align="right" bgcolor="#fff9c4">4.10</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-53.2</td>
+<td align="right" bgcolor="#ffcdd2">26.9</td>
+<td align="right">—</td>
+<td align="right" bgcolor="#c8e6c9">0.030</td>
+</tr>
+</tbody>
+</table>
 
 ### Narration
 
-| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | $/1K words |
-|---|---|---|---|---|---|---|---|---|---|---|
-| speechify | 🟢 8.15 | 🟢 6.66 | 🟡 4.05 | 🟡 3.42 | 🟡 3.63 | 🟡 4.17 | 🟡 5 | 🟡 -55.2 | 🟡 13.0 | 🟡 0.100 |
-| orpheus | 🟢 8.00 | 🔴 6.26 | 🟡 4.06 | 🟢 3.45 | 🟡 3.64 | 🟢 4.21 | 🟢 0 | 🟢 -78.7 | 🔴 27.2 | 🟢 0.030 |
-| cartesia | 🟡 7.99 | 🟡 6.32 | 🟢 4.13 | 🔴 3.20 | 🔴 3.45 | 🔴 4.05 | 🔴 429 | 🟢 -55.3 | 🟢 12.4 | 🔴 0.160 |
-| google | 🟡 7.97 | 🟡 6.44 | 🔴 4.02 | 🟡 3.35 | 🔴 3.60 | 🟡 4.11 | 🟡 39 | 🔴 -36.8 | 🟡 13.0 | 🟡 0.150 |
-| elevenlabs | 🟡 7.93 | 🟢 6.47 | 🟡 4.05 | 🔴 3.34 | 🟡 3.61 | 🔴 4.07 | 🟢 0 | 🔴 -41.5 | 🟢 12.8 | 🔴 0.220 |
-| deepgram | 🟡 7.86 | 🟡 6.40 | 🟡 4.07 | 🟡 3.44 | 🟢 3.68 | 🟡 4.15 | 🟢 0 | 🟡 -46.8 | 🟡 13.5 | 🟡 0.150 |
-| fish | 🔴 7.63 | 🟡 6.31 | 🟢 4.12 | 🟡 3.40 | 🟡 3.67 | 🟡 4.10 | 🟢 0 | 🟡 -46.6 | 🔴 14.0 | 🟢 0.075 |
-| openai | 🔴 7.62 | 🔴 6.18 | 🔴 3.98 | 🟢 3.46 | 🟢 3.68 | 🟢 4.18 | 🟢 0 | 🟡 -54.5 | 🟡 13.3 | 🟡 0.075 |
+<table>
+<thead>
+<tr>
+<th>Vendor</th>
+<th>AB.PQ</th>
+<th>AB.CE</th>
+<th>DN.p808</th>
+<th>DN.ovrl</th>
+<th>DN.sig</th>
+<th>DN.bak</th>
+<th>clip samples</th>
+<th>noise floor (dBFS)</th>
+<th>WER %</th>
+<th>$/1K words</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><b>speechify</b></td>
+<td align="right" bgcolor="#c8e6c9">8.15</td>
+<td align="right" bgcolor="#c8e6c9">6.66</td>
+<td align="right" bgcolor="#fff9c4">4.05</td>
+<td align="right" bgcolor="#fff9c4">3.42</td>
+<td align="right" bgcolor="#fff9c4">3.63</td>
+<td align="right" bgcolor="#fff9c4">4.17</td>
+<td align="right" bgcolor="#fff9c4">5</td>
+<td align="right" bgcolor="#fff9c4">-55.2</td>
+<td align="right" bgcolor="#fff9c4">13.0</td>
+<td align="right" bgcolor="#fff9c4">0.100</td>
+</tr>
+<tr>
+<td><b>orpheus</b></td>
+<td align="right" bgcolor="#c8e6c9">8.00</td>
+<td align="right" bgcolor="#ffcdd2">6.26</td>
+<td align="right" bgcolor="#fff9c4">4.06</td>
+<td align="right" bgcolor="#c8e6c9">3.45</td>
+<td align="right" bgcolor="#fff9c4">3.64</td>
+<td align="right" bgcolor="#c8e6c9">4.21</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#c8e6c9">-78.7</td>
+<td align="right" bgcolor="#ffcdd2">27.2</td>
+<td align="right" bgcolor="#c8e6c9">0.030</td>
+</tr>
+<tr>
+<td><b>cartesia</b></td>
+<td align="right" bgcolor="#fff9c4">7.99</td>
+<td align="right" bgcolor="#fff9c4">6.32</td>
+<td align="right" bgcolor="#c8e6c9">4.13</td>
+<td align="right" bgcolor="#ffcdd2">3.20</td>
+<td align="right" bgcolor="#ffcdd2">3.45</td>
+<td align="right" bgcolor="#ffcdd2">4.05</td>
+<td align="right" bgcolor="#ffcdd2">429</td>
+<td align="right" bgcolor="#c8e6c9">-55.3</td>
+<td align="right" bgcolor="#c8e6c9">12.4</td>
+<td align="right" bgcolor="#ffcdd2">0.160</td>
+</tr>
+<tr>
+<td><b>google</b></td>
+<td align="right" bgcolor="#fff9c4">7.97</td>
+<td align="right" bgcolor="#fff9c4">6.44</td>
+<td align="right" bgcolor="#ffcdd2">4.02</td>
+<td align="right" bgcolor="#fff9c4">3.35</td>
+<td align="right" bgcolor="#ffcdd2">3.60</td>
+<td align="right" bgcolor="#fff9c4">4.11</td>
+<td align="right" bgcolor="#fff9c4">39</td>
+<td align="right" bgcolor="#ffcdd2">-36.8</td>
+<td align="right" bgcolor="#fff9c4">13.0</td>
+<td align="right" bgcolor="#fff9c4">0.150</td>
+</tr>
+<tr>
+<td><b>elevenlabs</b></td>
+<td align="right" bgcolor="#fff9c4">7.93</td>
+<td align="right" bgcolor="#c8e6c9">6.47</td>
+<td align="right" bgcolor="#fff9c4">4.05</td>
+<td align="right" bgcolor="#ffcdd2">3.34</td>
+<td align="right" bgcolor="#fff9c4">3.61</td>
+<td align="right" bgcolor="#ffcdd2">4.07</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#ffcdd2">-41.5</td>
+<td align="right" bgcolor="#c8e6c9">12.8</td>
+<td align="right" bgcolor="#ffcdd2">0.220</td>
+</tr>
+<tr>
+<td><b>deepgram</b></td>
+<td align="right" bgcolor="#fff9c4">7.86</td>
+<td align="right" bgcolor="#fff9c4">6.40</td>
+<td align="right" bgcolor="#fff9c4">4.07</td>
+<td align="right" bgcolor="#fff9c4">3.44</td>
+<td align="right" bgcolor="#c8e6c9">3.68</td>
+<td align="right" bgcolor="#fff9c4">4.15</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-46.8</td>
+<td align="right" bgcolor="#fff9c4">13.5</td>
+<td align="right" bgcolor="#fff9c4">0.150</td>
+</tr>
+<tr>
+<td><b>fish</b></td>
+<td align="right" bgcolor="#ffcdd2">7.63</td>
+<td align="right" bgcolor="#fff9c4">6.31</td>
+<td align="right" bgcolor="#c8e6c9">4.12</td>
+<td align="right" bgcolor="#fff9c4">3.40</td>
+<td align="right" bgcolor="#fff9c4">3.67</td>
+<td align="right" bgcolor="#fff9c4">4.10</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-46.6</td>
+<td align="right" bgcolor="#ffcdd2">14.0</td>
+<td align="right" bgcolor="#c8e6c9">0.075</td>
+</tr>
+<tr>
+<td><b>openai</b></td>
+<td align="right" bgcolor="#ffcdd2">7.62</td>
+<td align="right" bgcolor="#ffcdd2">6.18</td>
+<td align="right" bgcolor="#ffcdd2">3.98</td>
+<td align="right" bgcolor="#c8e6c9">3.46</td>
+<td align="right" bgcolor="#c8e6c9">3.68</td>
+<td align="right" bgcolor="#c8e6c9">4.18</td>
+<td align="right" bgcolor="#c8e6c9">0</td>
+<td align="right" bgcolor="#fff9c4">-54.5</td>
+<td align="right" bgcolor="#fff9c4">13.3</td>
+<td align="right" bgcolor="#fff9c4">0.075</td>
+</tr>
+</tbody>
+</table>
 
 Rows sorted by AB.PQ (Audiobox production_quality) descending. See
 [Glossary](#glossary) for column definitions and

@@ -22,47 +22,54 @@ from pathlib import Path
 CAMPAIGN = "campaign-20260809T204608Z"
 LATENCY = "latency-20260809T214106Z"
 
-GREEN = "🟢"
-YELLOW = "🟡"
-RED = "🔴"
+# Light background colors so cell text stays readable in both GitHub's
+# light and dark themes. GitHub's markdown renderer supports the
+# `bgcolor` attribute on <td>; it strips `style="..."` inline CSS.
+GREEN = "#c8e6c9"   # light green
+YELLOW = "#fff9c4"  # light yellow
+RED = "#ffcdd2"     # light red
+NONE = None         # no background (for cells that are n/a)
 
 def _load(path: str) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def rank_cells(values: list[float], higher_is_better: bool = True) -> list[str]:
-    """Return color emojis for a column of 8 values.
-    Top 2 = green, bottom 2 = red, middle 4 = yellow.
+    """Return bgcolor hex strings for a column of 8 values.
+    Top 2 = light green, bottom 2 = light red, middle 4 = light yellow.
     Ties by original insertion order (stable sort).
     """
     n = len(values)
-    # Sort indices by value
     if higher_is_better:
         sorted_idx = sorted(range(n), key=lambda i: (-values[i], i))
     else:
         sorted_idx = sorted(range(n), key=lambda i: (values[i], i))
     colors = [YELLOW] * n
-    # Top 2
     for i in sorted_idx[:2]:
         colors[i] = GREEN
-    # Bottom 2
     for i in sorted_idx[-2:]:
         colors[i] = RED
     return colors
 
 
 def rank_cells_special_clip(values: list[int]) -> list[str]:
-    """Clip samples: all zeros = green; anything nonzero ranked worst-first."""
+    """Clip samples: 0 = green; >=100 = red; 1-99 = yellow."""
     colors = []
-    nonzero_max = max(values) if any(v > 0 for v in values) else 0
     for v in values:
         if v == 0:
             colors.append(GREEN)
         elif v >= 100:
             colors.append(RED)
-        elif v > 0:
+        else:
             colors.append(YELLOW)
     return colors
+
+
+def td(text: str, bg: str | None) -> str:
+    """Render one <td> with optional bgcolor. Right-aligned for numeric."""
+    if bg:
+        return f'<td align="right" bgcolor="{bg}">{text}</td>'
+    return f'<td align="right">{text}</td>'
 
 
 def build_table(uc: str) -> str:
@@ -129,45 +136,49 @@ def build_table(uc: str) -> str:
     # TTFA only for conversational; skip in narration
     if lat:
         ttfa_vals = col("ttfa")
-        # Some vendors don't report TTFA (Speechify, Fish, Google, Orpheus per D-008 and adapter-shape).
-        # For those, mark with "—" (no color); for measured, rank the measured subset.
         measured_ix = [i for i, v in enumerate(ttfa_vals) if v is not None]
-        colors["ttfa"] = ["—"] * len(rows)
+        colors["ttfa"] = [None] * len(rows)
         if measured_ix:
             measured_vals = [ttfa_vals[i] for i in measured_ix]
             sub_colors = rank_cells(measured_vals, higher_is_better=False)
             for i, c in zip(measured_ix, sub_colors):
                 colors["ttfa"][i] = c
 
-    # Build markdown
+    # Build HTML table (GitHub markdown supports raw HTML + <td bgcolor>)
     if uc == "conversational":
-        header = "| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | TTFA p50 (ms) | $/1K words |"
-        sep = "|---|---|---|---|---|---|---|---|---|---|---|---|"
+        headers = ["Vendor", "AB.PQ", "AB.CE", "DN.p808", "DN.ovrl", "DN.sig", "DN.bak",
+                    "clip samples", "noise floor (dBFS)", "WER %", "TTFA p50 (ms)", "$/1K words"]
     else:
-        header = "| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak | clip samples | noise floor (dBFS) | WER % | $/1K words |"
-        sep = "|---|---|---|---|---|---|---|---|---|---|---|"
+        headers = ["Vendor", "AB.PQ", "AB.CE", "DN.p808", "DN.ovrl", "DN.sig", "DN.bak",
+                    "clip samples", "noise floor (dBFS)", "WER %", "$/1K words"]
 
-    lines = [header, sep]
+    lines = ["<table>", "<thead>", "<tr>"]
+    for h in headers:
+        lines.append(f'<th>{h}</th>')
+    lines.extend(["</tr>", "</thead>", "<tbody>"])
+
     for i, r in enumerate(rows):
-        cells = [
-            r["provider"],
-            f"{colors['ab_pq'][i]} {r['ab_pq']:.2f}",
-            f"{colors['ab_ce'][i]} {r['ab_ce']:.2f}",
-            f"{colors['dn_p808'][i]} {r['dn_p808']:.2f}",
-            f"{colors['dn_ovrl'][i]} {r['dn_ovrl']:.2f}",
-            f"{colors['dn_sig'][i]} {r['dn_sig']:.2f}",
-            f"{colors['dn_bak'][i]} {r['dn_bak']:.2f}",
-            f"{colors['clip'][i]} {r['clip']}",
-            f"{colors['nf'][i]} {r['nf']:.1f}",
-            f"{colors['wer'][i]} {r['wer']:.1f}",
-        ]
+        lines.append("<tr>")
+        lines.append(f'<td><b>{r["provider"]}</b></td>')
+        lines.append(td(f'{r["ab_pq"]:.2f}',   colors["ab_pq"][i]))
+        lines.append(td(f'{r["ab_ce"]:.2f}',   colors["ab_ce"][i]))
+        lines.append(td(f'{r["dn_p808"]:.2f}', colors["dn_p808"][i]))
+        lines.append(td(f'{r["dn_ovrl"]:.2f}', colors["dn_ovrl"][i]))
+        lines.append(td(f'{r["dn_sig"]:.2f}',  colors["dn_sig"][i]))
+        lines.append(td(f'{r["dn_bak"]:.2f}',  colors["dn_bak"][i]))
+        lines.append(td(f'{r["clip"]}',        colors["clip"][i]))
+        lines.append(td(f'{r["nf"]:.1f}',      colors["nf"][i]))
+        lines.append(td(f'{r["wer"]:.1f}',     colors["wer"][i]))
         if uc == "conversational":
             ttfa = r["ttfa"]
-            ttfa_str = f"{colors['ttfa'][i]} {ttfa:.0f}" if ttfa is not None else "—"
-            cells.append(ttfa_str)
-        cells.append(f"{colors['cost'][i]} {r['cost']:.3f}")
-        lines.append("| " + " | ".join(cells) + " |")
+            if ttfa is None:
+                lines.append('<td align="right">—</td>')
+            else:
+                lines.append(td(f'{ttfa:.0f}', colors["ttfa"][i]))
+        lines.append(td(f'{r["cost"]:.3f}', colors["cost"][i]))
+        lines.append("</tr>")
 
+    lines.extend(["</tbody>", "</table>"])
     return "\n".join(lines)
 
 
