@@ -27,59 +27,48 @@ artefact in this repo:
 
 | # | Finding | Evidence |
 |---|---|---|
-| 1 | **The two independent quality raters rank vendors differently.** Consumer-facing warmth vs enterprise cleanliness are literally *different constructs*, not different weightings of the same one. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in RESEARCH_LOG](documentation/RESEARCH_LOG.md#F-8) |
+| 1 | **The two independent quality raters rank vendors differently.** Consumer-facing warmth vs enterprise cleanliness are literally *different constructs*, not different weightings of the same one. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
 | 2 | **Orpheus has a hard 14.59-second output cap per call** (std dev 0.000s across 8 items). Long-form narration is 5-6× the nominal per-call cost, and the 85% word-error-rate on long items is mechanical incompletion, not intelligibility. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
 | 3 | **Latency *speed* and latency *stability* are separate axes.** OpenAI's p90 TTFA shifted 56% between two sessions on the same days as ElevenLabs Flash's shifted 2%. | [Figure 3](documentation/figures/f3_latency_stability.png) · [T5](analysis/verification/T5_openai_latency.md) & [T7](analysis/verification/T7_elevenlabs_ttfa.md) |
 | ★ | **~40% of the load-bearing findings came from the verification pack**, not the primary campaign. Cheap replication ($0.61 total spend, 90 min work) is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) |
 
 ---
 
-## Where to read (path by reader type)
+## Where to read
 
-### If you're a PM deciding on a vendor
+The 7 numbered documents in [`documentation/`](documentation/)
+are the full narrative. Read them in order for the end-to-end
+story, or pick the one that matches what you're here for:
 
-Start here — you'll be done in 15 minutes:
+1. **[01_ARCHITECTURE.md](documentation/01_ARCHITECTURE.md)** — how
+   the harness is built (adapters, run store, analyzer chain,
+   config discipline)
+2. **[02_METHODOLOGY.md](documentation/02_METHODOLOGY.md)** — why
+   the methodology choices were made (2 MOS pipelines, 2-judge
+   WER, pre-registration, verification pattern, honest limits)
+3. **[03_RUNBOOK.md](documentation/03_RUNBOOK.md)** — install +
+   run + reproduce the published measurements
+4. **[04_RESULTS.md](documentation/04_RESULTS.md)** — full per-vendor
+   data table + rankings + cost calculus + decision framework
+5. **[05_CASE_STUDY.md](documentation/05_CASE_STUDY.md)** — long-form
+   portfolio narrative on how the findings were extracted
+6. **[06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md)** — the
+   9 findings (F-1..F-9) + friction-point stories + 8-decision log
+   (D-A..D-H)
+7. **[07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md)** —
+   what wasn't done and why; deferred items; a proper v2 outline
 
-1. **[PM_SUMMARY.md](documentation/PM_SUMMARY.md)** — 9 things to know
-   about voice AI vendors, in plain language, with a concrete
-   use-case example and impact statement for every technical
-   measure. Includes the three-question decision framework.
-2. **[Figure 1](documentation/figures/f1_rank_inversion.png)** and
-   **[Figure 2](documentation/figures/f2_cost_vs_quality.png)** — the
-   two charts that answer "which vendor?" once you know your use case.
-3. **Come back for the [CASE STUDY](documentation/CASE_STUDY.md)** if
-   you want the story of *how* these findings were extracted — it's
-   as much about the method-craft as the findings themselves.
+**Quick paths by reader type**:
 
-### If you're a fork-and-adapt engineer
-
-You want the code and the audit trail:
-
-1. **[Reproducing the work](#reproducing-the-work)** below — dev
-   setup, doctor, generate, analyze commands
-2. **[configs/](configs/)** — providers, voices, gates, pricing,
-   analyzer parameters (all pre-registered before results)
-3. **[DEVIATIONS.md](DEVIATIONS.md)** — 11 logged amendments with
-   rationale
-4. **[src/veval/](src/veval/)** — the Python package (analyzers,
-   adapters, runner, CLI)
-5. **`git tag prereg-v1.10`** — the exact configs at the moment
-   the campaign ran
-
-### If you're an evaluation-methodology researcher
-
-You want the reasoning behind every decision:
-
-1. **[RESEARCH_LOG.md](documentation/RESEARCH_LOG.md)** — decisions
-   D-A through D-H and findings F-1 through F-9, each with a
-   paper-section mapping
-2. **[voice_ai_eval_spec_v2.md](documentation/voice_ai_eval_spec_v2.md)** —
-   the WHAT + HOW specification (post-external-review v2)
-3. **[analysis/verification/](analysis/verification/)** — per-test
-   hypothesis + method + criterion + verdict for the 9-test
-   outlier verification pack
-4. **[voice_ai_eval_execution_runbook_v2.md](documentation/voice_ai_eval_execution_runbook_v2.md)** —
-   the runbook that guided phase-by-phase execution
+- **PM choosing a vendor** → read **04_RESULTS.md** first (headline
+  table + decision framework), then **05_CASE_STUDY.md** for the
+  story. 15-20 min total.
+- **Fork-and-adapt engineer** → read **03_RUNBOOK.md** for install
+  + reproduce, then **01_ARCHITECTURE.md** for the code layout.
+- **Evaluation-methodology researcher** → read **02_METHODOLOGY.md**
+  for the *why*, then **06_KEY_FINDINGS.md** for the specific
+  decisions + findings, then **07_GAPS_AND_FUTURE_WORK.md** for
+  the honest limits.
 
 ---
 

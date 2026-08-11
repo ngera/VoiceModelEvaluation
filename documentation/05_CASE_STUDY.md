@@ -462,20 +462,24 @@ That's the case study.
 
 ## Where to find things
 
-- **[PM_SUMMARY.md](PM_SUMMARY.md)** — decision-framework version of
-  the findings, aimed at a PM choosing a vendor (plain language +
-  use-case examples). PM_SUMMARY_technical.md for the version with
-  measure names.
-- **[RESEARCH_LOG.md](RESEARCH_LOG.md)** — running log of every
-  decision (D-A through D-H) and every finding (F-1 through F-9)
-  with reasoning.
-- **[DEVIATIONS.md](../DEVIATIONS.md)** — the 11 pre-registered
-  amendments made before results existed, each with rationale.
-- **[analysis/verification/](../analysis/verification/)** —
+- **[04_RESULTS.md](04_RESULTS.md)** — full per-provider data table +
+  cost calculus + decision framework
+- **[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)** — findings F-1..F-9 +
+  friction-point stories + decision log D-A..D-H
+- **[02_METHODOLOGY.md](02_METHODOLOGY.md)** — why every methodology
+  choice was made (weighted-composite killed, two-pipeline design,
+  loudness normalization, judge independence, BT deferral)
+- **[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md)** — what
+  wasn't done and why; deferred items; a proper v2 outline
+- **[03_RUNBOOK.md](03_RUNBOOK.md)** — install + reproduce the
+  evaluation on your own hardware
+- **[01_ARCHITECTURE.md](01_ARCHITECTURE.md)** — the harness's
+  technical design
+- **[../DEVIATIONS.md](../DEVIATIONS.md)** — 11 pre-registered
+  amendments made before results existed, each with rationale
+- **[../analysis/verification/](../analysis/verification/)** —
   per-test hypothesis + method + result + verdict for the 9-test
-  Phase 2c outlier verification pack.
-- **[voice_ai_eval_execution_runbook_v2.md](voice_ai_eval_execution_runbook_v2.md)**
-  — the runbook that guided execution.
+  Phase 2c outlier verification pack
 - **Source of everything**: prereg tag
   [`prereg-v1.10`](https://github.com/ngera/VoiceModelEvaluation/tree/prereg-v1.10)
   contains the configs at the moment the campaign ran.
