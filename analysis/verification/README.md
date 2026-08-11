@@ -20,7 +20,7 @@ sections. Fill result + verdict after execution.
 | [N2](N2_fish_conv_dnsmos.md) | Fish | Spot listen 3 + noise floor | $0 | 10 min | ✅ (headphones + query) |
 
 **Retired**: T3 (Orpheus PQ artefact) — answered by 2b F-8. See
-[RESEARCH_LOG.md](../../documentation/RESEARCH_LOG.md) F-9.
+[06_KEY_FINDINGS.md](../../documentation/06_KEY_FINDINGS.md) F-9.
 
 ## Suggested order
 

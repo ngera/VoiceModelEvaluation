@@ -2,9 +2,9 @@
 
 This document sets the ground rules for reading anything in this
 repository. Every claim in
-[PM_SUMMARY.md](documentation/PM_SUMMARY.md),
-[CASE_STUDY.md](documentation/CASE_STUDY.md),
-[RESEARCH_LOG.md](documentation/RESEARCH_LOG.md), and the
+[04_RESULTS.md](documentation/04_RESULTS.md),
+[05_CASE_STUDY.md](documentation/05_CASE_STUDY.md),
+[06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md), and the
 per-test writeups under [analysis/verification/](analysis/verification/)
 should be read subject to the scope below.
 
@@ -68,7 +68,8 @@ combination of:
   each vendor's serving region are expected to see 10-30% lower
   absolute TTFA. **Vendor rankings** on latency are portable;
   **absolute values** are explicit ceilings. See
-  [D-G](documentation/RESEARCH_LOG.md#D-G) for the full rationale.
+  D-G in [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)
+  for the full rationale.
 
 **Any finding here that names a vendor is a finding about *our
 specific tested configuration of that vendor*, not a universal

@@ -83,7 +83,7 @@ this is not a batch artifact:
 - `analysis/campaign-20260809T204608Z/quality.json` —
   `dnsmos_by_provider` (n_valid=43+38 for cartesia, 75 for all others)
   and file-level `dnsmos_error` fields
-- `documentation/RESEARCH_LOG.md` F-4a and F-9 (T1 row)
+- `documentation/06_KEY_FINDINGS.md` F-4a and F-9 (T1 row)
 - `configs/analyzers.yaml` `dnsmos_error_policy` (documented amendment)
 
 ## Notes for memo / paper

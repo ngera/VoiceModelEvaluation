@@ -6,14 +6,14 @@
    made, a convention is established, a naming rule is chosen, or a pattern
    emerges — propose an addition to this file and wait for explicit
    confirmation before writing. Never edit CLAUDE.md silently.
-2. **Reference the three source-of-truth docs before proposing changes:**
-   `documentation/voice_ai_eval_spec_v2.md` (WHAT + HOW — the single spec),
-   `documentation/IMPLEMENTATION_PLAN.md` (BUILD — phase-by-phase execution),
-   `documentation/eval_harness_architecture.mermaid` (STRUCTURE).
-   The v1 documents (`voice_ai_eval_portfolio_edition.md`,
-   `voice_ai_eval_plan_v1_descoped.md`) are superseded and live under
-   `documentation/archive/` as provenance only — do not treat them as
-   authoritative.
+2. **Reference the current source-of-truth docs before proposing changes:**
+   `documentation/01_ARCHITECTURE.md` (technical spec + mermaid diagram),
+   `documentation/02_METHODOLOGY.md` (why the choices were made),
+   `documentation/06_KEY_FINDINGS.md` (findings F-1..F-9 + decisions D-A..D-H),
+   `documentation/07_GAPS_AND_FUTURE_WORK.md` (threats + v2 plan).
+   All prior planning + spec docs are archived under
+   `documentation/archive/` as provenance only — do not treat them
+   as authoritative. (Archive move: 2026-08-11.)
 3. **When a decision here conflicts with a source doc, flag it** rather
    than silently favoring one.
 4. **Maintain a "Key points to highlight" section as a portfolio narrative
@@ -187,22 +187,38 @@ artifact in the repo. Add liberally as the project progresses.
 
 ## Reference documents in this repo
 
-**Active:**
-- `documentation/voice_ai_eval_spec_v2.md` — WHAT + HOW (the spec)
-- `documentation/IMPLEMENTATION_PLAN.md` — BUILD (phase-by-phase)
-- `documentation/eval_harness_architecture.mermaid` — STRUCTURE (v2)
-- `documentation/EXTERNAL_REVIEW_2026-08-06.md` — R1–R10 review register
-- `documentation/DECISION_CHANGELOG.md` — v1→v2 change trail with reasoning
-- `documentation/IMPLEMENTATION_GAP.md` — current implementation vs plan v2
-- `documentation/voice_ai_eval_execution_runbook.md` — post-build campaign runbook
-- `documentation/voice_ai_eval_tester_guide.md` — for external reproducers (future)
+**Active (public-facing, restructured 2026-08-11):**
+- `README.md` (root) — entry point
+- `DISCLAIMER.md` (root) — scope safeguards
+- `DEVIATIONS.md` (root) — pre-registered amendments audit trail
+- `documentation/01_ARCHITECTURE.md` — technical spec + system design (mermaid embedded)
+- `documentation/02_METHODOLOGY.md` — why every methodology choice
+- `documentation/03_RUNBOOK.md` — install + reproduce
+- `documentation/04_RESULTS.md` — full per-vendor data + cost calculus + 3-Q framework
+- `documentation/05_CASE_STUDY.md` — long-form portfolio narrative
+- `documentation/06_KEY_FINDINGS.md` — F-1..F-9 + friction stories + D-A..D-H log
+- `documentation/07_GAPS_AND_FUTURE_WORK.md` — threats to validity + v2 plan
+- `documentation/figures/` — 3 published PNGs (rank inversion, cost/quality, latency stability)
+- `analysis/verification/` — Phase 2c per-test hypothesis + criterion + verdict
 
-**Archived (provenance only — not authoritative):**
-- `documentation/archive/voice_ai_eval_portfolio_edition.md` (v1 WHAT)
-- `documentation/archive/voice_ai_eval_plan_v1_descoped.md` (v1 HOW)
-- `documentation/archive/IMPLEMENTATION_PLAN_v1.md` (v1 BUILD)
-- `documentation/archive/voice_ai_test_suite_spec.md` (parent spec)
-- `documentation/archive/*.docx` — corpus source
+**Archived (provenance only — not authoritative, moved 2026-08-11):**
+- `documentation/archive/voice_ai_eval_spec_v2*.md` — the previous WHAT + HOW spec
+- `documentation/archive/RESEARCH_LOG.md` — running decision + finding log (split into 06 + 07)
+- `documentation/archive/RESEARCH_REPORT.md` — paper template (unused)
+- `documentation/archive/PM_SUMMARY.md` + `PM_SUMMARY_technical.md` — folded into 04
+- `documentation/archive/CASE_STUDY.md` — renamed to 05_CASE_STUDY.md
+- `documentation/archive/IMPLEMENTATION_PLAN*.md` — internal build sequence
+- `documentation/archive/DEFECT_REGISTER.md` — 79-defect internal review
+- `documentation/archive/DECISION_CHANGELOG.md` — v1→v2 change trail
+- `documentation/archive/EXTERNAL_REVIEW_2026-08-06.md` — R1-R10 external review
+- `documentation/archive/IMPLEMENTATION_GAP.md` — code-vs-plan analysis
+- `documentation/archive/README_DRAFT.md` — pre-restructure README draft
+- `documentation/archive/REPRODUCIBILITY_PLAN.md` — folded into 03
+- `documentation/archive/RUNBOOK.md` — folded into 03
+- `documentation/archive/voice_ai_eval_execution_runbook*.md` — folded into 03
+- `documentation/archive/voice_ai_eval_tester_guide.md` — folded into 03
+- `documentation/archive/eval_harness_architecture.mermaid` — embedded in 01
+- `documentation/archive/voice_ai_test_suite_spec*.md` + `*.docx` — parent spec + corpus source
 
 ## Change log
 

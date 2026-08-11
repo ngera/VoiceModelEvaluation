@@ -121,7 +121,7 @@ to name both.
   phenomenon is real but the original magnitude was over-stated by
   ~35%. This is exactly what verification is for — softening a
   headline finding to what the data actually support without
-  refuting it." Candidate for the RESEARCH_LOG narrative bank.
+  refuting it." Candidate for the 06_KEY_FINDINGS narrative bank.
 
 ## Evidence artefacts
 

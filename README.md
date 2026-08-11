@@ -92,7 +92,7 @@ measurement dimensions:
   (signal cleanliness axes). Six machine-quality signals total per
   (vendor, use case)
 - **D4 · Human perceptual rating** — deferred to a v2 multi-rater
-  panel with written rationale in [D-H](documentation/RESEARCH_LOG.md#D-H).
+  panel with written rationale in [06_KEY_FINDINGS.md § D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
   n=1 self-rating cannot license "human preference" claims at
   population level; refusing that ceremony is a stronger position
   than executing and disclaiming it
@@ -140,12 +140,14 @@ uv run veval analyze <run-id> --stages all
 
 **Full run** (75 items × 8 vendors × 2 use cases) is ~$50 and takes
 ~30 min end-to-end. See
-[voice_ai_eval_execution_runbook_v2.md](documentation/voice_ai_eval_execution_runbook_v2.md)
-for the phased execution guide.
+[03_RUNBOOK.md](documentation/03_RUNBOOK.md) for the phased
+execution guide, install steps, and troubleshooting.
 
-**CPU-only by design** ([D-F](documentation/RESEARCH_LOG.md#D-F)): the
-whole thing runs on commodity hardware. GPU accelerates wall-clock
-but doesn't change any measurement. See [configs/hardware.yaml](configs/hardware.yaml).
+**CPU-only by design** (see D-F in
+[06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)):
+the whole thing runs on commodity hardware. GPU accelerates
+wall-clock but doesn't change any measurement. See
+[configs/hardware.yaml](configs/hardware.yaml).
 
 ---
 
@@ -187,15 +189,15 @@ src/veval/
 └── rate/                        ← BT judgment ingest (deferred)
 
 documentation/
-├── PM_SUMMARY.md                ← plain-language findings for a PM
-├── PM_SUMMARY_technical.md      ← same content, technical measure names
-├── CASE_STUDY.md                ← long-form portfolio narrative
-├── RESEARCH_LOG.md              ← decisions D-A..H, findings F-1..9
-├── voice_ai_eval_spec_v2.md     ← the WHAT + HOW spec
-├── voice_ai_eval_execution_runbook_v2.md  ← phase-by-phase runbook
+├── 01_ARCHITECTURE.md           ← technical spec + system design (mermaid embedded)
+├── 02_METHODOLOGY.md            ← why every methodology choice was made
+├── 03_RUNBOOK.md                ← install + reproduce + troubleshooting
+├── 04_RESULTS.md                ← full per-vendor data table + cost calculus + decision framework
+├── 05_CASE_STUDY.md             ← long-form portfolio narrative
+├── 06_KEY_FINDINGS.md           ← F-1..F-9 + friction stories + D-A..D-H log
+├── 07_GAPS_AND_FUTURE_WORK.md   ← threats to validity + deferred items + v2 plan
 ├── figures/                     ← f1_rank_inversion, f2_cost_vs_quality, f3_latency_stability
-├── EXTERNAL_REVIEW_2026-08-06.md ← R1–R10 register from an external reviewer
-└── archive/                     ← superseded v1 docs (provenance)
+└── archive/                     ← superseded v1 docs (kept for git-blame trail)
 
 analysis/
 └── verification/                ← Phase 2c per-test verdicts (T1..T8, N1, N2)
@@ -217,11 +219,11 @@ tests/                           ← pytest regression suite (~236 tests)
   predates the results that use it.
 - **`prereg-v1.10`** is the tag pointing at the state of the configs
   during the current campaign
-- Every claim in [PM_SUMMARY.md](documentation/PM_SUMMARY.md),
-  [CASE_STUDY.md](documentation/CASE_STUDY.md), and
-  [RESEARCH_LOG.md](documentation/RESEARCH_LOG.md) is either derivable
-  from `analysis/*.json` outputs (regenerable from the immutable run
-  store) or from a manual verification artefact in
+- Every claim in [04_RESULTS.md](documentation/04_RESULTS.md),
+  [05_CASE_STUDY.md](documentation/05_CASE_STUDY.md), and
+  [06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md) is either
+  derivable from `analysis/*.json` outputs (regenerable from the
+  immutable run store) or from a manual verification artefact in
   [analysis/verification/](analysis/verification/)
 
 ---
@@ -231,14 +233,15 @@ tests/                           ← pytest regression suite (~236 tests)
 - **Human perceptual rating panel** — deferred to v2 with a proper
   15-30 rater blinded panel; n=1 self-rating BT can't license
   "human preference" claims. See
-  [D-H](documentation/RESEARCH_LOG.md#D-H).
+  [06_KEY_FINDINGS.md § D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
 - **Cross-lingual, accent-varied, or streaming** measurements —
-  English-only, one voice per vendor, buffered playback in v1.
+  English-only, one voice per vendor, buffered playback in v1. See
+  [07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md).
 - **Enterprise-colocated latency baseline** — TTFA numbers are from
   a residential Windows 11 environment; enterprise cloud-VM
   measurements would see 10-30% lower absolute numbers. Rankings
-  are portable; absolute values are labeled as upper bounds.
-  See [D-G](documentation/RESEARCH_LOG.md#D-G).
+  are portable; absolute values are labeled as upper bounds. See D-G
+  in [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions).
 
 ---
 

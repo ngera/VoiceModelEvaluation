@@ -137,10 +137,11 @@ population level. Publishing rankings with those CIs would read to
 a casual reader as "we confirmed this with rigor." That's a shape
 of over-claim we should refuse.
 
-The written rationale is `D-H` in `RESEARCH_LOG.md`. A proper v2 with
-a 15-30 rater blinded panel is future work. **Naming the epistemic
-limit and refusing to fill it dishonestly is a stronger position for
-this project than executing the ceremony and disclaiming it.**
+The written rationale is [`D-H` in 06_KEY_FINDINGS.md](06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
+A proper v2 with a 15-30 rater blinded panel is future work.
+**Naming the epistemic limit and refusing to fill it dishonestly is
+a stronger position for this project than executing the ceremony
+and disclaiming it.**
 
 ---
 
@@ -417,12 +418,14 @@ n=1 rater — but the CIs would be conditional on that one rater, and
 publishing them as "human preference" evidence would be a shape of
 over-claim this project refuses to make. Full protocol
 implementation is in `src/veval/rate/`; only the execution is
-deferred. See `D-H` in `RESEARCH_LOG.md` for the reasoning.
+deferred. See [`D-H` in 06_KEY_FINDINGS.md](06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2)
+for the reasoning.
 
 **Cross-lingual, accent-varied, streaming, or interrupted-conversation
 measurements.** All out of scope for v1. Each is a real gap and each
-is a legitimate v2 workstream. Named in `RESEARCH_LOG.md`'s "future
-work" section rather than glossed over.
+is a legitimate v2 workstream. Named in
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) rather than
+glossed over.
 
 **Enterprise-VM-colocated latency baseline.** The TTFA numbers here
 were measured from a residential Windows 11 environment; enterprise

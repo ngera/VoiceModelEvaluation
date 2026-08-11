@@ -47,8 +47,9 @@ shifting which columns appear in downstream tables.
   −0.13, narr −0.27). A single-pipeline MOS report would have
   masked this. Documenting the second pipeline in the prereg — not
   just in the code — is the whole point of pre-registration.
-- **UTMOS was the first-choice second pipeline** (RESEARCH_LOG D-B
-  revision 1). Blocked on Windows: UTMOS pulls fairseq 0.10.2 which
+- **UTMOS was the first-choice second pipeline** (D-B, revision 1
+  in [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)).
+  Blocked on Windows: UTMOS pulls fairseq 0.10.2 which
   fails to build with `PermissionError: [WinError 5] Access is
   denied: 'fairseq\\examples'` even with Windows Developer Mode
   enabled and an elevated shell. No fairseq version ships Windows
@@ -93,9 +94,9 @@ on `AnalyzersFile`); `src/veval/analyze/quality.py` (DNSMOS loader,
 error classification); `src/veval/analyze/cross_metric.py` (F-8
 computation); `tests/test_quality.py` (DNSMOS coverage);
 `tests/test_cross_metric.py` (matrix + rank tests);
-`documentation/RESEARCH_LOG.md` (D-B, F-4a, F-8, F-9);
-`documentation/voice_ai_eval_execution_runbook_v2.md` §2c
-(reshuffled roster). Re-tagged **prereg-v1.10**.
+`documentation/06_KEY_FINDINGS.md` (D-B, F-4a, F-8, F-9);
+`documentation/03_RUNBOOK.md` (reproduction commands for the
+DNSMOS analyzer). Re-tagged **prereg-v1.10**.
 
 ---
 
