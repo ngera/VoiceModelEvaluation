@@ -394,6 +394,106 @@ recommendation.
 **Amendment status**: NOT a DEVIATIONS.md entry — this is a reporting
 framework, not a measurement change.
 
+## D-H · Phase 3 (Bradley-Terry human rating) deferred to v2 (2026-08-11)
+
+**What**: the Phase 3 BT campaign (168 pairwise-comparison judgments,
+n=1 self-rating with blinded ordering + consistency re-judge + clustered
+bootstrap CIs) as scoped in the v2 runbook is **not executed** in v1.
+Deferred to v2 with explicit rationale for a proper multi-rater pass.
+
+**Considered alternatives**:
+1. Execute full spec-compliant BT (168 judgments, ~1.5 hrs listen +
+   analysis) with n=1, disclaimed as a methodology demonstration
+2. Micro-BT on the F-8 rank-inversion pairs only (5-10 pairs, ~30 min,
+   reported as one rater's anecdote)
+3. Skip entirely, document *why* — the reasoning is the artifact
+
+**Chose**: option 3.
+
+**Why**:
+
+The core issue is **what BT with n=1 rater can actually license**. BT's
+bootstrap CIs are computed by resampling items × repetitions, holding
+the rater constant. So the CI answers: "if we sampled different items,
+would *this rater* still prefer A over B?" It does **not** answer:
+"would a *different rater* prefer A over B?" Two n=1 raters could
+produce non-overlapping CIs on opposite preferences — both statistically
+valid, both worthless as human-preference evidence at population level.
+
+Publishing "Speechify > OpenAI, 95% CI [1.2, 3.4]" reads to a casual
+reader as "we confirmed this with statistical rigor." The honest
+translation is "I preferred Speechify on 4 of 5 pairs; another human
+might not." Those are very different claims. This project has been
+disciplined about not over-claiming, and BT at n=1 is a shape of
+over-claim we should refuse — even at the cost of the "we did the
+whole spec" narrative.
+
+**What we *do* have that substitutes for BT** (spec §4.3 originally
+positioned D4 as one of four independent quality signals, not the
+sole ground truth):
+
+- **6 machine quality signals from 2 independent MOS pipelines**
+  (Audiobox PQ + CE + DNSMOS 4-axis P.835), with pairwise Spearman
+  ρ per use case (F-8)
+- **Cross-pipeline disagreement measured** — the finding that
+  Audiobox and DNSMOS rank providers roughly oppositely on both use
+  cases is a *stronger* finding than any n=1 BT could produce
+  (per-provider absolute rank inversions are directly citable)
+- **9-test Phase 2c verification pack** — verdicts on every headline
+  outlier via automated methods that don't require human ears
+- **F-4a triangulation** — 3 independent measurement pipelines
+  (hygiene peak_dbfs + speechmos DNSMOS refusal + DNSMOS
+  three-scale surviving-subset rank) agree unanimously on Cartesia
+- **T8 mechanical finding** — Orpheus's 14.59s hard output cap
+  resolves T2's high WER without needing manual listen
+
+The load-bearing PM claim from this project is: **"pick the MOS
+pipeline that matches your listener use case; the two pipelines
+measure different constructs and rank vendors differently."** That
+claim doesn't need human validation — it needs *two* machine
+validations, which we have. Adding a third at n=1 would either
+(a) confirm one pipeline over the other with weak evidence, or
+(b) disagree with both and produce a "which is right?" three-way
+problem with no clean resolution.
+
+**Paper implications**:
+- **§4.3 (measurement plan)** — D4 slot documented as "deferred to
+  v2 with explicit rationale; v1 relies on 6 machine signals from 2
+  independent pipelines + verification pack for the perceptual
+  question."
+- **§9 (threats to validity)** — new item: "No human perceptual
+  validation in v1. Rankings are machine-based. F-8 shows the two
+  machine pipelines disagree, and we cannot say from this data which
+  aligns better with human perception."
+- **§10 (future work)** — "**Human perceptual validation** — a
+  proper multi-rater BT panel (n≥15-30 blinded raters) would answer
+  the question F-8 raises: when the two machine pipelines disagree,
+  which construct does human perception align with? The current
+  project's methodology docs specify the full protocol; only the
+  execution is deferred."
+
+**What the case study says about this** (drafted 2026-08-11):
+
+"The Phase 3 human perceptual pass was cut with reasoning. n=1
+rater BT can license neither 'humans prefer X' nor a direct
+comparison to leaderboards like HI that use ~100-rater panels. The
+option that produces the strongest report at portfolio scope is
+to name that limitation, describe what a proper v2 would look like,
+and let the two-pipeline machine finding stand on its own — which
+it does, because 'the two independent pipelines disagree on
+ranking' is itself a defensible, publishable finding."
+
+**Amendment status**: NOT a DEVIATIONS.md entry — Phase 3 was named
+as a plan but the spec §4.3 D4 slot was always positioned as one
+signal of four, not mandatory. Deferring an in-scope-but-optional
+phase with reasoning is a scope call, not a deviation.
+
+**Reversibility**: fully reversible. The BT machinery
+(`veval rate build/score`, judgment ingest, bootstrap CIs) is
+implemented and tested. To run v2 at any point: recruit n≥15 blinded
+raters, use the existing rate CLI, publish the results as an
+addendum. No code changes required.
+
 ---
 
 # Findings
@@ -929,6 +1029,13 @@ Non-urgent, pick up whenever. Not blockers for Phase 2b / 2c / Phase 3.
   N3–N5 recorded as no-test findings. Phase 2c pack now: 8 active
   tests, ~$0.30 spend, ~1.5 hrs wall clock (down from ~$1 / 4 hrs).
   Runbook v2 §2c updated with the strike-throughs + additions.
+- **2026-08-11** — Phase 3 (BT campaign) deferred to v2 with rationale
+  (new decision D-H). n=1 self-rating produces bootstrap CIs
+  conditional on the single rater, which can't license
+  "human-preference" claims. The load-bearing PM finding
+  ("two-pipeline disagreement") holds without human validation. Full
+  protocol implementation stays in the repo for a future
+  multi-rater pass.
 - **2026-08-11** — Phase 2c executed. Verdicts:
   - T4 confirmed with refinement — L03 fadeout direction is 100%
     reproducible, magnitude on the high side of the natural range

@@ -15,6 +15,15 @@ You're choosing a text-to-speech vendor for a product. This document
 tells you what we found across 8 vendors, in language that maps to
 things you actually decide about — not benchmark leaderboards.
 
+> **⚠ Scope disclaimer** · Findings are as of 2026-08-11, on specific
+> vendor accounts (paid public tiers), specific voice_ids, and a
+> residential Windows 11 measurement environment. No financial
+> relationship with any vendor. Not legal/business/purchasing advice.
+> Before making a >$10K/year vendor decision on the strength of this
+> report, verify with a pilot on your own content, account tier, and
+> deployment environment. Full scope + corrections process in
+> [DISCLAIMER.md](../DISCLAIMER.md).
+
 ---
 
 ## The headline in one sentence
@@ -107,7 +116,7 @@ Deepgram are the safe generalists — top-half on both raters.
 
 ---
 
-### 3. Cartesia's audio is technically broken for anything downstream.
+### 3. Cartesia's audio ships without peak headroom, which breaks common downstream tooling.
 
 **What we found:** Cartesia's speech synthesis produces audio at
 maximum volume with no headroom — the peaks of the waveform sit
@@ -337,7 +346,7 @@ options) might behave differently.
 
 ---
 
-### 9. Fish and Google have audible background noise problems.
+### 9. Fish and Google have elevated background noise floors on the hygiene measure.
 
 **What we found:** Our automated "how noisy is the silent parts of
 the audio" measure (technical name: mean noise floor in dBFS,
@@ -362,11 +371,13 @@ becomes fatiguing over a long listening session. You want the
 lowest-noise-floor vendor.
 
 **Impact:** For **long-listening** or **quiet-environment** use
-cases, avoid Fish (conversational) and Google (either use case).
+cases, Fish (conversational) and Google (either use case) are less
+suitable on the noise-floor axis than the cleaner-measured vendors
+(Cartesia, Speechify, Orpheus, OpenAI) — spot-listen your own
+content on your target playback environment before committing.
 For **noisy-environment** use cases (drive-thru, warehouse, phone
-call over a bad connection), background noise from the vendor
-doesn't matter — the ambient noise will drown it out — so this axis
-becomes irrelevant.
+call over a bad connection), the ambient noise dominates and this
+axis becomes irrelevant.
 
 ---
 

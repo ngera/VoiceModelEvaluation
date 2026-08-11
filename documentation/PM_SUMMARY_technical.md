@@ -192,13 +192,12 @@ cost?
 
 ## Meta-takeaway for the PM
 
-**What this exercise actually proves is that the vendor pitch decks
-are wrong in specific, measurable ways.** For every claim we tested,
-we found either the claim was supported *for a specific use case
-only* (Speechify #1, Orpheus cheapest), or the headline number was on
-the high side of a natural range (ElevenLabs L03 fadeout), or the
-"leaderboard rank" depended entirely on which MOS predictor was
-picked (F-8).
+**What this exercise proves is that vendor marketing omits specific,
+measurable caveats.** For every claim we tested, we found either the
+claim was supported *for a specific use case only* (Speechify #1,
+Orpheus cheapest), or the headline number was on the high side of a
+natural range (ElevenLabs L03 fadeout), or the "leaderboard rank"
+depended entirely on which MOS predictor was picked (F-8).
 
 **The frontier chart with confidence intervals + a per-provider
 "gotcha to know" line is the artefact that helps a PM buy.** Not a
