@@ -34,15 +34,15 @@ words/month.
 
 <table>
 <tr>
-<td bgcolor="#c8e6c9" align="center">&nbsp;green&nbsp;</td>
+<td><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="green"></td>
 <td>top 2 within the column (best 2 of 8)</td>
 </tr>
 <tr>
-<td bgcolor="#fff9c4" align="center">&nbsp;yellow&nbsp;</td>
+<td><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="yellow"></td>
 <td>middle 4 within the column (rank 3–6)</td>
 </tr>
 <tr>
-<td bgcolor="#ffcdd2" align="center">&nbsp;red&nbsp;</td>
+<td><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="red"></td>
 <td>bottom 2 within the column (worst 2 of 8)</td>
 </tr>
 </table>
@@ -53,6 +53,12 @@ For `clip samples`, values of 0 are always green (perfect); any value
 ≥100 is red regardless of ranking. TTFA cells marked "—" indicate
 adapters that don't stream (Speechify, Fish, Google, Orpheus per D-008
 and adapter-shape).
+
+*Note: GitHub's markdown sanitizer strips cell background colors
+(both `style="..."` and the legacy `bgcolor` attribute), so the
+color indicators are rendered as inline color-chip images via
+[placehold.co](https://placehold.co). If images fail to load, the
+alt text ("best" / "mid" / "worst") describes the tier.*
 
 ### Conversational
 
@@ -76,115 +82,115 @@ and adapter-shape).
 <tbody>
 <tr>
 <td><b>speechify</b></td>
-<td align="right" bgcolor="#c8e6c9">7.90</td>
-<td align="right" bgcolor="#c8e6c9">6.46</td>
-<td align="right" bgcolor="#fff9c4">3.98</td>
-<td align="right" bgcolor="#fff9c4">3.30</td>
-<td align="right" bgcolor="#fff9c4">3.56</td>
-<td align="right" bgcolor="#fff9c4">4.07</td>
-<td align="right" bgcolor="#fff9c4">1</td>
-<td align="right" bgcolor="#c8e6c9">-57.0</td>
-<td align="right" bgcolor="#fff9c4">14.3</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 7.90</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 6.46</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.98</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.30</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.56</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.07</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 1</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -57.0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 14.3</td>
 <td align="right">—</td>
-<td align="right" bgcolor="#fff9c4">0.100</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.100</td>
 </tr>
 <tr>
 <td><b>elevenlabs</b></td>
-<td align="right" bgcolor="#c8e6c9">7.76</td>
-<td align="right" bgcolor="#ffcdd2">5.96</td>
-<td align="right" bgcolor="#c8e6c9">4.12</td>
-<td align="right" bgcolor="#c8e6c9">3.47</td>
-<td align="right" bgcolor="#c8e6c9">3.69</td>
-<td align="right" bgcolor="#c8e6c9">4.18</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-52.0</td>
-<td align="right" bgcolor="#fff9c4">14.1</td>
-<td align="right" bgcolor="#c8e6c9">439</td>
-<td align="right" bgcolor="#ffcdd2">0.220</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 7.76</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 5.96</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.12</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.47</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.69</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.18</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -52.0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 14.1</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 439</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.220</td>
 </tr>
 <tr>
 <td><b>openai</b></td>
-<td align="right" bgcolor="#fff9c4">7.74</td>
-<td align="right" bgcolor="#fff9c4">6.11</td>
-<td align="right" bgcolor="#c8e6c9">4.01</td>
-<td align="right" bgcolor="#c8e6c9">3.49</td>
-<td align="right" bgcolor="#c8e6c9">3.70</td>
-<td align="right" bgcolor="#c8e6c9">4.19</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-52.5</td>
-<td align="right" bgcolor="#c8e6c9">13.7</td>
-<td align="right" bgcolor="#ffcdd2">736</td>
-<td align="right" bgcolor="#c8e6c9">0.075</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.74</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.11</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.01</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.49</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.70</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.19</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -52.5</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 13.7</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 736</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.075</td>
 </tr>
 <tr>
 <td><b>fish</b></td>
-<td align="right" bgcolor="#fff9c4">7.70</td>
-<td align="right" bgcolor="#c8e6c9">6.24</td>
-<td align="right" bgcolor="#fff9c4">3.86</td>
-<td align="right" bgcolor="#ffcdd2">3.15</td>
-<td align="right" bgcolor="#ffcdd2">3.41</td>
-<td align="right" bgcolor="#ffcdd2">4.05</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#ffcdd2">-39.7</td>
-<td align="right" bgcolor="#c8e6c9">13.8</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.70</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 6.24</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.86</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.15</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.41</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.05</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -39.7</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 13.8</td>
 <td align="right">—</td>
-<td align="right" bgcolor="#fff9c4">0.075</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.075</td>
 </tr>
 <tr>
 <td><b>google</b></td>
-<td align="right" bgcolor="#fff9c4">7.62</td>
-<td align="right" bgcolor="#fff9c4">6.18</td>
-<td align="right" bgcolor="#ffcdd2">3.82</td>
-<td align="right" bgcolor="#fff9c4">3.27</td>
-<td align="right" bgcolor="#fff9c4">3.57</td>
-<td align="right" bgcolor="#ffcdd2">4.02</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#ffcdd2">-33.7</td>
-<td align="right" bgcolor="#fff9c4">15.1</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.62</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.18</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.82</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.27</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.57</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.02</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -33.7</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 15.1</td>
 <td align="right">—</td>
-<td align="right" bgcolor="#fff9c4">0.150</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
 <td><b>deepgram</b></td>
-<td align="right" bgcolor="#fff9c4">7.62</td>
-<td align="right" bgcolor="#fff9c4">6.21</td>
-<td align="right" bgcolor="#ffcdd2">3.77</td>
-<td align="right" bgcolor="#fff9c4">3.31</td>
-<td align="right" bgcolor="#fff9c4">3.58</td>
-<td align="right" bgcolor="#fff9c4">4.07</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-46.2</td>
-<td align="right" bgcolor="#ffcdd2">16.6</td>
-<td align="right" bgcolor="#ffcdd2">583</td>
-<td align="right" bgcolor="#fff9c4">0.150</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.62</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.21</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.77</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.31</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.58</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.07</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.2</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 16.6</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 583</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
 <td><b>cartesia</b></td>
-<td align="right" bgcolor="#ffcdd2">7.44</td>
-<td align="right" bgcolor="#ffcdd2">5.96</td>
-<td align="right" bgcolor="#fff9c4">3.89</td>
-<td align="right" bgcolor="#ffcdd2">3.25</td>
-<td align="right" bgcolor="#ffcdd2">3.48</td>
-<td align="right" bgcolor="#fff9c4">4.13</td>
-<td align="right" bgcolor="#ffcdd2">406</td>
-<td align="right" bgcolor="#c8e6c9">-57.1</td>
-<td align="right" bgcolor="#fff9c4">16.4</td>
-<td align="right" bgcolor="#c8e6c9">467</td>
-<td align="right" bgcolor="#ffcdd2">0.160</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 7.44</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 5.96</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.89</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.25</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.48</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.13</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 406</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -57.1</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 16.4</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 467</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.160</td>
 </tr>
 <tr>
 <td><b>orpheus</b></td>
-<td align="right" bgcolor="#ffcdd2">7.41</td>
-<td align="right" bgcolor="#fff9c4">6.01</td>
-<td align="right" bgcolor="#fff9c4">3.87</td>
-<td align="right" bgcolor="#fff9c4">3.33</td>
-<td align="right" bgcolor="#fff9c4">3.62</td>
-<td align="right" bgcolor="#fff9c4">4.10</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-53.2</td>
-<td align="right" bgcolor="#ffcdd2">26.9</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 7.41</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.01</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.87</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.33</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.62</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.10</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -53.2</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 26.9</td>
 <td align="right">—</td>
-<td align="right" bgcolor="#c8e6c9">0.030</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
 </tr>
 </tbody>
 </table>
@@ -210,107 +216,107 @@ and adapter-shape).
 <tbody>
 <tr>
 <td><b>speechify</b></td>
-<td align="right" bgcolor="#c8e6c9">8.15</td>
-<td align="right" bgcolor="#c8e6c9">6.66</td>
-<td align="right" bgcolor="#fff9c4">4.05</td>
-<td align="right" bgcolor="#fff9c4">3.42</td>
-<td align="right" bgcolor="#fff9c4">3.63</td>
-<td align="right" bgcolor="#fff9c4">4.17</td>
-<td align="right" bgcolor="#fff9c4">5</td>
-<td align="right" bgcolor="#fff9c4">-55.2</td>
-<td align="right" bgcolor="#fff9c4">13.0</td>
-<td align="right" bgcolor="#fff9c4">0.100</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 8.15</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 6.66</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.05</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.42</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.63</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.17</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 5</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -55.2</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.100</td>
 </tr>
 <tr>
 <td><b>orpheus</b></td>
-<td align="right" bgcolor="#c8e6c9">8.00</td>
-<td align="right" bgcolor="#ffcdd2">6.26</td>
-<td align="right" bgcolor="#fff9c4">4.06</td>
-<td align="right" bgcolor="#c8e6c9">3.45</td>
-<td align="right" bgcolor="#fff9c4">3.64</td>
-<td align="right" bgcolor="#c8e6c9">4.21</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#c8e6c9">-78.7</td>
-<td align="right" bgcolor="#ffcdd2">27.2</td>
-<td align="right" bgcolor="#c8e6c9">0.030</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 8.00</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 6.26</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.06</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.45</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.64</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.21</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -78.7</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 27.2</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
 </tr>
 <tr>
 <td><b>cartesia</b></td>
-<td align="right" bgcolor="#fff9c4">7.99</td>
-<td align="right" bgcolor="#fff9c4">6.32</td>
-<td align="right" bgcolor="#c8e6c9">4.13</td>
-<td align="right" bgcolor="#ffcdd2">3.20</td>
-<td align="right" bgcolor="#ffcdd2">3.45</td>
-<td align="right" bgcolor="#ffcdd2">4.05</td>
-<td align="right" bgcolor="#ffcdd2">429</td>
-<td align="right" bgcolor="#c8e6c9">-55.3</td>
-<td align="right" bgcolor="#c8e6c9">12.4</td>
-<td align="right" bgcolor="#ffcdd2">0.160</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.99</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.32</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.13</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.20</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.45</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.05</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 429</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -55.3</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 12.4</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.160</td>
 </tr>
 <tr>
 <td><b>google</b></td>
-<td align="right" bgcolor="#fff9c4">7.97</td>
-<td align="right" bgcolor="#fff9c4">6.44</td>
-<td align="right" bgcolor="#ffcdd2">4.02</td>
-<td align="right" bgcolor="#fff9c4">3.35</td>
-<td align="right" bgcolor="#ffcdd2">3.60</td>
-<td align="right" bgcolor="#fff9c4">4.11</td>
-<td align="right" bgcolor="#fff9c4">39</td>
-<td align="right" bgcolor="#ffcdd2">-36.8</td>
-<td align="right" bgcolor="#fff9c4">13.0</td>
-<td align="right" bgcolor="#fff9c4">0.150</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.97</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.44</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.02</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.35</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.60</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.11</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 39</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -36.8</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
 <td><b>elevenlabs</b></td>
-<td align="right" bgcolor="#fff9c4">7.93</td>
-<td align="right" bgcolor="#c8e6c9">6.47</td>
-<td align="right" bgcolor="#fff9c4">4.05</td>
-<td align="right" bgcolor="#ffcdd2">3.34</td>
-<td align="right" bgcolor="#fff9c4">3.61</td>
-<td align="right" bgcolor="#ffcdd2">4.07</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#ffcdd2">-41.5</td>
-<td align="right" bgcolor="#c8e6c9">12.8</td>
-<td align="right" bgcolor="#ffcdd2">0.220</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.93</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 6.47</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.05</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.34</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.61</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.07</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -41.5</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 12.8</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.220</td>
 </tr>
 <tr>
 <td><b>deepgram</b></td>
-<td align="right" bgcolor="#fff9c4">7.86</td>
-<td align="right" bgcolor="#fff9c4">6.40</td>
-<td align="right" bgcolor="#fff9c4">4.07</td>
-<td align="right" bgcolor="#fff9c4">3.44</td>
-<td align="right" bgcolor="#c8e6c9">3.68</td>
-<td align="right" bgcolor="#fff9c4">4.15</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-46.8</td>
-<td align="right" bgcolor="#fff9c4">13.5</td>
-<td align="right" bgcolor="#fff9c4">0.150</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.86</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.40</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.07</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.44</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.68</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.15</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.8</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.5</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
 <td><b>fish</b></td>
-<td align="right" bgcolor="#ffcdd2">7.63</td>
-<td align="right" bgcolor="#fff9c4">6.31</td>
-<td align="right" bgcolor="#c8e6c9">4.12</td>
-<td align="right" bgcolor="#fff9c4">3.40</td>
-<td align="right" bgcolor="#fff9c4">3.67</td>
-<td align="right" bgcolor="#fff9c4">4.10</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-46.6</td>
-<td align="right" bgcolor="#ffcdd2">14.0</td>
-<td align="right" bgcolor="#c8e6c9">0.075</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 7.63</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.31</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.12</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.40</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.67</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.10</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.6</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 14.0</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.075</td>
 </tr>
 <tr>
 <td><b>openai</b></td>
-<td align="right" bgcolor="#ffcdd2">7.62</td>
-<td align="right" bgcolor="#ffcdd2">6.18</td>
-<td align="right" bgcolor="#ffcdd2">3.98</td>
-<td align="right" bgcolor="#c8e6c9">3.46</td>
-<td align="right" bgcolor="#c8e6c9">3.68</td>
-<td align="right" bgcolor="#c8e6c9">4.18</td>
-<td align="right" bgcolor="#c8e6c9">0</td>
-<td align="right" bgcolor="#fff9c4">-54.5</td>
-<td align="right" bgcolor="#fff9c4">13.3</td>
-<td align="right" bgcolor="#fff9c4">0.075</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 7.62</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 6.18</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.98</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.46</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 3.68</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.18</td>
+<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -54.5</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.3</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.075</td>
 </tr>
 </tbody>
 </table>

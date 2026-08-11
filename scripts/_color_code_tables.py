@@ -22,13 +22,14 @@ from pathlib import Path
 CAMPAIGN = "campaign-20260809T204608Z"
 LATENCY = "latency-20260809T214106Z"
 
-# Light background colors so cell text stays readable in both GitHub's
-# light and dark themes. GitHub's markdown renderer supports the
-# `bgcolor` attribute on <td>; it strips `style="..."` inline CSS.
-GREEN = "#c8e6c9"   # light green
-YELLOW = "#fff9c4"  # light yellow
-RED = "#ffcdd2"     # light red
-NONE = None         # no background (for cells that are n/a)
+# GitHub's markdown sanitizer strips both `style="..."` inline CSS AND
+# the legacy `bgcolor` attribute on <td>. The reliable workaround is
+# an inline color-chip <img> from placehold.co placed at the start of
+# each numeric cell — reads as a colored bar next to the value.
+GREEN = "c8e6c9"    # light green (hex without #)
+YELLOW = "fff9c4"   # light yellow
+RED = "ffcdd2"      # light red
+NONE = None
 
 def _load(path: str) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -66,10 +67,15 @@ def rank_cells_special_clip(values: list[int]) -> list[str]:
 
 
 def td(text: str, bg: str | None) -> str:
-    """Render one <td> with optional bgcolor. Right-aligned for numeric."""
-    if bg:
-        return f'<td align="right" bgcolor="{bg}">{text}</td>'
-    return f'<td align="right">{text}</td>'
+    """Render one <td> with an inline color chip if bg is set.
+    Chip is a small placehold.co image; label = color name for
+    screen readers. Right-aligned for numeric.
+    """
+    if not bg:
+        return f'<td align="right">{text}</td>'
+    label = {"c8e6c9": "best", "fff9c4": "mid", "ffcdd2": "worst"}.get(bg, "")
+    chip = f'<img src="https://placehold.co/40x18/{bg}/{bg}.png" alt="{label}">'
+    return f'<td align="right">{chip} {text}</td>'
 
 
 def build_table(uc: str) -> str:
