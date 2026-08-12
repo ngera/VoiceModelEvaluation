@@ -425,9 +425,11 @@ vendor structurally?
 **Question 2 — which "quality" matches your users?**
 
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
-  leads the warm-rater axis on both use cases** at 3.7–5.9σ vs the
-  next-best vendor (recomputed against Cartesia for narration — see
-  Wave 1 statistical-honesty note in
+  leads the warm-rater axis on both use cases** at 3.7–7.3σ vs the
+  honest #2 vendor (recomputed against Cartesia for narration PQ,
+  dropping the Orpheus truncation artifact — see the Rankings summary
+  in [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary)
+  and the Wave 1 statistical-honesty note in
   [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8)). At $0.10/1K
   words (100K/mo tier), Speechify is the cheaper of the top-2
   warm-quality vendors (ElevenLabs at $0.22 is #2 warm and 2.2×

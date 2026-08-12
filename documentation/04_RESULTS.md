@@ -403,29 +403,147 @@ output; run the script to reproduce.
 
 ### Narration
 
+Orpheus is **excluded from #2 in the top-1-vs-top-2 slot** for
+narration because its narration audio is truncated to ~16% of the
+expected reading duration by the model's 14.59-second per-call
+output cap (F-9 T8). Its narration mean is a mean over structurally
+incomplete audio — any "Orpheus wins narration X" is an artifact
+of the truncation, not a listener signal. The Speechify-vs-Orpheus
+comparison is preserved as a lower row for transparency, footnote ¹,
+but the load-bearing top-1-vs-top-2 σ ratio uses Cartesia (honest
+#2) instead.
+
 | Axis | #1 vendor | #1 score | #2 vendor | #2 score | Δ | \|Δ\|/SE(diff) | Verdict |
 |---|---|---:|---|---:|---:|---:|---|
-| Audiobox PQ (warm) | speechify | 8.150 | orpheus¹ | 8.002 | +0.148 | **9.5σ** | **SIG_DIFF** |
+| Audiobox PQ (warm) | speechify | 8.150 | cartesia² | 7.986 | +0.164 | **7.0σ** | **SIG_DIFF** |
 | Audiobox CE (warm) | speechify | 6.662 | elevenlabs | 6.466 | +0.197 | **7.3σ** | **SIG_DIFF** |
-| DNSMOS OVRL (clean) | openai | 3.463 | orpheus¹ | 3.453 | +0.010 | 0.7σ | **TIE** |
-| DNSMOS OVRL (clean, w/o Orpheus) | openai | 3.463 | deepgram² | 3.442 | +0.021 | 1.1σ | **TIE** |
+| DNSMOS OVRL (clean) | openai | 3.463 | deepgram² | 3.442 | +0.021 | 1.1σ | **TIE** |
 | DNSMOS SIG (clean) | openai | 3.679 | deepgram | 3.677 | +0.002 | 0.2σ | **TIE** |
 
-¹ Orpheus's narration audio is truncated to ~16% of the expected
-reading duration by the model's 14.59-second per-call output cap
-(see F-9 T8). Its narration DNSMOS means are computed on
-structurally incomplete audio — treat any "Orpheus wins narration
-X" as an artifact.
+*Transparency row (Orpheus not excluded):*
 
-² Deepgram is the honest #2 on DNSMOS OVRL narration once Orpheus
-is disqualified for the reason above.
+| Axis | #1 vendor | #1 score | #2 vendor | #2 score | Δ | \|Δ\|/SE(diff) | Verdict |
+|---|---|---:|---|---:|---:|---:|---|
+| Audiobox PQ (warm), Orpheus not excluded | speechify | 8.150 | orpheus¹ | 8.002 | +0.148 | 9.5σ | (artifact — see ¹) |
+| DNSMOS OVRL (clean), Orpheus not excluded | openai | 3.463 | orpheus¹ | 3.453 | +0.010 | 0.7σ | (artifact — see ¹) |
 
-**Interpretation:** all four Audiobox comparisons are meaningfully
-different — Speechify's warm-rater lead over the #2 vendor is
-**3.7σ to 9.5σ significant**, not a heuristic threshold call. All
-DNSMOS top-1-vs-top-2 comparisons are ties — OpenAI's DNSMOS
-"win" is essentially indistinguishable from ElevenLabs (conv),
-Deepgram (narr), and Orpheus (narr, ignoring the disqualification).
+¹ Orpheus's narration audio is truncated. The 9.5σ number is a
+mechanical property of the truncated audio distribution having
+low variance under the vendor's fixed-length output cap, not a
+listener signal. It sat in earlier drafts of this table before
+T8 established the truncation; carried below the primary table
+as a receipt that "9.5σ" was later reinterpreted as an artifact,
+not as evidence of a listener effect.
+
+² Cartesia (honest AB.PQ #2) and Deepgram (honest DNSMOS OVRL #2)
+are the correct top-1-vs-top-2 opponents once Orpheus is excluded.
+
+**Interpretation:** all four Audiobox top-1-vs-top-2 comparisons
+are meaningfully different — Speechify's warm-rater lead over the
+honest #2 vendor is **3.7σ to 7.3σ significant** (not 9.5σ; that
+was the artifact-inclusive figure and is retired from the headline
+range). All DNSMOS top-1-vs-top-2 comparisons are ties — OpenAI's
+DNSMOS "win" is essentially indistinguishable from ElevenLabs
+(conv), and from Deepgram (narr, once Orpheus is excluded).
+
+### Paired vs unpaired: which test and why
+
+Every vendor speaks **the same 75 corpus items**. A paired test
+matches items across vendors and cancels item-level effects
+(hard-to-say items score low for everyone; that noise is shared
+and drops out of the paired Δ). The paired formula is
+`SE_paired = SD(Δ_i) / √75` on the item-matched deltas; the
+unpaired formula above assumes vendor-a and vendor-b are
+independent samples and inflates SE.
+
+The tables above use the **unpaired** formula. It is the
+**conservative** choice: paired is always ≥ unpaired for
+correlated within-item designs.
+
+Recomputed with the paired test — [`scripts/_paired_test.py`](../scripts/_paired_test.py):
+
+| Comparison | Unpaired | Paired | Paired/unpaired |
+|---|---:|---:|---:|
+| Speechify vs ElevenLabs · conv AB.PQ | 3.7σ | **6.0σ** | 1.63× |
+| Speechify vs Fish · conv AB.CE | 5.9σ | **14.2σ** | 2.40× |
+| Speechify vs Cartesia · narr AB.PQ | 7.0σ | **9.0σ** | 1.29× |
+| Speechify vs ElevenLabs · narr AB.CE | 7.3σ | **17.2σ** | 2.36× |
+| OpenAI vs ElevenLabs · conv DNSMOS OVRL | 1.3σ | **2.0σ** | 1.54× |
+| OpenAI vs ElevenLabs · conv DNSMOS SIG | 0.8σ | 1.3σ | 1.66× |
+| OpenAI vs Deepgram · narr DNSMOS OVRL | 1.1σ | 1.5σ | 1.41× |
+| OpenAI vs Deepgram · narr DNSMOS SIG | 0.2σ | 0.2σ | — |
+
+**What this changes**:
+- All four Audiobox SIG_DIFF calls **strengthen** under the paired
+  test. No SIG_DIFF verdict is at risk of flipping.
+- Three of the four DNSMOS tie calls hold cleanly. **One (OpenAI vs
+  ElevenLabs conv OVRL) moves from 1.3σ to 2.0σ — right at the
+  α=0.05 boundary.** Under the paired test alone, this pair is
+  borderline rather than "clearly tied." The unpaired-headline
+  "TIE" call is a conservative reading; the paired test says
+  "borderline" and a proper answer would need a multiplicity
+  correction (see next section) before publishing "significantly
+  different." We leave the tie verdict standing in the headline
+  tables and flag the paired-test borderline here so readers can
+  see the direction of the sensitivity.
+- The 1.63×-2.40× paired/unpaired ratio means item-level effects
+  are strong. This matches intuition: a warm reading of item S07
+  will score high across all vendors; the item-level baseline is
+  shared corpus content.
+
+**Why unpaired stays in the headline**: it is the more
+familiar formula and easier to reproduce ("SE of the mean"
+notation). It is also, importantly, the **conservative** answer —
+readers reading unpaired σ ratios are reading the *floor* on
+significance, not the ceiling. The paired ratios above are the
+receipt showing the direction of that conservatism.
+
+### Statistical caveats (multiplicity, effect size, perceptual calibration)
+
+Three things the σ ratios above do **not** answer:
+
+**1. Multiplicity is uncorrected.** The rankings tables run 4
+Audiobox + 4 DNSMOS = 8 top-1-vs-top-2 comparisons at α=0.05
+without a family-wise or false-discovery correction. Under
+Bonferroni for 8 comparisons the per-test α would drop to 0.00625
+(≈ 2.73σ). All four Audiobox SIG_DIFF calls (3.7σ – 7.3σ unpaired;
+6.0σ – 17.2σ paired) clear that bar comfortably. All four DNSMOS
+tie calls are unaffected (they were below 1.96σ already). **The
+one comparison sensitive to multiplicity is OpenAI vs ElevenLabs
+conv DNSMOS OVRL**, which sits at 2.0σ paired and would flip from
+"borderline significant" back to "tie" under Bonferroni. Reported
+here rather than picked-and-published. A proper Tukey HSD on the
+full 8-vendor pairwise matrix per axis would tighten this further
+and is a v2 workstream.
+
+**2. σ measures precision of the estimate, not perceptual
+magnitude.** A 17.2σ paired result on narration Audiobox CE means
+"the 0.20 gap between Speechify and ElevenLabs is measured with
+enough precision to be certain it's not zero," **not** "the gap
+is large." The absolute Δ is 0.20 on a 0–10 scale = **2% of the
+scale**. Whether a 2% Audiobox delta is perceptible to a human
+listener depends on the mapping from Audiobox score to
+listener-preference — which is what the deferred multi-rater BT
+panel (D-H) exists to establish. Until that pass exists, σ ratios
+tell you the *direction* is real and the *estimate* is precise;
+they do not tell you the *audible size* of the gap.
+
+**3. There is no perceptual calibration.** The n=1 self-rating
+review (D-H) did not run a multi-rater BT panel. We cannot map an
+Audiobox Δ of 0.14 or 0.20 to "X% of listeners would pick vendor
+A over B in a blinded pair." A future v2 pass would run the
+existing `veval rate build/score` pipeline (already implemented in
+`src/veval/rate/`) with 15–30 blinded raters and compare BT
+rankings to the two machine-pipeline rankings — see
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md#1-no-human-perceptual-validation-n1-rater-is-not-enough).
+
+**What we CAN claim** from the current statistics: the four
+Audiobox SIG_DIFF calls are robust (survive both the honest-#2
+substitution for narration PQ and Bonferroni correction). The
+four DNSMOS ties are robust (three cleanly, one at the boundary).
+**What we CANNOT claim**: that the observed score deltas are
+audible to a human listener, or that the SIG_DIFF verdicts
+translate to preference-share in a blinded A/B.
 
 ---
 
@@ -621,9 +739,11 @@ a clear answer for your use case.
 ### Q2 — Which "quality" matches your users?
 
 - **Warm / engaging** (consumer storytelling, audiobook, brand voice) →
-  **Speechify** wins Audiobox on both use cases with 3.7–9.5σ
+  **Speechify** wins Audiobox on both use cases with 3.7–7.3σ
   significance (recomputed with per-comparison SE, no threshold
-  heuristic). On cost, Speechify ($0.10 / 1K words at 100K/mo) is the
+  heuristic; honest #2 for narration PQ is Cartesia — Orpheus's
+  9.5σ was a truncation-cap artifact and is excluded, see the
+  Rankings summary above). On cost, Speechify ($0.10 / 1K words at 100K/mo) is the
   **cheapest among the top-2 warm-quality vendors** — ElevenLabs at
   $0.22 is the #2 warm vendor and 2.2× more. Absolute cheapest
   overall is Orpheus at $0.030, but Orpheus is bottom-2 on Audiobox
@@ -654,6 +774,17 @@ Look at the Rankings summary above. Each pair reports
 The rewrite of the SE methodology is in the Rankings summary above.
 Prior versions of this doc used a heuristic 0.05 threshold — that's
 been replaced with the per-comparison SE(diff) test.
+
+**Statistical caveats you should know before quoting these σ
+ratios**: (a) multiplicity is not corrected — Bonferroni for 8
+tests would move OpenAI/ElevenLabs conv OVRL from 2.0σ paired
+back to a tie; (b) σ measures precision of the *estimate*, not
+perceptual size of the *gap*; the 3.7σ Speechify Audiobox lead
+is a 0.14/10 = 1.4% delta on scale; (c) the multi-rater BT panel
+that would map score-delta to listener-preference-share was
+deferred to v2. Full write-up in the
+[Statistical caveats section](#statistical-caveats-multiplicity-effect-size-perceptual-calibration)
+above.
 
 Full plain-language walkthrough in
 [05_CASE_STUDY.md § "What this means for a PM"](05_CASE_STUDY.md#what-this-means-for-a-pm-buying-voice-ai).
