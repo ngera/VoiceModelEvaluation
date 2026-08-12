@@ -1,0 +1,3409 @@
+{
+  "run_id": "latency-20260809T214106Z",
+  "total_files": 200,
+  "passed": 0,
+  "failed": 200,
+  "gate_ok": false,
+  "files": [
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 1,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 2,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 3,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 4,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 5,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 6,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 7,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 8,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 9,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 10,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 11,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 12,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 13,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 14,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 15,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 16,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 17,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 18,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 19,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 20,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 21,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 22,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 23,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 24,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 25,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 26,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 27,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 28,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 29,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 30,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 31,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 32,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 33,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 34,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 35,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 36,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 37,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 38,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 39,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 40,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 41,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 42,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 43,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 44,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 45,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 46,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 47,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 48,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 49,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\deepgram\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 1,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 2,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 3,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 4,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 5,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 6,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 7,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 8,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 9,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 10,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 11,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 12,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 13,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 14,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 15,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 16,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 17,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 18,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 19,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 20,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 21,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 22,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 23,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 24,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 25,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 26,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 27,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 28,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 29,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 30,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 31,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 32,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 33,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 34,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 35,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 36,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 37,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 38,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 39,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 40,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 41,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 42,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 43,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 44,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 45,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 46,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 47,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 48,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 49,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\cartesia\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 1,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 2,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 3,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 4,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 5,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 6,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 7,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 8,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 9,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 10,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 11,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 12,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 13,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 14,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 15,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 16,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 17,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 18,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 19,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 20,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 21,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 22,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 23,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 24,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 25,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 26,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 27,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 28,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 29,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 30,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 31,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 32,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 33,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 34,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 35,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 36,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 37,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 38,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 39,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 40,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 41,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 42,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 43,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 44,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 45,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 46,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 47,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 48,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 49,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\elevenlabs\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 1,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 2,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 3,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 4,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 5,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 6,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 7,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 8,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 9,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 10,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 11,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 12,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 13,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 14,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 15,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 16,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 17,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 18,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 19,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 20,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 21,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 22,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 23,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 24,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 25,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 26,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 27,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 28,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 29,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 30,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 31,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 32,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 33,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 34,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 35,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 36,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 37,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 38,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 39,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 40,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 41,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 42,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 43,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 44,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 45,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 46,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 47,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 48,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 49,
+      "wav_path": "runs\\latency-20260809T214106Z\\audio\\openai\\conversational\\S01.wav",
+      "header_duration_s": null,
+      "decoded_duration_s": null,
+      "duration_mismatch_pct": null,
+      "lufs": null,
+      "vad_speech_seconds": null,
+      "chars_billed": null,
+      "passed": false,
+      "issues": [
+        "wav_missing"
+      ]
+    }
+  ]
+}

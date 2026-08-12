@@ -87,11 +87,15 @@ configs/                         all pre-registered parameters
 ├── providers.yaml               8 vendors + endpoints
 ├── voices.yaml                  locked voice+model per (vendor, use case)
 ├── voices.T6.yaml               T6 alt-voice overlay
-├── corpus/                      75 items × 2 use cases + variance subset
 ├── gates.yaml                   pass/fail thresholds
 ├── analyzers.yaml               MOS pipeline pins + WER judge revisions
 ├── pricing.yaml                 cost model per vendor + tier
 └── hardware.yaml                reproducibility receipt
+
+corpus/                          75-item corpus per use case (top-level, not under configs/)
+├── conversational.yaml
+├── narration.yaml
+└── variance_subset.yaml         10-item subset for the D3/D4 noise-floor run
 
 src/veval/                       the Python package
 ├── adapters/                    one file per vendor + common base
@@ -132,8 +136,10 @@ tests/                           pytest regression suite (~236 tests)
 `configs/` and git-tagged before any campaign runs.** Tags:
 
 - `prereg-v1` — the original 6-vendor lock, before any campaign result
-- `prereg-v1.1` through `prereg-v1.10` — 10 pre-campaign amendments,
-  each with rationale in [../DEVIATIONS.md](../DEVIATIONS.md)
+- `prereg-v1.1` through `prereg-v1.10` — 10 amendment tags covering
+  11 documented amendments (D-001..D-011); some tags bundle multiple
+  amendments. Full rationale per amendment in
+  [../DEVIATIONS.md](../DEVIATIONS.md).
 - `prereg-v1.10` — the tag pointing at configs during the current
   campaign
 
@@ -414,8 +420,10 @@ addendum. No code changes required.
 - WAV finalization for streaming adapters
 - BT judgment fitting
 
-CI runs the full suite on every commit. See
+Run locally with `uv run pytest`. See
 [`pyproject.toml`](../pyproject.toml) for the pytest configuration.
+No GitHub Actions workflow is set up in v1 — CI-on-commit is a v2
+gap tracked in [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
 
 ---
 

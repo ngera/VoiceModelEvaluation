@@ -16,13 +16,26 @@ voices, or corpora.*
 
 - **Python 3.11** (any 3.11.x — 3.11 is pinned; 3.12+ untested)
 - **uv** package manager — install from https://astral.sh/uv
-- **~5 GB free disk** for model downloads on first analyzer run
-  (WER + quality)
+- **Free disk for model downloads on first analyzer run**:
+    - ~2 GB for WER judges (wav2vec2 + faster-whisper)
+    - ~500 MB for Audiobox
+    - ~10 MB for DNSMOS (ships with pip package)
+    - **~30 GB additional if you run TTSDS2** (reference datasets;
+      the `--skip-ttsds` flag bypasses this download entirely — this
+      project's published results use `--skip-ttsds` per D-A)
 - **API keys** for whichever vendors you want to include (all 8 for
   the full published evaluation)
 
-Native Windows, macOS, or Linux all supported. All commands below
-are PowerShell syntax; substitute your shell as needed.
+**Environment tested:** developed and run end-to-end on **Windows 11**
+(residential setup, see [../DISCLAIMER.md](../DISCLAIMER.md)). All
+commands below are PowerShell syntax; substitute your shell as
+needed. The codebase is Python 3.11 + uv, both cross-platform, but
+macOS / Linux have not been exercised in v1 — expect some path-separator
+edge cases in tests that pass on Windows. UTMOS is known blocked on
+Windows (see D-B); VERSA was dropped as an analyzer backbone partly
+because it needed a Linux container. A macOS / Linux reproduction
+run would be a v2 workstream — see
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
 
 ---
 
@@ -246,9 +259,10 @@ uv run veval generate --mode latency  # session 1
 uv run veval generate --mode latency --provider openai      # session 2 OpenAI
 uv run veval generate --mode latency --provider elevenlabs  # session 2 ElevenLabs
 
-# 6. Analyze
+# 6. Analyze — order matters within a single --stages list:
+#    quality + wer must land before variance reads them
 uv run veval analyze <campaign-run-id> --stages all --skip-ttsds
-uv run veval analyze <variance-run-id> --stages variance,quality --skip-ttsds
+uv run veval analyze <variance-run-id> --stages quality,wer,variance --skip-ttsds
 uv run veval analyze <latency-run-id-s1> --stages latency
 uv run veval analyze <latency-run-id-s2-oai> --stages latency
 uv run veval analyze <latency-run-id-s2-el>  --stages latency

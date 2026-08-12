@@ -1,12 +1,17 @@
----
-title: "What we found evaluating 8 voice AI vendors — and what it says about picking one"
-subtitle: A portfolio case study in structured evaluation, self-critical scoping, and killing your own decisions
-author: Neeraj Gera
-date: 2026-08-11
-audience: PMs, engineers, and buyers who need to choose a text-to-speech vendor — and anyone interested in what "measuring quality" actually means when the definition of quality itself is contested
----
+<!--
+Case study — Voice AI evaluation, portfolio edition.
+Author: Neeraj Gera · Date: 2026-08-11
+Audience: PMs, engineers, and buyers who need to choose a
+text-to-speech vendor — and anyone interested in what "measuring
+quality" actually means when the definition of quality itself is
+contested. GitHub renders unknown YAML frontmatter as a raw table
+so this metadata lives in an HTML comment instead.
+-->
 
 # What we found evaluating 8 voice AI vendors — and what it says about picking one
+
+*A portfolio case study in structured evaluation, self-critical
+scoping, and killing your own decisions.*
 
 *A three-week portfolio project. 8 vendors, 2 use cases, 6 machine-quality
 signals from 2 independent pipelines, a 9-test outlier verification pack,
@@ -26,13 +31,13 @@ is one of the findings.*
 
 ## The setup
 
-I inherited a 400-hour evaluation plan for 12 voice AI vendors across
-10 use cases with a 16-dimension scoring matrix. Beautiful spec.
-Wrong for a portfolio project.
+I'd previously written a 400-hour evaluation plan for 12 voice AI
+vendors across 10 use cases with a 16-dimension scoring matrix.
+Beautiful spec. Wrong for a portfolio project.
 
 The first decision — the sequencing decision that made everything
 downstream possible — was to shrink the plan to **8 vendors × 2 use
-cases × 60 corpus items**. Two use cases chosen precisely because
+cases × 75 corpus items**. Two use cases chosen precisely because
 they pull in opposite directions: a **support-agent** voice needs
 low latency + intelligibility + warmth; a **long-form narration**
 voice needs consistency + expressive range. A vendor that wins one
@@ -78,17 +83,25 @@ they can't undo a hard gate.
 
 Word-error rate is easy to bias — pick an ASR trained on similar
 audio and everyone looks accurate. So the WER measure uses **two
-independent ASR judges**, `wav2vec2-large-960h-lv60-self` (Meta) +
-`faster-whisper large-v3` (OpenAI's Whisper), and only counts an
-error when **both judges agree** on the location and magnitude. The
-constraint: judges must differ in *organisation*, *encoder
-architecture family*, AND *training pipeline*.
+independent ASR judges**, `facebook/wav2vec2-large-robust-ft-libri-960h`
+(Meta) + `faster-whisper large-v3` (OpenAI's Whisper), and only counts
+a per-item failure when both judges agree the item exceeds the WER
+threshold. The constraint: judges must differ in *organisation*,
+*encoder architecture family*, AND *training pipeline*.
 
-Late in the project I noticed I'd almost swapped `wav2vec2` for
-NVIDIA's Canary-1B — same architecture family and data pipeline as
-Parakeet (my other candidate). Would have quietly gutted the
-agreement rule. Judge independence is now a written constraint in
-`configs/analyzers.yaml`'s model validator, not a lucky property.
+Late in the project — at the point when NVIDIA's Parakeet was still
+the first candidate for judge 1 — I almost added Canary-1B as an
+optional third judge. Canary shares Parakeet's FastConformer encoder
+family and Canary-1B-v2 training-data pipeline, so it would have
+violated the independence rule if it had ever been paired against
+Parakeet. Once Parakeet was itself swapped out (D-010, moved to
+wav2vec2), the specific violation risk went away — but the general
+lesson landed: judge independence needs to be a **written constraint,
+not a lucky property**. It now lives as a Pydantic `model_validator`
+on `AnalyzersFile` in [`src/veval/config.py`](../src/veval/config.py)
+that reads the org/family/pipeline metadata authors supply in
+`configs/analyzers.yaml` and rejects incompatible pairs at
+config-load time.
 
 ### Refused commercial ASRs as judges
 
@@ -236,9 +249,10 @@ trials, two independent sessions two days apart:
 percentile across the two sessions.** OpenAI moved **27% on median
 and 56% at the worst-10th percentile** on the same two dates.
 
-Both providers were consistently slower than the sub-500 ms
-"real-time" threshold matters (OpenAI ~800-950 ms typical vs
-ElevenLabs' 425 ms), but **ElevenLabs is not just faster — it's
+The sub-500 ms threshold matters for real-time conversation:
+ElevenLabs Flash clears it comfortably at ~425 ms p50 and ~470 ms
+p90 across both sessions; OpenAI misses it by ~2× at ~800-950 ms
+p50 and ~950-1500 ms p90. But **ElevenLabs is not just faster — it's
 more predictable.** For a real-time voice product, provisioning
 capacity against OpenAI's *typical* number (~800 ms) will get you
 blindsided by sessions where it's actually 1500 ms. ElevenLabs' 469
@@ -351,11 +365,18 @@ vendor structurally?
 **Question 2 — which "quality" matches your users?**
 
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
-  clearly wins** the warm-rater axis on both use cases, AND is
-  cheapest on the paid tier
+  clearly wins** the warm-rater axis on both use cases. At $0.10/1K
+  words (100K/mo tier), Speechify is the cheaper of the top-2
+  warm-quality vendors (ElevenLabs at $0.22 is #2 warm and 2.2×
+  more expensive). Absolute cheapest overall is Orpheus at $0.030,
+  but Orpheus is bottom-2 on Audiobox conv and disqualified from
+  narration by its 14.59-second output cap.
 - Clean/pristine (IVR, accessibility, transactional voice) → **OpenAI
-  wins narration and ties for #1 conversational** at 50-70% of the
-  cost of the tied competitor
+  wins narration and ties for #1 conversational**. At $0.075/1K
+  words, OpenAI is **34% of the cost of ElevenLabs** ($0.22, tied
+  competitor on conv) and **50% of Deepgram** ($0.15, tied competitor
+  on narration) — a ~50–66% saving depending on which tied competitor
+  you compare against.
 
 **Question 3 — is #1 on quality worth the cost premium over #2?**
 
@@ -440,30 +461,17 @@ labeled "residential measurement" in every figure caption. See `D-G`.
 
 ---
 
-## The through-line
+## Closing note
 
-I'll tell you the through-line of this project because it's the part
-I'd most want to explain to another PM sitting across from me:
-
-**Almost every load-bearing decision in this evaluation came from
-taking a critical view of a plan I'd already made, and refusing to
-paper over an inconvenient result.** The weighted composite score
-looked authoritative — killed it. VERSA looked dependency-frictionless
-— killed it. The T6 test looked like it would confirm the pre-existing
-voice pick — showed the pre-existing voice pick was slightly
-conservative, and I wrote that up rather than declaring victory.
-The T4 test looked like it would confirm the L03 fadeout at 3.6 dB —
-showed the magnitude was overstated, and I wrote *that* up rather
-than declaring victory. The BT rating campaign was in the plan for
-a reason — cut it, wrote the reason, refused the ceremony.
-
-**A portfolio project that reads as "look at all the confirmations"
+A portfolio project that reads as "look at all the confirmations"
 demonstrates only that the author is good at post-hoc rationalisation.
-A portfolio project that reads as "here's where I killed my own
-decisions, and here's the discipline that made me willing to" is
-what the discipline actually looks like.**
-
-That's the case study.
+The load-bearing decisions in this project came from applying that
+same critical view to a plan I'd already written — killing the
+weighted composite, killing VERSA, killing the BT rating campaign,
+and reporting the T4/T6 verification results as *refinements to my
+own headline claims* rather than confirmations. The receipts for
+those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
+[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md).
 
 ---
 

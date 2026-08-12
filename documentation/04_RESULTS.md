@@ -14,12 +14,14 @@ decision-maker needs.*
 
 ## Headline in one line
 
-**There is no universal winner.** Every vendor dominates at least
-one measurement axis and loses at least one. The right pick
-depends on which axis your listener use case maps to, and on which
-failure mode you can absorb. See [05_CASE_STUDY.md](05_CASE_STUDY.md)
-for the full narrative and [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)
-for the F-8 / T8 / T5+T7 headline findings.
+**No single vendor dominates.** Every vendor with an axis-level top-2
+placement loses at least one other axis, and one vendor (Google) has
+no top-2 placement on any axis of either use case — a legitimate
+"middling generalist" position. The right pick depends on which
+axis your listener use case maps to, and on which failure mode you
+can absorb. See [05_CASE_STUDY.md](05_CASE_STUDY.md) for the full
+narrative and [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) for the F-8 /
+T8 / T5+T7 headline findings.
 
 ---
 
@@ -457,8 +459,10 @@ to this table. Each test has a per-test evidence file
 (hypothesis + method + criterion + result + verdict) linked in the
 `Evidence` column.
 
-9 targeted tests re-checked the primary campaign's headline
-outliers on fresh data:
+The verification pack had 10 tests on the roster (T1..T8, N1, N2).
+T3 was retired mid-project (the 2b DNSMOS run answered its exit
+criterion before Phase 2c even started), leaving 9 active tests.
+Table below shows all 10 rows with T3's retirement noted:
 
 | # | Outlier | Vendor | Verdict | Evidence |
 |---|---|---|---|---|
@@ -473,7 +477,13 @@ outliers on fresh data:
 | N1 | Audiobox #8/#8 vs DNSMOS #1/#1/#2 narr | OpenAI | Pending (manual listen) | [N1](../analysis/verification/N1_openai_narration_inversion.md) |
 | N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); 3rd independent pipeline agrees | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
 
-**Confirmed: 5 · Confirmed-with-refinement/caveat: 3 · Refuted-with-bigger-finding: 1 · Pending: 1**
+**Verdict tally (10 rows):**
+- **Confirmed cleanly**: 3 (T1, T7, N2)
+- **Confirmed with refinement / caveat / reversal**: 3 (T4, T5, T6)
+- **Answered by another test's finding**: 1 (T2, resolved by T8)
+- **Refuted with a bigger finding**: 1 (T8)
+- **Retired mid-project**: 1 (T3)
+- **Pending manual work**: 1 (N1)
 
 Total Phase 2c spend: **~$0.61** across 40 items × 3 fresh regen
 campaigns + 2 new latency sessions.
@@ -497,11 +507,18 @@ a clear answer for your use case.
 ### Q2 — Which "quality" matches your users?
 
 - **Warm / engaging** (consumer storytelling, audiobook, brand voice) →
-  **Speechify** wins Audiobox on both use cases AND is cheapest on
-  the paid tier.
+  **Speechify** wins Audiobox on both use cases. On cost, Speechify
+  ($0.10 / 1K words at 100K/mo) is the **cheapest among the top-2
+  warm-quality vendors** — ElevenLabs at $0.22 is the #2 warm vendor
+  and is 2.2× more. Absolute cheapest overall is Orpheus at $0.030,
+  but Orpheus is bottom-2 on Audiobox PQ conv and disqualified from
+  narration by its 14.59-second output cap.
 - **Clean / pristine** (enterprise IVR, accessibility, transactional
   voice) → **OpenAI** wins DNSMOS narration and ties for #1
-  conversational at 50-70% of the tied competitor's cost.
+  conversational. **OpenAI ($0.075 / 1K words) is 34% of ElevenLabs
+  ($0.22, tied competitor on conv) and 50% of Deepgram ($0.15, tied
+  competitor on narration)** — so a ~50-66% saving depending on which
+  tied competitor you compare against.
 
 ### Q3 — Is #1 quality worth the cost premium over #2?
 
@@ -533,9 +550,12 @@ Full plain-language walkthrough in
 - **DN.bak** — Microsoft DNSMOS *bak_mos* — P.835 background-noise
   intrusiveness (higher = less intrusive, 1–5).
 - **clip samples** — Total audio samples with amplitude ≥ ±1.0 across
-  all 75 files (hygiene analyzer, `pyloudnorm`-based).
+  all 75 files. Direct sample-peak detection in the hygiene analyzer
+  (numpy-based, not pyloudnorm — pyloudnorm is used for LUFS
+  loudness only).
 - **noise floor (dBFS)** — Mean noise floor across 75 files (hygiene
-  analyzer). Less-negative = noisier.
+  analyzer, `pyloudnorm.integrated_loudness` on the quiet-window
+  windows). Less-negative = noisier.
 - **WER %** — Mean word-error-rate on items with judge agreement
   (two-judge design: wav2vec2 + faster-whisper). Reported as
   relative ranking only; absolute inflated by wav2vec2's LibriSpeech

@@ -1,0 +1,192 @@
+{
+  "run_id": "campaign-20260809T204608Z",
+  "pricing_source": "configs\\pricing.yaml",
+  "chars_per_word_assumption": 5.0,
+  "total_observed_cost_usd": 7.8457,
+  "providers": [
+    {
+      "provider": "cartesia",
+      "tier_used": "pro_monthly",
+      "unit": "per_1M_chars",
+      "rate_usd": 40.0,
+      "minimum_monthly_usd": 5.0,
+      "included_units_per_month": 100000.0,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 1.5566,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.5,
+        "100K_words_per_month": 0.16,
+        "1M_words_per_month": 0.196
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 5.0,
+        "100K_words_per_month": 16.0,
+        "1M_words_per_month": 196.0
+      },
+      "note": "Pro $5/mo = 100K credits. Free tier is non-commercial. Concurrency capped at 2 (free) / 3 (Pro)."
+    },
+    {
+      "provider": "deepgram",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 30.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 1.1675,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.15,
+        "100K_words_per_month": 0.15,
+        "1M_words_per_month": 0.15
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 1.5,
+        "100K_words_per_month": 15.0,
+        "1M_words_per_month": 150.0
+      },
+      "note": "Aura-2. $200 one-time signup credit covers the full project."
+    },
+    {
+      "provider": "elevenlabs",
+      "tier_used": "creator_monthly",
+      "unit": "per_1M_chars",
+      "rate_usd": 50.0,
+      "minimum_monthly_usd": 22.0,
+      "included_units_per_month": 121000.0,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 1.9458,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 2.2,
+        "100K_words_per_month": 0.22,
+        "1M_words_per_month": 0.24395
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 22.0,
+        "100K_words_per_month": 22.0,
+        "1M_words_per_month": 243.95
+      },
+      "note": "Flash v2.5. Creator $22/mo (121K credits — corrected from earlier 100K figure, defect 3.14). Commercial use requires paid tier. Biggest single line item for the project."
+    },
+    {
+      "provider": "fish",
+      "tier_used": "paid",
+      "unit": "per_1M_bytes",
+      "rate_usd": 15.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 39029,
+      "observed_generations": 150,
+      "observed_cost_usd": 0.5854,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.075,
+        "100K_words_per_month": 0.075,
+        "1M_words_per_month": 0.075
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.75,
+        "100K_words_per_month": 7.5,
+        "1M_words_per_month": 75.0
+      },
+      "note": "s2.1-pro. Billed per UTF-8 byte (≈ chars for English). Used for D1 latency; free tier used for quality/WER."
+    },
+    {
+      "provider": "google",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 30.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 1.1675,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.15,
+        "100K_words_per_month": 0.15,
+        "1M_words_per_month": 0.15
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 1.5,
+        "100K_words_per_month": 15.0,
+        "1M_words_per_month": 150.0
+      },
+      "note": "Chirp3 HD. Billing counts spaces and SSML tags."
+    },
+    {
+      "provider": "openai",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 15.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 0.5837,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.075,
+        "100K_words_per_month": 0.075,
+        "1M_words_per_month": 0.075
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.75,
+        "100K_words_per_month": 7.5,
+        "1M_words_per_month": 75.0
+      },
+      "note": "gpt-4o-mini-tts / gpt-4o-tts approximate rate. OpenAI actually bills per-character for tts-1 and per-second for the gpt-4o variants; ~$15/1M chars is the conservative approximation used for D6. Prepaid credit required (no free tier). Estimated project cost ~$0.50-2 given corpus size + variance subset. Re-verify on analysis day per D6 rule."
+    },
+    {
+      "provider": "orpheus",
+      "tier_used": "replicate_l40s",
+      "unit": "per_generation",
+      "rate_usd": 0.003,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 150,
+      "observed_generations": 150,
+      "observed_cost_usd": 0.45,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.03,
+        "100K_words_per_month": 0.03,
+        "1M_words_per_month": 0.03
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.3,
+        "100K_words_per_month": 3.0,
+        "1M_words_per_month": 30.0
+      },
+      "note": "L40S on Replicate, billed per GPU-second so cost scales with output length; ~$0.003/generation is the observed mean per verification 2026-08-06. Earlier draft used $0.08 (24× too high) which drove a design concession — Orpheus variance subset reduced to 5 items — that has now been reversed: all six providers run the full 10-item subset (spec §3.4). Latency scored N/A-hosted (measures Replicate's cold start, not the model)."
+    },
+    {
+      "provider": "speechify",
+      "tier_used": "starter_monthly",
+      "unit": "per_1M_chars",
+      "rate_usd": 10.0,
+      "minimum_monthly_usd": 10.0,
+      "included_units_per_month": 1000000.0,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 38916,
+      "observed_generations": 150,
+      "observed_cost_usd": 0.3892,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 1.0,
+        "100K_words_per_month": 0.1,
+        "1M_words_per_month": 0.04
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 10.0,
+        "100K_words_per_month": 10.0,
+        "1M_words_per_month": 40.0
+      },
+      "note": "Simba 3.2 model. Free tier caps at 50K chars/mo — insufficient for the ~130K chars/provider campaign volume — so Starter plan ($10/mo, 1M chars) required. Cancel after campaign to avoid auto-renewal. Estimated project cost: $10 (one Starter month)."
+    }
+  ]
+}

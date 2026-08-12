@@ -1,0 +1,266 @@
+{
+  "run_id": "variance-20260809T205319Z",
+  "z_multiplier": 1.96,
+  "measurement_noise_floor_scope": [
+    "ttsds2",
+    "item_wer"
+  ],
+  "by_provider": [
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.0341616165708779,
+        "audiobox_pq": 0.17198835596516235
+      },
+      "noise_floor": {
+        "item_wer": 0.021173589315795716,
+        "audiobox_pq": 0.1065994874320331
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.0347521696862672,
+        "audiobox_pq": 0.061930530470777144
+      },
+      "noise_floor": {
+        "item_wer": 0.02153961792888765,
+        "audiobox_pq": 0.03838494046606267
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.050864543876177726,
+        "audiobox_pq": 0.11981064241345371
+      },
+      "noise_floor": {
+        "item_wer": 0.031526170915681065,
+        "audiobox_pq": 0.0742594055190794
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.027561625106435127,
+        "audiobox_pq": 0.050777613929852104
+      },
+      "noise_floor": {
+        "item_wer": 0.017082872224995084,
+        "audiobox_pq": 0.0314722911767371
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.006644727685873236,
+        "audiobox_pq": 0.06217969845138843
+      },
+      "noise_floor": {
+        "item_wer": 0.004118444888112096,
+        "audiobox_pq": 0.038539376380451074
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.004156103050953836,
+        "audiobox_pq": 0.031185743687898764
+      },
+      "noise_floor": {
+        "item_wer": 0.002575979358952236,
+        "audiobox_pq": 0.019329124193675943
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "fish",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.006909654706873423,
+        "audiobox_pq": 0.04778678827260306
+      },
+      "noise_floor": {
+        "item_wer": 0.00428264835692853,
+        "audiobox_pq": 0.029618558229107195
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.021966256605495477,
+        "audiobox_pq": 0.13804341977492324
+      },
+      "noise_floor": {
+        "item_wer": 0.013614826898052549,
+        "audiobox_pq": 0.08556019800754718
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "google",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.007164792412695981,
+        "audiobox_pq": 0.09088824752687794
+      },
+      "noise_floor": {
+        "item_wer": 0.004440784345336831,
+        "audiobox_pq": 0.056333119446315603
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.0055613395816463875,
+        "audiobox_pq": 0.057173602664585016
+      },
+      "noise_floor": {
+        "item_wer": 0.003446953984251504,
+        "audiobox_pq": 0.03543656606568186
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.017613569301967957,
+        "audiobox_pq": 0.10857022183412494
+      },
+      "noise_floor": {
+        "item_wer": 0.010917003357010402,
+        "audiobox_pq": 0.06729252066485339
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.003650561586028539,
+        "audiobox_pq": 0.113361736190784
+      },
+      "noise_floor": {
+        "item_wer": 0.0022626415127111115,
+        "audiobox_pq": 0.07026233203130743
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.08866402911103681,
+        "audiobox_pq": 0.14641734540070928
+      },
+      "noise_floor": {
+        "item_wer": 0.05495453458959671,
+        "audiobox_pq": 0.09075041088267678
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.03210626559967128,
+        "audiobox_pq": 0.05283341528838188
+      },
+      "noise_floor": {
+        "item_wer": 0.01989966958562551,
+        "audiobox_pq": 0.03274649005986231
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.003965763663222826,
+        "audiobox_pq": 0.0644804380939374
+      },
+      "noise_floor": {
+        "item_wer": 0.0024580057841925435,
+        "audiobox_pq": 0.03996538958485636
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "n_items": 10,
+      "n_draws": 3,
+      "within_sd": {
+        "item_wer": 0.0058081062249189346,
+        "audiobox_pq": 0.11134885063879954
+      },
+      "noise_floor": {
+        "item_wer": 0.003599901534337425,
+        "audiobox_pq": 0.06901473264065826
+      },
+      "deterministic": false,
+      "identical_across_draws_fraction": 0.0
+    }
+  ]
+}

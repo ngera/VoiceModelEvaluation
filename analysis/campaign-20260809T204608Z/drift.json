@@ -1,0 +1,1528 @@
+{
+  "run_id": "campaign-20260809T204608Z",
+  "gate_name": "monotonic_quality_drift_flag",
+  "by_provider": [
+    {
+      "provider": "cartesia",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "deepgram",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "elevenlabs",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 1,
+      "gate_pass": false
+    },
+    {
+      "provider": "fish",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "google",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "openai",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "orpheus",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    },
+    {
+      "provider": "speechify",
+      "n_long_items": 8,
+      "n_monotonic_degradation": 0,
+      "gate_pass": true
+    }
+  ],
+  "items": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 77.36,
+      "thirds": [
+        {
+          "lufs": -23.222263610201136,
+          "rms_dbfs": -23.660093883668555
+        },
+        {
+          "lufs": -24.324086923403556,
+          "rms_dbfs": -24.485650632538864
+        },
+        {
+          "lufs": -22.83035538432986,
+          "rms_dbfs": -22.92052518056731
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 71.64,
+      "thirds": [
+        {
+          "lufs": -20.611701492617012,
+          "rms_dbfs": -20.793274985109903
+        },
+        {
+          "lufs": -21.36116033007933,
+          "rms_dbfs": -21.586535295947996
+        },
+        {
+          "lufs": -22.712490506791024,
+          "rms_dbfs": -22.84916619566813
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 78.56,
+      "thirds": [
+        {
+          "lufs": -21.706326294104162,
+          "rms_dbfs": -21.50676252844068
+        },
+        {
+          "lufs": -21.97973106193856,
+          "rms_dbfs": -21.74166243856298
+        },
+        {
+          "lufs": -23.080754167993295,
+          "rms_dbfs": -23.23611260756303
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 103.88,
+      "thirds": [
+        {
+          "lufs": -22.29207135252353,
+          "rms_dbfs": -22.486520888193557
+        },
+        {
+          "lufs": -23.098757105447746,
+          "rms_dbfs": -23.044402337570688
+        },
+        {
+          "lufs": -24.56028410925174,
+          "rms_dbfs": -24.86533556827655
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 96.2,
+      "thirds": [
+        {
+          "lufs": -23.04068567784532,
+          "rms_dbfs": -22.78279176222903
+        },
+        {
+          "lufs": -22.825243513047965,
+          "rms_dbfs": -22.552836950706272
+        },
+        {
+          "lufs": -23.637380452600063,
+          "rms_dbfs": -23.582234683218157
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 87.28,
+      "thirds": [
+        {
+          "lufs": -24.057827979107735,
+          "rms_dbfs": -24.142796767406885
+        },
+        {
+          "lufs": -23.99353216403477,
+          "rms_dbfs": -23.967275104576963
+        },
+        {
+          "lufs": -22.506660389343743,
+          "rms_dbfs": -22.749932678229705
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 76.6,
+      "thirds": [
+        {
+          "lufs": -23.43205207752833,
+          "rms_dbfs": -23.355739002472106
+        },
+        {
+          "lufs": -23.979844037240433,
+          "rms_dbfs": -24.140213647942428
+        },
+        {
+          "lufs": -22.492900705880434,
+          "rms_dbfs": -22.6280937066738
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 116.0,
+      "thirds": [
+        {
+          "lufs": -22.34792051115819,
+          "rms_dbfs": -22.14696560596589
+        },
+        {
+          "lufs": -22.620714132373504,
+          "rms_dbfs": -22.558725663416492
+        },
+        {
+          "lufs": -23.88230194216917,
+          "rms_dbfs": -23.812689006637555
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 69.24936507936508,
+      "thirds": [
+        {
+          "lufs": -24.00074497590096,
+          "rms_dbfs": -23.780621995406086
+        },
+        {
+          "lufs": -25.02189877253359,
+          "rms_dbfs": -24.712148630770084
+        },
+        {
+          "lufs": -24.576097736504103,
+          "rms_dbfs": -24.220161869317245
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 71.93399092970522,
+      "thirds": [
+        {
+          "lufs": -25.47366500038279,
+          "rms_dbfs": -24.990217047138408
+        },
+        {
+          "lufs": -24.80806684063214,
+          "rms_dbfs": -24.535567355929643
+        },
+        {
+          "lufs": -25.050327026610454,
+          "rms_dbfs": -24.789187280928545
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 71.24839002267574,
+      "thirds": [
+        {
+          "lufs": -25.229150598210733,
+          "rms_dbfs": -25.149668875091468
+        },
+        {
+          "lufs": -24.720164907860656,
+          "rms_dbfs": -24.59921851612873
+        },
+        {
+          "lufs": -25.092305883806258,
+          "rms_dbfs": -24.845505880293686
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 71.22451247165533,
+      "thirds": [
+        {
+          "lufs": -25.452563310778295,
+          "rms_dbfs": -25.067481538402912
+        },
+        {
+          "lufs": -25.59055019527027,
+          "rms_dbfs": -25.283839150121914
+        },
+        {
+          "lufs": -25.76709246183825,
+          "rms_dbfs": -25.501491812308593
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 81.77517006802721,
+      "thirds": [
+        {
+          "lufs": -24.674439394263768,
+          "rms_dbfs": -24.317634126114868
+        },
+        {
+          "lufs": -25.265080615678205,
+          "rms_dbfs": -24.889644237688383
+        },
+        {
+          "lufs": -24.878756319451313,
+          "rms_dbfs": -24.579805422864673
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 81.86303854875284,
+      "thirds": [
+        {
+          "lufs": -25.185621945854887,
+          "rms_dbfs": -24.716245481071027
+        },
+        {
+          "lufs": -24.570084223868214,
+          "rms_dbfs": -24.312850433749684
+        },
+        {
+          "lufs": -24.896554192558476,
+          "rms_dbfs": -24.58673759707135
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 69.99691609977324,
+      "thirds": [
+        {
+          "lufs": -23.877763773914314,
+          "rms_dbfs": -23.454941484913764
+        },
+        {
+          "lufs": -24.434272601230294,
+          "rms_dbfs": -24.10407507384749
+        },
+        {
+          "lufs": -24.683197813896488,
+          "rms_dbfs": -24.36207716379802
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 102.61877551020409,
+      "thirds": [
+        {
+          "lufs": -23.032389296290628,
+          "rms_dbfs": -22.68917628347099
+        },
+        {
+          "lufs": -23.887614534610478,
+          "rms_dbfs": -23.520362351291638
+        },
+        {
+          "lufs": -23.96647498184461,
+          "rms_dbfs": -23.654990517774444
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 74.04091666666666,
+      "thirds": [
+        {
+          "lufs": -19.468902799554282,
+          "rms_dbfs": -19.33178106429049
+        },
+        {
+          "lufs": -20.392016064617984,
+          "rms_dbfs": -20.247631740180342
+        },
+        {
+          "lufs": -20.14441314804227,
+          "rms_dbfs": -20.082056374419984
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 69.88091666666666,
+      "thirds": [
+        {
+          "lufs": -20.543502492588832,
+          "rms_dbfs": -20.325221392388265
+        },
+        {
+          "lufs": -20.236086472165212,
+          "rms_dbfs": -20.08854496311525
+        },
+        {
+          "lufs": -20.638195167054743,
+          "rms_dbfs": -20.512220152407856
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 71.68091666666666,
+      "thirds": [
+        {
+          "lufs": -21.264969357735044,
+          "rms_dbfs": -20.84497032986104
+        },
+        {
+          "lufs": -21.757008245246244,
+          "rms_dbfs": -21.355331489355642
+        },
+        {
+          "lufs": -20.5136684380366,
+          "rms_dbfs": -20.44670279148578
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 85.60091666666666,
+      "thirds": [
+        {
+          "lufs": -20.353137174011128,
+          "rms_dbfs": -20.435292687642654
+        },
+        {
+          "lufs": -21.44399046848312,
+          "rms_dbfs": -21.414993611640433
+        },
+        {
+          "lufs": -22.19730721877828,
+          "rms_dbfs": -21.931673422044025
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 87.24091666666666,
+      "thirds": [
+        {
+          "lufs": -19.50072139677944,
+          "rms_dbfs": -19.614820634434082
+        },
+        {
+          "lufs": -20.95445237253068,
+          "rms_dbfs": -20.764933680243924
+        },
+        {
+          "lufs": -21.18970505382616,
+          "rms_dbfs": -20.90176762772531
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 76.60091666666666,
+      "thirds": [
+        {
+          "lufs": -20.936470472299444,
+          "rms_dbfs": -20.672720753100045
+        },
+        {
+          "lufs": -20.29324874913076,
+          "rms_dbfs": -20.224594186271084
+        },
+        {
+          "lufs": -21.26374183498203,
+          "rms_dbfs": -20.89153375925711
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 73.44091666666667,
+      "thirds": [
+        {
+          "lufs": -20.35291972238492,
+          "rms_dbfs": -20.10084695516693
+        },
+        {
+          "lufs": -21.346446321383247,
+          "rms_dbfs": -21.24802419016612
+        },
+        {
+          "lufs": -21.205562135933242,
+          "rms_dbfs": -21.18166133830996
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 97.16091666666667,
+      "thirds": [
+        {
+          "lufs": -21.636186730130735,
+          "rms_dbfs": -21.44178913760493
+        },
+        {
+          "lufs": -21.429734271272576,
+          "rms_dbfs": -21.223802842172077
+        },
+        {
+          "lufs": -21.435969761608593,
+          "rms_dbfs": -21.270892603714636
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 70.19341666666666,
+      "thirds": [
+        {
+          "lufs": -16.522530925092067,
+          "rms_dbfs": -16.897176823981827
+        },
+        {
+          "lufs": -17.519010050328788,
+          "rms_dbfs": -18.07731743163133
+        },
+        {
+          "lufs": -17.066503652045736,
+          "rms_dbfs": -17.697826249597245
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 69.171625,
+      "thirds": [
+        {
+          "lufs": -16.570451688026143,
+          "rms_dbfs": -16.7303186599319
+        },
+        {
+          "lufs": -17.664477234317395,
+          "rms_dbfs": -18.007797522944898
+        },
+        {
+          "lufs": -17.07936755680911,
+          "rms_dbfs": -17.36692852734607
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 69.21220833333334,
+      "thirds": [
+        {
+          "lufs": -16.67768083018016,
+          "rms_dbfs": -16.756605584537375
+        },
+        {
+          "lufs": -16.586713872556388,
+          "rms_dbfs": -16.749928561671652
+        },
+        {
+          "lufs": -16.678589733885538,
+          "rms_dbfs": -16.95368294355055
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 90.57454166666666,
+      "thirds": [
+        {
+          "lufs": -16.519618182960684,
+          "rms_dbfs": -16.996744951844015
+        },
+        {
+          "lufs": -17.288687984347174,
+          "rms_dbfs": -17.46485910787492
+        },
+        {
+          "lufs": -16.421334057700502,
+          "rms_dbfs": -16.921541038573203
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 86.20916666666666,
+      "thirds": [
+        {
+          "lufs": -16.953818898024796,
+          "rms_dbfs": -17.299225707726137
+        },
+        {
+          "lufs": -17.058396241065463,
+          "rms_dbfs": -17.094566709102473
+        },
+        {
+          "lufs": -16.884715013090485,
+          "rms_dbfs": -17.198613579700506
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 79.33616666666667,
+      "thirds": [
+        {
+          "lufs": -16.458432507343105,
+          "rms_dbfs": -16.66688452727169
+        },
+        {
+          "lufs": -16.98419990665949,
+          "rms_dbfs": -17.19058469862718
+        },
+        {
+          "lufs": -16.558474023074435,
+          "rms_dbfs": -16.743121801084
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 99.31120833333334,
+      "thirds": [
+        {
+          "lufs": -16.280047999320676,
+          "rms_dbfs": -16.478355124411518
+        },
+        {
+          "lufs": -16.14529498349257,
+          "rms_dbfs": -16.280207638357037
+        },
+        {
+          "lufs": -16.668480973866348,
+          "rms_dbfs": -16.980970517043275
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 68.52145833333333,
+      "thirds": [
+        {
+          "lufs": -16.835171170884422,
+          "rms_dbfs": -16.77876403019551
+        },
+        {
+          "lufs": -17.263923446700264,
+          "rms_dbfs": -17.35675541275771
+        },
+        {
+          "lufs": -16.287823098575924,
+          "rms_dbfs": -16.643685749606092
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 83.081,
+      "thirds": [
+        {
+          "lufs": -21.203280692859035,
+          "rms_dbfs": -21.791061071362485
+        },
+        {
+          "lufs": -21.043640567057384,
+          "rms_dbfs": -21.51709962143758
+        },
+        {
+          "lufs": -22.50529335022734,
+          "rms_dbfs": -23.020876411566555
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 85.21725,
+      "thirds": [
+        {
+          "lufs": -21.453000593492117,
+          "rms_dbfs": -21.905444712911116
+        },
+        {
+          "lufs": -23.422004581608327,
+          "rms_dbfs": -23.969165273565235
+        },
+        {
+          "lufs": -23.37592755905957,
+          "rms_dbfs": -23.745800745387488
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 82.38441666666667,
+      "thirds": [
+        {
+          "lufs": -19.60397758395971,
+          "rms_dbfs": -19.82981419273331
+        },
+        {
+          "lufs": -21.05689978178106,
+          "rms_dbfs": -21.205815485874066
+        },
+        {
+          "lufs": -23.213709621051517,
+          "rms_dbfs": -23.423857567226275
+        }
+      ],
+      "monotonic_degradation": true,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 89.164625,
+      "thirds": [
+        {
+          "lufs": -20.398468221024835,
+          "rms_dbfs": -20.847428498159157
+        },
+        {
+          "lufs": -21.442152287364294,
+          "rms_dbfs": -21.625764103290837
+        },
+        {
+          "lufs": -21.750021284916446,
+          "rms_dbfs": -22.079959429075995
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 97.663125,
+      "thirds": [
+        {
+          "lufs": -21.048005024232193,
+          "rms_dbfs": -21.63345321686289
+        },
+        {
+          "lufs": -21.836190532879865,
+          "rms_dbfs": -22.103493428593715
+        },
+        {
+          "lufs": -22.24513361157609,
+          "rms_dbfs": -22.778438422075485
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 82.43083333333334,
+      "thirds": [
+        {
+          "lufs": -20.30609281938419,
+          "rms_dbfs": -20.662422186050907
+        },
+        {
+          "lufs": -20.47740188068187,
+          "rms_dbfs": -20.79930841079689
+        },
+        {
+          "lufs": -22.477868301318974,
+          "rms_dbfs": -22.72878003610435
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 84.38133333333333,
+      "thirds": [
+        {
+          "lufs": -20.050172204933943,
+          "rms_dbfs": -20.39862775832202
+        },
+        {
+          "lufs": -20.645377976523537,
+          "rms_dbfs": -20.97845618789055
+        },
+        {
+          "lufs": -21.41878310143983,
+          "rms_dbfs": -22.026510225612498
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 102.53933333333333,
+      "thirds": [
+        {
+          "lufs": -25.040283718661588,
+          "rms_dbfs": -25.392796129772172
+        },
+        {
+          "lufs": -24.85417430021972,
+          "rms_dbfs": -25.182523663315713
+        },
+        {
+          "lufs": -26.56396741779398,
+          "rms_dbfs": -26.879457439577344
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -21.869036854280402,
+          "rms_dbfs": -22.042550061635502
+        },
+        {
+          "lufs": -22.165892191647153,
+          "rms_dbfs": -21.820352253806213
+        },
+        {
+          "lufs": -21.653598991737553,
+          "rms_dbfs": -21.583419919213178
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -21.470277254477,
+          "rms_dbfs": -20.86878157790329
+        },
+        {
+          "lufs": -21.94442529776404,
+          "rms_dbfs": -21.571357719725036
+        },
+        {
+          "lufs": -23.340154988555543,
+          "rms_dbfs": -23.07748083140339
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -22.050273456778324,
+          "rms_dbfs": -22.22214335909105
+        },
+        {
+          "lufs": -22.128986397630538,
+          "rms_dbfs": -21.121172099809655
+        },
+        {
+          "lufs": -23.357649624010744,
+          "rms_dbfs": -22.74316339323452
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -22.412123722128737,
+          "rms_dbfs": -22.22324704085993
+        },
+        {
+          "lufs": -23.086918051554882,
+          "rms_dbfs": -22.936819937160866
+        },
+        {
+          "lufs": -22.789706582308835,
+          "rms_dbfs": -22.580620491877475
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -22.066935998141155,
+          "rms_dbfs": -21.90284153415087
+        },
+        {
+          "lufs": -23.13128231485827,
+          "rms_dbfs": -22.806295072146817
+        },
+        {
+          "lufs": -21.547797622700664,
+          "rms_dbfs": -21.31750568336189
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -22.74113030484035,
+          "rms_dbfs": -22.49263705689772
+        },
+        {
+          "lufs": -22.93267157091266,
+          "rms_dbfs": -22.766098235863335
+        },
+        {
+          "lufs": -21.327702959314983,
+          "rms_dbfs": -20.927187499479302
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -20.92942518646578,
+          "rms_dbfs": -21.040686767283432
+        },
+        {
+          "lufs": -20.85844449948724,
+          "rms_dbfs": -20.496800967463532
+        },
+        {
+          "lufs": -23.070620569520127,
+          "rms_dbfs": -22.75896224597165
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 14.592,
+      "thirds": [
+        {
+          "lufs": -19.858953104894965,
+          "rms_dbfs": -19.71871519440867
+        },
+        {
+          "lufs": -19.94954579274008,
+          "rms_dbfs": -19.731372340129376
+        },
+        {
+          "lufs": -21.242648043198653,
+          "rms_dbfs": -21.014784009565894
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 82.0125,
+      "thirds": [
+        {
+          "lufs": -24.71273792748835,
+          "rms_dbfs": -24.486408282220683
+        },
+        {
+          "lufs": -24.672312724497722,
+          "rms_dbfs": -24.629044489163213
+        },
+        {
+          "lufs": -24.61524058278815,
+          "rms_dbfs": -24.82223019005495
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 79.9625,
+      "thirds": [
+        {
+          "lufs": -24.642960870785235,
+          "rms_dbfs": -24.757231636732804
+        },
+        {
+          "lufs": -24.27200535626445,
+          "rms_dbfs": -24.632943523728585
+        },
+        {
+          "lufs": -24.407141280751336,
+          "rms_dbfs": -24.68887684677449
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 85.925,
+      "thirds": [
+        {
+          "lufs": -24.83856895711251,
+          "rms_dbfs": -24.808903312860075
+        },
+        {
+          "lufs": -24.514629016304756,
+          "rms_dbfs": -24.448276268846016
+        },
+        {
+          "lufs": -24.777404925544204,
+          "rms_dbfs": -24.993238549295143
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 95.1375,
+      "thirds": [
+        {
+          "lufs": -24.47865516055656,
+          "rms_dbfs": -24.540849826065298
+        },
+        {
+          "lufs": -24.073103884218014,
+          "rms_dbfs": -24.572986406872207
+        },
+        {
+          "lufs": -24.67226180185935,
+          "rms_dbfs": -25.02736776587062
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 92.1125,
+      "thirds": [
+        {
+          "lufs": -23.942016900387745,
+          "rms_dbfs": -23.995841473501706
+        },
+        {
+          "lufs": -25.049778684457923,
+          "rms_dbfs": -25.018303435384365
+        },
+        {
+          "lufs": -25.147440477763777,
+          "rms_dbfs": -25.32359445438495
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 87.0125,
+      "thirds": [
+        {
+          "lufs": -24.782522585096054,
+          "rms_dbfs": -24.58932635262377
+        },
+        {
+          "lufs": -24.52033030032003,
+          "rms_dbfs": -24.48819782231165
+        },
+        {
+          "lufs": -24.786577439175378,
+          "rms_dbfs": -24.935991020312734
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 99.4,
+      "thirds": [
+        {
+          "lufs": -24.99045492693227,
+          "rms_dbfs": -24.699740759167476
+        },
+        {
+          "lufs": -24.880808766139207,
+          "rms_dbfs": -24.713200751272453
+        },
+        {
+          "lufs": -24.9217772124578,
+          "rms_dbfs": -24.90820758025048
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 80.05,
+      "thirds": [
+        {
+          "lufs": -24.713297022997853,
+          "rms_dbfs": -24.676335961136747
+        },
+        {
+          "lufs": -24.21377207062964,
+          "rms_dbfs": -24.403554185059644
+        },
+        {
+          "lufs": -24.75683082946618,
+          "rms_dbfs": -25.081935709202135
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "total_seconds": 67.11466666666666,
+      "thirds": [
+        {
+          "lufs": -18.085076903221747,
+          "rms_dbfs": -18.10716587796227
+        },
+        {
+          "lufs": -18.333611897145957,
+          "rms_dbfs": -17.875643510348677
+        },
+        {
+          "lufs": -17.441252903705177,
+          "rms_dbfs": -17.241575155387434
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "total_seconds": 71.17,
+      "thirds": [
+        {
+          "lufs": -18.004513209812412,
+          "rms_dbfs": -17.70770767307772
+        },
+        {
+          "lufs": -17.23828583322545,
+          "rms_dbfs": -16.844671836918966
+        },
+        {
+          "lufs": -18.31720208009611,
+          "rms_dbfs": -18.304268050276175
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "total_seconds": 68.7,
+      "thirds": [
+        {
+          "lufs": -17.56560902684131,
+          "rms_dbfs": -17.228642085811817
+        },
+        {
+          "lufs": -17.77044061166265,
+          "rms_dbfs": -17.35390551020728
+        },
+        {
+          "lufs": -17.848605129773777,
+          "rms_dbfs": -17.6463467291818
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "total_seconds": 82.26733333333334,
+      "thirds": [
+        {
+          "lufs": -18.045911958507073,
+          "rms_dbfs": -17.85660758739634
+        },
+        {
+          "lufs": -17.97078718423234,
+          "rms_dbfs": -17.562006996854095
+        },
+        {
+          "lufs": -18.331423040430845,
+          "rms_dbfs": -17.93960551412862
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "total_seconds": 79.968,
+      "thirds": [
+        {
+          "lufs": -17.954212122715077,
+          "rms_dbfs": -17.598520074755946
+        },
+        {
+          "lufs": -17.07637422196813,
+          "rms_dbfs": -16.92398031362997
+        },
+        {
+          "lufs": -18.34678887939652,
+          "rms_dbfs": -18.05232692349901
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "total_seconds": 72.61866666666667,
+      "thirds": [
+        {
+          "lufs": -18.090706607226167,
+          "rms_dbfs": -17.56907829411687
+        },
+        {
+          "lufs": -18.34749276621244,
+          "rms_dbfs": -17.760162870239583
+        },
+        {
+          "lufs": -17.69279136017358,
+          "rms_dbfs": -17.29556413327798
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "total_seconds": 97.676,
+      "thirds": [
+        {
+          "lufs": -19.168221846805285,
+          "rms_dbfs": -18.82236946092278
+        },
+        {
+          "lufs": -17.797308764588188,
+          "rms_dbfs": -17.351081838983138
+        },
+        {
+          "lufs": -17.987737377494334,
+          "rms_dbfs": -17.681063591257352
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "total_seconds": 65.57933333333334,
+      "thirds": [
+        {
+          "lufs": -17.380937965049743,
+          "rms_dbfs": -17.005979433498403
+        },
+        {
+          "lufs": -17.751287012749046,
+          "rms_dbfs": -17.641941290088415
+        },
+        {
+          "lufs": -17.619704475546783,
+          "rms_dbfs": -17.414178571735285
+        }
+      ],
+      "monotonic_degradation": false,
+      "error": null
+    }
+  ]
+}

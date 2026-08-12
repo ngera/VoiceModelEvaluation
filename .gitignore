@@ -46,12 +46,23 @@ judgments/
 decisions/
 
 # analysis/*.json outputs are pure functions of runs/ — regenerable,
-# not versioned. BUT `analysis/verification/*.md` holds human-written
-# Phase 2c verdict artefacts (hypothesis + criterion + result). Those
-# ARE paper evidence — keep them in git. Uses `analysis/*` (not
-# `analysis/`) so the un-ignore below works.
+# not versioned by default. BUT: (a) `analysis/verification/*.md` holds
+# human-written Phase 2c verdict artefacts, and (b) the specific
+# analyzer outputs that back published claims in the docs are
+# committed as evidence (auditability > repo size). Uses `analysis/*`
+# (not `analysis/`) so the un-ignore lines below work.
 analysis/*
 !analysis/verification/
+!analysis/campaign-20260809T204608Z/
+!analysis/campaign-20260809T204608Z/*.json
+!analysis/latency-20260809T214106Z/
+!analysis/latency-20260809T214106Z/latency.json
+!analysis/latency-20260811T183028Z/
+!analysis/latency-20260811T183028Z/latency.json
+!analysis/latency-20260811T183202Z/
+!analysis/latency-20260811T183202Z/latency.json
+!analysis/variance-20260809T205319Z/
+!analysis/variance-20260809T205319Z/*.json
 
 # Content-hash cache for synthesis (Phase D.2) — regenerable, safe to nuke
 .cache/

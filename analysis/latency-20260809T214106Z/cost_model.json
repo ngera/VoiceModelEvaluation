@@ -1,0 +1,100 @@
+{
+  "run_id": "latency-20260809T214106Z",
+  "pricing_source": "configs\\pricing.yaml",
+  "chars_per_word_assumption": 5.0,
+  "total_observed_cost_usd": 0.1687,
+  "providers": [
+    {
+      "provider": "cartesia",
+      "tier_used": "pro_monthly",
+      "unit": "per_1M_chars",
+      "rate_usd": 40.0,
+      "minimum_monthly_usd": 5.0,
+      "included_units_per_month": 100000.0,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 1250,
+      "observed_generations": 50,
+      "observed_cost_usd": 0.05,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.5,
+        "100K_words_per_month": 0.16,
+        "1M_words_per_month": 0.196
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 5.0,
+        "100K_words_per_month": 16.0,
+        "1M_words_per_month": 196.0
+      },
+      "note": "Pro $5/mo = 100K credits. Free tier is non-commercial. Concurrency capped at 2 (free) / 3 (Pro)."
+    },
+    {
+      "provider": "deepgram",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 30.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 1250,
+      "observed_generations": 50,
+      "observed_cost_usd": 0.0375,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.15,
+        "100K_words_per_month": 0.15,
+        "1M_words_per_month": 0.15
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 1.5,
+        "100K_words_per_month": 15.0,
+        "1M_words_per_month": 150.0
+      },
+      "note": "Aura-2. $200 one-time signup credit covers the full project."
+    },
+    {
+      "provider": "elevenlabs",
+      "tier_used": "creator_monthly",
+      "unit": "per_1M_chars",
+      "rate_usd": 50.0,
+      "minimum_monthly_usd": 22.0,
+      "included_units_per_month": 121000.0,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 1250,
+      "observed_generations": 50,
+      "observed_cost_usd": 0.0625,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 2.2,
+        "100K_words_per_month": 0.22,
+        "1M_words_per_month": 0.24395
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 22.0,
+        "100K_words_per_month": 22.0,
+        "1M_words_per_month": 243.95
+      },
+      "note": "Flash v2.5. Creator $22/mo (121K credits — corrected from earlier 100K figure, defect 3.14). Commercial use requires paid tier. Biggest single line item for the project."
+    },
+    {
+      "provider": "openai",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 15.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 1250,
+      "observed_generations": 50,
+      "observed_cost_usd": 0.0187,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.075,
+        "100K_words_per_month": 0.075,
+        "1M_words_per_month": 0.075
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.75,
+        "100K_words_per_month": 7.5,
+        "1M_words_per_month": 75.0
+      },
+      "note": "gpt-4o-mini-tts / gpt-4o-tts approximate rate. OpenAI actually bills per-character for tts-1 and per-second for the gpt-4o variants; ~$15/1M chars is the conservative approximation used for D6. Prepaid credit required (no free tier). Estimated project cost ~$0.50-2 given corpus size + variance subset. Re-verify on analysis day per D6 rule."
+    }
+  ]
+}

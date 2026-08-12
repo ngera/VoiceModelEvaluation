@@ -198,5 +198,5 @@ of the existing analyzer chain rather than a rewrite.
   same items linked back to the specific decisions that drove them
 - [05_CASE_STUDY.md § "What wasn't done and why"](05_CASE_STUDY.md#what-wasnt-done-and-why) —
   the same gaps in narrative form
-- [02_METHODOLOGY.md § D-H](02_METHODOLOGY.md#d-h-bt-deferred-to-v2) —
+- [06_KEY_FINDINGS.md § D-H](06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2) —
   the specific reasoning for the biggest omission (BT panel)

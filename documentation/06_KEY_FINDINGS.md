@@ -40,11 +40,14 @@ equivalent. This is universal, not vendor-specific.
 
 ### F-2 · Wav2vec2 is a noisy WER judge on TTS-distribution audio
 
-Two-judge agreement WER lands in 12–16% for 7 of 8 vendors
+Two-judge agreement WER lands in **~12–17%** for 7 of 8 vendors
 (Orpheus 27%, explained by F-9 T8). This is *inflated* — wav2vec2
 emits ALL CAPS + no punctuation and drops articles. The error
 pattern is provider-independent, so **relative rankings survive
-even though absolute numbers are inflated**.
+even though absolute numbers are inflated**. WER "ties" and
+"differences" are described qualitatively in these docs; no
+per-vendor WER SE is computed in v1, so treat the fine-grained
+ordering with caution.
 
 **Impact:** WER is reported as *relative-ranking-only* throughout
 the results. Absolute WER numbers should not be quoted without the
@@ -56,19 +59,25 @@ absolutes but reproduce the ordering.
 
 ### F-3 · Vendor strengths cluster orthogonally — no universal winner
 
-Across 6 measured dimensions (latency, cost, Audiobox PQ+CE, DNSMOS
-axes, WER), *different* vendors lead:
+Across 7 measured dimensions (latency, cost, Audiobox PQ, Audiobox CE,
+DNSMOS OVRL, WER conv, WER narr), and one non-dimension (determinism),
+different vendors lead:
 
 - Latency (TTFA p50/p90) → **ElevenLabs** Flash
-- Cost per 1K words → **Orpheus** (nominal; see F-9 T8)
+- Cost per 1K words → **Orpheus** (nominal; see F-9 T8 caveat)
 - Audiobox PQ (both use cases) → **Speechify**
 - DNSMOS OVRL (both use cases) → **OpenAI**
-- Cleanest WER (conv) → OpenAI / Fish / ElevenLabs tie
-- Cleanest WER (narr) → Cartesia / ElevenLabs / Speechify tie
+- Cleanest WER (conv) → OpenAI / Fish / ElevenLabs cluster (~13.7-14.1%)
+- Cleanest WER (narr) → Cartesia / ElevenLabs / Speechify cluster (~12.4-13.0%)
+  — Google at 13.0% shares the low end but is excluded here because
+  its cluster label is arbitrary without a WER SE (see F-2 caveat)
 - Determinism → nobody (F-1)
 
-**No single vendor leads ≥3 dimensions.** Every recommended vendor
-will be a trade-off, not a dominant choice. The frontier chart —
+**No single vendor leads on ≥3 of the 4 "quality" dimensions**
+(Audiobox PQ, Audiobox CE, DNSMOS OVRL, WER). ElevenLabs' latency +
+2 WER-cluster appearances is a support-agent-conversation strength,
+not a quality-headline strength. Every recommended vendor will be a
+trade-off, not a dominant choice. The frontier chart —
 not the leaderboard — is the artefact a decision-maker needs.
 
 ### F-4 + F-4a · Cartesia's clipping is triangulated across 3 independent pipelines
@@ -149,6 +158,7 @@ property, not a lucky voice pick. Vendor-agnostic buyers can
 select from Speechify's 8 Simba-3.2 voices based on brand fit
 without worrying about a big quality drop-off.
 
+<a name="f-8"></a>
 ### F-8 · The two independent MOS pipelines rank vendors *differently*
 
 Cross-pipeline mean Spearman ρ across 8 vendors:
@@ -257,7 +267,10 @@ first judge) share NVIDIA's FastConformer encoder family *and* their
 Canary-1B-v2 training-data pipeline. Would have quietly gutted the
 agreement rule.
 
-**Judge independence is now a Pydantic model_validator in
+**Judge independence is now a Pydantic `model_validator` on
+`AnalyzersFile` in
+[src/veval/config.py](../src/veval/config.py) that reads the org /
+family / pipeline metadata from
 [configs/analyzers.yaml](../configs/analyzers.yaml), not a lucky
 property.** The validator refuses any pair of judges that share
 organisation OR encoder family OR training pipeline.
@@ -391,6 +404,7 @@ demonstrates the evaluation is reproducible without cloud spend.
 Documented as a reproducibility receipt in
 [`configs/hardware.yaml`](../configs/hardware.yaml).
 
+<a name="d-g-enterprise-portability"></a>
 ### D-G · Enterprise portability disclosure
 
 Absolute TTFA / RTF numbers are labeled as **residential Windows 11
@@ -400,7 +414,8 @@ explicit ceilings. Alternative (re-measure on cloud VMs colocated
 with each vendor's serving region) is a 1-3 day workstream not
 justified at portfolio scope; deferred to v2.
 
-### <a name="d-h-bt-deferred"></a>D-H · Phase 3 BT deferred to v2
+<a name="d-h-bt-deferred-to-v2"></a>
+### D-H · Phase 3 BT deferred to v2
 
 The full 168-judgment Bradley-Terry rating campaign is **not
 executed** in v1. Deferred to a proper v2 multi-rater pass.
