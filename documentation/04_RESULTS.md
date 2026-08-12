@@ -61,12 +61,22 @@ different — see the footnotes on those rows.
 </tr>
 </table>
 
-For lower-is-better columns (clip samples, noise floor dBFS, WER %,
+For lower-is-better columns (clip samples, noise floor dBFS,
 TTFA ms, $/1K words) the colour flips direction — **green = lowest = best**.
 For `clip samples`, values of 0 are always green (perfect); any value
 ≥100 is red regardless of ranking. TTFA cells marked "—" indicate
 adapters that don't stream (Speechify, Fish, Google, Orpheus per D-008
 and adapter-shape).
+
+**WER % is deliberately not colour-coded.** F-2 documents that
+wav2vec2 (the second judge) inflates absolute WER on TTS speech,
+and F-3 documents that jiwer's default normaliser drops articles
+that both judges heard — those get counted as errors even though
+the audio contained them. Painting one vendor's WER cell green
+and another's red would imply an absolute pass/fail claim the
+data does not support. The numbers are shown for **relative
+ranking within the column** only; the glossary makes the same
+point.
 
 *Note: GitHub's markdown sanitizer strips cell background colors
 (both `style="..."` and the legacy `bgcolor` attribute), so the
@@ -104,7 +114,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.07</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 1</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -57.0</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 14.3</td>
+<td align="right">14.3</td>
 <td align="right">—</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.100</td>
 </tr>
@@ -118,7 +128,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.18</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -52.0</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 14.1</td>
+<td align="right">14.1</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 439</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.220</td>
 </tr>
@@ -132,7 +142,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.19</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -52.5</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 13.7</td>
+<td align="right">13.7</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 736</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.075</td>
 </tr>
@@ -146,7 +156,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.05</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -39.7</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 13.8</td>
+<td align="right">13.8</td>
 <td align="right">—</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.075</td>
 </tr>
@@ -160,7 +170,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.02</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -33.7</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 15.1</td>
+<td align="right">15.1</td>
 <td align="right">—</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
@@ -174,7 +184,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.07</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.2</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 16.6</td>
+<td align="right">16.6</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 583 <sup>³</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
@@ -188,7 +198,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.13</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 406</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -57.1</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 16.4</td>
+<td align="right">16.4</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 467</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.160</td>
 </tr>
@@ -202,7 +212,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.10</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -53.2</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 26.9</td>
+<td align="right">26.9</td>
 <td align="right">—</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
 </tr>
@@ -238,7 +248,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.17</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 5</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -55.2</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.0</td>
+<td align="right">13.0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.100</td>
 </tr>
 <tr>
@@ -251,7 +261,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.21 <sup>¹</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -78.7 <sup>¹</sup></td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 27.2</td>
+<td align="right">27.2</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
 </tr>
 <tr>
@@ -264,7 +274,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.05 <sup>²</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 429</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -55.3</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 12.4</td>
+<td align="right">12.4</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.160</td>
 </tr>
 <tr>
@@ -277,7 +287,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.11</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 39</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -36.8</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.0</td>
+<td align="right">13.0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
@@ -290,7 +300,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.07</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -41.5</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 12.8</td>
+<td align="right">12.8</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.220</td>
 </tr>
 <tr>
@@ -303,7 +313,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.15</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.8</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.5</td>
+<td align="right">13.5</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
@@ -316,7 +326,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.10</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.6</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 14.0</td>
+<td align="right">14.0</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.075</td>
 </tr>
 <tr>
@@ -329,7 +339,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 4.18</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -54.5</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 13.3</td>
+<td align="right">13.3</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.075</td>
 </tr>
 </tbody>

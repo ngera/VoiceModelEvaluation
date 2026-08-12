@@ -70,10 +70,22 @@ different vendors lead:
 - Cost per 1K words → **Orpheus** (nominal; see F-9 T8 caveat)
 - Audiobox PQ (both use cases) → **Speechify**
 - DNSMOS OVRL (both use cases) → **OpenAI**
-- Cleanest WER (conv) → OpenAI / Fish / ElevenLabs cluster (~13.7-14.1%)
-- Cleanest WER (narr) → Cartesia / ElevenLabs / Speechify cluster (~12.4-13.0%)
-  — Google at 13.0% shares the low end but is excluded here because
-  its cluster label is arbitrary without a WER SE (see F-2 caveat)
+- Cleanest WER (conv) → **cluster** at ~13.7-14.3% (OpenAI 13.70 /
+  Fish 13.78 / ElevenLabs 14.07 / Speechify 14.33). No vendor
+  cleanly leads; the spread is smaller than the F-2 / F-3
+  WER-judge inflation. Orpheus at 26.9% is the only vendor
+  categorically outside the pack.
+- Cleanest WER (narr) → **cluster** at ~12.4-13.1% (Cartesia
+  12.39 / ElevenLabs 12.81 / Speechify 13.02 / Google 13.05 /
+  Openai 13.30 / Fish 13.99). No vendor cleanly leads. Prior
+  drafts of this line excluded Google from the leading cluster
+  on the grounds that "the cluster label is arbitrary without a
+  WER SE" — that exclusion was itself arbitrary (Google 13.05
+  differs from Speechify 13.02 by 0.03%; the exclusion smuggled
+  in a leadership claim we don't have data to support). Google is
+  reinstated in the cluster; the cluster is reported as a range
+  rather than a leader list. Orpheus 27.23% is the only vendor
+  categorically outside the pack.
 - Determinism → nobody (F-1)
 
 **No single vendor leads on ≥3 of the 4 "quality" dimensions**
