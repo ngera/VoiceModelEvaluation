@@ -168,7 +168,7 @@ SD (the measurement noise floor). Every between-vendor delta is
 compared against `1.96 × SE(difference)` to check whether it
 exceeds the acoustic noise floor.
 
-### Latency mode (Phase D speed measurement)
+### <a name="latency--ping"></a>Latency mode (Phase D speed measurement)
 
 ```powershell
 # 50 serial TTFA trials per vendor on the S01 corpus item
@@ -180,8 +180,30 @@ uv run veval generate --mode latency --provider elevenlabs --trials 50
 
 Cache forced OFF (fresh trials = fresh measurements). Serial, not
 parallel — measures per-user tail experience, not aggregate
-throughput. For the published stability finding, run this twice on
-different days.
+throughput. For a proper stability characterisation you need **≥3
+sessions on different days**; F-11 in 06_KEY_FINDINGS.md is the
+receipt for why a two-session comparison is not sufficient.
+
+**S3 setup with concurrent ping baseline** (recommended for any
+new session that will be used to make a distributional claim):
+
+```powershell
+# Runs the latency campaign AND starts a concurrent ping-to-1.1.1.1
+# subprocess. Ping log lands at runs/ping-baseline-<ts>.jsonl.
+uv run python scripts/latency_with_ping.py --provider elevenlabs
+uv run python scripts/latency_with_ping.py --provider openai
+```
+
+The ping log rules out only the "last-mile link dropped packets"
+hypothesis for network-side contamination; it does not touch DNS,
+TLS, or client-side event-loop stalls. See
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
+for the full scope-of-ruleout discussion.
+
+**Commit the ping log**: copy `runs/ping-baseline-*.jsonl` into
+`analysis/` so it survives `runs/`'s gitignore. `.gitignore` has
+`!analysis/ping-baseline-*.jsonl` un-ignored explicitly for this
+purpose (small text file, big evidentiary value).
 
 ---
 
@@ -254,11 +276,23 @@ uv run veval generate --mode campaign
 # 4. Run the variance subset for the noise-floor measurement (~$2, ~10 min)
 uv run veval generate --mode variance
 
-# 5. Run 2 latency sessions on different days for T5+T7
-uv run veval generate --mode latency  # session 1
+# 5. Run 3 latency sessions across ≥2 different days for T5, T7, F-11.
+#    We ran ours on days 1, 3, and 4; you can compress but do not
+#    run them back-to-back on the same day (defeats the point of
+#    session-to-session variance measurement).
+uv run veval generate --mode latency  # session 1 (S1)
 # wait a day
-uv run veval generate --mode latency --provider openai      # session 2 OpenAI
-uv run veval generate --mode latency --provider elevenlabs  # session 2 ElevenLabs
+uv run veval generate --mode latency --provider openai      # S2 OpenAI
+uv run veval generate --mode latency --provider elevenlabs  # S2 ElevenLabs
+# wait another day
+# S3 — the after-review third session that refuted the stability
+# claim (F-11). Run this ONE with a concurrent ping-baseline log
+# to Cloudflare 1.1.1.1 so a next reviewer can rule out ISP jitter
+# independently. `scripts/latency_with_ping.py` starts the ping
+# subprocess, runs the latency call, and writes the ping log to
+# `runs/ping-baseline-<ts>.jsonl` alongside the latency run.
+uv run python scripts/latency_with_ping.py --provider openai
+uv run python scripts/latency_with_ping.py --provider elevenlabs
 
 # 6. Analyze — order matters within a single --stages list:
 #    quality + wer must land before variance reads them
@@ -267,10 +301,27 @@ uv run veval analyze <variance-run-id> --stages quality,wer,variance --skip-ttsd
 uv run veval analyze <latency-run-id-s1> --stages latency
 uv run veval analyze <latency-run-id-s2-oai> --stages latency
 uv run veval analyze <latency-run-id-s2-el>  --stages latency
+uv run veval analyze <latency-run-id-s3-oai> --stages latency
+uv run veval analyze <latency-run-id-s3-el>  --stages latency
 
-# 7. Generate figures
+# 7. Recompute the per-comparison SE(diff) tie tests and the paired
+#    vs unpaired comparison (Wave 1 statistical honesty pass —
+#    reads campaign + variance analysis JSONs, prints to stdout)
+uv run python scripts/_noise_floor_recompute.py
+uv run python scripts/_paired_test.py
+
+# 8. Generate figures
 uv run python scripts/generate_figures.py
 ```
+
+**S3 evidence commit**: the ping-baseline log from S3
+(`ping-baseline-20260812T191138Z.jsonl` in ours) is
+committed into `analysis/` under the same name so a reader
+can verify the "network was clean during S3" claim without
+having to regenerate. See [.gitignore](../.gitignore) —
+`!analysis/ping-baseline-*.jsonl` is un-ignored explicitly for
+this purpose. The audio latency `runs/` are gitignored
+(regenerable + large).
 
 Analyzer outputs land in `analysis/<run-id>/*.json`. Figures land
 in `documentation/figures/`. Compare against the published

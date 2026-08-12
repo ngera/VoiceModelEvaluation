@@ -1013,18 +1013,39 @@ Full measurement methodology in
 ## Reproducing these numbers
 
 ```powershell
-# From the immutable run stores (regenerable)
+# --- Analyzer replay from the primary campaign + variance runs ---
 uv run veval analyze campaign-20260809T204608Z --stages all
+uv run veval analyze variance-20260809T205319Z --stages quality
+
+# --- Latency: all three sessions (S1 + S2 + S3) ---
+# S1 (2026-08-09) — first pass, 50 trials × 4 streaming vendors
 uv run veval analyze latency-20260809T214106Z --stages latency
+uv run veval analyze latency-20260809T222356Z --stages latency
+# S2 (2026-08-11) — second pass, adds T5/T7 verification
 uv run veval analyze latency-20260811T183028Z --stages latency
 uv run veval analyze latency-20260811T183202Z --stages latency
+# S3 (2026-08-12) — third pass with concurrent ping baseline; the
+# session that refuted the "ElevenLabs stability" claim (F-11).
+# The concurrent ping-baseline log is committed at
+# `analysis/ping-baseline-20260812T191138Z.jsonl` (274 probes to
+# Cloudflare 1.1.1.1); the audio runs/ are regenerable per 03.
+uv run veval analyze latency-20260812T191143Z --stages latency  # OpenAI, 50/50
+uv run veval analyze latency-20260812T191323Z --stages latency  # ElevenLabs, 40/50 (spend-cap)
 
-# Cross-metric analysis
+# --- Cross-metric analysis + per-comparison SE(diff) + paired test ---
 uv run veval analyze campaign-20260809T204608Z --stages cross_metric
+uv run python scripts/_noise_floor_recompute.py    # per-vendor SE + unpaired ties
+uv run python scripts/_paired_test.py              # paired vs unpaired
 
-# Regenerate the figures
+# --- Regenerate the figures ---
 uv run python scripts/generate_figures.py
 ```
+
+**Regenerating audio runs from scratch**: `runs/` is gitignored
+(regenerable + large — ~5 GB per full campaign). To reproduce
+audio, follow [03_RUNBOOK.md § generate](03_RUNBOOK.md); the
+`analyze` invocations above assume those `runs/` directories
+have been produced locally or restored from a snapshot.
 
 See [03_RUNBOOK.md](03_RUNBOOK.md) for full install + reproduce
 instructions.
