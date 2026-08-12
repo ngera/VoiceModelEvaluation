@@ -112,10 +112,14 @@ Pareto framing meaningful.
 ### D1 · Latency
 
 **What we measure**: TTFA (time-to-first-audio-frame) p50 / p90 /
-min / max from 50 serial trials per vendor. **Second session two
-days apart** for the two speed-critical vendors (OpenAI + ElevenLabs)
-to separate speed from stability. RTF (real-time-factor) on long
-narration items.
+min / max from 50 serial trials per vendor, in dedicated
+latency-mode sessions (fresh calls, no cache). RTF was
+pre-committed as a narration gate but **was not adjudicated in v1**
+because the campaign ran fully from the content-hash cache and the
+latency sessions were TTFA-only on the S01 conversational item —
+see [04_RESULTS.md § RTF admission](04_RESULTS.md#rtf-admission).
+A v2 pass with `--no-cache` on a long-narration subset would close
+the RTF gate.
 
 **Why serial not parallel**: parallel trials measure the vendor's
 concurrency handling; serial trials measure the tail of an
@@ -126,22 +130,44 @@ per-user matters more than aggregate throughput.
 distinguish "vendor is fast" from "vendor happened to be fast
 during our measurement window." The plan called for two sessions
 on different days. Post-review, a third session (2026-08-12) with
-concurrent ping baseline was added; it refuted the two-session
-"stability" reading — see
+concurrent ping baseline was added; it **refuted the two-session
+"stability" reading — the entire "session-to-session variance is a
+distinct vendor property" framing that appeared in earlier drafts
+of this section is retracted**. Both vendors moved 50-90% p50
+across the three sessions; two-session agreement was a coincidence.
+Full retraction in
 [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
-The methodology takeaway that survives: **TTFA is
-session-variable; report absolute values as a range across ≥3
-sessions, not as a point estimate**. What the design of two
-sessions was too weak to catch is documented in F-11 as a
-first-class finding, not concealed.
+
+The methodology takeaways that survive:
+- **TTFA rank is stable at n=3**: rank tests are robust at low
+  session counts (ElevenLabs faster than OpenAI in every session)
+- **TTFA absolute values are not**: publish as a range across
+  sessions with per-session n and spend-cap caveats attached, not
+  as a point estimate
+- **n=3 sessions cannot characterise a variance distribution**:
+  any stability claim needs ≥5-10 sessions across ≥2 weeks with
+  client-side lag logged and warm-up trials excluded (F-11)
+- **The pre-registered `ttfa_p90_ms < 400` gate is all-fail on
+  measured streaming vendors**: see
+  [04_RESULTS.md § TTFA-gate admission](04_RESULTS.md#ttfa-gate-admission).
+  As with the WER gate below, the gate is retained as
+  pre-registration evidence; recommendations use the
+  perception-threshold reference (~500 ms) as the softer bar,
+  with F-11's session-to-session variance disclosure attached.
 
 ### D2 · WER (Word Error Rate)
 
 **What we measure**: two ASR judges (Meta `wav2vec2-large-robust` +
 OpenAI `faster-whisper large-v3`), agreement-based error detection.
-Threshold for pass: `agreement_wer < 5% + numeric/currency/date span
-exempt`. Failure taxonomy: `agreed_word_drop_runs`, `truncation`,
-`repetition_loop_*`, `agreed_hallucination_runs`.
+The pre-registered gate is `agreement_wer < 5% + numeric/currency/
+date span exempt` per item, with `failure_incidence_pct < 2.0` as
+the aggregate. **Applied strictly, the gate fails every vendor**
+(61.3-73.3% failure incidence) — see
+[04_RESULTS.md § WER-gate admission](04_RESULTS.md#wer-gate-admission).
+As with the TTFA gate, the pre-registered threshold is retained;
+recommendations use WER as a **relative ranking only**, never an
+absolute pass/fail. Failure taxonomy: `agreed_word_drop_runs`,
+`truncation`, `repetition_loop_*`, `agreed_hallucination_runs`.
 
 **Why agreement-based**: single-ASR WER conflates "the audio is bad"
 with "the ASR misheard." Two independent ASRs agreeing on an error
@@ -149,10 +175,11 @@ location makes the "audio is actually bad" reading much more
 credible.
 
 **Why WER is relative-ranking only**: wav2vec2 emits ALL CAPS + no
-punctuation and drops articles, inflating absolute WER (F-2). The
-error pattern is *vendor-independent* — every vendor gets the same
-inflation — so relative rankings survive even though absolutes
-don't.
+punctuation and drops articles, inflating absolute WER (F-2). jiwer's
+default normaliser hard-codes some of that article-drop as errors
+(F-3). The error pattern is *vendor-independent* — every vendor gets
+the same inflation — so relative rankings survive even though
+absolutes don't.
 
 ### D3 · Quality (two MOS pipelines)
 
@@ -432,8 +459,9 @@ committed to git with a timestamp that predates results.
 - [03_RUNBOOK.md](03_RUNBOOK.md) — how to install + reproduce the
   measurements
 - [04_RESULTS.md](04_RESULTS.md) — the full data these methods produced
-- [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) — findings F-1..F-9 +
-  decision log D-A..D-H (the flip side of this document — the
-  specific decisions rather than the underlying principles)
+- [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) — findings F-1 through
+  F-9 + F-11 (F-10 slot documented in-doc) + decision log
+  D-A..D-H (the flip side of this document — the specific
+  decisions rather than the underlying principles)
 - [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) — where
   the methodology falls short and what a v2 would fix

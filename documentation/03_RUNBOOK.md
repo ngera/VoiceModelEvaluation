@@ -332,8 +332,15 @@ by [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py).
 Prior versions of this doc referenced a single-number ~0.035 noise
 floor — that heuristic has been retired.
 
-**Estimated total cost**: ~$56 across 8 vendor accounts, plus 3-4
-hrs wall clock on a mid-tier CPU laptop.
+**Estimated cost of a clean reproduction**: ~$50 across 8 vendor
+accounts for the primary campaign + variance + 3 latency sessions,
+plus 3-4 hrs wall clock on a mid-tier CPU laptop. **This is not
+the same as project total spend** — the project itself iterated
+across three review rounds and multiple failed adapter attempts;
+total v1 project spend was ~$56 including the retries and the
+extra latency + verification runs that never made it into the
+published pipeline. A cold-start reproducer following the recipe
+above should spend less than the project did.
 
 ---
 

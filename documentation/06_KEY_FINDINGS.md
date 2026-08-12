@@ -497,6 +497,7 @@ output and the split-half stability check runs on Audiobox PQ.
 **Not a deviation — plan-anticipated escape hatch.** Mitigated by
 D-B (adding DNSMOS as the second MOS pipeline).
 
+<a name="d-b"></a>
 ### D-B · Add DNSMOS via speechmos (D3 second pipeline)
 
 Added Microsoft DNSMOS as the second independent MOS pipeline

@@ -434,12 +434,20 @@ vendor structurally?
 - Any downstream audio pipeline (MOS check, ASR, resample)?
   **Cartesia needs a peak-limiter step** first
 - Sub-500 ms p90 required (real-time voice)? **Unresolved on our
-  data.** ElevenLabs Flash cleared 500 ms p90 in S1+S2 (469-479 ms)
-  but failed in S3 (816 ms). Deepgram cleared it in the single
-  session we measured (~230 ms) but wasn't re-measured. **Do not
-  provision from any of our measurements** — real-time TTFA is
-  session-variable enough that you need ≥3 sessions on your own
-  deployment before committing. See F-11 (§ 3 below).
+  data — and worse than earlier drafts admitted.** Two thresholds:
+  the pre-registered gate is `ttfa_p90_ms < 400` (`configs/gates.yaml`);
+  the perception-threshold reference from the spec's A.1 is ~500 ms.
+  **No measured vendor clears the pre-registered 400 ms gate in
+  any session.** ElevenLabs Flash's best measurement was 469 ms p90
+  (S2); everything else fails more clearly (Cartesia 529, Deepgram
+  670, OpenAI 946+). Against the softer 500 ms perception reference,
+  ElevenLabs cleared it in S1+S2 (469-479 ms) but failed S3 (816 ms).
+  **Prior drafts also credited Deepgram with "~230 ms" — that figure
+  is not supported by any measurement in the repo (actual Deepgram
+  S1 was 670-674 ms p90) and is retracted.** **Do not provision
+  from any of our measurements** — real-time TTFA is
+  session-variable enough that you need ≥5 sessions on your own
+  deployment before committing (F-11, § 3 below).
 - Byte-identical caching? **Impossible with any of the 8** — none
   produces the same bytes twice
 
@@ -600,8 +608,9 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
 
 - **[04_RESULTS.md](04_RESULTS.md)** — full per-provider data table +
   cost calculus + decision framework
-- **[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)** — findings F-1..F-9 +
-  friction-point stories + decision log D-A..D-H
+- **[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)** — findings F-1
+  through F-9 + F-11 (F-10 slot is documented in-doc), friction-point
+  stories, decision log D-A..D-H
 - **[02_METHODOLOGY.md](02_METHODOLOGY.md)** — why every methodology
   choice was made (weighted-composite killed, two-pipeline design,
   loudness normalization, judge independence, BT deferral)

@@ -32,7 +32,7 @@ noise-floor, WER via two-judge agreement, latency (conversational
 only, 50-trial session), and public-tier cost per 1K words at 100K
 words/month.
 
-**Important scope note**: **each cell in
+**Important scope note (single-realization)**: **each cell in
 these tables is a single realization** — one draw per (vendor, item)
 in the campaign, aggregated over 75 items. F-1 established that no
 vendor produces byte-identical output across draws, so every value
@@ -43,6 +43,31 @@ component (which is small for aggregates over 75 items — see the
 `SD_within` column in the noise-floor recompute output). For
 Orpheus narration + Cartesia DNSMOS narration, the story is
 different — see the footnotes on those rows.
+
+**Important scope note (cache-only campaign)**: the campaign run
+`campaign-20260809T204608Z` **ran fully from the content-hash
+cache** — every audio file it "produced" was replayed from bytes
+generated at an earlier, unrecorded date. This is why:
+
+- Latency's `n_fresh = 0` and `n_with_ttfa = 0` for every vendor
+  in [`analysis/campaign-20260809T204608Z/latency.json`](../analysis/campaign-20260809T204608Z/latency.json)
+  (the campaign has no timing data — TTFA / RTF come from the
+  dedicated latency-mode sessions instead).
+- No `synthesis_time` is available, so **RTF was not adjudicated
+  in v1** — see the [RTF admission](#rtf-admission).
+- Combined with F-1 (nothing is byte-reproducible), **each cell
+  is a frozen single draw whose exact synthesis date is not
+  recorded in `runs/<id>/manifest.json`** — only the cache-hit
+  timestamp is. The published-date-on-every-finding discipline
+  in 02 is genuine at the *analysis-artefact* level but degrades
+  at the *raw-audio-generation* level for cache-hit rows.
+- The RTF gate row therefore reports "not adjudicated" rather
+  than pass/fail. All quality-axis and hygiene claims are
+  unaffected — they read audio bytes, not timestamps.
+
+A v2 pass would re-run the campaign with `--no-cache` to get
+per-item `synthesis_time` and adjudicate RTF; see
+[07_GAPS_AND_FUTURE_WORK.md § Deferred by scope](07_GAPS_AND_FUTURE_WORK.md#deferred-by-scope-not-attempted-in-v1).
 
 **Colour legend** (per column, direction-normalized):
 
@@ -214,7 +239,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -53.2</td>
 <td align="right">26.9</td>
 <td align="right">—</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
+<td align="right">0.030 <sup>†</sup></td>
 </tr>
 </tbody>
 </table>
@@ -262,7 +287,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -78.7 <sup>¹</sup></td>
 <td align="right">27.2</td>
-<td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0.030</td>
+<td align="right">0.030 <sup>†</sup></td>
 </tr>
 <tr>
 <td><b>cartesia</b> <sup>²</sup></td>
@@ -370,16 +395,38 @@ surviving subset are still #8 of 8 on OVRL / SIG / BAK — the
 mastering signature that got the other 37 refused persists in the
 38 that made it through.
 
+<a name="footnote-3-deepgram-conversational-ttfa"></a>
 **Footnote ³ (Deepgram conversational TTFA)**: the 583 ms figure
-in this table is from an earlier campaign-mode run whose adapter
-included cache-warm-up overhead — not a true streaming TTFA
-measurement. The **operational TTFA** for Deepgram (from a
-dedicated 50-trial latency-mode session on 2026-08-09) is
-**~180 ms p50 / ~230 ms p90** — see the Latency section below.
-The colored 583 cell reflects the campaign-observed value; the
-latency-table value is the one to cite for a deployment decision.
-Deepgram wasn't re-measured in S2/S3, so we have only one clean
-latency-mode session for it.
+in this table is from a campaign-mode Deepgram row. The two
+dedicated latency-mode sessions on 2026-08-09 (n=50 trials each,
+serial) measured Deepgram at **p50 = 583 / 564 ms, p90 = 674 / 670
+ms** — statistically consistent with the campaign value. **The
+prior "Deepgram ~180 ms p50 / ~230 ms p90" claim that appeared in
+earlier drafts of this footnote and in T5 / T7 is retracted — no
+run in `analysis/latency-*/latency.json` measures Deepgram under
+500 ms.** The origin of the ~180 ms number is unclear (possibly a
+Deepgram-side self-reported metric misread as wall-clock TTFA, or
+a pre-measurement expectation that was never verified against the
+harness data); regardless, it is not supported by any measurement
+in this repository. Deepgram wasn't re-measured in S2/S3, so we
+have two consistent latency-mode sessions from the same day, not
+three days of data.
+
+**Footnote † (Orpheus $/1K words)**: the $0.030 cell for Orpheus
+in both the conversational and narration tables is a model output
+under cost_model.py's default "100-word / 500-char session per
+generation" assumption for per-generation vendors — see
+[`src/veval/analyze/cost.py`](../src/veval/analyze/cost.py) line 177.
+T8 measured Orpheus's actual per-call output as **14.59 s of audio
+≈ 213 chars ≈ ~35 words per call**, not the assumed 500 chars /
+100 words. Under the T8-measured per-call output, Orpheus's real
+$/1K words is closer to **~$0.070-0.088** — see the honest
+Orpheus split under [Cost calculus](#cost-calculus). The $0.030
+number is retained in the table as the direct output of the v1
+cost_model.json (auditability), not as a defensible per-word
+figure. **Do not compare $0.030 across vendors as if it were a
+peer of ElevenLabs' $0.22** — it is not derived on comparable
+assumptions.
 
 ---
 
@@ -467,8 +514,27 @@ unpaired formula above assumes vendor-a and vendor-b are
 independent samples and inflates SE.
 
 The tables above use the **unpaired** formula. It is the
-**conservative** choice: paired is always ≥ unpaired for
-correlated within-item designs.
+**more familiar** SE-of-the-means formula, but it is *not*
+uniformly conservative — the direction of its bias depends on the
+verdict:
+
+- For **SIG_DIFF verdicts**: unpaired understates significance
+  (paired σ ratio is always ≥ unpaired), so the reported σ is a
+  **floor on significance**. Reading a headline "3.7σ" as "at
+  least 3.7σ" is correct.
+- For **TIE verdicts**: unpaired *inflates* SE(diff) → *lowers* the
+  σ ratio → makes "tied" *easier* to declare. Unpaired is
+  **anti-conservative** for tie calls. A tie under the unpaired
+  test may or may not be a tie under the paired test — the paired
+  test can promote it to borderline-significant (as it does for
+  OpenAI vs ElevenLabs conv DNSMOS OVRL below).
+
+We chose the unpaired formula for the headline because the
+"SE-of-the-means" notation is more familiar and easier for a
+reader to reproduce from a scalar mean + SD. **Both directions
+of bias are made explicit** in the paired-vs-unpaired table
+below — nobody has to trust an "unpaired is conservative" claim
+that only holds for half the verdicts.
 
 Recomputed with the paired test — [`scripts/_paired_test.py`](../scripts/_paired_test.py):
 
@@ -501,12 +567,14 @@ Recomputed with the paired test — [`scripts/_paired_test.py`](../scripts/_pair
   will score high across all vendors; the item-level baseline is
   shared corpus content.
 
-**Why unpaired stays in the headline**: it is the more
-familiar formula and easier to reproduce ("SE of the mean"
-notation). It is also, importantly, the **conservative** answer —
-readers reading unpaired σ ratios are reading the *floor* on
-significance, not the ceiling. The paired ratios above are the
-receipt showing the direction of that conservatism.
+**Why unpaired stays in the headline** (recap): reproducibility
+and familiarity, not conservatism. Unpaired is a *floor* on
+significance for SIG_DIFF calls but an *inflated* SE for TIE
+calls — the paired-test row for OpenAI vs ElevenLabs conv
+DNSMOS OVRL (1.3σ → 2.0σ, tie → borderline) is the receipt for
+the second direction. Readers who want the tighter test should
+use the paired column above; both are published so the
+sensitivity is visible.
 
 ### Statistical caveats (multiplicity, effect size, perceptual calibration)
 
@@ -592,54 +660,95 @@ in [`analysis/campaign-*/cost_model.json`](../analysis) — includes
 monthly minimums, included tiers, and rates at 10K/100K/1M words
 per month tiers.
 
+**Shared assumption for the whole table**: `cost_model.py`
+converts char-billed vendors' rates to $/1K words using
+`chars_per_word_assumption = 5.0` (declared in
+[`cost_model.json`](../analysis/campaign-20260809T204608Z/cost_model.json)).
+The actual corpus averages **5.77 chars/word** (5.67 conv, 5.87
+narr) as measured across the 144 items with valid reference
+transcripts. That means **every char-billed vendor's $/1K words in
+the table is under-stated by roughly (5.77 − 5.00) / 5.00 = 15%**
+against the actual corpus. Char-billed vendors in this table are
+OpenAI (per_1M_chars), Fish, Speechify, Deepgram, Google,
+Cartesia, ElevenLabs (all per_1M_chars or per_1M_bytes). Orpheus
+is per_generation and has its own footnote †.
+
+**The ratios that drive the recommendations survive this scale
+factor** — Speechify is still 45% of ElevenLabs at 100K/mo, OpenAI
+is still 34% of ElevenLabs and 50% of Deepgram, etc. — because a
+common multiplicative correction cancels out of a ratio. **The
+absolute prices in the table are v1's `cost_model.json` output
+under 5.0 chars/word.** A future v2 pass will re-run the model at
+5.77 chars/word (or, more honestly, use the actual observed corpus
+chars per row rather than an assumption); the recomputation is
+`observed_cost / observed_words` per row and does not require
+re-generating audio.
+
 | Vendor | $/1K @ 10K/mo | $/1K @ 100K/mo | $/1K @ 1M/mo | Notes |
 |---|---:|---:|---:|---|
-| orpheus | 0.030 † | 0.030 † | 0.030 † | See ⚠ below — the $0.030/1K words is derived from the campaign's "1 call per item" pipeline; long items were truncated to 14.59s. |
-| **openai** | 0.075 | **0.075** | **0.075** | tts-1-hd (narration) + gpt-4o-mini-tts (conv) |
-| fish | 0.075 | 0.075 | 0.075 | s2.1-pro (paid); split-model design (quality vs latency) |
-| **speechify** | 0.100 | **0.100** | **0.040** | Starter $10/mo covers 100K; scales well at 1M+ |
-| deepgram | 0.150 | 0.150 | 0.150 | Aura-2; $200 signup credit covers early volume |
-| google | 0.150 | 0.150 | 0.150 | Chirp3-HD |
-| cartesia | 0.500 | 0.160 | 0.196 | Pro $5/mo = 100K credits, then per-1M rate |
-| **elevenlabs** | **2.200** | **0.220** | 0.244 | Creator $22/mo = 121K credits; expensive at low volume |
+| orpheus | 0.030 † | 0.030 † | 0.030 † | See ⚠ below — per-generation vendor; the $0.030 is `cost_model.py`'s output under a stale default that predates T8's per-call output-cap measurement. |
+| **openai** | 0.075 | **0.075** | **0.075** | tts-1-hd (narration) + gpt-4o-mini-tts (conv). Char-billed → scale up ~15% for corpus-actual 5.77 chars/word. |
+| fish | 0.075 | 0.075 | 0.075 | s2.1-pro (paid); split-model design (quality vs latency). Char-billed. |
+| **speechify** | 0.100 | **0.100** | **0.040** | Starter $10/mo covers 100K; scales well at 1M+. Char-billed. |
+| deepgram | 0.150 | 0.150 | 0.150 | Aura-2; $200 signup credit covers early volume. Char-billed. |
+| google | 0.150 | 0.150 | 0.150 | Chirp3-HD. Char-billed. |
+| cartesia | 0.500 | 0.160 | 0.196 | Pro $5/mo = 100K credits, then per-1M rate. Char-billed. |
+| **elevenlabs** | **2.200** | **0.220** | 0.244 | Creator $22/mo = 121K credits; expensive at low volume. Char-billed. |
 
-**⚠ Orpheus $/1K-words vs $/1K-chars — the honest cost story**
+**⚠ Orpheus $/1K-words is a model artefact, not a comparable price**
 
-The table row for Orpheus reports **$0.030/1K words** (all monthly
-tiers). This is a **corpus-weighted average** from the campaign
-pipeline that made **one Replicate call per corpus item**: 150
-items × $0.003/call = $0.45 total ÷ 15K words in the corpus =
-$0.030/1K words. For **conversational** items (avg ~35 words per
-turn, which fits inside a single 14.59s Orpheus call), this is
-the true per-word cost.
+The table row for Orpheus reports **$0.030/1K words** at every
+tier. **This number is `cost_model.py`'s output under a default
+assumption that predates T8's per-call output-cap measurement.**
+Reproduced from the actual code path in
+[`src/veval/analyze/cost.py`](../src/veval/analyze/cost.py) line 177:
+for per-generation vendors the model uses `avg_chars = CHARS_PER_WORD × 100 = 500 chars per call` (a "100-word default session" assumption).
+So at 100K words/month:
+- projected calls per month = 100,000 × 5.0 / 500 = **1,000 calls**
+- cost = 1,000 × $0.003 = **$3.00** = $0.030/1K words
 
-**For narration ≥15 seconds it is not.** T8 established that
-Orpheus produces exactly 14.59 s of audio per call regardless of
-input length. To actually render a long narration you have to
-**chunk the text** into ~14.59-second pieces (~213 chars ≈ ~35
-words each) and pay one call per chunk. Effective narration cost:
+**T8 established the real per-call output**: exactly **14.59 s of
+audio ≈ 213 chars ≈ ~35 words per call** (invariant across every
+long item; stdev = 0.00 s). Under T8's measurement the real math
+at 100K words/month is:
+- calls per month = 100,000 words / ~35 words per call = **~2,850 calls**
+- cost = 2,850 × $0.003 = **~$8.55/mo = ~$0.086/1K words**
 
-- **~5 calls per 1K chars** × $0.003/call = **~$0.015 / 1K chars**
-- Which converts to **~$0.088 / 1K words** at the assumed 5.9
-  chars/word from the corpus (`chars_per_word_assumption = 5.0` in
-  [`cost_model.json`](../analysis/campaign-20260809T204608Z/cost_model.json)
-  is the header — the campaign's actual observed narration
-  corpus averaged ~5.9 chars/word)
+Or equivalently in chars: 5 calls per 1K chars × $0.003 = $0.015/1K
+chars = **~$0.088/1K words** at 5.87 chars/word (narration corpus).
 
-**So there are two honest Orpheus prices:**
+Both derivations land in the **~$0.070-0.088/1K words** band, not
+$0.030. Prior drafts of this section wrote the derivation as "150
+items × $0.003 = $0.45 ÷ 15K words = $0.030/1K words" — the "15K
+words" in that arithmetic came from cost_model.py's projected
+words-per-month at 100K wpm/mo × 5.0/500 scaling, not from the
+actual campaign corpus (which is 6,651 words across 144 items with
+valid references). Neither derivation reconciles with an as-generated
+per-word cost, because the pipeline used one call per item (not one
+call per 100 words); it just so happens that on the observed corpus
+the as-generated cost is $0.45 / 6.651K words = **$0.068/1K words**,
+close to the T8-based rendered-audio estimate.
 
-- **Conversational (short turns that fit in one call)**: $0.030 / 1K words
-- **Narration (must chunk to complete)**: ~$0.088 / 1K words
+**Two honest Orpheus prices to think about:**
 
-The $0.030 row is left standing because it is the number the
-campaign pipeline actually produced and paid. The narration-chunked
-number is not in the row because chunking was not part of the v1
-pipeline (each call produced one truncated 14.59-s audio file);
-see [T8 § "The real finding"](../analysis/verification/T8_orpheus_cost.md).
-Neither number is cheaper than Speechify's $0.10/1K at the
-100K-wpm tier once the chunking overhead lands, and neither number
-survives the Q1 hard-constraint check for real narration (Orpheus
-is out on Q1 because of the cap, see § Decision framework).
+- **Conversational (short turns that fit in one 14.59-s call)**:
+  ~$0.003 per call × turns-per-1K-words. Cheap per turn, but at
+  ~35-46 words per turn that's ~25 calls / 1K words = **~$0.07-0.09
+  / 1K words** — the same order of magnitude as OpenAI ($0.075).
+- **Narration (must chunk long items to complete)**: ~5 calls /
+  1K chars = **~$0.088 / 1K words**. Still similar order of
+  magnitude to OpenAI, not the category-crushing $0.030 the
+  table suggests.
+
+**The $0.030 row is retained** as the direct output of the v1
+cost_model.json (auditability — the model artefact IS the number
+the pipeline produced), with the † footnote and this ⚠ block as
+the receipt for what it actually represents. **Do not compare
+$0.030 against ElevenLabs' $0.22 as if they were peer prices** —
+they are not derived on comparable assumptions. Neither survives
+the Q1 hard-constraint check for real narration anyway (Orpheus
+is out on Q1 because of the 14.59-s output cap; see § Decision
+framework).
 
 **Three cost-driven conclusions** (updated after the noise-floor
 recompute confirmed the tie calls at 0.2-1.3σ; see Rankings summary
@@ -663,7 +772,7 @@ for the visual.
 
 ---
 
-## Latency (3 sessions × 4 days, with concurrent ping baseline)
+## Latency (3 sessions on 3 dates spanning 4 days, with concurrent ping baseline on S3)
 
 Time-to-first-audio-frame (TTFA), 50 serial trials per session,
 conversational S01 corpus item. Three independent sessions across
@@ -675,9 +784,16 @@ separate vendor variability from local ISP jitter.
 |---|---|---|---|---|
 | **elevenlabs** (Flash v2.5) | 439 / 479 | 424 / 469 | **694 / 816** | p50: 424–694 ms (+64% max shift) |
 | openai (tts-1-hd) | 736 / 956 | 936 / 1493 | **1369 / 1882** | p50: 736–1369 ms (+86% max shift) |
-| deepgram | ~180 / ~230 (S1 only) | not re-measured | — | — |
-| cartesia | 467 / — (S1 only) | not re-measured | — | — |
+| deepgram | 583 / 674 (S1a); 564 / 670 (S1b) | not re-measured | — | — |
+| cartesia | 467 / 529 (S1a); 468 / 530 (S1b) | not re-measured | — | — |
 | speechify · fish · google · orpheus | not applicable* | | | |
+
+**Every measured streaming vendor's p90 exceeds the pre-registered
+400 ms `ttfa_p90_ms` gate** in every session in which they were
+measured. ElevenLabs at 479 ms (S1 low) is the closest to the
+threshold but still failed. See the
+[Pre-registered gate outcomes § TTFA-gate admission](#ttfa-gate-admission)
+section below for the full pass/fail table.
 
 *"Not applicable" here means the adapter doesn't stream (Speechify
 JSON envelope per D-008; Fish's paid model split; Google's
@@ -773,24 +889,87 @@ gates were frozen in [`configs/gates.yaml`](../configs/gates.yaml)
 under `prereg-v1` before any results existed (git-tagged). Applying
 them strictly, on the campaign data:
 
-### Conversational gates (5 gates, 8 vendors × 5 = 40 checks)
+### Conversational gates (5 gates; each row states its own denominator)
 
-| Gate | Threshold | Pass | Fail | Fail admission |
-|---|---|---:|---:|---|
-| `ttfa_p90_ms < 400` | streaming vendors only, 4 measured | 2 | 2 | ElevenLabs (479 ms S1), OpenAI (956 ms S1). Speechify / Fish / Google / Orpheus adapters don't stream — `na_policy = exempt-and-annotate` |
-| `failure_incidence_pct < 2.0` (WER-based) | strict | **0** | **8** | **Every vendor fails.** Failure incidence ranges 61.3% (Fish, Speechify) to 73.3% (Orpheus). See admission block below. |
-| `clipped_samples == 0` | hygiene | 7 | 1 | Cartesia (429/406 clipped samples/item on average, F-4) |
-| `acoustic_noise_floor_dbfs ≤ −40` | hygiene | 7 | 1 | Fish (noise floor above threshold, see N2) |
-| `commercial_use_permitted == 1` | procurement | 8 | 0 | All 8 vendors on paid tiers permit commercial use |
+| Gate | Threshold | Pass | Fail | Exempt / N/A | Fail admission |
+|---|---|---:|---:|---:|---|
+| `ttfa_p90_ms < 400` | streaming, 4 measured | **0** | **4** | 4 (na_policy = exempt-and-annotate) | **Every measured streaming vendor fails.** Best measurement: ElevenLabs S1 at 479 ms. All others (Cartesia 529, Deepgram 670-674, OpenAI 946-1882) fail more clearly. See [TTFA-gate admission](#ttfa-gate-admission) below. |
+| `failure_incidence_pct < 2.0` (WER-based) | all 8 | **0** | **8** | 0 | **Every vendor fails.** Failure incidence 61.3% (Fish, Speechify) to 73.3% (Orpheus). See [WER-gate admission](#wer-gate-admission) below. |
+| `clipped_samples == 0` | all 8 | 7 | 1 | 0 | Cartesia (429/406 clipped samples/item on average, F-4) |
+| `acoustic_noise_floor_dbfs ≤ −40` | all 8 | 7 | 1 | 0 | Fish (noise floor above threshold, see N2) |
+| `commercial_use_permitted == 1` | all 8 | 8 | 0 | 0 | All 8 vendors on paid tiers permit commercial use |
 
-### Narration gates (4 gates, 8 vendors × 4 = 32 checks)
+### Narration gates (4 gates; each row states its own denominator)
 
-| Gate | Threshold | Pass | Fail | Fail admission |
-|---|---|---:|---:|---|
-| `rtf ≥ 3.0` | streaming vendors only | (not published in v1 — see item 14 below) | | RTF not measured in the v1 campaign; workaround was measuring wall-clock per item at the runner and inferring RTF post-hoc; per-vendor RTF is a v2 workstream |
-| `monotonic_quality_drift_flag == 0` | TTSDS2-based | (n/a — TTSDS2 skipped per D-A) | | see [D-B](06_KEY_FINDINGS.md#d-b-decision-b-add-dnsmos-p835-as-the-second-mos-pipeline) |
-| `long_stratum_acoustic_noise_floor_dbfs ≤ −40` | hygiene, long items only | 7 | 1 | Fish (persistent noise floor) |
-| `long_stratum_clipped_samples == 0` | hygiene, long items only | 7 | 1 | Cartesia |
+| Gate | Threshold | Pass | Fail | Exempt / not adjudicated | Fail admission |
+|---|---|---:|---:|---:|---|
+| `rtf ≥ 3.0` | streaming, throughput-bound | 0 | 0 | **8 (not adjudicated in v1)** | RTF not measured in v1. Campaign ran fully from content-hash cache (no `synthesis_time` on cached calls). Latency sessions ran conversational S01 only. `long_stratum_rtf_p50 / _p10` fields in [`latency.json`](../analysis/campaign-20260809T204608Z/latency.json) are `null` for every row (`n_with_total = 0`). Full explanation in [RTF admission](#rtf-admission) below. |
+| `monotonic_quality_drift_flag == 0` | TTSDS2-based | 0 | 0 | **8 (n/a — TTSDS2 skipped per D-A)** | see [D-B decision block](06_KEY_FINDINGS.md#d-b) |
+| `long_stratum_acoustic_noise_floor_dbfs ≤ −40` | hygiene, long items only | 7 | 1 | 0 | Fish (persistent noise floor) |
+| `long_stratum_clipped_samples == 0` | hygiene, long items only | 7 | 1 | 0 | Cartesia |
+
+### <a name="ttfa-gate-admission"></a>TTFA-gate admission: every measured streaming vendor fails at 400 ms p90
+
+The `ttfa_p90_ms < 400` conversational gate is applied against
+the pre-registered threshold in
+[`configs/gates.yaml`](../configs/gates.yaml). The rationale
+committed with the gate is: "Perception degrades above ~500-600 ms
+(spec A.1); 400 ms is a deliberate headroom margin below that,
+since TTS latency is only one term in an agent's end-to-end
+budget (LLM + TTS + network)."
+
+Measured p90 by vendor and session (best measurement in bold):
+
+| Vendor | S1 p90 | S2 p90 | S3 p90 | Best measured | Gate |
+|---|---:|---:|---:|---:|---|
+| ElevenLabs Flash v2.5 | 479 / 474 | 469 | 816 | **469 ms** (S2) | **FAIL** — closest to threshold |
+| Cartesia | 529 / 530 | (not re-measured) | — | **529 ms** (S1a) | **FAIL** |
+| Deepgram Aura-2 | 674 / 670 | (not re-measured) | — | **670 ms** (S1b) | **FAIL** |
+| OpenAI tts-1-hd | 956 / 946 | 1493 | 1882 | **946 ms** (S1b) | **FAIL** |
+| Speechify · Fish · Google · Orpheus | not applicable — adapters don't stream | | | | exempt (na_policy = exempt-and-annotate, see D-008) |
+
+**Every measured streaming vendor fails the pre-registered gate.**
+The gate as committed is non-discriminating on this data.
+
+**Why the gate fails everyone**: 400 ms was chosen as headroom
+below the 500-600 ms perception threshold from the spec's A.1
+literature review. The measurements come from a **residential
+Windows 11 client** with vendor endpoints resolved to whatever
+the DNS returned that session (see F-11 for the client-side
+parsimony discussion). The vendors' own SDKs / datacenter-local
+tests likely produce lower numbers; we don't have that data.
+
+**What we do about it**:
+- We do NOT amend the gate post-hoc (that would defeat pre-registration)
+- We do NOT claim any vendor "passed the 400 ms TTFA gate" — nobody did
+- We DO report the per-vendor measured p50 / p90 as a **comparative
+  ranking** for the residential-client venue, with F-11's scope
+  disclaimer attached
+- The 500 ms framing that appears in Q1 and F-11 discussion
+  paragraphs is the perception-threshold *reference point*
+  (spec A.1), not the pre-registered gate. Prior drafts of Q1
+  compared vendors against the perception reference as if it were
+  the gate; the pre-registered gate is 100 ms tighter than the
+  perception reference for reasons documented in gates.yaml
+  rationale, and ElevenLabs — the "winner on latency" — fails
+  the pre-registered gate in every session
+
+**What this does NOT change**:
+- **Vendor ranking on TTFA is stable**: ElevenLabs consistently
+  faster than the rest (see F-11); Deepgram / Cartesia consistently
+  slower than ElevenLabs but faster than OpenAI in the one session
+  they were measured
+- Q1's real-time-voice guidance now reads "no measured vendor
+  cleared the pre-registered 400 ms gate; ElevenLabs got closest
+  at 469 ms but that held only for the first two sessions and
+  moved to 816 ms in S3, so it also fails the softer 500 ms
+  perception-reference bar under session-to-session variance"
+
+**Prior drafts erroneously reported Deepgram at ~180 ms p50 /
+~230 ms p90**. That figure is not supported by any measurement
+in `analysis/latency-*/latency.json`; every latency-mode Deepgram
+row shows p50 = 564-583 ms, p90 = 670-674 ms. See the retraction
+in [footnote ³](#footnote-3-deepgram-conversational-ttfa) above.
 
 ### <a name="wer-gate-admission"></a>WER-gate admission: every vendor fails at 5% agreement error rate
 
@@ -896,17 +1075,33 @@ a clear answer for your use case.
 - **Any turn ≥ 15s?** Orpheus is out (14.59s output cap).
 - **Any downstream ASR / MOS / resample pipeline?** Cartesia needs a
   −1 dBFS peak-limiter first, or accept ~46% loss to DNSMOS refusals.
-- **Sub-500 ms TTFA p90 required for real-time voice?** ElevenLabs
-  Flash and Deepgram were the only measured vendors clearing this in
-  S1-S2 sessions, but **ElevenLabs Flash's S3 measurement (694/816 ms)
-  refutes any "reliably under 500 ms" claim** (see F-11). Deepgram
-  measured well below 500 ms in S1 only, not re-measured. For a
-  real-time deployment, do not provision from these numbers —
-  measure from your own environment across ≥3 sessions and expect
-  50-90% session-to-session variance. **Speechify / Fish / Google /
-  Orpheus** are unmeasured on TTFA (their adapters don't stream);
-  they may or may not meet a 500 ms bar — this is *unknown*, not
-  *disqualified*.
+- **Real-time-voice latency ceiling?** Two thresholds to keep
+  straight: the **pre-registered gate is `ttfa_p90_ms < 400`**
+  (`configs/gates.yaml`, chosen as headroom below the 500-600 ms
+  perception threshold), and the **perception-threshold reference
+  from the literature is ~500 ms** (spec A.1).
+  - Against the pre-registered 400 ms gate: **no measured vendor
+    passes.** ElevenLabs Flash's best measurement was 469 ms p90
+    (S2); Cartesia 529 ms; Deepgram 670 ms; OpenAI 946 ms. Every
+    measured streaming vendor fails the pre-committed gate in
+    every session it was measured. See [TTFA-gate admission](#ttfa-gate-admission).
+  - Against the softer 500 ms perception reference: ElevenLabs
+    Flash cleared it in S1 (479 p90) and S2 (469 p90), then
+    failed it in S3 (816 p90). The prior "reliably under 500 ms"
+    recommendation is retracted; see F-11.
+  - **Speechify / Fish / Google / Orpheus** are unmeasured on
+    streaming TTFA (their adapters don't stream); they may or
+    may not meet either bar — *unknown*, not *disqualified*.
+  - **Prior drafts erroneously called out Deepgram as a "well
+    below 500 ms" alternative**. That claim (based on an
+    unsupported ~180 / ~230 ms figure) is retracted; actual
+    Deepgram p50 / p90 was 583 / 674 ms in the S1a session,
+    564 / 670 ms in S1b — Deepgram fails both thresholds.
+  - For a real-time deployment: **measure from your own
+    environment across ≥5 sessions** with client-side event-loop
+    lag logged (F-11), and expect 50-90% session-to-session
+    variance from residential clients. Do not provision from any
+    of the numbers above as a ceiling.
 - **Byte-identical caching?** Impossible with any of the 8; save the
   audio yourself.
 
@@ -938,12 +1133,18 @@ a clear answer for your use case.
 Look at the Rankings summary above. Each pair reports
 `|Δ| / SE(diff)`:
 
-- Under **1.96σ** → statistically tied at α=0.05; the cheaper vendor
-  is the right pick on this axis.
-- **2σ to 4σ** → real but modest gap; worth pricing against your
-  quality-vs-cost trade-off.
-- **Over 4σ** → a real quality gap; only skip the winner if cost
-  differential is severe.
+- Under **1.96σ** → statistically tied at α=0.05; the difference
+  is not measured precisely enough to be distinguishable from zero.
+  Pick the cheaper vendor on this axis.
+- **2σ to 4σ** → borderline evidence that the ordering is real;
+  the estimate is precise enough to be distinguishable from zero
+  but not by much. σ measures precision of the *estimate*, not
+  audible size of the *gap* — see caveats below.
+- **Over 4σ** → strong evidence the ordering is real (estimate is
+  many SEs from zero). Still not a claim about perceptual
+  magnitude; a 6σ result on a 0.14/10 = 1.4%-of-scale delta
+  means "we're certain the delta is not zero," not "the delta
+  is audibly large."
 
 The rewrite of the SE methodology is in the Rankings summary above.
 Prior versions of this doc used a heuristic 0.05 threshold — that's

@@ -15,12 +15,22 @@ Latency run `runs/latency-20260809T214106Z` (session 1):
 |---|---|---|---|
 | **openai** | **736 ms** | **956 ms** | 50 |
 | elevenlabs | 439 ms | 479 ms | 50 |
-| deepgram | ~180 ms | ~230 ms | 50 |
+| deepgram | 583 ms | 674 ms | 50 |
+| cartesia | 467 ms | 529 ms | 50 |
 
 OpenAI is roughly **2× the median TTFA** of the next-fastest provider
-(ElevenLabs) and roughly **3-4× Deepgram**. In a support-agent context
-where "start speaking within 300 ms" is table stakes, ~740 ms p50 is
-the difference between "responsive" and "audibly slow."
+(ElevenLabs). Deepgram, Cartesia, and ElevenLabs cluster in
+440-580 ms p50 / 480-680 ms p90. In a support-agent context where
+"start speaking within 300 ms" is table stakes, ~740 ms p50 is the
+difference between "responsive" and "audibly slow."
+
+**Retraction note (2026-08-12)**: this table previously reported
+Deepgram at "~180 ms p50 / ~230 ms p90" — that figure is not
+supported by any measurement in `analysis/latency-*/latency.json`;
+every latency-mode Deepgram row shows p50 = 564-583 ms, p90 =
+670-674 ms. Origin of the ~180 ms number is unclear (possibly a
+Deepgram-side self-reported metric misread as wall-clock TTFA);
+regardless, it is retracted here and in T7.
 
 ## Hypothesis
 

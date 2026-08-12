@@ -187,6 +187,19 @@ Explicit "not in this version" list. Each is a valid v2 workstream.
   ran conversational S01 only. Fix: dedicated narration-latency
   session (8 long items × 8 vendors, fresh, ~$0.30) — see
   [04_RESULTS.md § RTF admission](04_RESULTS.md#rtf-admission).
+- **Campaign ran fully from content-hash cache** — `campaign-20260809T204608Z`
+  is a cache-only replay; every audio file was generated at an
+  earlier, unrecorded date, and the manifest records only the
+  cache-hit timestamp, not the original synthesis timestamp. Combined
+  with F-1 (nothing byte-reproducible), each cell in the results
+  tables is a **frozen single draw with an unrecorded generation
+  date**. Quality and hygiene claims are unaffected (they read
+  audio bytes, not timestamps) but the "measurement date on every
+  finding" discipline in 02 degrades at the raw-audio-generation
+  level. Fix: a `--no-cache` primary-campaign re-run (~$40, ~30 min)
+  would give per-item `synthesis_time` (adjudicating RTF as a bonus)
+  and record the exact generation date per row. See
+  [04_RESULTS.md § Important scope note (cache-only campaign)](04_RESULTS.md#full-per-provider-results).
 
 ---
 

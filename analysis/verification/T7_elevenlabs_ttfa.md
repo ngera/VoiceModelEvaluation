@@ -14,13 +14,23 @@ Latency run `runs/latency-20260809T214106Z` (session 1):
 | provider | p50 TTFA | p90 TTFA | n_trials |
 |---|---|---|---|
 | **elevenlabs** | **439 ms** | **479 ms** | 50 |
-| deepgram | ~180 ms | ~230 ms | 50 |
+| cartesia | 467 ms | 529 ms | 50 |
+| deepgram | 583 ms | 674 ms | 50 |
 | openai | 736 ms | 956 ms | 50 |
 
-ElevenLabs is 2× slower than Deepgram (the on-prem style thin-wrapper
-control) but half the p50 of OpenAI, and its p90 is remarkably tight
-(479 vs 956 for OpenAI). The story is "consistently fast under 500 ms" —
-which is table stakes for a support-agent barge-in experience.
+ElevenLabs is the fastest of the four measured streaming vendors
+by p50 (439 ms), just ahead of Cartesia (467 ms). All four exceed
+the pre-registered `ttfa_p90_ms < 400` gate. The original story
+("consistently fast under 500 ms") holds only in S1+S2 for
+ElevenLabs; S3 refuted it (see F-11 retraction below).
+
+**Retraction note (2026-08-12)**: this table previously reported
+Deepgram at "~180 ms p50 / ~230 ms p90" and described it as "the
+on-prem style thin-wrapper control." That figure is not supported
+by any measurement in `analysis/latency-*/latency.json`; every
+latency-mode Deepgram row shows p50 = 564-583 ms, p90 = 670-674 ms.
+Deepgram was slower than ElevenLabs and Cartesia in this session,
+not faster. The retraction is documented alongside T5.
 
 ## Hypothesis
 
