@@ -179,6 +179,14 @@ Explicit "not in this version" list. Each is a valid v2 workstream.
   well-formed English; behavior on malformed / adversarial input
   (very long tokens, non-printable characters, prompt-injection strings)
   untested
+- **No per-vendor RTF (narration throughput)** — the pre-committed
+  `rtf ≥ 3.0` gate for narration is in
+  [`configs/gates.yaml`](../configs/gates.yaml) but was not
+  adjudicated on v1 data because the campaign ran from cache
+  (no `synthesis_time` on cached calls) and the latency sessions
+  ran conversational S01 only. Fix: dedicated narration-latency
+  session (8 long items × 8 vendors, fresh, ~$0.30) — see
+  [04_RESULTS.md § RTF admission](04_RESULTS.md#rtf-admission).
 
 ---
 

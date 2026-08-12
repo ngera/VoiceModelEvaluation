@@ -584,7 +584,7 @@ per month tiers.
 
 | Vendor | $/1K @ 10K/mo | $/1K @ 100K/mo | $/1K @ 1M/mo | Notes |
 |---|---:|---:|---:|---|
-| orpheus | 0.030 | 0.030 | 0.030 | Replicate pay-per-use. **Effective long-form cost ~$0.015/1K chars** (T8: 14.59s cap × ~5 calls per 1K chars × $0.003/call). Prior 04 note said "$0.18-0.60" — that was a decimal-place error, corrected here. |
+| orpheus | 0.030 † | 0.030 † | 0.030 † | See ⚠ below — the $0.030/1K words is derived from the campaign's "1 call per item" pipeline; long items were truncated to 14.59s. |
 | **openai** | 0.075 | **0.075** | **0.075** | tts-1-hd (narration) + gpt-4o-mini-tts (conv) |
 | fish | 0.075 | 0.075 | 0.075 | s2.1-pro (paid); split-model design (quality vs latency) |
 | **speechify** | 0.100 | **0.100** | **0.040** | Starter $10/mo covers 100K; scales well at 1M+ |
@@ -592,6 +592,44 @@ per month tiers.
 | google | 0.150 | 0.150 | 0.150 | Chirp3-HD |
 | cartesia | 0.500 | 0.160 | 0.196 | Pro $5/mo = 100K credits, then per-1M rate |
 | **elevenlabs** | **2.200** | **0.220** | 0.244 | Creator $22/mo = 121K credits; expensive at low volume |
+
+**⚠ Orpheus $/1K-words vs $/1K-chars — the honest cost story**
+
+The table row for Orpheus reports **$0.030/1K words** (all monthly
+tiers). This is a **corpus-weighted average** from the campaign
+pipeline that made **one Replicate call per corpus item**: 150
+items × $0.003/call = $0.45 total ÷ 15K words in the corpus =
+$0.030/1K words. For **conversational** items (avg ~35 words per
+turn, which fits inside a single 14.59s Orpheus call), this is
+the true per-word cost.
+
+**For narration ≥15 seconds it is not.** T8 established that
+Orpheus produces exactly 14.59 s of audio per call regardless of
+input length. To actually render a long narration you have to
+**chunk the text** into ~14.59-second pieces (~213 chars ≈ ~35
+words each) and pay one call per chunk. Effective narration cost:
+
+- **~5 calls per 1K chars** × $0.003/call = **~$0.015 / 1K chars**
+- Which converts to **~$0.088 / 1K words** at the assumed 5.9
+  chars/word from the corpus (`chars_per_word_assumption = 5.0` in
+  [`cost_model.json`](../analysis/campaign-20260809T204608Z/cost_model.json)
+  is the header — the campaign's actual observed narration
+  corpus averaged ~5.9 chars/word)
+
+**So there are two honest Orpheus prices:**
+
+- **Conversational (short turns that fit in one call)**: $0.030 / 1K words
+- **Narration (must chunk to complete)**: ~$0.088 / 1K words
+
+The $0.030 row is left standing because it is the number the
+campaign pipeline actually produced and paid. The narration-chunked
+number is not in the row because chunking was not part of the v1
+pipeline (each call produced one truncated 14.59-s audio file);
+see [T8 § "The real finding"](../analysis/verification/T8_orpheus_cost.md).
+Neither number is cheaper than Speechify's $0.10/1K at the
+100K-wpm tier once the chunking overhead lands, and neither number
+survives the Q1 hard-constraint check for real narration (Orpheus
+is out on Q1 because of the cap, see § Decision framework).
 
 **Three cost-driven conclusions** (updated after the noise-floor
 recompute confirmed the tie calls at 0.2-1.3σ; see Rankings summary
@@ -667,6 +705,117 @@ Verdict details in
 [analysis/verification/T5](../analysis/verification/T5_openai_latency.md)
 and [T7](../analysis/verification/T7_elevenlabs_ttfa.md) (both
 updated with S3 data).
+
+### <a name="rtf-admission"></a>RTF (real-time factor) — not measured in v1
+
+**RTF was pre-committed as the narration latency gate**
+(`rtf ≥ 3.0`; see [`configs/gates.yaml`](../configs/gates.yaml))
+but was **not measured per-vendor in v1**. The reasons:
+
+- The campaign ran fully from content-hash cache (regenerating
+  1200 audio files at every analyzer iteration would burn budget
+  on identical outputs). Cached calls have no `synthesis_time` to
+  divide the audio duration by.
+- The dedicated latency sessions (S1/S2/S3) ran the S01
+  conversational item, not long-narration items — RTF is a
+  narration-workload metric and the sessions were designed for
+  TTFA, not throughput.
+- The
+  [`latency.json`](../analysis/campaign-20260809T204608Z/latency.json)
+  schema *does* have `long_stratum_rtf_p50` / `long_stratum_rtf_p10`
+  fields; every row is `null` because
+  `n_with_total = 0` on the cached campaign.
+
+**Impact**: the pre-committed narration RTF gate cannot be
+adjudicated on v1 data. Neither vendor is called out as
+"failed RTF" or "passed RTF" in the results above — the gate is
+`not adjudicated`, not `passed`.
+
+**v2 workstream**: run a dedicated **narration-latency session**
+(8 long items × 8 vendors × 1 draw = 64 fresh generations with
+`synthesis_time` logged; ~$0.30 spend; ~30 min wall-clock).
+Compute per-vendor `audio_duration_s / synthesis_time_s` per
+long item; report `long_stratum_rtf_p10 / p50 / p90` per vendor
+and pass/fail against `rtf ≥ 3.0`. Documented in
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
+
+---
+
+## <a name="pre-registered-gate-outcomes"></a>Pre-registered gate outcomes
+
+**Which pre-committed gates did each vendor pass or fail?** The
+gates were frozen in [`configs/gates.yaml`](../configs/gates.yaml)
+under `prereg-v1` before any results existed (git-tagged). Applying
+them strictly, on the campaign data:
+
+### Conversational gates (5 gates, 8 vendors × 5 = 40 checks)
+
+| Gate | Threshold | Pass | Fail | Fail admission |
+|---|---|---:|---:|---|
+| `ttfa_p90_ms < 400` | streaming vendors only, 4 measured | 2 | 2 | ElevenLabs (479 ms S1), OpenAI (956 ms S1). Speechify / Fish / Google / Orpheus adapters don't stream — `na_policy = exempt-and-annotate` |
+| `failure_incidence_pct < 2.0` (WER-based) | strict | **0** | **8** | **Every vendor fails.** Failure incidence ranges 61.3% (Fish, Speechify) to 73.3% (Orpheus). See admission block below. |
+| `clipped_samples == 0` | hygiene | 7 | 1 | Cartesia (429/406 clipped samples/item on average, F-4) |
+| `acoustic_noise_floor_dbfs ≤ −40` | hygiene | 7 | 1 | Fish (noise floor above threshold, see N2) |
+| `commercial_use_permitted == 1` | procurement | 8 | 0 | All 8 vendors on paid tiers permit commercial use |
+
+### Narration gates (4 gates, 8 vendors × 4 = 32 checks)
+
+| Gate | Threshold | Pass | Fail | Fail admission |
+|---|---|---:|---:|---|
+| `rtf ≥ 3.0` | streaming vendors only | (not published in v1 — see item 14 below) | | RTF not measured in the v1 campaign; workaround was measuring wall-clock per item at the runner and inferring RTF post-hoc; per-vendor RTF is a v2 workstream |
+| `monotonic_quality_drift_flag == 0` | TTSDS2-based | (n/a — TTSDS2 skipped per D-A) | | see [D-B](06_KEY_FINDINGS.md#d-b-decision-b-add-dnsmos-p835-as-the-second-mos-pipeline) |
+| `long_stratum_acoustic_noise_floor_dbfs ≤ −40` | hygiene, long items only | 7 | 1 | Fish (persistent noise floor) |
+| `long_stratum_clipped_samples == 0` | hygiene, long items only | 7 | 1 | Cartesia |
+
+### <a name="wer-gate-admission"></a>WER-gate admission: every vendor fails at 5% agreement error rate
+
+The `failure_incidence_pct < 2.0` conversational gate is applied
+against the `wer_failure.agreement_error_rate_threshold` = **5%**
+per-item threshold in `gates.yaml`. Every vendor produces 61-73%
+of items over that threshold. The gate as pre-committed is
+non-discriminating — it fails everyone.
+
+**Why the gate fails everyone**: F-2 documents that wav2vec2 (our
+second judge, chosen for architectural independence from Parakeet)
+inflates absolute WER on synthetic speech. jiwer's normalisation
+is lossy on some tokens (F-3 article-drop hard-coded as errors).
+The 5% threshold was chosen from human-speech ASR literature; it
+turns out to be at least an order of magnitude too tight for
+TTS-vs-ASR agreement measured with this judge pair. The
+**relative** ranking across vendors is preserved (Orpheus is
+categorically worse than the pack — 26.89% vs 13.7-16.7%) and is
+what we publish. The **absolute** thresholds in gates.yaml were
+falsified as decision rules on this data.
+
+**What we do about it**:
+- We do NOT amend the gate post-hoc (that would defeat pre-registration)
+- We do NOT report "vendor X passed the WER gate" — nobody did
+- We DO report the per-vendor WER as a **comparative band** only
+  (glossary reminder: `WER` in this doc is relative-ranking, never
+  an absolute claim of intelligibility)
+- The gate is retained in [`configs/gates.yaml`](../configs/gates.yaml)
+  as pre-registration evidence and as a receipt that a specific
+  pre-committed rule failed on this data. Amending it to something
+  the data supports is a v2 workstream — the honest v1 result is
+  "the threshold is broken as an absolute rule; the ranking under
+  it is real"
+
+**What this does NOT change**:
+- The WER rankings in the [full per-provider tables](#full-per-provider-results)
+  above hold (relative-ranking-only)
+- No pass/fail claim in the memos or the case study depends on
+  a WER-gate outcome; all quality decisions are made on
+  Audiobox/DNSMOS with the SE(diff) test, not on WER
+- F-3 tracks the specific gate design lessons (WER coloring
+  removed from result tables because "green vs red" implies an
+  absolute pass/fail claim we can't back)
+
+**Gate outcomes JSON**: derived from
+[`analysis/campaign-20260809T204608Z/wer.json`](../analysis/campaign-20260809T204608Z/wer.json)
+(band counts + failure incidence per provider/use-case) and
+[`analysis/campaign-20260809T204608Z/acceptance.json`](../analysis/campaign-20260809T204608Z/acceptance.json)
+(hygiene gates: 1200 files, 1200 pass — the hygiene rules
+discriminate; the WER rule does not).
 
 ---
 
