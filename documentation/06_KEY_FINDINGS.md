@@ -266,17 +266,63 @@ OpenAI moved 27-56% p50/p90.
 concurrent ping baseline to Cloudflare 1.1.1.1) refuted the
 stability claim:
 
-| vendor | S1 p50 | S2 p50 | S3 p50 | S3 vs S1 |
-|---|---:|---:|---:|---:|
-| ElevenLabs | 439 | 424 | **694** | +58% |
-| OpenAI | 736 | 936 | **1369** | +86% |
+| vendor | S1 p50 | S2 p50 | S3 p50 | S3 vs S1 | n (trials) |
+|---|---:|---:|---:|---:|---:|
+| ElevenLabs | 439 | 424 | **694** | +58% | 50 / 50 / **40**¹ |
+| OpenAI | 736 | 936 | **1369** | +86% | 50 / 50 / 50 |
+
+¹ ElevenLabs S3 landed only 40/50 trials before the spend cap
+(`--spend-cap 1.00`) tripped on the ElevenLabs pay-per-1K-chars
+metering — S1/S2 were on the Creator plan's per-month credits which
+don't hit the cap. 40 trials still yields a well-defined p50/p90 at
+this magnitude (SE of p90 at n=40 ≈ 1.25 × (SD of trial times / √40)
+which for ~200 ms trial-time SD is ~40 ms — smaller than the +58%
+S1→S3 shift). The truncation is a spend-metering artifact, not a
+distribution-shape signal, but it caps how confidently we can
+claim tail behaviour beyond p90.
 
 The concurrent ping baseline during S3 was clean (p50 = 8 ms, p90
-= 12 ms, max = 29 ms, 0 errors on 274 probes) — **ISP was not the
-driver**. Yet BOTH vendors slowed dramatically. Whatever caused the
-S3 slowdown (vendor-side capacity, time-of-day, local machine
-contention) affected both, and it affected ElevenLabs by the same
-relative magnitude it affected OpenAI in the S1→S2 shift.
+= 12 ms, max = 29 ms, 0 errors on 274 probes) — **the last-mile
+link to Cloudflare 1.1.1.1 was not the driver**. Yet BOTH vendors
+slowed dramatically.
+
+**What the ping baseline does NOT rule out** (scope-of-ruleout):
+
+- **DNS resolution jitter** to vendor endpoints (we pinged one
+  fixed IP; vendor endpoints resolve through DNS and TLS)
+- **TLS-handshake latency** on the vendor endpoint (Cloudflare
+  ICMP is unencrypted and shares no code path with an HTTPS
+  streaming handshake)
+- **Client-side parser / event-loop stalls** on the local Python
+  runtime under this specific harness build (see item below)
+- **Any specific vendor's serving-region capacity** independently
+  of the other vendor
+
+The ping baseline rules out **only the "ISP dropped packets during
+the window"** hypothesis. It is a useful ruleout but a narrow one.
+
+**Parsimonious client-side reading** (Occam-preferred, not proved):
+both vendors moved in the same direction between S2 and S3. The
+simplest single cause consistent with that pattern is **client-side**
+(local machine contention, Python event-loop stalls, one-shot
+antivirus / OS index scan during the window, or a client-parser
+change between session builds). A vendor-side simultaneous slowdown
+of two independent SaaS providers on the same day is possible but
+not parsimonious. A properly-controlled follow-up would run each
+session (a) from an isolated VM, (b) with warm-up trials excluded,
+(c) with per-trial client-side CPU / event-loop lag logged, then
+attribute variance to layers rather than to vendors.
+
+**What n=3 sessions can and cannot support**:
+
+- **Can support**: rank stability (ElevenLabs faster than OpenAI in
+  all 3 sessions). Rank tests are robust at low n.
+- **Cannot support**: characterisation of the session-to-session
+  variance distribution. n=3 cannot distinguish "wide-tail vendor"
+  from "unlucky session" from "client-side contamination." Any
+  distributional claim (e.g., "ElevenLabs is more stable than
+  OpenAI") needs ≥5-10 sessions across ≥2 weeks with the layer
+  controls above.
 
 **What survives**:
 
@@ -294,19 +340,23 @@ relative magnitude it affected OpenAI in the S1→S2 shift.
   headline. On our data, both vendors' session-to-session variance
   is 50-90% of the p50; neither is "stable" in an operational sense.
 - Any capacity-planning implication that reads ElevenLabs' 470 ms
-  p90 as a ceiling in either direction (the S3 measurement
-  exceeded it substantially).
+  p90 as an upper bound in either direction (the S3 measurement
+  exceeded it substantially; upper-bound language for our published
+  p90 values has been retracted throughout the docs — see the
+  batch ceiling-language pass from Wave 0).
 
 **Impact on PM recommendations**: don't provision from one
 measurement session. For a real deployment plan, budget the tail
-observation across ≥3 sessions on the vendor's serving region from
-your actual deployment environment — public-tier measurements at
-n=1-2 sessions are not enough to characterise the tail.
+observation across ≥5 sessions on the vendor's serving region from
+your actual deployment environment, with client-side lag logged and
+warm-up trials excluded — public-tier measurements at n=1-3 sessions
+are not enough to characterise the tail. Rank claims survive at n=3;
+variance claims do not.
 
 **Evidence**:
-- Session 3 run IDs: `latency-20260812T191143Z` (OpenAI) and
-  `latency-20260812T191323Z` (ElevenLabs; 40/50 trials landed before
-  spend cap). `runs/` is gitignored (regenerable + large — see
+- Session 3 run IDs: `latency-20260812T191143Z` (OpenAI, 50/50 trials)
+  and `latency-20260812T191323Z` (ElevenLabs, 40/50 before spend cap
+  tripped). `runs/` is gitignored (regenerable + large — see
   [.gitignore](../.gitignore)); reproduce per
   [03_RUNBOOK § latency + ping](03_RUNBOOK.md)
 - Ping baseline log: `ping-baseline-20260812T191138Z.jsonl` — 274
@@ -316,11 +366,11 @@ n=1-2 sessions are not enough to characterise the tail.
 - Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py)
 
 **Portfolio takeaway (revised)**: the T5/T7 pair now demonstrates
-the value of a third replication session, not the value of
-publishing a two-session comparison. Two-session agreement is a
-weaker signal than we treated it as. This is the strongest
-"published-headline-refuted-by-verification" case in the project;
-it directly answers item 23 of the external review.
+the value of a third replication session AND the limits of a
+three-session pass. Two-session agreement was a weaker signal than
+we treated it as; three-session data suffices to falsify a
+distributional claim but not to make one. The strongest
+"published-headline-refuted-by-verification" case in the project.
 
 ---
 

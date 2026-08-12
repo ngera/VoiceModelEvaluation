@@ -287,14 +287,29 @@ across four days:
 
 **Session 3 also captured a concurrent ping baseline** to
 Cloudflare 1.1.1.1 (274 probes during the S3 window): p50 = 8 ms,
-p90 = 12 ms, max = 29 ms, 0 errors. **The local ISP was clean
-during S3 — the vendor-side slowdown is not last-mile jitter.**
+p90 = 12 ms, max = 29 ms, 0 errors. This rules out the specific
+"the last-mile link dropped packets" hypothesis; it does **not**
+rule out DNS jitter to the vendor's endpoints, TLS-handshake
+latency, client-side event-loop stalls, or vendor-side capacity —
+none of those share the ping's code path. The parsimonious
+single-cause reading for "both vendors slowed together on the
+same day" is **client-side** (local machine contention, one-shot
+background scan, Python event-loop stall on the harness),
+followed by vendor-side capacity as an untested-but-possible
+second hypothesis. See [F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
+for the full scope-of-ruleout discussion.
+
+**One data caveat**: ElevenLabs S3 landed **40/50 trials** before
+the pay-per-1K-chars spend cap tripped (S1/S2 were on the
+Creator plan's per-month credits, which don't hit the cap). n=40
+still yields well-defined p50/p90 at this magnitude, but it
+caps the confidence on tail behaviour past p90 for that session.
 
 **What survives from the original finding:**
 
 - **ElevenLabs is consistently faster than OpenAI** across all three
   sessions (424/694 vs 736/1369 range on p50). The ranking is
-  portable.
+  portable. Rank tests are robust at n=3.
 - **OpenAI TTFA is always ≥ 736 ms p50** on our measurements. The
   "OpenAI is slow" claim is more robust than ever.
 
@@ -305,6 +320,11 @@ during S3 — the vendor-side slowdown is not last-mile jitter.**
   refuted by S3. Both vendors move 50-90% p50 session-to-session.
 - "ElevenLabs Flash reliably clears sub-500 ms p90" is not
   supported by three-session data.
+- Any distributional claim like "ElevenLabs is more stable than
+  OpenAI" — **n=3 sessions cannot distinguish a genuine
+  wide-tail vendor from a run of unlucky sessions**. A stability
+  claim would need ≥5-10 sessions across ≥2 weeks with
+  client-side lag controls; see F-11 for the deferred v2 setup.
 
 **What verification is really for.** The original T5/T7 finding
 was published after two sessions that happened to look similar for
@@ -312,10 +332,11 @@ ElevenLabs. A single additional session, run specifically to
 address a reviewer's objection about ISP confounding, refuted the
 headline. The revised recommendation for a PM is stronger than the
 original: **don't provision from any single measurement session** —
-budget the tail across ≥3 sessions on your own deployment
-environment, and expect 50-90% session-to-session variance on
-either vendor. This is worth more than the retracted "stability"
-claim ever was.
+budget the tail across ≥5 sessions on your own deployment
+environment, log client-side event-loop lag, exclude warm-up trials,
+and expect 50-90% session-to-session variance on either vendor.
+Rank claims survive at n=3; variance / stability claims do not.
+This is worth more than the retracted "stability" claim ever was.
 
 ---
 

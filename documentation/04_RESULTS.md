@@ -677,25 +677,40 @@ providers report. See [../DEVIATIONS.md](../DEVIATIONS.md#d-008).
 
 **Concurrent ping baseline during S3** (Cloudflare 1.1.1.1,
 274 probes, 500 ms interval): p50 = 8 ms, p90 = 12 ms, min = 5 ms,
-max = **29 ms**, stdev = 3.2 ms, 0 errors. **The local ISP was
-clean during S3** — the observed vendor-side slowdown is not
-last-mile jitter.
+max = **29 ms**, stdev = 3.2 ms, 0 errors. **The last-mile link
+to Cloudflare 1.1.1.1 was clean during S3.** This rules out only
+the "ISP dropped packets during the window" hypothesis; it does
+NOT rule out DNS-resolution jitter to vendor endpoints, TLS-handshake
+variance, client-side event-loop stalls, or vendor-side capacity
+(none of which share ICMP's code path). See F-11 for the full
+scope-of-ruleout list.
+
+**Table caveat**: ElevenLabs S3 landed 40/50 trials before the
+pay-per-1K-chars spend cap tripped (S1/S2 were on Creator credits,
+unaffected). n=40 is fine for p50/p90 (SE of p90 ≈ 40 ms at this
+magnitude, small vs. the +58% S1→S3 shift). Anything past p90 for
+S3 is under-sampled.
 
 **Portable finding** (revised — see F-11 for the retraction of the
 prior "stability" claim):
 
 - **Vendor ranking on TTFA is stable**: ElevenLabs is consistently
   faster than OpenAI in every session (424/439/694 vs 736/936/1369
-  on p50). The ordering is portable.
+  on p50). The ordering is portable. Rank tests are robust at n=3.
 - **Absolute TTFA is NOT stable** for either vendor. Both moved
   50-90% p50 session-to-session on our public-tier accounts.
   Neither vendor is "stable" in an operational sense; the initial
   ElevenLabs "sub-500 ms p90 reliably" finding held only in the
   first two sessions and was refuted by S3.
-- **The observed vendor variability is not our ISP** — the ping
-  baseline confirms this for S3. Candidate causes (untested):
-  vendor-side capacity load, time-of-day serving effects,
-  local-machine contention on the client (not network).
+- **The observed variability is not our last-mile link.** The
+  simplest single cause consistent with "both vendors slowed
+  together on the same day" is **client-side** (local machine
+  contention, one-shot background scan, Python event-loop stall).
+  Vendor-side capacity is a candidate but not parsimonious for a
+  simultaneous slowdown of two independent SaaS providers.
+- **n=3 sessions cannot characterise the variance distribution.**
+  Rank claims survive at n=3; stability claims need ≥5-10 sessions
+  across ≥2 weeks with per-trial client-lag logging.
 
 See [documentation/figures/f3_latency_stability.png](figures/f3_latency_stability.png)
 for the 3-session visual with concurrent ping-baseline annotation.
