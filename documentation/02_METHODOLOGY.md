@@ -330,6 +330,45 @@ to git:
   ([../DISCLAIMER.md](../DISCLAIMER.md))
 - **"You didn't test human perception"** → correct; documented as
   D-H with explicit reasoning; v2 workstream planned
+- **"You expanded the roster after the fact and the two vendors
+  you added won"** → **The two headline winners (Speechify on
+  Audiobox both use cases; OpenAI on DNSMOS both use cases) were
+  added in D-003 (prereg-v1.1, git-tagged 2026-08-07) — before any
+  campaign result existed.** The `prereg-v1.1` tag is the timestamp
+  receipt: it precedes `campaign-20260809T204608Z` by two days.
+  Every result comes from the 8-vendor roster locked in `prereg-v1.1`;
+  we do not report anything under the 6-vendor `prereg-v1` roster
+  and then reveal 2 new winners. The archetypes named for the two
+  additions were **"LLM-ecosystem default" (OpenAI) + "consumer-
+  storytelling / warm narrator" (Speechify)** — see
+  [../DEVIATIONS.md § D-003](../DEVIATIONS.md#d-003). These are
+  categorical claims about market positioning made before the
+  campaign, not outcome-specific claims. That the winners came from
+  the added vendors is worth flagging (an evaluator whose "auditable-
+  #1" archetype happens to win the aesthetic axis is a pattern a
+  hostile reader will notice), but the pre-registration receipt is
+  what makes the claim defensible.
+- **"You changed almost every measurement-defining parameter
+  post-lock"** → true for the roster (D-003), WER judge (D-010),
+  primary quality instrument (TTSDS2→DNSMOS via D-A/B/011), and
+  OpenAI model/voice (D-006/D-007). Full amendments in
+  [../DEVIATIONS.md](../DEVIATIONS.md). Each amendment predates
+  the campaign result that uses it, but the substantive question
+  is: **did any pilot data inform the amendments?** The honest
+  answer: **D-006 and D-007 did.** The $1 pilot returned 5/10
+  OpenAI-narration HTTP errors (D-006: model `gpt-4o-tts` returned
+  404; D-007: voice `cedar` not in the `tts-1-hd` enum). Those
+  amendments were made in response to observed pilot failures, not
+  from prior specification — genuinely pilot-informed. D-004/D-005
+  (Orpheus fork slug + version pinning) came from live API schema
+  probes, not pilot data. D-010 (wav2vec2 judge) came from the
+  analyzer failing to load parakeet_rnnt, not from any performance
+  observation. D-011 (DNSMOS) came from a methodological decision
+  post-Phase-2 to add a second MOS pipeline. **Nothing was
+  amended after seeing the campaign quality numbers themselves** —
+  the pilot-informed amendments were error-driven (HTTP 4xx), not
+  outcome-driven. Committed as prereg-vN tags before the campaign
+  data existed.
 
 None of these defenses were added after publication — every one is
 committed to git with a timestamp that predates results.

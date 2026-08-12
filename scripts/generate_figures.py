@@ -245,14 +245,21 @@ def figure_2_cost_vs_quality() -> None:
 
 # ---------------------------------------------------------------- figure 3
 
+LAT_S3_OAI = "latency-20260812T191143Z"
+LAT_S3_EL = "latency-20260812T191323Z"
+
+
 def figure_3_latency_stability() -> None:
-    """Dot plot: OpenAI vs ElevenLabs, session 1 vs session 2 TTFA.
-    OpenAI's wide session-to-session spread vs ElevenLabs' tight
-    cluster is the visual point."""
+    """3-session TTFA per vendor. S3 added 2026-08-12 with concurrent
+    ping baseline (see F-11) — refuted the original 2-session
+    stability finding. Figure shows all three sessions per vendor
+    with the range annotation."""
 
     s1 = _load(f"analysis/{LAT_S1}/latency.json")
     s2_oai = _load(f"analysis/{LAT_S2_OAI}/latency.json")
     s2_el = _load(f"analysis/{LAT_S2_EL}/latency.json")
+    s3_oai = _load(f"analysis/{LAT_S3_OAI}/latency.json")
+    s3_el = _load(f"analysis/{LAT_S3_EL}/latency.json")
 
     def _extract(doc: dict, provider: str) -> dict:
         for r in doc["by_provider"]:
@@ -264,69 +271,74 @@ def figure_3_latency_stability() -> None:
                 }
         return {}
 
-    oai_s1 = _extract(s1, "openai")
-    oai_s2 = _extract(s2_oai, "openai")
-    el_s1 = _extract(s1, "elevenlabs")
-    el_s2 = _extract(s2_el, "elevenlabs")
+    oai = [_extract(s1, "openai"), _extract(s2_oai, "openai"), _extract(s3_oai, "openai")]
+    el = [_extract(s1, "elevenlabs"), _extract(s2_el, "elevenlabs"), _extract(s3_el, "elevenlabs")]
 
-    fig, ax = plt.subplots(figsize=(11, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
 
     y_openai = 1.0
-    y_eleven = 0.5
+    y_eleven = 0.4
 
-    def _plot_session(y: float, data: dict, marker: str, label: str, color: str,
-                       label_dx: int = -6, label_dy: int = 12,
-                       label_ha: str = "right") -> None:
-        # Draw a horizontal segment min-max, a bold p50-p90 range, and a big dot at p50
+    session_colors = ["#27ae60", "#f39c12", "#c0392b"]  # green / amber / red
+    session_labels = ["S1 · 2026-08-09", "S2 · 2026-08-11", "S3 · 2026-08-12 (+ ping baseline)"]
+    session_offsets = [0.12, 0.0, -0.12]
+
+    def _plot_session(y: float, data: dict, color: str, label: str | None,
+                       label_dy: int = 14) -> None:
         ax.plot([data["min"], data["max"]], [y, y],
                  color=color, lw=1.2, alpha=0.4, solid_capstyle="round")
         ax.plot([data["p50"], data["p90"]], [y, y],
-                 color=color, lw=6, alpha=0.5, solid_capstyle="round")
-        ax.scatter([data["p50"]], [y], s=160, marker=marker,
+                 color=color, lw=6, alpha=0.55, solid_capstyle="round")
+        ax.scatter([data["p50"]], [y], s=140, marker="o",
                     color=color, edgecolor="#2c3e50", linewidths=0.8,
                     zorder=5, label=label)
-        # Text label
         ax.annotate(f"p50 {data['p50']:.0f} · p90 {data['p90']:.0f}",
-                     (data["p50"], y), xytext=(label_dx, label_dy),
+                     (data["p50"], y), xytext=(-6, label_dy),
                      textcoords="offset points",
-                     ha=label_ha, fontsize=8.5, color=color, weight="bold")
+                     ha="right", fontsize=8.5, color=color, weight="bold")
 
-    _plot_session(y_openai + 0.07, oai_s1, "o", "Session 1 (2026-08-09)", "#27ae60")
-    _plot_session(y_openai - 0.07, oai_s2, "s", "Session 2 (2026-08-11)", "#c0392b")
-    # ElevenLabs labels: put session-1 above the dot (dy=+12), session-2 BELOW
-    # (dy=-16) so they don't collide with the y-axis tick label
-    _plot_session(y_eleven + 0.07, el_s1,  "o", None, "#27ae60", label_dy=+16)
-    _plot_session(y_eleven - 0.07, el_s2,  "s", None, "#c0392b", label_dy=-18)
+    for i, (data, color, label, dy) in enumerate(zip(
+        oai, session_colors, session_labels, [14, 14, -18],
+    )):
+        _plot_session(y_openai + session_offsets[i], data, color, label if i < 3 else None, label_dy=dy)
+    for i, (data, color, dy) in enumerate(zip(
+        el, session_colors, [14, 14, -18],
+    )):
+        _plot_session(y_eleven + session_offsets[i], data, color, None, label_dy=dy)
 
-    # p50 shift arrows
-    ax.annotate("", xy=(oai_s2["p50"], y_openai - 0.07),
-                 xytext=(oai_s1["p50"], y_openai + 0.07),
-                 arrowprops=dict(arrowstyle="->", color="#7f8c8d", lw=1.4))
-    ax.text((oai_s1["p50"] + oai_s2["p50"]) / 2, y_openai + 0.18,
-             f"+{100*(oai_s2['p50']-oai_s1['p50'])/oai_s1['p50']:.0f}% p50\n"
-             f"+{100*(oai_s2['p90']-oai_s1['p90'])/oai_s1['p90']:.0f}% p90",
-             ha="center", fontsize=10, weight="bold", color="#c0392b")
-    ax.text((el_s1["p50"] + el_s2["p50"]) / 2 + 40, y_eleven + 0.18,
-             f"{100*(el_s2['p50']-el_s1['p50'])/el_s1['p50']:+.0f}% p50\n"
-             f"{100*(el_s2['p90']-el_s1['p90'])/el_s1['p90']:+.0f}% p90",
-             ha="center", fontsize=10, weight="bold", color="#27ae60")
+    # Range annotations
+    oai_p50_range = max(d["p50"] for d in oai) - min(d["p50"] for d in oai)
+    el_p50_range = max(d["p50"] for d in el) - min(d["p50"] for d in el)
+    ax.text(2200, y_openai,
+             f"p50 range: {min(d['p50'] for d in oai):.0f}–{max(d['p50'] for d in oai):.0f} ms\n"
+             f"(+{100*oai_p50_range/min(d['p50'] for d in oai):.0f}% max shift)",
+             ha="left", va="center", fontsize=9, weight="bold", color="#c0392b")
+    ax.text(1200, y_eleven,
+             f"p50 range: {min(d['p50'] for d in el):.0f}–{max(d['p50'] for d in el):.0f} ms\n"
+             f"(+{100*el_p50_range/min(d['p50'] for d in el):.0f}% max shift)",
+             ha="left", va="center", fontsize=9, weight="bold", color="#c0392b")
 
     # Sub-500 ms line
     ax.axvline(500, color="#3498db", lw=1.2, ls="--", alpha=0.5, zorder=1)
-    ax.text(500, 1.35, " sub-500ms\n (real-time voice threshold)",
+    ax.text(500, 1.55, " sub-500ms\n (real-time voice threshold)",
              color="#3498db", fontsize=9, va="top")
+
+    # Ping baseline annotation
+    ax.text(2100, 1.55,
+             "S3 concurrent ping (1.1.1.1):\np50=8ms · p90=12ms · max=29ms\n(ISP was clean during S3)",
+             ha="left", va="top", fontsize=8.5, color="#7f8c8d", style="italic")
 
     ax.set_yticks([y_openai, y_eleven])
     ax.set_yticklabels(["OpenAI\n(tts-1-hd)", "ElevenLabs\n(Flash v2.5)"],
                         fontsize=11, weight="bold")
     ax.set_xlabel("Time-to-first-audio-frame (ms) — 50 trials per session, S01 corpus item")
-    ax.set_title("Speed vs stability — two providers, two sessions, two days apart\n"
-                  "Bold band = p50→p90. Thin line = min→max. Session 1 (green ○) vs Session 2 (red ▪).",
+    ax.set_title("Three-session TTFA per vendor — S3 refuted the 'ElevenLabs is stable' finding (F-11)\n"
+                  "Bold band = p50→p90. Thin line = min→max. Ranking preserved; absolute values shift 50-90% session-to-session.",
                   fontsize=11)
     ax.grid(True, axis="x", alpha=0.25, lw=0.5)
-    ax.set_xlim(300, 2500)
-    ax.set_ylim(0.25, 1.5)
-    ax.legend(loc="upper right", frameon=True, fontsize=9)
+    ax.set_xlim(300, 3800)
+    ax.set_ylim(0.15, 1.65)
+    ax.legend(loc="upper right", frameon=True, fontsize=9, bbox_to_anchor=(0.98, 0.98))
 
     fig.tight_layout()
     out = FIG_DIR / "f3_latency_stability.png"

@@ -114,7 +114,13 @@ regardless of input text length**. Input chars vary 19% (1273 →
 (16.93–18.36s, and even that's just L01 cold-start warmup — the
 other 7 are 16.9–17.0s, a 0.6% spread).
 
-This is a **hard model output cap**, not stochastic truncation.
+This is a **hard cap observed at the hosted endpoint** — not
+stochastic truncation. Whether the cap is model-intrinsic or a
+deployment-config parameter (`max_new_tokens`-style) on the
+Replicate deployment is not tested. Constant `predict_time` is
+consistent with both explanations. What we can publish is that the
+cap is observed; the mechanism claim needs a self-hosted comparison
+that's out of scope for v1.
 Every long-item call gets ~17 GPU-seconds of inference and produces
 exactly 14.59s of audio.
 

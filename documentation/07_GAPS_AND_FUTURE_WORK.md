@@ -49,6 +49,24 @@ the pinned `geffen_32`).
 survive across the voice space, and where vendor tag-taxonomy
 (warm / bright / dynamic / etc.) reliably predicts aesthetic score.
 
+**Related asymmetric-scrutiny gap** (item 27 of external review):
+Cartesia's loser-side outlier (clipping) got two targeted
+verification pathways (F-4a's independent-pipeline corroboration +
+T1's regen plan). Speechify's winner-side outlier (Audiobox #1 on
+both use cases) got one weak test (T6, n=2 voices in same vendor).
+An equivalent adversarial hypothesis for Speechify would be: **"Does
+Audiobox systematically reward Simba-3.2's mastering signature
+(EQ / compression profile) rather than anything a listener would
+call quality?"** — motivated by F-8's "MOS predictors reward
+different acoustic constructs" thesis. Testing this would need
+either (a) a controlled EQ / compression pass on other vendors'
+audio to see if Audiobox scores follow the mastering rather than
+the voice, or (b) the v2 human-rater panel from D-H. v1 did neither.
+T6's "confirmed with reversal" should be read as **n=2 evidence
+that voice choice within Simba-3.2 doesn't sink the ranking**, not
+as evidence that Audiobox's ranking of Speechify #1 reflects
+generalisable listener preference.
+
 ### 3. Corpus authored by the evaluator
 
 The 75-item corpus per use case was authored to a documented brief

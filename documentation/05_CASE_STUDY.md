@@ -84,10 +84,18 @@ they can't undo a hard gate.
 Word-error rate is easy to bias — pick an ASR trained on similar
 audio and everyone looks accurate. So the WER measure uses **two
 independent ASR judges**, `facebook/wav2vec2-large-robust-ft-libri-960h`
-(Meta) + `faster-whisper large-v3` (OpenAI's Whisper), and only counts
-a per-item failure when both judges agree the item exceeds the WER
-threshold. The constraint: judges must differ in *organisation*,
-*encoder architecture family*, AND *training pipeline*.
+(Meta) + `faster-whisper large-v3` (OpenAI's Whisper). Each judge
+transcribes the audio; we then compute the **"agreed hypothesis"**
+by taking only tokens both judges emitted at the same position
+(disputed tokens — where the two judges output different words —
+are omitted, treating those positions as errors against the
+reference). `agreement_wer = jiwer.wer(reference, agreed_hypothesis)`.
+This is a conservative measure: any disagreement between judges
+counts against the vendor. A per-item failure is triggered when
+`agreement_wer > 5%` (with a numeric/currency/date-span carve-out
+per `configs/gates.yaml`). Constraint on the judge choice: judges
+must differ in *organisation*, *encoder architecture family*, AND
+*training pipeline*.
 
 Late in the project — at the point when NVIDIA's Parakeet was still
 the first candidate for judge 1 — I almost added Canary-1B as an
@@ -216,7 +224,7 @@ and not know why your users don't love it.
 Every vendor evaluation you read in the industry publishes one
 number. **Ask, always: "ranked on what?"**
 
-### 2. Orpheus has a hard 14.59-second output cap per call
+### 2. Every Orpheus call at the hosted endpoint stops at exactly 14.59 seconds of audio
 
 The published pricing for Orpheus (`lucataco/orpheus-3b-0.1-ft` via
 Replicate) is $0.003 per generation — nominally the cheapest voice
@@ -229,16 +237,22 @@ places, across inputs varying from 87 to 105 seconds of expected
 reading time. Meanwhile Replicate's `predict_time` metric stayed
 essentially constant at ~17 GPU-seconds regardless of input length.
 
-This is a **hard output cap in the model**, not stochastic
-truncation. Every ≥15-second reference gets ~85% truncated.
+This is **not stochastic truncation** — it's a hard, deterministic
+cap. Every ≥15-second reference gets ~85% truncated at this
+endpoint. **Whether the cap is model-intrinsic or a deployment-config
+default** (a `max_new_tokens`-style parameter on the Replicate
+deployment) **is not tested**. Constant `predict_time` is consistent
+with both. The PM recommendation differs by cause: if config, a
+single request parameter fixes it; if model-intrinsic, chunking +
+stitching engineering is required. **What we can publish is that the
+cap is observed at the hosted endpoint**, not the mechanism.
 
-Two consequences that don't appear on the pricing page:
+Two consequences that don't appear on the pricing page (either way):
 
 - **The "cheapest per 1K characters" framing needs a use-case
   qualifier.** A 1000-character narration is ~5-6 Orpheus calls
-  chained together. Real cost: ~$0.02-0.10 per 1K chars, not $0.003.
-  Still cheap for short turns; not category-crushingly cheap for
-  narration.
+  chained together at this cap. Real cost: ~$0.015/1K chars, not
+  $0.003. Still cheap; not category-crushingly cheap for narration.
 - **This mechanically resolves a separate finding** — Orpheus's 85%
   WER on long items, which had been logged as a "possible
   intelligibility problem." It's not intelligibility; it's

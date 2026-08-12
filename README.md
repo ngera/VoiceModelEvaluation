@@ -28,7 +28,7 @@ artefact in this repo:
 | # | Finding | Evidence |
 |---|---|---|
 | 1 | **The two independent quality raters rank vendors differently.** Consumer-facing warmth vs enterprise cleanliness are literally *different constructs*, not different weightings of the same one. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
-| 2 | **Orpheus has a hard 14.59-second output cap per call** (std dev 0.000s across 8 items). Long-form narration is 5-6× the nominal per-call cost, and the 85% word-error-rate on long items is mechanical incompletion, not intelligibility. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
+| 2 | **A 14.59-second output cap was observed on every Orpheus call at the hosted Replicate endpoint** (std dev 0.000s across 8 items). Long-form narration is 5-6× the nominal per-call cost at this cap, and the 85% word-error-rate on long items is mechanical incompletion. Cap may be model-intrinsic OR a deployment-config parameter (`max_new_tokens`) — untested; recommendations differ. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
 | 3 | **Latency *speed* and latency *stability* are separate axes.** OpenAI's p90 TTFA shifted 56% between two sessions on the same days as ElevenLabs Flash's shifted 2%. | [Figure 3](documentation/figures/f3_latency_stability.png) · [T5](analysis/verification/T5_openai_latency.md) & [T7](analysis/verification/T7_elevenlabs_ttfa.md) |
 | ★ | **~40% of the load-bearing findings came from the verification pack**, not the primary campaign. Cheap replication ($0.61 total spend, 90 min work) is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) |
 

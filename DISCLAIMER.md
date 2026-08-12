@@ -38,9 +38,31 @@ this project. No vendor reviewed the findings before publication. No
 vendor's marketing or PR team has any input into the language used
 here.
 
-All API access was paid-tier via publicly-listed pricing at the time
-of testing (see [configs/pricing.yaml](configs/pricing.yaml)). Total
-project spend across all 8 vendor accounts was approximately $56 USD.
+All API access was on **publicly-listed pricing tiers** at the time
+of testing (see [configs/pricing.yaml](configs/pricing.yaml)).
+**Signup credits available to any new customer** were used where
+applicable (notably Deepgram's $200 signup credit for new accounts,
+which fully absorbed our Deepgram spend across the campaign +
+verification runs). **No vendor negotiated preferential pricing,
+provided out-of-band credits, or discounted access.**
+
+**Cost breakdown** (approximate, all in USD):
+
+- Doctor probes across 8 vendors, multiple sessions: <$1 gross
+- Pilot runs ($1 pilot + 5-item smoke tests): ~$2 gross
+- Primary campaign (1200 files, 8 vendors × 2 use cases × 75 items):
+  ~$50 gross, of which ~$1.17 was absorbed by Deepgram's signup credit
+- Variance run (480 fresh files, 10 items × 3 draws × 8 vendors × 2
+  use cases): ~$2 gross
+- 3 latency sessions (50 trials each × OpenAI + ElevenLabs +
+  Deepgram): ~$0.10 gross
+- Phase 2c verification pack (T4 + T6 + T8 + Wave 4b): ~$0.63 gross
+
+**Rough total: ~$56 gross across 8 vendor accounts**, of which
+Deepgram absorbed ~$1.20 via signup credit. **Effective
+out-of-pocket: ~$55.** A clean reproduction from a fresh clone
+would be approximately the same, with the Deepgram credit
+applying equivalently.
 
 ---
 

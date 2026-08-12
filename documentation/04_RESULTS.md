@@ -531,8 +531,8 @@ prior "stability" claim):
   local-machine contention on the client (not network).
 
 See [documentation/figures/f3_latency_stability.png](figures/f3_latency_stability.png)
-for the visual (pre-S3 — the figure predates F-11 and will be
-regenerated in a future pass). Full retraction narrative in
+for the 3-session visual with concurrent ping-baseline annotation.
+Full retraction narrative in
 [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
 Verdict details in
 [analysis/verification/T5](../analysis/verification/T5_openai_latency.md)
@@ -670,7 +670,12 @@ Full plain-language walkthrough in
 - **noise floor (dBFS)** — Mean noise floor across 75 files (hygiene
   analyzer, `pyloudnorm.integrated_loudness` on the quiet-window
   windows). Less-negative = noisier.
-- **WER %** — Mean word-error-rate on items with judge agreement
+- **WER %** — Mean `agreement_wer` across all 75 items per vendor.
+  `agreement_wer` per item = `jiwer.wer(reference, agreed_hypothesis)`,
+  where `agreed_hypothesis` is only the tokens both judges emitted
+  at the same position (disputed tokens are treated as errors —
+  conservative). Reported as relative-ranking-only (mean WER on items
+  with judge agreement)
   (two-judge design: wav2vec2 + faster-whisper). Reported as
   relative ranking only; absolute inflated by wav2vec2's LibriSpeech
   training distribution.
