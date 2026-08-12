@@ -57,8 +57,8 @@ Three weeks and roughly $56 later, we have:
 - A full audit trail (git tags at `prereg-v1`, `prereg-v1.10`, and 11
   logged deviations) proving nothing was cherry-picked post-hoc
 
-**And three headline findings that would not have surfaced in the
-industry's standard evaluations.**
+**Three headline findings — plus one that got refuted in
+verification and became a finding in its own right.**
 
 ---
 
@@ -169,9 +169,19 @@ P.835 speech-cleanliness ratings). Both are peer-reviewed. Both are
 used in production TTS evaluation.
 
 The Spearman rank correlation *between the two pipelines* across
-the 8 vendors: **−0.13 on conversational, −0.27 on narration**. Not
-positive-low; **negative**. On narration especially, the vendor
-Audiobox puts near the top is near the bottom of DNSMOS's list.
+the 8 vendors: **−0.13 on conversational, −0.27 on narration**.
+Both point estimates are negative, not the strong positive we would
+expect if the two raters were measuring the same construct.
+
+**Statistical caveat**: n = 8 vendors gives Spearman ρ a very wide
+95% CI (roughly [−0.75, +0.60] for conv, [−0.81, +0.51] for narr).
+The point estimates are directional but not statistically
+significant — we cannot claim the correlation is *significantly*
+negative from n = 8. What the data supports is: **the two
+pipelines do NOT show the strong positive rank correlation we would
+expect if they measured the same construct**, and we have specific
+per-vendor rank inversions that are directly citable regardless of
+the CI on the aggregate.
 
 ![F-8 rank inversion](figures/f1_rank_inversion.png)
 
@@ -180,7 +190,9 @@ The most vivid case: **OpenAI's narration voice ranks dead last
 axis** — a perfect inversion. The voice is technically pristine (no
 hiss, no artefacts, high dynamic range) but sounds a bit flat and
 robotic. Speechify is the opposite: #1 warmth, mid-pack cleanliness.
-Cartesia narration is #3 warm and #8 clean.
+Cartesia narration is #3 warm and #8 clean (over the surviving
+subset — 37 of its narration clips were refused by DNSMOS for
+peak_out_of_range, so the surviving-subset ranking is what's shown).
 
 **This is not a bug in either measurement.** Both raters are
 measuring what they claim to measure. The problem is that "voice
@@ -192,10 +204,14 @@ quality" is not one thing:
   phone-tree confirmation, a screen reader, an IVR system
 
 **A leaderboard reporting one is not measuring the same thing as a
-leaderboard reporting the other.** If you make a $50K/year vendor
-decision based on a leaderboard whose definition of quality doesn't
-match your users' definition, you'll pick the wrong vendor and not
-know why your users don't love it.
+leaderboard reporting the other.** Even at modest deployment scale
+— our cost model tops out at 1M words/month, which is ~$1-3K/year
+of vendor spend depending on the vendor — the choice between "warm
+rater winner" and "clean rater winner" is a real quality-of-product
+decision. At higher volumes the stakes scale linearly. If you make
+a vendor decision based on a leaderboard whose definition of quality
+doesn't match your users' definition, you'll pick the wrong vendor
+and not know why your users don't love it.
 
 Every vendor evaluation you read in the industry publishes one
 number. **Ask, always: "ranked on what?"**
@@ -233,36 +249,59 @@ under 15 seconds**, or budget for chunking + stitching engineering
 work + the multiplied cost. The "cheap open-weights floor"
 positioning needs a use-case qualifier.
 
-### 3. Latency *speed* and latency *stability* are separate axes
+### 3. Latency *ranking* is stable across sessions; latency *absolute values* are not
+
+*(This section was rewritten after a third latency session refuted
+the original "stability is a distinct axis" claim. Full retraction
+in [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+The retraction itself is the finding worth publishing — see the
+"what verification is really for" note below.)*
 
 For a support-agent product, "how fast does the vendor start
 speaking?" (time-to-first-audio-frame, or TTFA) is the most
 user-noticeable measure. Under 300 ms feels instant; under 500 ms
 feels responsive; over 1 second starts feeling awkwardly slow.
 
-The T5 and T7 tests measured TTFA on the same S01 corpus item, 50
-trials, two independent sessions two days apart:
+Three sessions of TTFA on the same S01 corpus item, 50 trials each,
+across four days:
 
-![Latency stability](figures/f3_latency_stability.png)
+| session | date | OpenAI p50 / p90 | ElevenLabs p50 / p90 |
+|---|---|---:|---:|
+| S1 | 2026-08-09 | 736 / 956 ms | 439 / 479 ms |
+| S2 | 2026-08-11 | 936 / 1493 ms | 424 / 469 ms |
+| S3 | 2026-08-12 | **1369 / 1882 ms** | **694 / 816 ms** |
 
-**ElevenLabs Flash moved 3% on median and 2% at the worst-10th
-percentile across the two sessions.** OpenAI moved **27% on median
-and 56% at the worst-10th percentile** on the same two dates.
+**Session 3 also captured a concurrent ping baseline** to
+Cloudflare 1.1.1.1 (274 probes during the S3 window): p50 = 8 ms,
+p90 = 12 ms, max = 29 ms, 0 errors. **The local ISP was clean
+during S3 — the vendor-side slowdown is not last-mile jitter.**
 
-The sub-500 ms threshold matters for real-time conversation:
-ElevenLabs Flash clears it comfortably at ~425 ms p50 and ~470 ms
-p90 across both sessions; OpenAI misses it by ~2× at ~800-950 ms
-p50 and ~950-1500 ms p90. But **ElevenLabs is not just faster — it's
-more predictable.** For a real-time voice product, provisioning
-capacity against OpenAI's *typical* number (~800 ms) will get you
-blindsided by sessions where it's actually 1500 ms. ElevenLabs' 469
-ms p90 stayed 469 ms p90 across two independent sessions.
+**What survives from the original finding:**
 
-**Stability is a distinct buyer concern from speed** — and no
-industry evaluation I could find measures it. Producing this dataset
-was 10 minutes of extra work (a second 50-trial session on a
-different day). Skipping it would have let us confidently mis-state
-OpenAI's latency as a point estimate.
+- **ElevenLabs is consistently faster than OpenAI** across all three
+  sessions (429/694 vs 736/1369 range on p50). The ranking is
+  portable.
+- **OpenAI TTFA is always ≥ 736 ms p50** on our measurements. The
+  "OpenAI is slow" claim is more robust than ever.
+
+**What doesn't survive:**
+
+- The original "ElevenLabs is not just faster — it's more
+  predictable" claim held only for the first two sessions and was
+  refuted by S3. Both vendors move 50-90% p50 session-to-session.
+- "ElevenLabs Flash reliably clears sub-500 ms p90" is not
+  supported by three-session data.
+
+**What verification is really for.** The original T5/T7 finding
+was published after two sessions that happened to look similar for
+ElevenLabs. A single additional session, run specifically to
+address a reviewer's objection about ISP confounding, refuted the
+headline. The revised recommendation for a PM is stronger than the
+original: **don't provision from any single measurement session** —
+budget the tail across ≥3 sessions on your own deployment
+environment, and expect 50-90% session-to-session variance on
+either vendor. This is worth more than the retracted "stability"
+claim ever was.
 
 ---
 
@@ -402,36 +441,59 @@ explicitly beats a vague "premium feels worth it."
 
 ## What the exercise actually proved about the industry
 
-**Public voice AI leaderboards pick one quality definition and
-publish one number.** Some use human-rated Bradley-Terry-style
-aggregates at n≈100 raters. Others use UTMOS or WavLM or
-vendor-specific MOS. Every leaderboard is
-internally coherent; every leaderboard implicitly claims to be the
-definition of quality.
+**The public TTS leaderboards I surveyed each pick one quality
+definition and publish one aggregate.** Three that a PM might
+plausibly cite when comparing vendors:
 
-None of them acknowledges what F-8 shows: **two peer-reviewed
-machine raters, applied to the same 8 vendors on the same audio,
-disagree on the ranking. Sometimes near-perfectly.**
+- **[TTS Arena](https://huggingface.co/spaces/TTS-AGI/TTS-Arena-V2)** —
+  human blind pairwise preference (Elo/Bradley-Terry style),
+  aggregated across many raters and prompts. One number per model.
+- **[Artificial Analysis TTS](https://artificialanalysis.ai/text-to-speech)** —
+  a composite of speed, cost, and quality benchmarks; the quality
+  axis is a single number.
+- **[Podonos](https://podonos.com/tts-leaderboard)** — model-family
+  MOS-style ratings on standardised text; one MOS per system.
 
-For a PM about to make a $50K/year vendor decision, the load-bearing
-insight isn't "which vendor is best." It's "which definition of
-quality matches your users?" A vendor evaluation that answers the
-first question and skips the second is measuring a proxy for one
-listener use case and hoping yours matches.
+Each of these is internally coherent. Each implicitly claims to be
+*the* definition of TTS quality. None of them (in the versions I
+checked at time of writing) shows what would happen if you ran a
+second independent quality-rater pipeline against the same audio.
+
+What F-8 shows on our 8-vendor slice: **two peer-reviewed machine
+raters, applied to the same audio, do not agree on the ranking**.
+The point-estimate ρ is negative on both use cases; even under the
+wide n=8 CI, the strong positive rank correlation you'd expect if
+both were measuring the same construct is not supported. That's a
+structural comment on how "voice quality" is defined, not a claim
+that any specific leaderboard is wrong.
+
+For a PM comparing vendors at a scale worth caring about, the
+load-bearing insight isn't "which vendor is best." It's "which
+definition of quality matches your users?" A vendor evaluation
+that answers the first question and skips the second is measuring
+a proxy for one listener use case and hoping yours matches.
 
 **The frontier chart with a "gotcha to know" column beats any
 leaderboard.**
 
-The other meta-observation, on the process side: **~40% of the
-headline findings from this project came from the verification
-pack**, not the primary campaign. The primary campaign told us
-"Cartesia's clipping rate is high" and "Orpheus has WER problems on
-long items." The verification pack (a $0.61 spend and 90 minutes of
-work) told us *the clipping story replicates on independent
-pipelines*, *the WER problem is mechanically a 14.59-second output
-cap*, and *the ElevenLabs fadeout magnitude was overstated by 35%*.
-Cheap replication is not decoration; it's where you learn the
-difference between a real finding and a lucky draw.
+The other meta-observation, on the process side: **verification
+produced four findings the primary campaign did not** —
+
+1. **T8** — Orpheus's exact 14.59s output cap (mechanical
+   explanation for the 85% WER on long items)
+2. **T6** — Speechify's alt-voice actually scored higher than the
+   pre-registered one (reversal of the "did we cherry-pick?" test)
+3. **T4** — the ElevenLabs L03 fadeout magnitude was overstated by
+   ~35% (single-draw luck)
+4. **F-11** (the after-review third latency session with concurrent
+   ping baseline) — the "ElevenLabs stability" headline was refuted
+
+The primary campaign was 1200 files and ~$50 of vendor spend. The
+verification pack that produced these four refinements was ~$0.63
+of vendor spend and about 2 hours of engineering time. **Cheap
+replication is where you learn the difference between a real
+finding and a lucky draw** — and in this project it materially
+changed what the case study says.
 
 ---
 

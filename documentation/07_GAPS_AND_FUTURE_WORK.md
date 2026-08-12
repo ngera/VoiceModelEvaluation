@@ -121,9 +121,15 @@ list and got substantive mitigation during the project:
 - **TTSDS2 skipped** (D-A) — mitigated by adding DNSMOS as the second
   MOS pipeline (D-B / D-011); the 6-signal + cross-pipeline agreement
   analysis substitutes for the missing D3 primary.
-- **Single-session latency** (D-1) — mitigated by T5 + T7 adding a
-  second 50-trial session on a different day; produced the "stability
-  is a distinct axis from speed" finding.
+- **Single-session latency** (D-1) — partially mitigated by T5 + T7
+  adding a second 50-trial session, then further tested by a third
+  session with concurrent ping baseline (2026-08-12, response to
+  review item 23). The initial "stability is a distinct axis"
+  reading was **refuted** by the third session — both vendors moved
+  50-90% p50 across the three sessions. See
+  [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+  Properly characterizing per-vendor session-to-session variance
+  needs ≥5 sessions across ≥2 weeks — v2 workstream.
 - **Cartesia clipping: systemic or batch?** (T1 hypothesis) — mitigated
   by F-4a's independent-pipeline corroboration; T1 verdict Confirmed
   before Phase 2c even began.

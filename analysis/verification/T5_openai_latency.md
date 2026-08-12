@@ -74,41 +74,48 @@ for r1 in s1['by_provider']:
 "
 ```
 
-## Result (executed 2026-08-11, 2-day gap from session-1)
+## Result (three sessions across 4 days, S3 with concurrent ping baseline)
 
-Session-2 run: `latency-20260811T183028Z` — 50 trials, no cache, S01.
+Session 3 added 2026-08-12 in response to external-review item 23
+(ISP-confound risk). Ran alongside a concurrent ping-to-1.1.1.1
+baseline (274 probes during the S3 window).
 
-| metric | session-1 (2026-08-09) | session-2 (2026-08-11) | ratio | within ±20%? |
+| metric | S1 (2026-08-09) | S2 (2026-08-11) | S3 (2026-08-12) | range |
 |---|---|---|---|---|
-| p50 TTFA | 736 ms | **936 ms** | **1.27×** (+200 ms) | ✗ **FAIL** (band 589–883) |
-| p90 TTFA | 956 ms | **1493 ms** | **1.56×** (+537 ms) | ✗ **FAIL** (band 765–1147) |
-| min TTFA | ~510 ms | 574 ms | 1.13× | — |
-| max TTFA | ~1400 ms | 2385 ms | 1.70× | — |
-| n_with_ttfa | 50 | 50 | — | — |
+| p50 TTFA | 736 ms | 936 ms | **1369 ms** | 736–1369 (+86%) |
+| p90 TTFA | 956 ms | 1493 ms | **1882 ms** | 956–1882 (+97%) |
+| min TTFA | 529 ms | 574 ms | 816 ms | 529–816 |
+| max TTFA | 1127 ms | 2385 ms | 3694 ms | 1127–3694 |
+| n_with_ttfa | 50 | 50 | 50 | — |
 
-## Verdict
+**Concurrent ping baseline during S3** (Cloudflare 1.1.1.1, 274 probes):
+p50 = 8 ms, p90 = 12 ms, max = **29 ms**, stdev = 3.2 ms, 0 errors.
+Local ISP was clean during the S3 window — the observed vendor
+slowdown is not last-mile jitter.
 
-**Confirmed with direction-caveat.** The strict pre-registered
-persistence criterion (session-2 within ±20% of session-1) **failed**
-on both p50 and p90 — but the failure direction is "even slower on
-session-2," not "actually fast on a different day." The underlying
-outlier (**OpenAI TTFA is high**) is *more* confirmed by session-2,
-not less.
+## Verdict (updated after S3)
 
-**What the two sessions bracket:**
+**Confirmed (slower than ElevenLabs) — no meaningful bracket on
+absolute values.** Across all three sessions OpenAI's p50 stayed
+strictly higher than ElevenLabs' p50 (736/936/1369 vs 439/424/694).
+The vendor ranking is portable.
 
-- p50 **≥ 736 ms** in every observed session (range across 2 sessions:
-  736–936 ms)
-- p90 **≥ 956 ms** in every observed session (range: 956–1493 ms)
-- **OpenAI is meaningfully slower** than ElevenLabs (~424 ms p50 —
-  see T7) across every session. Ratio holds at 1.7× conservative,
-  2.2× the more recent session.
+But the specific numerical claims from the earlier 2-session read
+did not survive S3:
 
-**What's *not* portable**: the specific 736 ms figure. Reporting
-"OpenAI p50 TTFA is 736 ms" as a point estimate would be
-mis-calibrated to reality; reporting "OpenAI p50 TTFA is 700–950 ms
-across two independent sessions, at least 1.7× ElevenLabs" is
-honest.
+- p50 range across 3 sessions: **736–1369 ms** (+86%)
+- p90 range: **956–1882 ms** (+97%)
+- S2→S3 shift alone: +46% p50, +26% p90
+
+**The ping baseline rules out our ISP as the driver** — the S3
+window had clean Cloudflare RTTs (p90 = 12 ms, max = 29 ms).
+Candidate causes for the shared slowdown across both vendors (not
+tested): vendor-side serving load, time-of-day effects, local
+machine contention on the client (not network path).
+
+**What can be published:** OpenAI TTFA has never been observed
+under 736 ms p50 or 956 ms p90 on our residential-Windows setup.
+Ranking vs ElevenLabs is stable; absolute numbers are not.
 
 ## Notes for memo / paper
 
@@ -132,6 +139,8 @@ honest.
 
 ## Evidence artefacts
 
-- Session-2 run: `runs/latency-20260811T183028Z/`
-- Session-2 analysis: `analysis/latency-20260811T183028Z/latency.json`
-- Session-1 baseline: `analysis/latency-20260809T214106Z/latency.json`
+- S1: `analysis/latency-20260809T214106Z/latency.json`
+- S2: `analysis/latency-20260811T183028Z/latency.json`
+- **S3 (with ping baseline)**: `analysis/latency-20260812T191143Z/latency.json`
+- **Ping baseline log**: `runs/ping-baseline-20260812T191138Z.jsonl` (274 probes to 1.1.1.1)
+- Ping-baseline runner: [`scripts/latency_with_ping.py`](../../scripts/latency_with_ping.py)

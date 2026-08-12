@@ -67,62 +67,69 @@ for r1 in s1['by_provider']:
 "
 ```
 
-## Result (executed 2026-08-11, 2-day gap from session-1)
+## Result (three sessions across 4 days, S3 with concurrent ping baseline)
 
-Session-2 run: `latency-20260811T183202Z` — 50 trials attempted, 10
-skipped after $0.10 spend cap hit (spend was tighter than expected
-on ElevenLabs Flash; the 40 that ran are plenty for percentile stats).
+Session 3 added 2026-08-12 in response to external-review item 23
+(ISP-confound risk). Ran alongside a concurrent ping-to-1.1.1.1
+baseline (274 probes during the S3 window).
 
-| metric | session-1 (2026-08-09) | session-2 (2026-08-11) | ratio | passes? |
+| metric | S1 (2026-08-09) | S2 (2026-08-11) | S3 (2026-08-12) | range |
 |---|---|---|---|---|
-| p50 TTFA | 439 ms | **424 ms** | 0.97× (−15 ms) | ✅ within ±20% |
-| p90 TTFA | 479 ms | **469 ms** | 0.98× (−10 ms) | ✅ **< 500 ms** |
-| min TTFA | ~410 ms | 403 ms | — | — |
-| max TTFA | ~510 ms | 683 ms | — | (one outlier trial) |
-| n_with_ttfa | 50 | 40 (10 spend-capped) | — | — |
+| p50 TTFA | 439 ms | 424 ms | **694 ms** | 424–694 (+64%) |
+| p90 TTFA | 479 ms | 469 ms | **816 ms** | 469–816 (+74%) |
+| min TTFA | ~410 ms | 403 ms | 605 ms | 403–605 |
+| max TTFA | ~510 ms | 683 ms | 2229 ms | 510–2229 |
+| n_with_ttfa | 50 | 40 (10 spend-capped) | 40 (10 spend-capped) | — |
 
-## Verdict
+**Concurrent ping baseline during S3** (Cloudflare 1.1.1.1, 274 probes):
+p50 = 8 ms, p90 = 12 ms, max = **29 ms**, stdev = 3.2 ms, 0 errors.
+Local ISP was clean — the S3 slowdown is not last-mile jitter.
 
-**Confirmed.** Session-2 came in within a hair of session-1:
-p50 differs by −3%, p90 by −2%. Both well inside the ±20% band.
-p90 stayed sub-500 ms as predicted.
+## Verdict (updated after S3)
 
-**Two-session bracket:**
-- p50: **424–439 ms** across 2 sessions (span 15 ms, ~3.4% of the mean)
-- p90: **469–479 ms** across 2 sessions (span 10 ms, ~2.1% of the mean)
-- Sub-500 ms p90 **confirmed in both sessions**
+**Confirmed faster than OpenAI (all 3 sessions). Stability
+sub-finding REFUTED.**
 
-**Contrast with T5**: OpenAI's session-to-session variability was
-27-56% on the same two dates. ElevenLabs Flash is 2-3% on the same
-two dates. This is not just a "faster" story; it is a **more
-stable** story. The two axes trade off differently for the two
-providers.
+- Ranking: ElevenLabs stayed faster than OpenAI in every session
+  (439/424/694 vs 736/936/1369 on p50). Rank preservation is
+  portable.
+- Speed: sub-500 ms p90 held only in S1 and S2 (479, 469). **S3's
+  816 ms p90 refutes the "reliably clears sub-500 ms" claim** the
+  earlier 2-session read had made.
+- Stability: p50 range 424–694 ms across 3 sessions = **+64%
+  session-to-session movement**, similar magnitude to OpenAI's
+  +86% movement on the same 3 dates. The prior "ElevenLabs is
+  stable, OpenAI is variable" framing was two-session coincidence.
+
+**What can be published:** ElevenLabs Flash is consistently faster
+than OpenAI on our measurements. Absolute TTFA varies substantially
+session-to-session (50-90% range) — for a real deployment plan, do
+your own multi-session characterisation on your target region.
 
 ## Notes for memo / paper
 
-- **Sub-500 ms p90** is the load-bearing claim for support-agent
-  deployments (voice barge-in requires <300 ms to feel snappy;
-  <500 ms is the threshold at which the human perception starts
-  flagging "slow"). ElevenLabs Flash clears this every session
-  across a 2-day gap.
-- **Session-to-session stability is itself a finding.** Report
-  ElevenLabs TTFA as **439 ± 8 ms p50** (session-2 mean-of-two ±
-  half-span) — a tight point estimate you can actually publish.
-- **Portfolio narrative candidate**: "Two providers, two sessions,
-  two days apart: OpenAI moved 27% on p50 and 56% on p90 across the
-  two sessions. ElevenLabs Flash moved 3% and 2%. Speed differs
-  between providers; so does stability, and stability is a distinct
-  buyer concern."
-- **The spend cap tripped early on session-2** because the actual
-  per-trial cost was higher than the pricing model expected — flag
-  for pricing.yaml review. 40 trials still gives tight percentile
-  estimates.
+- **The published "stability is a distinct axis" finding was
+  refuted by S3** — full retraction in
+  [06_KEY_FINDINGS.md § F-11](../../documentation/06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+- **What the retraction demonstrates** (the actual value of this
+  test as a portfolio artefact): two-session agreement is a weak
+  signal even when the numbers look identical. A third session
+  costs pennies and hours — worth it before publishing any
+  "stable" claim.
+- **ISP is ruled out** as the driver by the concurrent Cloudflare
+  ping baseline: 8/12/29 ms p50/p90/max during S3, 0 errors on 274
+  probes.
+- **The spend cap tripped early on S2 and S3** (40 of 50 trials
+  landed) because per-trial cost is higher than pricing.yaml
+  estimated. 40 trials still gives tight percentile estimates.
 - **Absolute TTFA is D-G disclosed** (residential Windows 11 upper
-  bound). An enterprise co-located deployment is expected to see
-  lower still.
+  bound). Even so, the pattern of session-to-session variance is
+  worth its own line in the memo.
 
 ## Evidence artefacts
 
-- Session-2 run: `runs/latency-20260811T183202Z/`
-- Session-2 analysis: `analysis/latency-20260811T183202Z/latency.json`
-- Session-1 baseline: `analysis/latency-20260809T214106Z/latency.json`
+- S1: `analysis/latency-20260809T214106Z/latency.json`
+- S2: `analysis/latency-20260811T183202Z/latency.json`
+- **S3 (with ping baseline)**: `analysis/latency-20260812T191323Z/latency.json`
+- **Ping baseline log**: `runs/ping-baseline-20260812T191138Z.jsonl`
+- Ping-baseline runner: [`scripts/latency_with_ping.py`](../../scripts/latency_with_ping.py)

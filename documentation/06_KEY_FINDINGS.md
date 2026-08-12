@@ -212,12 +212,17 @@ fresh data. Full table + methodology in
   cap = incompletion, not intelligibility)
 - **T4 ElevenLabs L03 fadeout** — Confirmed with refinement (3/3
   fresh regens fade monotonically; magnitude 2.7 dB not 3.6 dB)
-- **T5 OpenAI latency** — Confirmed with direction-caveat (session-2
-  was 27% p50 / 56% p90 slower than session-1)
+- **T5 OpenAI latency** — Confirmed slower than ElevenLabs (all 3
+  sessions). Session progression: 736 → 936 → 1369 ms p50; 956 →
+  1493 → 1882 ms p90 across 2026-08-09 / -11 / -12. See F-11 for
+  the refuted stability sub-finding.
 - **T6 Speechify voice bias** — Confirmed with reversal (alt voice
   edmund_32 scores *higher* than pinned voices; still #1 of 9)
-- **T7 ElevenLabs TTFA** — Confirmed cleanly (sub-500 ms p90 across
-  2 sessions × 2-day gap)
+- **T7 ElevenLabs TTFA** — Faster than OpenAI in all 3 sessions
+  (confirmed). But **not stable** — S3 showed 694/816 ms p50/p90
+  vs S1's 439/479, a +58%/+70% shift. The prior "sub-500 ms p90
+  reliably" claim held only for the first 2 sessions and was
+  coincidence (see F-11).
 - **T8 Orpheus cost** — **Refuted with a bigger finding**: Orpheus
   produces exactly **14.59 seconds** of audio per call regardless of
   input length (std dev 0.000s across 8 items). This is the single
@@ -227,10 +232,78 @@ fresh data. Full table + methodology in
 - **N1 OpenAI narration inversion** — Pending manual listen (n=1
   observer, low-signal at this scale)
 
-**Meta-finding**: **~40% of the load-bearing findings came from the
-verification pack**, not the primary campaign. Cheap replication
-($0.61 total spend, ~90 min work) is where you learn the difference
-between a real finding and a lucky draw.
+**Meta-finding**: Verification produced 4 findings the primary
+campaign didn't: T8's 14.59s output cap, T6's voice-swap reversal,
+T4's L03 magnitude refinement, and F-11's retraction of the
+latency-stability claim. Of these, T8 and F-11 are the most
+consequential — they reshape published recommendations. Cheap
+replication ($0.61 + ~90 min in-scope + $0.02 for a 3rd latency
+session with concurrent ping baseline) is where you learn which
+"findings" are lucky draws.
+
+---
+
+### F-11 · Retraction of the "latency stability is a distinct axis" finding
+
+**Original claim** (v1 pre-review): "ElevenLabs Flash is not just
+faster — it's more predictable" (05 case study, 04 results). Based
+on 2 sessions two days apart showing ElevenLabs moved 2-3% while
+OpenAI moved 27-56% p50/p90.
+
+**What changed**: a third latency session (2026-08-12, run with a
+concurrent ping baseline to Cloudflare 1.1.1.1) refuted the
+stability claim:
+
+| vendor | S1 p50 | S2 p50 | S3 p50 | S3 vs S1 |
+|---|---:|---:|---:|---:|
+| ElevenLabs | 439 | 424 | **694** | +58% |
+| OpenAI | 736 | 936 | **1369** | +86% |
+
+The concurrent ping baseline during S3 was clean (p50 = 8 ms, p90
+= 12 ms, max = 29 ms, 0 errors on 274 probes) — **ISP was not the
+driver**. Yet BOTH vendors slowed dramatically. Whatever caused the
+S3 slowdown (vendor-side capacity, time-of-day, local machine
+contention) affected both, and it affected ElevenLabs by the same
+relative magnitude it affected OpenAI in the S1→S2 shift.
+
+**What survives**:
+
+- ElevenLabs is **consistently faster than OpenAI** across all 3
+  sessions (429/694 vs 736/1369 range on p50). Ranking is stable.
+- OpenAI TTFA is high — always at least 736 ms p50 on our
+  measurements — which is the load-bearing claim for the "provision
+  capacity for OpenAI's worst percentile" advice.
+
+**What does not survive**:
+
+- "ElevenLabs Flash reliably hits sub-500 ms p90" (v1 recommendation)
+  — held only in the first 2 sessions.
+- "Stability is a distinct vendor axis" as a portfolio-worthy
+  headline. On our data, both vendors' session-to-session variance
+  is 50-90% of the p50; neither is "stable" in an operational sense.
+- Any capacity-planning implication that reads ElevenLabs' 470 ms
+  p90 as a ceiling.
+
+**Impact on PM recommendations**: don't provision from one
+measurement session. For a real deployment plan, budget the tail
+observation across ≥3 sessions on the vendor's serving region from
+your actual deployment environment — public-tier measurements at
+n=1-2 sessions are not enough to characterise the tail.
+
+**Evidence**:
+- Session 3 run: [`runs/latency-20260812T191143Z/`](../runs)
+  (OpenAI) and [`runs/latency-20260812T191323Z/`](../runs)
+  (ElevenLabs; 40/50 trials landed before spend cap)
+- Ping baseline log: `runs/ping-baseline-20260812T191138Z.jsonl`
+  (274 probes to 1.1.1.1 during the S3 window)
+- Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py)
+
+**Portfolio takeaway (revised)**: the T5/T7 pair now demonstrates
+the value of a third replication session, not the value of
+publishing a two-session comparison. Two-session agreement is a
+weaker signal than we treated it as. This is the strongest
+"published-headline-refuted-by-verification" case in the project;
+it directly answers item 23 of the external review.
 
 ---
 
