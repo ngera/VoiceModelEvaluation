@@ -63,6 +63,11 @@ analysis/*
 !analysis/latency-20260811T183202Z/latency.json
 !analysis/variance-20260809T205319Z/
 !analysis/variance-20260809T205319Z/*.json
+# Ping-baseline log for F-11's S3 latency session — small text file,
+# committed as the network-baseline receipt (RTT p50/p90/max, error
+# count) so F-11's "ping doesn't move; latency does" claim is
+# reproducible without needing the audio runs/.
+!analysis/ping-baseline-*.jsonl
 
 # Content-hash cache for synthesis (Phase D.2) — regenerable, safe to nuke
 .cache/

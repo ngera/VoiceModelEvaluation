@@ -18,7 +18,7 @@ signals from 2 independent pipelines, a 9-test outlier verification pack,
 and no human perceptual panel. The reason we didn't run the human panel
 is one of the findings.*
 
-> **⚠ Scope disclaimer** · Findings as of 2026-08-11 on specific
+> **⚠ Scope disclaimer** · Findings as of 2026-08-12 on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
 > relationship with any vendor. Not legal / business / purchasing
@@ -293,7 +293,7 @@ during S3 — the vendor-side slowdown is not last-mile jitter.**
 **What survives from the original finding:**
 
 - **ElevenLabs is consistently faster than OpenAI** across all three
-  sessions (429/694 vs 736/1369 range on p50). The ranking is
+  sessions (424/694 vs 736/1369 range on p50). The ranking is
   portable.
 - **OpenAI TTFA is always ≥ 736 ms p50** on our measurements. The
   "OpenAI is slow" claim is more robust than ever.
@@ -351,23 +351,24 @@ meaningful, but not enough to flip vendor rankings. Which means
 customers can pick a Speechify voice that fits their brand without
 worrying about a big quality drop-off.
 
-### The Cartesia triangulation — three independent pipelines agree
+### The Cartesia triangulation — two independent code paths agree
 
 Cartesia's output audio has zero peak headroom: waveform peaks sit
-at or above ±1.0 in the numeric representation. Three independent
-measurement pipelines detect this:
+at or above ±1.0 in the numeric representation. **Two independent
+measurement pipelines detect this**:
 
-1. Our sample-level clipping analyzer: Cartesia has **~100× more
-   clipped samples** than the next-worst vendor
+1. Our sample-level clipping analyzer (numpy peak scan): Cartesia
+   has **~100× more clipped samples** than the next-worst vendor
 2. Microsoft's DNSMOS ONNX inference **refuses to score 46% of
    Cartesia's files** for peak out of range — a hard `ValueError`
-3. The 54% of Cartesia files DNSMOS *did* accept still rank **#8
-   of 8** on all three ITU P.835 axes
 
-**Two independent code paths, non-overlapping implementations, flag
-the same vendor unanimously.** That's the strongest triangulation
-story the project has, and it exists because we deliberately
-committed to two independent measurement pipelines instead of one.
+A third observation — that the 54% of Cartesia files DNSMOS *did*
+accept still rank **#8 of 8** on all three ITU P.835 axes — is
+downstream evidence from the DNSMOS pipeline itself, not a third
+independent pipeline. So the correct claim is **two independent
+code paths, non-overlapping implementations, flag the same vendor
+unanimously — plus a survivor-subset check on the second pipeline
+that reinforces the pattern.**
 
 For a PM building on Cartesia: their voice is fast and mid-quality,
 but the audio breaks downstream tooling. Add a peak-limiter step
@@ -406,30 +407,43 @@ Three questions to answer in order:
 **Question 1 — hard constraints.** Does your use case rule out any
 vendor structurally?
 
-- Long-form narration (>15s per turn)? **Orpheus is out** (14.59s
-  cap; chunking possible but adds engineering)
+- Long-form narration (>15s per turn)? **Orpheus is out at the
+  hosted endpoint** (14.59s cap observed; may be a config parameter
+  or a model-intrinsic cap, untested — see § 2)
 - Any downstream audio pipeline (MOS check, ASR, resample)?
   **Cartesia needs a peak-limiter step** first
-- Sub-500 ms p90 required (real-time voice)? **Only ElevenLabs
-  Flash and Deepgram** cleared this
+- Sub-500 ms p90 required (real-time voice)? **Unresolved on our
+  data.** ElevenLabs Flash cleared 500 ms p90 in S1+S2 (469-479 ms)
+  but failed in S3 (816 ms). Deepgram cleared it in the single
+  session we measured (~230 ms) but wasn't re-measured. **Do not
+  provision from any of our measurements** — real-time TTFA is
+  session-variable enough that you need ≥3 sessions on your own
+  deployment before committing. See F-11 (§ 3 below).
 - Byte-identical caching? **Impossible with any of the 8** — none
   produces the same bytes twice
 
 **Question 2 — which "quality" matches your users?**
 
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
-  clearly wins** the warm-rater axis on both use cases. At $0.10/1K
+  leads the warm-rater axis on both use cases** at 3.7–5.9σ vs the
+  next-best vendor (recomputed against Cartesia for narration — see
+  Wave 1 statistical-honesty note in
+  [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8)). At $0.10/1K
   words (100K/mo tier), Speechify is the cheaper of the top-2
   warm-quality vendors (ElevenLabs at $0.22 is #2 warm and 2.2×
-  more expensive). Absolute cheapest overall is Orpheus at $0.030,
-  but Orpheus is bottom-2 on Audiobox conv and disqualified from
-  narration by its 14.59-second output cap.
+  more expensive). Orpheus at $0.030/1K words is nominally cheapest,
+  but its narration output is capped at 14.59s (§ 2) so it is not
+  actually cheapest per delivered second of narration audio — see
+  [04_RESULTS.md § cost calculus](04_RESULTS.md#cost-calculus).
 - Clean/pristine (IVR, accessibility, transactional voice) → **OpenAI
-  wins narration and ties for #1 conversational**. At $0.075/1K
-  words, OpenAI is **34% of the cost of ElevenLabs** ($0.22, tied
-  competitor on conv) and **50% of Deepgram** ($0.15, tied competitor
-  on narration) — a ~50–66% saving depending on which tied competitor
-  you compare against.
+  ties for #1 on DNSMOS OVRL on both use cases** (0.7–1.3σ vs the
+  tied competitor). At $0.075/1K words, OpenAI is 34% of ElevenLabs'
+  $0.22 (tied on conv) and 50% of Deepgram's $0.15 (tied on narr) —
+  a **~50–66% saving** on tied-on-cleanliness quality. Caveat: our
+  SE(diff) test is unpaired and doesn't correct for multiplicity;
+  the "tie" verdict is a conservative reading of the current
+  evidence, not a positive statement of equality — see the Rankings
+  summary in 04 for the full method disclosure.
 
 **Question 3 — is #1 on quality worth the cost premium over #2?**
 
@@ -437,19 +451,27 @@ Look at the cost-vs-quality frontier:
 
 ![Cost vs quality](figures/f2_cost_vs_quality.png)
 
-Wherever the delta between #1 and #2 is smaller than about 4× the
-per-run wobble (~0.05 on Audiobox, ~0.05 on DNSMOS), the two vendors
-are **statistically tied** on quality. Pick the cheaper one.
+Use [04's Rankings summary](04_RESULTS.md#rankings-summary) for the
+per-pair statistical test (|Δ| / SE(diff), where SE_i = SD(75) / √75).
 
-The clearest tie-break in the data: **OpenAI vs ElevenLabs on DNSMOS
-conversational** — delta 0.022, less than the noise floor. OpenAI
-$0.075/1K words vs ElevenLabs $0.22/1K words. **66% saving on a
-tied-on-quality pick.** Unless you need ElevenLabs Flash's specific
-sub-500 ms latency stability, OpenAI is the choice.
+**Under 2σ**: the pair is statistically tied at α=0.05 — pick the
+cheaper vendor. **Between 2σ and 4σ**: the evidence is real but the
+observed Δ is small in absolute terms — decide from your own
+listener-preference judgment. **Above 4σ**: strong evidence, but
+note that **σ measures precision of the estimate, not perceptual
+magnitude**: Speechify's 3.7σ Audiobox lead is a Δ of 0.14 on a
+0–10 scale, which is 1.4% of scale. Whether that gap is *audible*
+to a listener is untested (no human panel — see
+[D-H](06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2)). See
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) for the
+perceptual-calibration gap.
 
-Wherever the delta is 0.10 or more, the quality gap is real and
-worth pricing. That's a call only you can make — but framing it
-explicitly beats a vague "premium feels worth it."
+The clearest cost tie-break: **OpenAI vs ElevenLabs on DNSMOS
+conversational** — Δ = 0.022 at 1.3σ (tied at α=0.05). OpenAI
+$0.075/1K words vs ElevenLabs $0.22/1K words = **66% saving on
+tied-on-cleanliness quality**. That recommendation stands
+independent of latency; ElevenLabs' latency profile is now itself
+uncertain (see § 3 / F-11).
 
 ---
 
@@ -532,8 +554,8 @@ glossed over.
 were measured from a residential Windows 11 environment; enterprise
 deployments in a cloud region colocated with each vendor's serving
 region would see 10-30% lower absolute numbers. Vendor *rankings* on
-latency are portable; absolute values are explicit upper bounds
-labeled "residential measurement" in every figure caption. See `D-G`.
+latency are portable; absolute values are one point in a
+session-to-session distribution (see F-11). See `D-G`.
 
 ---
 

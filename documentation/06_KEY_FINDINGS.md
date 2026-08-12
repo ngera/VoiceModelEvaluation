@@ -6,7 +6,7 @@ backed by a specific artefact under [analysis/](../analysis/) or
 here is backed by a specific reasoning section reachable from
 the entries below.*
 
-> **⚠ Scope disclaimer** · Findings as of 2026-08-11 on specific
+> **⚠ Scope disclaimer** · Findings as of 2026-08-12 on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. See
 > [../DISCLAIMER.md](../DISCLAIMER.md).
@@ -15,7 +15,10 @@ the entries below.*
 
 ## Contents
 
-- [Findings F-1 through F-9](#findings)
+- [Findings F-1 through F-9 + F-11](#findings) (F-10 slot was
+  reserved for BT rating campaign results; unused because Phase 3
+  was deferred to v2 per D-H, and the slot number is retained so
+  future v2 work can slot in without renumbering)
 - [Friction points — the portfolio narrative bank](#friction-points)
 - [Decisions D-A through D-H](#decisions)
 - [Threats to validity](#threats-to-validity)
@@ -80,7 +83,7 @@ not a quality-headline strength. Every recommended vendor will be a
 trade-off, not a dominant choice. The frontier chart —
 not the leaderboard — is the artefact a decision-maker needs.
 
-### F-4 + F-4a · Cartesia's clipping is triangulated across 3 independent pipelines
+### F-4 + F-4a · Cartesia's clipping is corroborated by two independent code paths
 
 **F-4** (original observation): Cartesia produced 429 clipped samples
 on narration + 406 on conversational — **100× the next-worst
@@ -163,12 +166,21 @@ without worrying about a big quality drop-off.
 
 Cross-pipeline mean Spearman ρ across 8 vendors:
 
-| Use case | ρ |
-|---|---:|
-| Conversational | **−0.13** |
-| Narration | **−0.27** |
+| Use case | ρ (point estimate) | 95% CI (Fisher-transformed, n=8) | Reading |
+|---|---:|---|---|
+| Conversational | **−0.13** | roughly [−0.75, +0.60] | not distinguishable from 0 or from strong positive |
+| Narration | **−0.27** | roughly [−0.81, +0.51] | not distinguishable from 0 or from strong positive |
 
-Not weakly-positive; **negative**. Named rank inversions:
+**Statistical caveat**: at n=8 vendors we **cannot claim** either
+point estimate is significantly different from zero, nor from a
+strong positive correlation. Earlier drafts of this section
+described the point estimate as "negative" without the CI — that
+phrasing was over-precise for n=8 and has been retired. What the
+data supports is: **the two pipelines do NOT show the strong
+positive rank correlation we would expect if they were measuring
+the same construct**, and there are specific per-vendor rank
+inversions that are directly citable regardless of the CI on the
+aggregate. Named inversions:
 
 - **OpenAI narration**: Audiobox **#8 / #8** on PQ+CE, DNSMOS
   **#1 / #1 / #2** on P.835 three-scale. Perfect inversion.
@@ -269,7 +281,7 @@ relative magnitude it affected OpenAI in the S1→S2 shift.
 **What survives**:
 
 - ElevenLabs is **consistently faster than OpenAI** across all 3
-  sessions (429/694 vs 736/1369 range on p50). Ranking is stable.
+  sessions (424/694 vs 736/1369 range on p50). Ranking is stable.
 - OpenAI TTFA is high — always at least 736 ms p50 on our
   measurements — which is the load-bearing claim for the "provision
   capacity for OpenAI's worst percentile" advice.
@@ -282,7 +294,8 @@ relative magnitude it affected OpenAI in the S1→S2 shift.
   headline. On our data, both vendors' session-to-session variance
   is 50-90% of the p50; neither is "stable" in an operational sense.
 - Any capacity-planning implication that reads ElevenLabs' 470 ms
-  p90 as a ceiling.
+  p90 as a ceiling in either direction (the S3 measurement
+  exceeded it substantially).
 
 **Impact on PM recommendations**: don't provision from one
 measurement session. For a real deployment plan, budget the tail
@@ -291,11 +304,15 @@ your actual deployment environment — public-tier measurements at
 n=1-2 sessions are not enough to characterise the tail.
 
 **Evidence**:
-- Session 3 run: [`runs/latency-20260812T191143Z/`](../runs)
-  (OpenAI) and [`runs/latency-20260812T191323Z/`](../runs)
-  (ElevenLabs; 40/50 trials landed before spend cap)
-- Ping baseline log: `runs/ping-baseline-20260812T191138Z.jsonl`
-  (274 probes to 1.1.1.1 during the S3 window)
+- Session 3 run IDs: `latency-20260812T191143Z` (OpenAI) and
+  `latency-20260812T191323Z` (ElevenLabs; 40/50 trials landed before
+  spend cap). `runs/` is gitignored (regenerable + large — see
+  [.gitignore](../.gitignore)); reproduce per
+  [03_RUNBOOK § latency + ping](03_RUNBOOK.md)
+- Ping baseline log: `ping-baseline-20260812T191138Z.jsonl` — 274
+  probes to Cloudflare 1.1.1.1 during the S3 window. Committed as
+  [`analysis/ping-baseline-20260812T191138Z.jsonl`](../analysis/ping-baseline-20260812T191138Z.jsonl)
+  so the network-baseline receipt survives without the audio
 - Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py)
 
 **Portfolio takeaway (revised)**: the T5/T7 pair now demonstrates
@@ -480,11 +497,13 @@ Documented as a reproducibility receipt in
 <a name="d-g-enterprise-portability"></a>
 ### D-G · Enterprise portability disclosure
 
-Absolute TTFA / RTF numbers are labeled as **residential Windows 11
-upper bounds** in every table + figure caption. Provider *rankings*
+Absolute TTFA / RTF numbers are labeled as **residential Windows 11 measurements taken at
+one point in a session-to-session distribution** — F-11 showed
+they are not upper bounds. Provider *rankings*
 are portable to enterprise deployments; absolute *values* are
-explicit ceilings. Alternative (re-measure on cloud VMs colocated
-with each vendor's serving region) is a 1-3 day workstream not
+session-to-session observations, not ceilings (F-11). Alternative
+(re-measure on cloud VMs colocated with each vendor's serving
+region, across ≥3 sessions per venue) is a 1-3 day workstream not
 justified at portfolio scope; deferred to v2.
 
 <a name="d-h-bt-deferred-to-v2"></a>
@@ -535,7 +554,7 @@ mitigated (mitigation named) or documented as a v2 workstream.*
   reproducibility with alternate corpora → deferred to v2
 - **English only** — multilingual claims untested → deferred to v2
 - **Residential Windows 11 measurement environment** (D-G) →
-  rankings portable, absolutes labeled as ceilings; enterprise VM
+  rankings portable, absolutes are one-session observations (F-11); enterprise VM
   baseline deferred to v2
 - **Paid public tiers, not enterprise contracts** — SLA + volume
   discount contracts may produce different behavior → deferred to
@@ -549,7 +568,12 @@ mitigated (mitigation named) or documented as a v2 workstream.*
 - **Ranking depends on MOS predictor family choice** (F-8) →
   mitigated by publishing both matrices and naming rank inversions
   rather than aggregating
-- **Single-session latency** → mitigated by T5 + T7 second-session pass
+- **Single-session latency** → the T5 + T7 second-session pass was
+  the design intended to mitigate this; F-11 (300 lines above)
+  documents that the two-session design was itself too weak — the
+  third session with concurrent ping baseline refuted the "stability"
+  reading the two-session pass had produced. Full mitigation would
+  require ≥5 sessions across ≥2 weeks (v2 workstream)
 - **Cartesia clipping: systemic or batch?** → mitigated by F-4a
   triangulation
 

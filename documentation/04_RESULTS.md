@@ -4,7 +4,7 @@
 plus the verification-pack verdicts and the cost calculus a
 decision-maker needs.*
 
-> **⚠ Scope disclaimer** · Results as of 2026-08-11 on specific
+> **⚠ Scope disclaimer** · Results as of 2026-08-12 on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
 > relationship with any vendor. Not legal/business/purchasing
@@ -32,7 +32,7 @@ noise-floor, WER via two-judge agreement, latency (conversational
 only, 50-trial session), and public-tier cost per 1K words at 100K
 words/month.
 
-**Important scope note** (item 31 of external review): **each cell in
+**Important scope note**: **each cell in
 these tables is a single realization** — one draw per (vendor, item)
 in the campaign, aggregated over 75 items. F-1 established that no
 vendor produces byte-identical output across draws, so every value
@@ -175,7 +175,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> 0</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> -46.2</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 16.6</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 583</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 583 <sup>³</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
@@ -360,6 +360,17 @@ surviving subset are still #8 of 8 on OVRL / SIG / BAK — the
 mastering signature that got the other 37 refused persists in the
 38 that made it through.
 
+**Footnote ³ (Deepgram conversational TTFA)**: the 583 ms figure
+in this table is from an earlier campaign-mode run whose adapter
+included cache-warm-up overhead — not a true streaming TTFA
+measurement. The **operational TTFA** for Deepgram (from a
+dedicated 50-trial latency-mode session on 2026-08-09) is
+**~180 ms p50 / ~230 ms p90** — see the Latency section below.
+The colored 583 cell reflects the campaign-observed value; the
+latency-table value is the one to cite for a deployment decision.
+Deepgram wasn't re-measured in S2/S3, so we have only one clean
+latency-mode session for it.
+
 ---
 
 ## Rankings summary
@@ -372,7 +383,7 @@ normal-approximation test at α=0.05. Per-vendor per-signal SDs +
 SE_mean values are in [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py)
 output; run the script to reproduce.
 
-**Why this method** (fixes items 1-4 of the external review):
+**Why this method**:
 - One number ("0.035 noise floor") applied across two different
   scales (Audiobox 0-10, DNSMOS 1-5) was scale-inconsistent
 - The previous threshold was measured on Speechify — the winner
@@ -428,7 +439,7 @@ Cross-pipeline mean Spearman ρ across the 8 vendors:
 | Conversational | **−0.13** | Essentially uncorrelated | roughly [−0.75, +0.60] |
 | Narration | **−0.27** | Weakly inverse | roughly [−0.81, +0.51] |
 
-**Statistical caveat** (item 9 of external review, spelled out):
+**Statistical caveat**:
 n=8 vendors gives Spearman ρ a very wide 95% CI. We **cannot claim**
 either point estimate is significantly different from zero, nor from
 a strong positive correlation. What we can claim is that the two
@@ -518,7 +529,7 @@ last-mile jitter.
 prior "stability" claim):
 
 - **Vendor ranking on TTFA is stable**: ElevenLabs is consistently
-  faster than OpenAI in every session (429/439/694 vs 736/936/1369
+  faster than OpenAI in every session (424/439/694 vs 736/936/1369
   on p50). The ordering is portable.
 - **Absolute TTFA is NOT stable** for either vendor. Both moved
   50-90% p50 session-to-session on our public-tier accounts.
@@ -560,9 +571,9 @@ Table below shows all 10 rows with T3's retirement noted:
 | T2 | WER ~27% (2× next) | Orpheus | **Answered by T8** — 14.59s output cap = mechanical incompletion | [T2](../analysis/verification/T2_orpheus_wer.md) |
 | T3 | Narration PQ 7.41 conv → 8.00 narr | Orpheus | **Retired** — DNSMOS #2 narr confirms direction, satisfies exit criterion | (retired) |
 | T4 | L03 monotonic fadeout (3.6 dB) | ElevenLabs | **Confirmed with refinement** — 3/3 fresh regens fade monotonically; mean delta 2.7 dB, not 3.6 dB | [T4](../analysis/verification/T4_elevenlabs_L03_fadeout.md) |
-| T5 | Latency 762/946 ms (2× next) | OpenAI | **Confirmed (slower than ElevenLabs)** — S3 = 1369/1882 ms, all 3 sessions consistently slower than ElevenLabs. Stability sub-finding refuted (see F-11). | [T5](../analysis/verification/T5_openai_latency.md) |
+| T5 | Latency 736/956 ms (2× next; original observation from campaign-cached row) | OpenAI | **Confirmed (slower than ElevenLabs)** — S3 = 1369/1882 ms, all 3 sessions consistently slower than ElevenLabs. Stability sub-finding refuted (see F-11). | [T5](../analysis/verification/T5_openai_latency.md) |
 | T6 | Audiobox #1 both UC | Speechify | **Confirmed with reversal** — alt voice edmund_32 scores *higher* than pinned voices; still #1 of 9 | [T6](../analysis/verification/T6_speechify_voice_bias.md) |
-| T7 | Fastest TTFA (440/474 ms) | ElevenLabs | **Confirmed faster than OpenAI**, all 3 sessions. But **NOT stable** — S3 = 694/816 ms (+58%/+70% vs S1). The prior "sub-500 ms p90 reliably" recommendation is retracted; see F-11. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
+| T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 3 sessions. But **NOT stable** — S3 = 694/816 ms (+58%/+70% vs S1). The prior "sub-500 ms p90 reliably" recommendation is retracted; see F-11. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
 | T8 | Cheapest $0.030/1K | Orpheus | **Refuted with a bigger finding** — 14.59s hard output cap; cost is fixed-per-call not linear-with-text | [T8](../analysis/verification/T8_orpheus_cost.md) |
 | N1 | Audiobox #8/#8 vs DNSMOS #1/#1/#2 narr | OpenAI | Pending (manual listen) | [N1](../analysis/verification/N1_openai_narration_inversion.md) |
 | N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); 3rd independent pipeline agrees | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
@@ -671,17 +682,21 @@ Full plain-language walkthrough in
   analyzer, `pyloudnorm.integrated_loudness` on the quiet-window
   windows). Less-negative = noisier.
 - **WER %** — Mean `agreement_wer` across all 75 items per vendor.
-  `agreement_wer` per item = `jiwer.wer(reference, agreed_hypothesis)`,
-  where `agreed_hypothesis` is only the tokens both judges emitted
-  at the same position (disputed tokens are treated as errors —
-  conservative). Reported as relative-ranking-only (mean WER on items
-  with judge agreement)
-  (two-judge design: wav2vec2 + faster-whisper). Reported as
-  relative ranking only; absolute inflated by wav2vec2's LibriSpeech
-  training distribution.
+  `agreement_wer` per item = `jiwer.wer(reference, agreed_hypothesis)`
+  where `agreed_hypothesis` is the string of tokens both judges
+  (wav2vec2 + faster-whisper) emitted at the same position; disputed
+  tokens are omitted from `agreed_hypothesis` and therefore counted
+  as errors against the reference — conservative. **Reported as
+  relative-ranking-only**: absolute WER is inflated because wav2vec2
+  systematically drops articles that Whisper preserves, so every
+  article is a disputed token and hard-coded into the error count
+  (see F-2 for the resulting artifact). Relative rankings survive
+  only under the assumption that the article-drop rate is
+  approximately constant across vendors — untested; caveat.
 - **TTFA p50 (ms)** — Time-to-first-audio-frame, 50th percentile,
-  50-trial session, S01 corpus. **Residential Windows 11
-  measurement — absolute values are upper bounds.**
+  50-trial session, S01 corpus. **Residential Windows 11 measurement — absolute values are one
+  point in a session-to-session distribution (see F-11); not
+  upper bounds.**
 - **$/1K words** — Cost per 1,000 words at the specified monthly
   volume tier (see full cost table).
 

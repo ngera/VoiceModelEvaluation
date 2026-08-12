@@ -5,10 +5,11 @@ evaluation, and run your own campaign against alternative vendors,
 voices, or corpora.*
 
 > **⚠ Scope disclaimer** · Absolute measurement values depend on
-> your environment (network, hardware, subscription tier). Vendor
-> *rankings* on this evaluation's methodology are portable; absolute
-> values are ceilings measured from residential Windows 11. See
-> [../DISCLAIMER.md](../DISCLAIMER.md).
+> your environment (network, hardware, subscription tier) and on
+> when the measurement was taken (see F-11 for our 3-session
+> per-vendor TTFA spread). Vendor *rankings* are portable; absolute
+> *values* are one point in a session-to-session distribution, not
+> ceilings. See [../DISCLAIMER.md](../DISCLAIMER.md).
 
 ---
 
@@ -274,8 +275,11 @@ uv run python scripts/generate_figures.py
 Analyzer outputs land in `analysis/<run-id>/*.json`. Figures land
 in `documentation/figures/`. Compare against the published
 [04_RESULTS.md](04_RESULTS.md) — findings should reproduce within
-the natural draw-to-draw noise floor (~0.035 on Audiobox / DNSMOS
-per-cell).
+per-vendor per-signal SE(diff) bands documented in
+[04's Rankings summary](04_RESULTS.md#rankings-summary) and computed
+by [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py).
+Prior versions of this doc referenced a single-number ~0.035 noise
+floor — that heuristic has been retired.
 
 **Estimated total cost**: ~$56 across 8 vendor accounts, plus 3-4
 hrs wall clock on a mid-tier CPU laptop.

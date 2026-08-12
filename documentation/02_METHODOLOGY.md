@@ -6,7 +6,7 @@ individual decisions — this document explains the underlying
 principles the decisions apply.*
 
 > **⚠ Scope disclaimer** · Methodology described here was applied
-> as of 2026-08-11 on 8 vendor accounts (paid public tiers). Full
+> as of 2026-08-12 on 8 vendor accounts (paid public tiers). Full
 > scope in [../DISCLAIMER.md](../DISCLAIMER.md).
 
 ---
@@ -122,10 +122,18 @@ concurrency handling; serial trials measure the tail of an
 individual user's experience. For a support-agent product, the tail
 per-user matters more than aggregate throughput.
 
-**Why two sessions**: the T5+T7 verification pack showed
-session-to-session variance is **itself a distinct vendor property**
-(ElevenLabs 2-3% shift; OpenAI 27-56% shift). A single-session
-measurement would let a lucky slow-day report look definitive.
+**Why multiple sessions**: a single session of TTFA cannot
+distinguish "vendor is fast" from "vendor happened to be fast
+during our measurement window." The plan called for two sessions
+on different days. Post-review, a third session (2026-08-12) with
+concurrent ping baseline was added; it refuted the two-session
+"stability" reading — see
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+The methodology takeaway that survives: **TTFA is
+session-variable; report absolute values as a range across ≥3
+sessions, not as a point estimate**. What the design of two
+sessions was too weak to catch is documented in F-11 as a
+first-class finding, not concealed.
 
 ### D2 · WER (Word Error Rate)
 
@@ -210,10 +218,11 @@ stays flat). A vendor's ranking on cost can flip between tiers if
 you don't model the full curve.
 
 **Effective cost, not sticker cost**: T8 showed Orpheus's
-$0.003/call sticker becomes ~$0.02/1K chars once you account for
-the 14.59s output cap forcing multiple calls per long-form item.
-Vendor-specific overhead (Cartesia's peak-limiter step, OpenAI's
-worst-percentile latency provisioning) also multiplies the sticker.
+$0.003/call sticker translates to a real per-1K-word cost that
+depends on the cap-per-call, not the input length. See the
+[04 cost calculus](04_RESULTS.md#cost-calculus) note on the
+Orpheus row for the current arithmetic — sticker rates without
+that qualification will mislead.
 
 ---
 
@@ -230,28 +239,38 @@ fresh data — winners and losers same scrutiny.
 2. **Fresh calls, no cache** — different day / time where relevant
 3. **Winner-side tests get the same scrutiny as loser-side** — kills
    the "cherry-picked eliminations" critique
-4. **Three-way verdict**: Confirmed / Refuted / Inconclusive
+4. **Verdict buckets**: Confirmed / Refuted / Inconclusive as the
+   base, with modifiers when the fresh data forced a refinement
+   (e.g., "Confirmed with reversal" for T6 when the winning vendor
+   held rank but under a different voice; "Refuted with a bigger
+   finding" for T8 when the cost story broke on an output-cap
+   discovery). The
+   [verdict tally in 04_RESULTS](04_RESULTS.md#verification-pack-outcomes-phase-2c)
+   lists the six-way execution outcome explicitly rather than
+   collapsing to the base three
 5. **Per-test JSON + Markdown artefact** in
    [analysis/verification/](../analysis/verification/) so the
    evidence is directly citable
 
-**What the pack produced** (see F-9 for details):
+**What the pack produced** (verdict table + full narrative in
+[04_RESULTS.md § verification pack outcomes](04_RESULTS.md#verification-pack-outcomes-phase-2c)):
 
-- 5 Confirmed / 3 Confirmed-with-refinement/caveat / 1 Refuted (with
-  a bigger finding) / 1 Pending
-- **~40% of the load-bearing findings** came from the verification
-  pack, not the primary campaign
-- T8's discovery of Orpheus's 14.59s output cap — the single
-  most-impactful finding of the project — came from re-verifying
-  Orpheus's cost claim, not from cost analysis itself
-- T6's reversal — the Speechify alt-voice test showed the pre-
-  registered voice was *conservative*, not cherry-picked
-- T4's refinement — the ElevenLabs L03 fadeout is real (100%
-  reproducible direction) but 35% shallower on average than the
-  original observation
+- **Four findings that would not have surfaced from the primary
+  campaign**: T8 (Orpheus's 14.59s output cap at the hosted endpoint),
+  T6 (Speechify's alt-voice reversal), T4 (L03 fadeout magnitude
+  overstated ~35%), and **F-11 (the after-review third latency
+  session that refuted the initial "ElevenLabs is stable" claim)**
+- The most consequential is T8 — mechanically resolved T2 (Orpheus's
+  high WER = truncation cap, not intelligibility) without a manual
+  listen
+- F-11 is the strongest "published-headline-refuted-by-verification"
+  case; it directly answered an external-review objection about ISP
+  confounding
 
-**Cost**: $0.61 spend + ~90 minutes of work. Cheap replication is
-the highest-leverage step in a portfolio evaluation.
+**Cost**: ~$0.63 spend + ~2 hours of work (including the
+after-review third latency session with concurrent ping baseline).
+Cheap replication is the highest-leverage step in a portfolio
+evaluation.
 
 ---
 
@@ -262,8 +281,15 @@ Where the methodology cannot support the claim, name it.
 ### What we can claim
 
 - **Vendor rankings** on any single measurement axis, subject to the
-  measurement noise floor (~0.035 on Audiobox, ~0.035 on DNSMOS,
-  ~2 dB on hygiene noise floor)
+  per-comparison SE(diff) test documented in
+  [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary).
+  Earlier drafts of this doc used a single-number "0.035 noise floor"
+  heuristic — that's been retired in favor of per-vendor per-signal
+  SD(75) / √75, with a σ-based test. Caveat: the current SE(diff)
+  test uses the unpaired formula on paired data (same 75 items
+  rendered by both vendors), which is conservative but not optimal;
+  a paired test would tighten TIE calls further. Multiplicity across
+  the 9 pairs tested is not corrected.
 - **Cross-pipeline disagreement** (F-8) — the *fact* that two
   independent MOS pipelines rank vendors differently, with named
   rank inversions
@@ -284,8 +310,10 @@ Where the methodology cannot support the claim, name it.
   vendor wins on some axis and loses on another (F-3). Rankings are
   axis-conditional.
 - **Absolute values on latency** — measured from residential
-  Windows 11; rankings are portable, absolutes are labeled ceilings
-  (D-G).
+  Windows 11; rankings are portable. Absolute values are one
+  point in a session-to-session distribution (see F-11) — not
+  ceilings. Prior drafts treated them as ceilings; that was
+  refuted by S3.
 - **Absolute WER** — inflated by wav2vec2's LibriSpeech distribution
   (F-2); relative rankings valid, absolutes are not.
 - **Findings generalize to other voices / other tiers / other
@@ -343,11 +371,12 @@ to git:
   storytelling / warm narrator" (Speechify)** — see
   [../DEVIATIONS.md § D-003](../DEVIATIONS.md#d-003). These are
   categorical claims about market positioning made before the
-  campaign, not outcome-specific claims. That the winners came from
-  the added vendors is worth flagging (an evaluator whose "auditable-
-  #1" archetype happens to win the aesthetic axis is a pattern a
-  hostile reader will notice), but the pre-registration receipt is
-  what makes the claim defensible.
+  campaign, not outcome-specific claims. That the two headline
+  winners (Speechify on Audiobox, OpenAI on DNSMOS) are the same
+  two vendors that were added post-lock is a pattern a hostile
+  reader will notice — the pre-registration receipt is what makes
+  the claim defensible, but naming the coincidence up front is
+  more honest than letting a reader spot it.
 - **"You changed almost every measurement-defining parameter
   post-lock"** → true for the roster (D-003), WER judge (D-010),
   primary quality instrument (TTSDS2→DNSMOS via D-A/B/011), and
@@ -363,12 +392,33 @@ to git:
   (Orpheus fork slug + version pinning) came from live API schema
   probes, not pilot data. D-010 (wav2vec2 judge) came from the
   analyzer failing to load parakeet_rnnt, not from any performance
-  observation. D-011 (DNSMOS) came from a methodological decision
-  post-Phase-2 to add a second MOS pipeline. **Nothing was
-  amended after seeing the campaign quality numbers themselves** —
-  the pilot-informed amendments were error-driven (HTTP 4xx), not
-  outcome-driven. Committed as prereg-vN tags before the campaign
-  data existed.
+  observation.
+
+  **D-011 (DNSMOS as second MOS pipeline) is the one requiring the
+  most precision.** Explicit timeline:
+    - 2026-08-09: campaign audio generated (`campaign-20260809T204608Z`)
+    - 2026-08-09 to 2026-08-11: campaign audio analyzed with Audiobox
+      only; Audiobox per-vendor numbers existed by the time D-011
+      was drafted
+    - 2026-08-11: `prereg-v1.10` tagged, adding DNSMOS via speechmos
+    - 2026-08-11 (evening): campaign quality re-analyzed with DNSMOS
+      added
+
+  So DNSMOS was added *after* Audiobox scores were visible. The
+  honest question is: was the choice of DNSMOS specifically informed
+  by seeing the Audiobox rankings? **No** — DNSMOS was selected
+  because UTMOS (the first-choice second pipeline) was blocked on
+  Windows by fairseq's install cliff and NISQA was blocked by a
+  `torch==2.2.1` pin (both in the archived RESEARCH_LOG). DNSMOS was
+  the only remaining candidate that met the "second independent
+  pipeline" criterion without breaking the environment. The choice
+  was cross-platform-driven, not outcome-driven. But a reader is
+  correct to want that stated rather than inferred.
+
+  **No amendment was made after the DNSMOS numbers themselves
+  existed.** That is a stronger, more precise claim than "nothing
+  was amended after Phase 2." Committed as prereg-vN tags before
+  the campaign result that uses each amendment.
 
 None of these defenses were added after publication — every one is
 committed to git with a timestamp that predates results.

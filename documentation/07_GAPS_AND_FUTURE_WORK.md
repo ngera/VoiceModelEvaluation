@@ -2,7 +2,7 @@
 
 *What v1 didn't cover, why, and what a v2 pass would add.*
 
-> **⚠ Scope disclaimer** · Findings as of 2026-08-11 on specific
+> **⚠ Scope disclaimer** · Findings as of 2026-08-12 on specific
 > vendor accounts (paid public tiers) and one voice per vendor per
 > use case. No financial relationship with any vendor. Full scope
 > in [../DISCLAIMER.md](../DISCLAIMER.md).
@@ -26,7 +26,7 @@ human-preference evidence.
 
 Executing the ceremony and disclaiming the result would be a shape of
 over-claim this project refuses to make. See
-[06_KEY_FINDINGS.md § D-H](06_KEY_FINDINGS.md#d-h-phase-3-bt-deferred)
+[06_KEY_FINDINGS.md § D-H](06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2)
 for the full rationale.
 
 **v2 workstream**: recruit 15–30 blinded raters, run the existing
@@ -49,7 +49,7 @@ the pinned `geffen_32`).
 survive across the voice space, and where vendor tag-taxonomy
 (warm / bright / dynamic / etc.) reliably predicts aesthetic score.
 
-**Related asymmetric-scrutiny gap** (item 27 of external review):
+**Related asymmetric-scrutiny gap**:
 Cartesia's loser-side outlier (clipping) got two targeted
 verification pathways (F-4a's independent-pipeline corroboration +
 T1's regen plan). Speechify's winner-side outlier (Audiobox #1 on
@@ -93,15 +93,17 @@ low-resource language (e.g., Swahili) using the same methodology.
 
 ### 5. Client-side latency measured from a residential Windows 11 environment
 
-Absolute TTFA / RTF numbers are upper bounds on what an
-enterprise-cloud-VM deployment would see. Provider *rankings* on
-latency are portable; absolute *values* are labeled ceilings in
-every table + figure caption. See
+Absolute TTFA / RTF numbers are one point in a session-to-session
+distribution measured from residential Windows 11 (see F-11);
+they are not upper bounds on what an enterprise-cloud-VM
+deployment would see, in either direction. Provider *rankings* on
+latency are portable; absolute *values* are session-to-session
+observations (F-11), not ceilings. See
 [06_KEY_FINDINGS.md § D-G](06_KEY_FINDINGS.md#d-g-enterprise-portability).
 
 **v2 workstream**: re-measure TTFA/RTF from AWS + GCP VMs colocated
-with each vendor's serving region. Publish an "enterprise ceiling
-+ residential ceiling" pair per vendor.
+with each vendor's serving region. Publish an enterprise-cloud-VM baseline alongside the residential
+baseline, both characterised across ≥3 sessions per venue.
 
 ### 6. Subscription-tier serving priority may differ from enterprise contracts
 
@@ -141,8 +143,7 @@ list and got substantive mitigation during the project:
   analysis substitutes for the missing D3 primary.
 - **Single-session latency** (D-1) — partially mitigated by T5 + T7
   adding a second 50-trial session, then further tested by a third
-  session with concurrent ping baseline (2026-08-12, response to
-  review item 23). The initial "stability is a distinct axis"
+  session with concurrent ping baseline (2026-08-12, in response to reviewer critique on ISP confounding). The initial "stability is a distinct axis"
   reading was **refuted** by the third session — both vendors moved
   50-90% p50 across the three sessions. See
   [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).

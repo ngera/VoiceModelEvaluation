@@ -12,7 +12,7 @@ commit that predates the results.**
 > and −0.27 on narration**. Whichever leaderboard you're used to
 > looking at, ask: *ranked on what?*
 
-> **⚠ Scope disclaimer** · Findings are as of 2026-08-11, on specific
+> **⚠ Scope disclaimer** · Findings are as of 2026-08-12, on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
 > relationship with any vendor. Not legal/business/purchasing advice.

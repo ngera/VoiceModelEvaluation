@@ -12,7 +12,7 @@ should be read subject to the scope below.
 
 ## Time-boundedness
 
-**All findings are as of 2026-08-11.** Voice AI vendors ship model
+**All findings are as of 2026-08-12.** Voice AI vendors ship model
 updates on the order of weeks to months. A finding about `tts-1-hd`,
 `Simba-3.2`, `sonic-2`, `eleven_flash_v2_5`, or
 `lucataco/orpheus-3b-0.1-ft` at the version SHAs we tested may not
@@ -85,11 +85,12 @@ combination of:
   measured.
 
 - **One measurement environment** — residential Windows 11, home
-  broadband, single geographic region. Absolute latency numbers are
-  upper bounds; enterprise deployments in a cloud VM colocated with
-  each vendor's serving region are expected to see 10-30% lower
-  absolute TTFA. **Vendor rankings** on latency are portable;
-  **absolute values** are explicit ceilings. See
+  broadband, single geographic region. Absolute latency numbers are one point in a
+  session-to-session distribution (see F-11 — a third session with
+  concurrent ping baseline showed we cannot treat any single
+  session as a ceiling in either direction). **Vendor rankings**
+  on latency are portable across sessions; **absolute values** are
+  not. See
   D-G in [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)
   for the full rationale.
 
