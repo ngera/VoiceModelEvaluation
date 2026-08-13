@@ -11,12 +11,15 @@
 
 Latency run `runs/latency-20260809T214106Z` (session 1):
 
-| provider | p50 TTFA | p90 TTFA | n_trials |
-|---|---|---|---|
-| **openai** | **736 ms** | **956 ms** | 50 |
-| elevenlabs | 439 ms | 479 ms | 50 |
-| deepgram | 583 ms | 674 ms | 50 |
-| cartesia | 467 ms | 529 ms | 50 |
+Actually the same day carried **two** latency-mode runs, S1a and
+S1b (both 2026-08-09; T21:41 and T22:23). Both landed n=50:
+
+| provider | S1a p50 / p90 | S1b p50 / p90 | n_trials each |
+|---|---|---|---:|
+| **openai** | **736 / 956 ms** | **762 / 946 ms** | 50 |
+| elevenlabs | 439 / 479 ms | 440 / 474 ms | 50 |
+| deepgram | 583 / 674 ms | 564 / 670 ms | 50 |
+| cartesia | 467 / 529 ms | 468 / 530 ms | 50 |
 
 OpenAI is roughly **2× the median TTFA** of the next-fastest provider
 (ElevenLabs). Deepgram, Cartesia, and ElevenLabs cluster in
@@ -24,13 +27,15 @@ OpenAI is roughly **2× the median TTFA** of the next-fastest provider
 "start speaking within 300 ms" is table stakes, ~740 ms p50 is the
 difference between "responsive" and "audibly slow."
 
-**Retraction note (2026-08-12)**: this table previously reported
-Deepgram at "~180 ms p50 / ~230 ms p90" — that figure is not
-supported by any measurement in `analysis/latency-*/latency.json`;
-every latency-mode Deepgram row shows p50 = 564-583 ms, p90 =
-670-674 ms. Origin of the ~180 ms number is unclear (possibly a
-Deepgram-side self-reported metric misread as wall-clock TTFA);
-regardless, it is retracted here and in T7.
+**Retraction notes**:
+- (2026-08-12) Prior drafts reported Deepgram at "~180 ms p50 /
+  ~230 ms p90" — not supported by any measurement in
+  `analysis/latency-*/latency.json`; every Deepgram row shows
+  p50 = 564-583 ms, p90 = 670-674 ms. Retracted.
+- (2026-08-13) Prior drafts showed only S1a (`736 / 956`) and
+  omitted S1b (`762 / 946`) — the second run of the same day.
+  The S1b row is included above; F-11 now shows all six vendor-
+  session cells instead of collapsing to three.
 
 ## Hypothesis
 

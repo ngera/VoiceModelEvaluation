@@ -11,7 +11,7 @@
 
 ## Structural gaps (cannot fully mitigate in v1 scope)
 
-These are limits inherent to a single-person, three-week, ~$56
+These are limits inherent to a single-person, three-week, ~$13
 project. Each is documented as an explicit v2 workstream rather
 than glossed over.
 

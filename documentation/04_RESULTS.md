@@ -378,24 +378,43 @@ the ranking rules.
 **Footnote ¹ (Orpheus narration)**: Orpheus's narration output is
 truncated to exactly **14.59 seconds per call** by the model's
 hard output cap (F-9 T8, stdev 0.000s across the 8 long items
-tested). The narration corpus is stratified — most items fit
-inside the cap and were rendered complete:
+tested). Actual truncation scope, per
+`analysis/campaign-20260809T204608Z/hygiene.json` (using
+`total_seconds > 14.55` as the truncation flag):
 
-| Stratum | Item count | Expected duration | Orpheus outcome |
-|---|---:|---|---|
-| **Short** (< 250 chars ≈ under cap) | **53** / 75 | < 14.6 s | **rendered complete** (no truncation) |
-| **Medium** (250-300 chars ≈ 14.6-17.5 s) | **14** / 75 | 14.6-17.5 s | lightly truncated (loses last 0-3 s ≈ 0-15% of tail) |
-| **Long** (L01-L08, ~1300-1500 chars) | **8** / 75 | 74-89 s | catastrophically truncated (~84% loss) |
+| Stratum | n | mean duration (s) | max (s) | truncated |
+|---|---:|---:|---:|---:|
+| long | 8 | 14.59 | 14.59 | **8 (all)** |
+| medium | 20 | 14.45 | 14.59 | **18** |
+| probe | 15 | 8.99 | 14.59 | 1 |
+| edge | 8 | 10.84 | 12.97 | 0 |
+| jargon | 12 | 7.39 | 8.36 | 0 |
+| short | 12 | 3.17 | 4.10 | 0 |
+| **Full narration column** | 75 | 10.05 | 14.59 | **27 / 75 (36%)** |
 
-So the earlier claim that "every marked-¹ cell was computed on
-structurally incomplete audio" is **wrong** — 53 / 75 cells (71%)
-are on complete audio, 14 (19%) are lightly truncated, only 8
-(11%) are catastrophically truncated. **The Orpheus AB.PQ /
-DNSMOS aggregate means are dominated by the complete-audio short
-stratum, not by the truncated tail.**
+**Prior drafts of this footnote said "every marked-¹ cell was
+computed on structurally incomplete audio" and reported the
+truncation as "16% of expected duration" — both retracted.** 27
+of 75 files are truncated (36%); 48 are rendered complete.
+Overall Orpheus narration mean duration is 10.05 s vs Speechify
+16.09 s vs ElevenLabs 17.36 s — Orpheus delivered ~58% of what
+Speechify delivered on the same corpus, not "16%." The 16%
+number came from dividing the long stratum's 14.59 s cap by its
+~90 s expected reading time (an L-stratum-only figure that got
+generalised to the whole column). Round-4 also reported a
+53/14/8 breakdown derived from text-length estimation of expected
+duration at 175 wpm; that estimate under-counted truncation
+because Orpheus renders slower than 175 wpm. Truncation counts
+above are from actual measured audio duration, not text-length
+estimates — read them as authoritative.
+
+**Orpheus CONV is also truncated: 25 / 75 files > 14.55 s** —
+carrying no footnote in the conversational per-vendor table
+above. Symmetric-scrutiny gap flagged, not fixed in v1.
 
 **Per-stratum Orpheus AB.PQ narration means** (from
-`analysis/campaign-20260809T204608Z/quality.json`):
+`analysis/campaign-20260809T204608Z/quality.json`; retained here
+because per-stratum mean stability is the meaningful check):
 
 | Stratum | n | AB.PQ mean | AB.PQ SD | DNSMOS OVRL mean |
 |---|---:|---:|---:|---:|
@@ -404,32 +423,50 @@ stratum, not by the truncated tail.**
 | Long (catastrophic trunc) | 8 | 8.009 | 0.054 | 3.459 |
 | Full column | 75 | 8.002 | 0.097 | 3.453 |
 
-The three strata score **essentially identically** — the truncated
-long items score the same as the fully-rendered short items. This
-means:
+(The "short/medium/long" grouping here is text-length-derived
+from round-4 and doesn't map exactly to the hygiene-based
+long/medium/probe/edge/jargon/short strata above; it's kept
+because it's the grouping the AB.PQ means were computed on.
+Reproducing with the hygiene strata is a straightforward
+follow-up.)
 
-- **Orpheus's narration AB.PQ score of 8.00 is EARNED, not artifact.**
-  Prior drafts of this footnote said "9.5σ is a truncation artifact";
-  that's now retracted. The per-stratum decomposition above is the
-  receipt.
+The three strata score essentially identically. This means:
+
+- **Orpheus's narration AB.PQ score of 8.00 is EARNED, not
+  artifact.** Prior drafts of this footnote said "9.5σ is a
+  truncation artifact" (round 3) then explained the tight SE as
+  "per-call rendering consistency" (round 4). Round 5 retracts
+  both: **the exclusion of Orpheus from the deployable-#2 slot is
+  a scope choice (don't rank truncated audio for narration
+  workflows), not a statistical necessity.** Speechify's SD_75
+  for narration PQ is 0.0943 (lowest of 8 vendors, the retained
+  #1). Orpheus's SD_75 is 0.0967 (2nd lowest). The substituted
+  Cartesia's SD_75 is 0.1795. **The 9.5σ → 7.0σ shift under the
+  Orpheus-exclusion is driven by Cartesia's higher SD inflating
+  SE(diff), not by anything about Orpheus's variance.** And
+  Orpheus's conversational AB.PQ SD is 0.2731 (2nd HIGHEST of
+  8, under identical 25/75 truncation) — direct falsification of
+  any "truncation depresses score variance" mechanism.
 - **The −78.7 dBFS noise floor value** in the narration table
-  reflects the 8 long items' "mostly silence" padding after the
-  cap. That specific number IS an artifact of the long stratum.
-  Aggregate noise-floor claims for Orpheus narration should be
-  read as long-stratum-dominated for that column only.
-- **Speechify vs Orpheus (0.148, 9.5σ) is a real effect**, not an
-  artifact. The paired-test recompute would strengthen it
+  is a **real Orpheus property**, not silence-padding artifact.
+  Orpheus narration `speech_ratio` = **0.901** (from hygiene.json)
+  — higher than Speechify's 0.875 and ElevenLabs's 0.924
+  neighbour. The clips are 90% speech. The quiet noise floor is
+  the Orpheus model's actual noise floor on the non-silence
+  regions. Prior drafts of this footnote said "it's mostly
+  silence padding the truncated clips out" — that mechanism is
+  contradicted by the same `hygiene.json` file and is retracted.
+- **Speechify vs Orpheus (0.148, 9.5σ) is a real effect.** The
+  paired-test recompute strengthens it further
   (`scripts/_paired_test.py`). Orpheus IS numerically #2 on
-  AB.PQ narration; it is Speechify vs Cartesia (0.164, 7.0σ) or
-  vs Deepgram / Google that provide the "honest #2 after
-  disqualifying Orpheus" alternatives.
+  AB.PQ narration.
 - **The honest reason to demote Orpheus from the narration
   recommendation is Q1**, not the stats: the 14.59-s cap
   disqualifies it from long-form narration workflows regardless
   of the quality score. See the Q1 hard-constraint check in the
   Decision framework. The rankings table below shows both the
-  Orpheus-included (honest score) and Orpheus-excluded (honest
-  next-deployable) reads so the mechanism is transparent.
+  Orpheus-included (numerical) and Orpheus-excluded (deployable)
+  reads so the mechanism is transparent.
 
 **Footnote ² (Cartesia narration DNSMOS)**: 37 of 75 Cartesia
 narration clips (49%) were refused by DNSMOS for peak_out_of_range
@@ -498,8 +535,8 @@ output; run the script to reproduce.
 
 | Axis | #1 vendor | #1 score | #2 vendor | #2 score | Δ | \|Δ\|/SE(diff) | Verdict |
 |---|---|---:|---|---:|---:|---:|---|
-| Audiobox PQ (warm) | speechify | 7.897 | elevenlabs | 7.755 | +0.142 | **3.7σ** | **SIG_DIFF** |
-| Audiobox CE (warm) | speechify | 6.462 | fish | 6.242 | +0.220 | **5.9σ** | **SIG_DIFF** |
+| Audiobox PQ (cleanliness) | speechify | 7.897 | elevenlabs | 7.755 | +0.142 | **3.7σ** | **SIG_DIFF** |
+| Audiobox CE (warm / enjoyment) | speechify | 6.462 | fish | 6.242 | +0.220 | **5.9σ** | **SIG_DIFF** |
 | DNSMOS OVRL (clean) | openai | 3.489 | elevenlabs | 3.467 | +0.022 | 1.3σ | **TIE** |
 | DNSMOS SIG (clean) | openai | 3.697 | elevenlabs | 3.686 | +0.011 | 0.8σ | **TIE** |
 
@@ -510,8 +547,8 @@ the AS-MEASURED table):
 
 | Axis | #1 vendor | #1 score | #2 vendor | #2 score | Δ | \|Δ\|/SE(diff) | Verdict |
 |---|---|---:|---|---:|---:|---:|---|
-| Audiobox PQ (warm) | speechify | 8.150 | orpheus¹ | 8.002 | +0.148 | **9.5σ** | **SIG_DIFF** |
-| Audiobox CE (warm) | speechify | 6.662 | elevenlabs | 6.466 | +0.197 | **7.3σ** | **SIG_DIFF** |
+| Audiobox PQ (cleanliness) | speechify | 8.150 | orpheus¹ | 8.002 | +0.148 | **9.5σ** | **SIG_DIFF** |
+| Audiobox CE (warm / enjoyment) | speechify | 6.662 | elevenlabs | 6.466 | +0.197 | **7.3σ** | **SIG_DIFF** |
 | DNSMOS OVRL (clean) | openai | 3.463 | orpheus¹ | 3.453 | +0.010 | 0.7σ | **TIE** |
 | DNSMOS SIG (clean) | openai | 3.679 | deepgram | 3.677 | +0.002 | 0.2σ | **TIE** |
 
@@ -523,8 +560,8 @@ earned, not artifact):
 
 | Axis | #1 vendor | #1 score | Deployable #2 | #2 score | Δ | \|Δ\|/SE(diff) | Verdict |
 |---|---|---:|---|---:|---:|---:|---|
-| Audiobox PQ (warm) | speechify | 8.150 | cartesia² | 7.986 | +0.164 | **7.0σ** | **SIG_DIFF** |
-| Audiobox CE (warm) | speechify | 6.662 | elevenlabs | 6.466 | +0.197 | **7.3σ** | **SIG_DIFF** |
+| Audiobox PQ (cleanliness) | speechify | 8.150 | cartesia² | 7.986 | +0.164 | **7.0σ** | **SIG_DIFF** |
+| Audiobox CE (warm / enjoyment) | speechify | 6.662 | elevenlabs | 6.466 | +0.197 | **7.3σ** | **SIG_DIFF** |
 | DNSMOS OVRL (clean) | openai | 3.463 | deepgram² | 3.442 | +0.021 | 1.1σ | **TIE** |
 | DNSMOS SIG (clean) | openai | 3.679 | deepgram | 3.677 | +0.002 | 0.2σ | **TIE** |
 
@@ -548,8 +585,13 @@ tightens slightly but stays a tie; the AB.PQ 9.5σ tightens further.
 
 **Interpretation:** All four Audiobox comparisons are meaningfully
 different in both the numerical and deployable rankings — Speechify's
-warm-rater lead over the (deployable) #2 vendor is **3.7σ to 7.3σ
+lead over the (deployable) #2 vendor is **3.7σ to 7.3σ
 significant**, or 3.7σ to 9.5σ if the Orpheus row is retained.
+Note the Audiobox lead splits across two axes with different
+construct behaviour (F-8): AB.PQ agrees with DNSMOS (cleanliness),
+AB.CE anti-correlates with DNSMOS (warmth / enjoyment). So
+Speechify's Audiobox win is a **cleanliness win on one axis and
+a warmth win on the other**, not a monolithic "warm-rater" win.
 All DNSMOS top-1-vs-top-2 comparisons are ties — OpenAI's DNSMOS
 "win" is essentially indistinguishable from ElevenLabs (conv),
 from Deepgram or Orpheus (narr).
@@ -741,7 +783,7 @@ re-generating audio.
 | orpheus | 0.030 † | 0.030 † | 0.030 † | See ⚠ below — per-generation vendor; the $0.030 is `cost_model.py`'s output under a stale default that predates T8's per-call output-cap measurement. |
 | **openai** | 0.075 | **0.075** | **0.075** | tts-1-hd (narration) + gpt-4o-mini-tts (conv). Char-billed → scale up ~15% for corpus-actual 5.77 chars/word. |
 | fish | 0.075 | 0.075 | 0.075 | s2.1-pro (paid); split-model design (quality vs latency). Char-billed. |
-| **speechify** | 0.100 | **0.100** | **0.040** | Starter $10/mo covers 100K; scales well at 1M+. Char-billed. |
+| **speechify** | **1.000** ⚠ | **0.100** | **0.040** | Starter $10/mo covers 100K, but at 10K/mo you're paying the $10 subscription for 10K words = $1.00/1K. Prior drafts of this row showed **$0.100 at 10K/mo** — that was a 10× table-entry error; `cost_model.json`'s `speechify.dollars_per_1k_words_at.10K_words_per_month` is **$1.000**. At 10K/mo Speechify is the 2nd-most-expensive vendor (only ElevenLabs Creator's $2.20 is worse). Char-billed. |
 | deepgram | 0.150 | 0.150 | 0.150 | Aura-2; $200 signup credit covers early volume. Char-billed. |
 | google | 0.150 | 0.150 | 0.150 | Chirp3-HD. Char-billed. |
 | cartesia | 0.500 | 0.160 | 0.196 | Pro $5/mo = 100K credits, then per-1M rate. Char-billed. |
@@ -826,21 +868,31 @@ for the visual.
 
 ---
 
-## Latency (3 sessions on 3 dates spanning 4 days, with concurrent ping baseline on S3)
+## Latency (up to 4 sessions across 3 dates, with concurrent ping baseline on S3)
 
 Time-to-first-audio-frame (TTFA), 50 serial trials per session,
-conversational S01 corpus item. Three independent sessions across
-2026-08-09, -11, -12. **Session 3 was run with a concurrent
-ping-to-1.1.1.1 baseline** (274 probes during the S3 window) to
-separate vendor variability from local ISP jitter.
+conversational S01 corpus item. **Six latency-mode runs total**
+across 2026-08-09 (two runs same day, S1a and S1b), 2026-08-11
+(S2, one run per streaming vendor), and 2026-08-12 (S3, one run
+per vendor, with concurrent ping baseline).
 
-| Vendor | S1 p50 / p90 | S2 p50 / p90 | S3 p50 / p90 | Sessions measured | Range summary |
-|---|---|---|---|---|---|
-| **elevenlabs** (Flash v2.5) | 439 / 479 (S1a); 440 / 474 (S1b) | 424 / 469 | **694 / 816** | 4 runs across 3 dates | p50: 424–694 ms (+64% max shift) |
-| openai (tts-1-hd) | 736 / 956 (S1a); 762 / 946 (S1b) | 936 / 1493 | **1369 / 1882** | 4 runs across 3 dates | p50: 736–1369 ms (+86% max shift) |
-| deepgram | 583 / 674 (S1a); 564 / 670 (S1b) | not re-measured | not re-measured | 2 same-day runs (S1a + S1b only) | p50: 564–583 ms (S1 only; no cross-day range measured) |
-| cartesia | 467 / 529 (S1a); 468 / 530 (S1b) | not re-measured | not re-measured | 2 same-day runs (S1a + S1b only) | p50: 467–468 ms (S1 only; no cross-day range measured) |
-| speechify · fish · google · orpheus | not applicable* | | | 0 (adapters don't stream) | — |
+| Vendor | S1a p50 / p90 (n=50) | S1b p50 / p90 (n=50) | S2 p50 / p90 | S3 p50 / p90 | Sessions | Range summary |
+|---|---|---|---|---|---|---|
+| **elevenlabs** (Flash v2.5) | 439 / 479 | 440 / 474 | **424 / 469 (n=40)** ¹ | **694 / 816 (n=40)** ¹ | 4 | p50: 424–694 ms (+64% max shift) |
+| openai (tts-1-hd) | 736 / 956 | 762 / 946 | 936 / 1493 | **1369 / 1882** | 4 | p50: 736–1369 ms (+86% max shift) |
+| deepgram | 583 / 674 | 564 / 670 | not re-measured | not re-measured | 2 same-day | p50: 564–583 ms (no cross-day range measured) |
+| cartesia | 467 / 529 | 468 / 530 | not re-measured | not re-measured | 2 same-day | p50: 467–468 ms (no cross-day range measured) |
+| speechify · fish · google · orpheus | not applicable* | | | | 0 | adapters don't stream |
+
+¹ ElevenLabs S2 and S3 both landed **n=40** trials (not 50).
+Prior drafts said "S1/S2 were on Creator credits, unaffected;
+only S3 hit the pay-per-1K-chars spend cap." That was wrong for
+S2 — verified against `analysis/latency-20260811T183202Z/latency.json`
+`n_items = 40`. S1a and S1b (both 2026-08-09) landed full n=50
+before whatever mechanism (subscription credit exhaustion, spend
+cap, per-session request cap) truncated S2 and S3. The
+mechanism is not diagnosed here; the fact that both later
+sessions stopped at 40 is documented as measured.
 
 **Every measured streaming vendor's p90 exceeds the pre-registered
 400 ms `ttfa_p90_ms` gate** in every session in which they were
@@ -901,30 +953,59 @@ Verdict details in
 and [T7](../analysis/verification/T7_elevenlabs_ttfa.md) (both
 updated with S3 data).
 
-### <a name="rtf-admission"></a>RTF (real-time factor) — not measured in v1
+### <a name="rtf-admission"></a>RTF (real-time factor) — measured, but on the wrong workload
 
 **RTF was pre-committed as the narration latency gate**
 (`rtf ≥ 3.0`; see [`configs/gates.yaml`](../configs/gates.yaml))
-but was **not measured per-vendor in v1**. The reasons:
+and is intended to fire on **long-narration throughput**. Prior
+drafts of this section said "RTF was not measured in v1" — that's
+too strong; corrected:
 
-- The campaign ran fully from content-hash cache (regenerating
-  1200 audio files at every analyzer iteration would burn budget
-  on identical outputs). Cached calls have no `synthesis_time` to
-  divide the audio duration by.
-- The dedicated latency sessions (S1/S2/S3) ran the S01
-  conversational item, not long-narration items — RTF is a
-  narration-workload metric and the sessions were designed for
-  TTFA, not throughput.
-- The
-  [`latency.json`](../analysis/campaign-20260809T204608Z/latency.json)
-  schema *does* have `long_stratum_rtf_p50` / `long_stratum_rtf_p10`
-  fields; every row is `null` because
-  `n_with_total = 0` on the cached campaign.
+**What was actually measured**: every latency-mode trial in
+`analysis/latency-*/latency.json` populates a per-trial `rtf`
+field (with `n_with_total = 50` per session). RTF is defined as
+`decoded_audio_seconds / total_wall_clock_seconds` (higher is
+faster). Data from the six sessions:
 
-**Impact**: the pre-committed narration RTF gate cannot be
-adjudicated on v1 data. Neither vendor is called out as
-"failed RTF" or "passed RTF" in the results above — the gate is
-`not adjudicated`, not `passed`.
+| Session | Vendor | n | rtf p10 | rtf p50 | rtf p90 |
+|---|---|---:|---:|---:|---:|
+| S1b 2026-08-09 22:23 | deepgram | 50 | 0.84 | 0.91 | 1.02 |
+| S1b 2026-08-09 22:23 | cartesia | 50 | 1.25 | 1.49 | 1.70 |
+| S1b 2026-08-09 22:23 | elevenlabs | 50 | 2.66 | 2.90 | 3.13 |
+| S1b 2026-08-09 22:23 | openai | 50 | 1.99 | 2.62 | 3.19 |
+| S2 2026-08-11 | openai | 50 | 1.26 | 1.72 | 2.52 |
+| S2 2026-08-11 | elevenlabs | 40 | 2.59 | 2.77 | 2.89 |
+| S3 2026-08-12 | openai | 50 | 1.03 | 1.57 | 1.99 |
+| S3 2026-08-12 | elevenlabs | 40 | 1.43 | 1.67 | 1.81 |
+
+**But on the wrong workload**: every session ran the
+**conversational S01 item** (~2.6 s of audio). RTF is a
+throughput-bound metric that only becomes meaningful on longer
+audio, where per-request overhead becomes a small fraction of the
+total time. RTF on a 2.6-s clip mostly measures per-request
+overhead — the pre-committed narration gate targets sustained
+throughput on 60-90 s audio, which these numbers don't
+characterise.
+
+**What the S01 RTF data does show**: **no vendor cleared the
+pre-registered rtf ≥ 3.0 gate on this workload** in any session.
+ElevenLabs S1b p90 (3.13) is the only value above 3.0 in the
+whole dataset; every p50 is well below 3.0. On the workload the
+gate targets (long narration), the numbers would likely be much
+higher (per-request overhead amortises) — but that's an inference,
+not a measurement.
+
+**Impact**: the pre-committed narration RTF gate remains
+**not adjudicated on v1 data** — the S01 measurements are on the
+wrong workload. Neither vendor is called out as "failed RTF" or
+"passed RTF" in the results above.
+
+**Why not just re-analyse the campaign for RTF?** The primary
+campaign ran fully from content-hash cache and its
+`latency.json` has `long_stratum_rtf_p50` / `long_stratum_rtf_p10`
+fields, all `null` because `n_with_total = 0` on cache-hit rows.
+The dedicated latency sessions did generate fresh audio but only
+on S01. Neither is a substitute for a narration-workload session.
 
 **v2 workstream**: run a dedicated **narration-latency session**
 (8 long items × 8 vendors × 1 draw = 64 fresh generations with
@@ -943,14 +1024,18 @@ gates were frozen in [`configs/gates.yaml`](../configs/gates.yaml)
 under `prereg-v1` before any results existed (git-tagged). Applying
 them strictly, on the campaign data:
 
-### Conversational gates (5 gates; each row states its own denominator)
+### Conversational gates (4 gates in `configs/gates.yaml`; each row states its own denominator)
+
+Sourced directly from
+[`configs/gates.yaml`](../configs/gates.yaml)'s
+`use_cases[0].gates` (conversational): four gates, no more.
+**Prior drafts of this table added a fifth row `acoustic_noise_floor_dbfs ≤ −40` under conversational** — that row is retracted; the acoustic-noise-floor gate exists only under narration as `long_stratum_acoustic_noise_floor_dbfs`, applied to the 8 long-stratum items. The Fish conversational noise-floor observation is real (see N2) but it was not gated by a pre-committed conversational rule.
 
 | Gate | Threshold | Pass | Fail | Exempt / N/A | Fail admission |
 |---|---|---:|---:|---:|---|
 | `ttfa_p90_ms < 400` | streaming, 4 measured | **0** | **4** | 4 (na_policy = exempt-and-annotate) | **Every measured streaming vendor fails.** Best measurement: ElevenLabs S1 at 479 ms. All others (Cartesia 529, Deepgram 670-674, OpenAI 946-1882) fail more clearly. See [TTFA-gate admission](#ttfa-gate-admission) below. |
 | `failure_incidence_pct < 2.0` (WER-based) | all 8 | **0** | **8** | 0 | **Every vendor fails.** Failure incidence 61.3% (Fish, Speechify) to 73.3% (Orpheus). See [WER-gate admission](#wer-gate-admission) below. |
 | `clipped_samples == 0` | all 8 | 7 | 1 | 0 | Cartesia (429/406 clipped samples/item on average, F-4) |
-| `acoustic_noise_floor_dbfs ≤ −40` | all 8 | 7 | 1 | 0 | Fish (noise floor above threshold, see N2) |
 | `commercial_use_permitted == 1` | all 8 | 8 | 0 | 0 | All 8 vendors on paid tiers permit commercial use |
 
 ### Narration gates (4 gates; each row states its own denominator)
@@ -1161,31 +1246,46 @@ a clear answer for your use case.
 
 ### Q2 — Which "quality" matches your users?
 
-- **Warm / engaging** (consumer storytelling, audiobook, brand voice) →
-  **Speechify** wins Audiobox on both use cases with **3.7–9.5σ**
-  significance across all 8 vendors, or **3.7–7.3σ** if the
-  deployable ranking is used (Orpheus excluded from narration on
-  Q1 grounds, not statistics; the per-stratum receipt in
-  [footnote ¹](#footnote-1) shows Orpheus's aggregate is earned,
-  not artifact — the round-2 "9.5σ = truncation artifact" claim
-  is retracted). On cost, Speechify ($0.10 / 1K words at 100K/mo) is the
-  **cheapest of the top-2 warm-quality vendors** — ElevenLabs at
-  $0.22 is the #2 warm vendor and 2.2× more. Orpheus's nominal
-  $0.030 in the table is a `cost_model.py` artefact under a
-  100-word-per-call default that predates T8's per-call
+Audiobox's two axes measure different constructs — and prior
+drafts of this section had the labels wrong. Corrected:
+
+- **Cleanliness / technical audio quality** (both AB.PQ and DNSMOS
+  measure a version of this — see F-8 for the per-pair ρ). If your
+  use case is enterprise IVR / accessibility / transactional voice
+  → **OpenAI** ties for #1 on DNSMOS OVRL on both use cases (0.7–1.3σ
+  vs the tied competitor, not significant — no vendor cleanly "wins"
+  DNSMOS at n=75). **Speechify wins the parallel PQ measure** by
+  3.7σ (conv) / 7.0σ (narr vs Cartesia — 9.5σ if Orpheus is retained).
+  So the "cleanliness" answer depends on which cleanliness rater
+  you trust more; OpenAI dominates one, Speechify the other. **On
+  cost**: OpenAI ($0.075 / 1K words) is 34% of ElevenLabs' price
+  ($0.22, tied on conv OVRL) and 50% of Deepgram's ($0.15, tied on
+  narr OVRL) — **50-66% saving** on tied-on-DNSMOS quality.
+
+- **Warmth / engagement / aesthetic content-enjoyment** (AB.CE only —
+  it's the axis that anti-correlates with DNSMOS at ρ ≈ −0.5, see
+  F-8) → **Speechify** leads AB.CE on both use cases (5.9σ conv vs
+  Fish, 7.3σ narr vs ElevenLabs). Speechify at **$0.10 / 1K words
+  (100K/mo tier)** is the cheaper of the top-2 CE vendors; at 10K/mo
+  Speechify is $1.00/1K (the Starter subscription over
+  a low volume) — much more expensive per word than OpenAI's
+  pay-per-use $0.075. ElevenLabs at $0.22 (100K/mo) is the #2 CE
+  vendor on both use cases and 2.2× Speechify's price. Orpheus's
+  nominal $0.030 in the table is a `cost_model.py` artefact under
+  a 100-word-per-call default that predates T8's per-call
   output-cap measurement; the honest Orpheus price is
   **~$0.067-0.088/1K words** (see the ⚠ block under
   [Cost calculus](#cost-calculus)) — **peer-priced to OpenAI**,
   not category-crushing cheap.
-- **Clean / pristine** (enterprise IVR, accessibility, transactional
-  voice) → **OpenAI** ties for #1 on DNSMOS OVRL on both use cases
-  (0.7–1.3σ vs the tied competitor, not significant — no vendor
-  cleanly "wins" this axis at n=75). **OpenAI ($0.075 / 1K words) is
-  34% of ElevenLabs' price ($0.22, tied competitor on conv) and 50%
-  of Deepgram's ($0.15, tied competitor on narration)** — so a
-  50-66% saving depending on which tied competitor you compare
-  against. See the Rankings summary above for the per-comparison
-  SE(diff) figures.
+
+**Prior drafts of this section labeled AB.PQ as "warm" and called
+Speechify's PQ win a warm-rater win.** F-8's re-derivation shows
+PQ is actually the cleanliness axis (agrees with DNSMOS at ρ = +0.24
+mean, up to +0.57 vs p808). The warm-vs-clean framing survives at
+the AB.CE / DNSMOS-OVRL level, but Speechify's PQ win is a
+cleanliness-axis win too — Speechify is a two-axis winner on
+Audiobox, ambiguous on DNSMOS. See the Rankings summary above for
+the per-comparison SE(diff) figures.
 
 ### Q3 — Is #1 quality worth the cost premium over #2?
 
@@ -1228,9 +1328,17 @@ Full plain-language walkthrough in
 ## <a name="glossary"></a>Glossary
 
 - **AB.PQ** — Meta Audiobox Aesthetics *production_quality* axis
-  (0–10). Trained on aesthetic ratings; rewards *warmth,
-  expressiveness, engagement*.
-- **AB.CE** — Meta Audiobox Aesthetics *content_enjoyment* axis (0–10).
+  (0–10). Meta describes this as **technical cleanliness / perceived
+  audio quality** (pleasant timbre, no distortion). Prior glossary
+  drafts described this as "rewards warmth, expressiveness,
+  engagement" — that was wrong and is retracted; F-8 shows PQ
+  agrees with DNSMOS's cleanliness axes (mean ρ +0.238 conv), which
+  matches Meta's label and contradicts the warm-axis description.
+- **AB.CE** — Meta Audiobox Aesthetics *content_enjoyment* axis
+  (0–10). This is the axis that behaves like a warm/aesthetic
+  rater — it anti-correlates with DNSMOS in both use cases
+  (mean ρ −0.506 conv, −0.375 narr). See
+  [06 § F-8](06_KEY_FINDINGS.md#f-8) for the per-pair ρ receipt.
 - **DN.p808** — Microsoft DNSMOS *p808_mos* — ITU-T P.808 overall
   MOS from a single-model predictor (1–5).
 - **DN.ovrl** — Microsoft DNSMOS *ovrl_mos* — ITU-T P.835 overall

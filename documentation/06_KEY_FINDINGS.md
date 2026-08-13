@@ -15,7 +15,7 @@ the entries below.*
 
 ## Contents
 
-- [Findings F-1 through F-9 + F-11](#findings) (F-10 slot was
+- [Findings F-1 through F-9 + F-11 + F-12](#findings) (F-10 slot was
   reserved for BT rating campaign results; unused because Phase 3
   was deferred to v2 per D-H, and the slot number is retained so
   future v2 work can slot in without renumbering)
@@ -212,25 +212,71 @@ select from Speechify's 8 Simba-3.2 voices based on brand fit
 without worrying about a big quality drop-off.
 
 <a name="f-8"></a>
-### F-8 · The two independent MOS pipelines rank vendors *differently*
+### F-8 · Audiobox's two axes split across the DNSMOS construct — PQ agrees, CE anti-correlates
 
-Cross-pipeline mean Spearman ρ across 8 vendors:
+**Retitled and rewritten (round 5)**. Earlier drafts of this
+section described F-8 as "the two independent MOS pipelines rank
+vendors differently" and glossed the mechanism as "Audiobox
+rewards warmth, DNSMOS rewards cleanliness." Re-derivation from
+`analysis/campaign-20260809T204608Z/cross_metric.json` shows the
+warm-vs-clean framing is **wrong on the axis that carries the
+Speechify winner claim** — production_quality agrees with DNSMOS,
+content_enjoyment anti-correlates. The corrected finding is
+narrower and more interesting.
 
-| Use case | ρ (point estimate) | 95% CI (Fisher-transformed, n=8) | Reading |
-|---|---:|---|---|
-| Conversational | **−0.13** | roughly [−0.75, +0.60] | not distinguishable from 0 or from strong positive |
-| Narration | **−0.27** | roughly [−0.81, +0.51] | not distinguishable from 0 or from strong positive |
+**Per-pair Spearman ρ across 8 vendors, conversational**:
 
-**Statistical caveat**: at n=8 vendors we **cannot claim** either
-point estimate is significantly different from zero, nor from a
-strong positive correlation. Earlier drafts of this section
-described the point estimate as "negative" without the CI — that
-phrasing was over-precise for n=8 and has been retired. What the
-data supports is: **the two pipelines do NOT show the strong
-positive rank correlation we would expect if they were measuring
-the same construct**, and there are specific per-vendor rank
-inversions that are directly citable regardless of the CI on the
-aggregate. Named inversions:
+| pair | ρ |
+|---|---:|
+| audiobox.PQ vs dnsmos.p808 | **+0.571** ← strongest positive in the matrix |
+| audiobox.PQ vs dnsmos.ovrl | +0.214 |
+| audiobox.PQ vs dnsmos.sig | +0.119 |
+| audiobox.PQ vs dnsmos.bak | +0.048 |
+| **PQ-vs-DNSMOS mean** | **+0.238** (agree) |
+| audiobox.CE vs dnsmos.p808 | −0.452 |
+| audiobox.CE vs dnsmos.ovrl | −0.405 |
+| audiobox.CE vs dnsmos.sig | −0.476 |
+| audiobox.CE vs dnsmos.bak | −0.690 |
+| **CE-vs-DNSMOS mean** | **−0.506** (anti-correlate) |
+| **All 8 pairs mean (published headline)** | **−0.134** |
+
+**Per-pair Spearman ρ across 8 vendors, narration**: PQ mean
+**−0.167** (mixed sign — +0.095 with p808 and bak, −0.238 with
+ovrl, −0.619 with sig), CE mean **−0.375** (all four negative).
+
+**The published aggregate mean ρ of −0.13 (conv) / −0.27 (narr)
+is a mix of two different behaviours**:
+- **Audiobox PQ (production_quality) agrees with DNSMOS**,
+  especially on conv (mean ρ +0.238, +0.571 with p808). The
+  correct plain-English label for PQ is Meta's own:
+  **technical cleanliness** (perceived audio quality — pleasant
+  timbre, no distortion). 02_METHODOLOGY.md's D3 already uses
+  this label; 04 and this section's earlier drafts wrongly
+  called it "warm," which is retracted here.
+- **Audiobox CE (content_enjoyment) anti-correlates with DNSMOS**,
+  especially against bak_mos (background noise) at ρ = −0.690.
+  CE is the axis that actually behaves like the "warm / engaging /
+  aesthetic" axis in the two-construct story.
+
+**Statistical caveats**:
+- At n=8 vendors, Spearman ρ has a very wide 95% CI. **0 of 8
+  individual PQ↔DNSMOS or CE↔DNSMOS pairs is significant at
+  α=0.05** (min p = 0.058 conv, 0.102 narr for the strongest
+  correlations). The aggregate mean ρ we publish is a
+  point estimate on a small vendor sample; the CI easily spans
+  strong-positive to strong-negative for the aggregate too.
+- What the data supports:
+  (a) The strongest single cross-pipeline correlation in the
+      matrix is a **positive** one (PQ↔p808 at +0.571)
+  (b) The CE↔DNSMOS pairs are systematically negative in both
+      use cases
+  (c) The two pipelines do NOT show a uniform positive rank
+      correlation across all axes — but they do agree on one
+      axis (PQ) more than the earlier "different constructs"
+      framing implied
+
+**Named per-vendor rank inversions** (independent of the
+aggregate CI, cite these directly):
 
 - **OpenAI narration**: Audiobox **#8 / #8** on PQ+CE, DNSMOS
   **#1 / #1 / #2** on P.835 three-scale. Perfect inversion.
@@ -240,24 +286,25 @@ aggregate. Named inversions:
   (#3 / #5 / #6 / #6)
 - **Orpheus conversational**: Audiobox #8, DNSMOS #3 on OVRL
 
-**Interpretation:** the two pipelines measure *different constructs*
-— Audiobox rewards warmth/aesthetic/engagement (Meta training on
-aesthetic ratings); DNSMOS rewards signal cleanliness/P.835-scale
-(Microsoft training on telephony-quality ratings). Neither is
-"correct"; they answer different questions.
+**Interpretation (corrected):** the two Audiobox axes split
+across the DNSMOS construct. PQ measures something DNSMOS also
+measures (audio-quality cleanliness); CE measures something
+DNSMOS actively de-preferences. **Speechify wins PQ on both use
+cases** — that's a cleanliness-axis win, not a warm-axis win,
+even though Speechify also wins CE (which is the warm-axis
+finding). The two-construct story survives, but the axis
+labels needed to be swapped inside Audiobox.
 
 **Impact:** Any leaderboard reporting one MOS predictor is
-measuring a different thing than a leaderboard reporting the
-other. Match your predictor choice to your listener use case, or
-publish both.
+measuring a different combination of constructs than a
+leaderboard reporting the other. Match your predictor choice to
+your listener use case, or publish both — but the mechanism is
+**construct-decomposition within Audiobox**, not
+"warm rater vs clean rater" in the aggregate.
 
-**Statistical caveat:** n=8 vendors gives Spearman ρ a wide 95% CI.
-ρ = −0.13 on 8 items has a Fisher-transformed 95% CI roughly
-[−0.75, +0.60]. We cannot claim ρ is *significantly* negative — only
-that it is not the strong positive we would expect if the pipelines
-measured the same construct.
-
-**Evidence:** [`analysis/campaign-20260809T204608Z/cross_metric.json`](../analysis) ·
+**Evidence:** [`analysis/campaign-20260809T204608Z/cross_metric.json`](../analysis/campaign-20260809T204608Z/cross_metric.json)
+(the `pairs` block per use case has the per-pair ρ; the
+`cross_pipeline_mean_rho` field is the aggregate) ·
 [figure 1](figures/f1_rank_inversion.png)
 
 ### F-9 · Outlier verification verdicts (Phase 2c)
@@ -314,17 +361,31 @@ OpenAI moved 27-56% p50/p90.
 
 **What changed**: a third latency session (2026-08-12, run with a
 concurrent ping baseline to Cloudflare 1.1.1.1) refuted the
-stability claim:
+stability claim. Full session-by-session data (four runs per
+speed-critical vendor, not two):
 
-| vendor | S1 p50 | S2 p50 | S3 p50 | S3 vs S1 | n (trials) |
-|---|---:|---:|---:|---:|---:|
-| ElevenLabs | 439 | 424 | **694** | +58% | 50 / 50 / **40**¹ |
-| OpenAI | 736 | 936 | **1369** | +86% | 50 / 50 / 50 |
+| vendor | S1a p50 | S1b p50 | S2 p50 | S3 p50 | S3 vs S1a | n per session |
+|---|---:|---:|---:|---:|---:|---:|
+| ElevenLabs | 439 | 440 | 424 | **694** | +58% | 50 / 50 / **40**¹ / **40**¹ |
+| OpenAI | 736 | 762 | 936 | **1369** | +86% | 50 / 50 / 50 / 50 |
 
-¹ ElevenLabs S3 landed only 40/50 trials before the spend cap
-(`--spend-cap 1.00`) tripped on the ElevenLabs pay-per-1K-chars
-metering — S1/S2 were on the Creator plan's per-month credits which
-don't hit the cap. 40 trials still yields a well-defined p50/p90 at
+Prior drafts of this table showed **only three sessions**
+(collapsing S1a and S1b into a single "S1" row). There are two
+runs of the same day (2026-08-09T21:41 and T22:23; both n=50)
+committed in `analysis/latency-20260809T214106Z/latency.json`
+and `analysis/latency-20260809T222356Z/latency.json`; treating
+them as one session was a bookkeeping shortcut, not the reality.
+Six vendor-session cells exist, not four — which strengthens
+the argument, not weakens it: even with 2× the data, the "stability"
+signal from S1 was still coincidence.
+
+¹ ElevenLabs S2 **and** S3 both landed 40/50 trials, not just S3
+as prior drafts stated. Verified from
+`analysis/latency-20260811T183202Z/latency.json` `n_items = 40`
+(S2) and `analysis/latency-20260812T191323Z/latency.json`
+`n_items = 40` (S3). The prior claim "S1/S2 were on the Creator
+plan's per-month credits which don't hit the cap" is retracted —
+S2 was also 40. 40 trials still yields a well-defined p50/p90 at
 this magnitude (SE of p90 at n=40 ≈ 1.25 × (SD of trial times / √40)
 which for ~200 ms trial-time SD is ~40 ms — smaller than the +58%
 S1→S3 shift). The truncation is a spend-metering artifact, not a
@@ -421,6 +482,96 @@ three-session pass. Two-session agreement was a weaker signal than
 we treated it as; three-session data suffices to falsify a
 distributional claim but not to make one. The strongest
 "published-headline-refuted-by-verification" case in the project.
+
+### F-12 · The dominant defect class was inventing mechanisms next to real numbers
+
+**A meta-finding about the review process itself, kept in as its
+own row so future readers can see the pattern rather than
+inferring it from git history.**
+
+Across four rounds of external review (2026-08-10 through
+2026-08-13), the dominant defect class shifted. Rounds 1-2 were
+"over-claiming" defects (weighted composites, unqualified
+"stability" language, uncorrected multiplicity). Rounds 3-5
+converged on a different pattern: **a plausible-sounding
+mechanism written next to a correctly-measured number, where the
+mechanism is not supported by the underlying artefact and a
+reviewer can falsify it in under a minute by opening the
+committed JSON.**
+
+Instances caught and retracted:
+- **Deepgram TTFA ~180 ms** (round 3) — invented; actual
+  `analysis/latency-*/latency.json` shows 583/674 ms
+- **Orpheus $0.030/1K words as "cheapest"** (round 4) — an
+  artefact of `src/veval/analyze/cost.py` line 177's
+  100-word-per-call default, propagated as a real price
+- **"Every marked-¹ cell was computed on structurally incomplete
+  audio"** (round 4) — a long-stratum figure generalised to a
+  75-item column; hygiene.json shows 27/75 truncated, not "every"
+- **"9.5σ is a truncation artifact"** (round 4) — per-stratum
+  means are essentially identical; the exclusion is a scope
+  choice, not a statistical necessity
+- **"Low variance under the fixed-length cap"** (round 4) —
+  Orpheus conv has the 2nd highest AB.PQ SD under identical
+  truncation; the mechanism is contradicted by the same
+  quality.json
+- **"−78.7 dBFS is mostly silence padding"** (round 4) —
+  Orpheus narration speech_ratio = 0.901, higher than
+  Speechify's 0.875; the quiet noise floor is a real Orpheus
+  property, not silence
+- **"F-8: Audiobox rewards warmth, DNSMOS rewards cleanliness"**
+  (rounds 1-4) — round 5 re-derivation from cross_metric.json
+  showed AB.PQ agrees with DNSMOS (+0.24 mean, +0.57 with p808),
+  only AB.CE anti-correlates. The construct-decomposition is
+  within Audiobox, not warm-vs-clean between pipelines
+- **"144 items with valid references"** (round 4) — a dedup bug
+  in an ad-hoc script; actual `wer.json` has n_valid = 75 per
+  cell = 150 items
+- **"$50 primary campaign / $56 project total"** (rounds 1-4) —
+  a pre-project planning estimate carried into publication as
+  if it were metered spend; actual `total_observed_cost_usd`
+  across all committed cost_model.json files = ~$12
+- **"5 conversational gates"** (round 4) — fabricated fifth gate
+  (`acoustic_noise_floor_dbfs`); gates.yaml has 4
+- **Speechify $0.100/1K @ 10K/mo** (all rounds) — a 10× table-
+  entry error; cost_model.json has $1.000. At 10K/mo Speechify
+  is #7 of 8 on cost, not near-cheapest
+- **"S1/S2 were on Creator credits, unaffected"** (round 4) —
+  ElevenLabs S2 was also n=40, verified from
+  `latency-20260811T183202Z/latency.json`
+
+**What made it happen**: the harness generated JSON receipts
+that were correct. The docs were written to *narrate* those
+numbers. Every narrative step introduced a small mechanism claim
+("because of X, we see Y"). None of those X claims were checked
+against source; several were plausible-sounding backfits that
+happened to match the direction of Y without being causally
+right.
+
+**What fixed it**: reviewers who re-derived from the committed
+JSONs and named specific-line contradictions. Every round-5 fix
+above traces to a `python -X utf8 -c` script that a reviewer
+ran in under a minute. The receipts were always there; the
+narrative just didn't cite them.
+
+**Portfolio takeaway for future evaluators**: **commit your JSON
+receipts and derive every claim from them at write time**, not
+after. A reviewer with the JSONs will catch invented mechanisms
+faster than a self-review can. And publish the retraction log —
+this section — as a first-class finding, not a shameful
+afterword. The count of "mechanism claims retracted after
+re-derivation" is a *methodology audit metric* the field could
+use.
+
+**Not currently mitigated**: the docs have been corrected in
+each round but the *process* that produced the mechanism-
+invention pattern has not been changed. A v2 would add a
+`docs/receipts.md` file with one-line executable checks
+(`python -c "..." → expected number`) beside every quoted
+figure, so a next-round reviewer starts from source rather than
+from prose. This is a v2 workstream — flagged here rather than
+in 07 because it's a *methodology* fix, not a *measurement*
+one.
 
 ---
 

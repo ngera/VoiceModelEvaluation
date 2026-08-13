@@ -460,7 +460,7 @@ committed to git with a timestamp that predates results.
   measurements
 - [04_RESULTS.md](04_RESULTS.md) — the full data these methods produced
 - [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) — findings F-1 through
-  F-9 + F-11 (F-10 slot documented in-doc) + decision log
+  F-9 + F-11 + F-12 (F-10 slot documented in-doc) + decision log
   D-A..D-H (the flip side of this document — the specific
   decisions rather than the underlying principles)
 - [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) — where

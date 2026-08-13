@@ -270,7 +270,10 @@ uv sync --extra admin --extra dev
 # 2. Doctor — every vendor must be green
 uv run veval doctor
 
-# 3. Run the primary campaign (~$50, ~30 min wall clock)
+# 3. Run the primary campaign (~$8 measured, ~30 min wall clock —
+#    see cost_model.json `total_observed_cost_usd` in the run's
+#    analysis/ output; prior drafts of this line said "~$50" —
+#    that was a pre-project planning estimate, retracted)
 uv run veval generate --mode campaign
 
 # 4. Run the variance subset for the noise-floor measurement (~$2, ~10 min)
@@ -332,15 +335,27 @@ by [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py).
 Prior versions of this doc referenced a single-number ~0.035 noise
 floor — that heuristic has been retired.
 
-**Estimated cost of a clean reproduction**: ~$50 across 8 vendor
-accounts for the primary campaign + variance + 3 latency sessions,
-plus 3-4 hrs wall clock on a mid-tier CPU laptop. **This is not
-the same as project total spend** — the project itself iterated
-across three review rounds and multiple failed adapter attempts;
-total v1 project spend was ~$56 including the retries and the
-extra latency + verification runs that never made it into the
-published pipeline. A cold-start reproducer following the recipe
-above should spend less than the project did.
+**Estimated cost of a clean reproduction** (from committed
+`analysis/*/cost_model.json` `total_observed_cost_usd` fields —
+the receipt is directly reproducible):
+
+- Primary campaign (1200 files): **$7.85**
+- Variance run (10 items × 6 vendors × 3 draws): **$3.16**
+- Two S1 latency sessions (50 trials × 4 streaming vendors): **$0.34**
+- Verification pack (T4 + T6 + T8 fresh regens): **~$0.63**
+- Third latency session with ping baseline (2026-08-12): **~$0.02**
+- **Total measured: ~$12** across 8 vendor accounts, plus 3-4 hrs
+  wall clock on a mid-tier CPU laptop.
+
+**Prior drafts of this line said "~$50 for a clean reproduction /
+~$56 total v1 project spend."** Both figures came from a
+pre-project planning estimate in the spec (§8 estimated $46-79
+worst case) that got carried into publication as if it were the
+actual metered cost. The actual metered cost is roughly one-fifth
+of that. This is a straightforwardly checkable number — every
+`analysis/*/cost_model.json` file is committed with
+`total_observed_cost_usd` in its top level — and prior claims to
+the contrary are retracted here.
 
 ---
 

@@ -45,13 +45,17 @@ and loses the other is the *expected*, most instructive outcome —
 and none of the industry's public leaderboards make that structure
 visible.
 
-Three weeks and roughly $56 later, we have:
+Three weeks and roughly **$13 of metered vendor spend later** (see
+receipt below), we have:
 
 - 1,200 audio files across the 8 × 2 × 75 grid
 - 6 quality signals per (vendor, use case) — Meta's Audiobox on 2
-  aesthetic axes and Microsoft's DNSMOS on 4 signal-cleanliness axes
-- A latency dataset with two independent 50-trial sessions two days
-  apart on the two speed-critical vendors
+  axes (one anti-correlates with DNSMOS, one agrees with it — see
+  F-8) and Microsoft's DNSMOS on 4 signal-cleanliness axes
+- A latency dataset with **six 50-trial sessions total** — two
+  same-day S1 runs (all 4 streaming vendors), two S2 runs
+  (OpenAI 50, ElevenLabs 40), two S3 runs with concurrent ping
+  baseline (OpenAI 50, ElevenLabs 40)
 - 9 targeted outlier-verification tests confirming or refuting
   specific findings
 - A full audit trail (git tags at `prereg-v1`, `prereg-v1.10`, and 11
@@ -376,12 +380,17 @@ voices as separate entries). **Reversal of the test's original
 direction**: not "did we cherry-pick?" but "did we
 under-cherry-pick?"
 
-Interpretation: Speechify's warm-rater lead is a **model-family
+Interpretation: Speechify's Audiobox lead is a **model-family
 signature**, not a specific-voice property. Voice choice within
 Simba-3.2 moves the score up to ~35% of the cross-vendor spread —
 meaningful, but not enough to flip vendor rankings. Which means
 customers can pick a Speechify voice that fits their brand without
-worrying about a big quality drop-off.
+worrying about a big quality drop-off. (Note: F-8's round-5
+re-derivation showed AB.PQ agrees with DNSMOS at ρ = +0.24 on
+average — so the "warm-rater lead" framing that appeared in prior
+drafts of this line was partly wrong. Speechify wins both an
+Audiobox cleanliness axis (PQ, agrees with DNSMOS) and an
+Audiobox warm-enjoyment axis (CE, anti-correlates with DNSMOS).)
 
 ### The Cartesia triangulation — two independent code paths agree
 
@@ -478,8 +487,13 @@ vendor structurally?
   [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary)
   and [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8).
   At $0.10/1K words (100K/mo tier), Speechify is the cheaper of
-  the top-2 warm-quality vendors (ElevenLabs at $0.22 is #2 warm
-  and 2.2× more expensive). **The "Orpheus is cheapest" line is
+  the top-2 CE (warm/enjoyment) vendors (ElevenLabs at $0.22 is
+  #2 CE and 2.2× more expensive). **At 10K/mo Speechify is
+  $1.00/1K** (the Starter subscription amortized over low volume) —
+  more expensive than OpenAI's pay-per-use $0.075 at that volume.
+  The 10K row of 04's cost table previously showed $0.100 for
+  Speechify — that was a 10× table error, corrected in round 5.
+  **The "Orpheus is cheapest" line is
   also retracted here**: prior drafts said "Orpheus at $0.030/1K
   words is nominally cheapest." That $0.030 was a `cost_model.py`
   artefact under a 100-word-per-call default that predates T8's
@@ -576,11 +590,15 @@ produced four findings the primary campaign did not** —
 4. **F-11** (the after-review third latency session with concurrent
    ping baseline) — the "ElevenLabs stability" headline was refuted
 
-The primary campaign was 1200 files and ~$50 of vendor spend. The
-verification pack that produced these four refinements was ~$0.63
-of vendor spend and about 2 hours of engineering time. **Cheap
-replication is where you learn the difference between a real
-finding and a lucky draw** — and in this project it materially
+The primary campaign was 1200 files and **$7.85 of vendor spend**
+(from `analysis/campaign-20260809T204608Z/cost_model.json`
+`total_observed_cost_usd`). Prior drafts of this line said
+"~$50 of vendor spend" — that was a carried-over pre-project
+planning estimate, not the actual metered cost, and it's retracted
+here. The verification pack that produced these four refinements
+was ~$0.63 of vendor spend and about 2 hours of engineering time.
+**Cheap replication is where you learn the difference between a
+real finding and a lucky draw** — and in this project it materially
 changed what the case study says.
 
 ---
@@ -630,7 +648,7 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
 - **[04_RESULTS.md](04_RESULTS.md)** — full per-provider data table +
   cost calculus + decision framework
 - **[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)** — findings F-1
-  through F-9 + F-11 (F-10 slot is documented in-doc), friction-point
+  through F-9 + F-11 + F-12 (F-10 slot is documented in-doc), friction-point
   stories, decision log D-A..D-H
 - **[02_METHODOLOGY.md](02_METHODOLOGY.md)** — why every methodology
   choice was made (weighted-composite killed, two-pipeline design,
@@ -650,6 +668,13 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
   [`prereg-v1.10`](https://github.com/ngera/VoiceModelEvaluation/tree/prereg-v1.10)
   contains the configs at the moment the campaign ran.
 
-*Total project spend: ~$56 across 8 vendor accounts. Time: ~60
-hours part-time across three weeks. Codebase:
+*Total metered project spend: **~$12.60 across 8 vendor accounts**
+(pilot campaigns $0.61 + primary campaign $7.85 + variance run
+$3.16 + two S1 latency sessions $0.34 + verification pack $0.63 +
+S3 latency ~$0.02, all sourced from committed
+`analysis/*/cost_model.json` `total_observed_cost_usd` fields). Prior
+drafts of this line said "~$56" — that was a pre-project planning
+estimate carried into publication as if it were actual spend, and
+it's retracted. Time: ~60 hours part-time across three weeks.
+Codebase:
 [github.com/ngera/VoiceModelEvaluation](https://github.com/ngera/VoiceModelEvaluation)*
