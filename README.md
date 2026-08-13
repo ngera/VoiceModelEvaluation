@@ -156,6 +156,7 @@ wall-clock but doesn't change any measurement. See
 ```
 README.md                        ← this file
 DEVIATIONS.md                    ← 11 pre-registered amendments with rationale
+CORRECTIONS.md                   ← 20 retracted claims across 5 review rounds, each traceable to a committed artefact
 CLAUDE.md                        ← project-wide conventions
 pyproject.toml                   ← uv-managed Python 3.11 env
 

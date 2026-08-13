@@ -26,17 +26,9 @@ exceed the pre-registered `ttfa_p90_ms < 400` gate. The original
 story ("consistently fast under 500 ms") holds only in S1+S2 for
 ElevenLabs; S3 refuted it (see F-11 retraction below).
 
-**Retraction notes**:
-- (2026-08-12) Prior drafts reported Deepgram at "~180 ms p50 /
-  ~230 ms p90" and described it as "the on-prem style thin-wrapper
-  control." Not supported by any measurement in
-  `analysis/latency-*/latency.json`. Deepgram was slower than
-  ElevenLabs and Cartesia in this session, not faster. Retracted
-  alongside T5.
-- (2026-08-13) Prior drafts showed only S1a and omitted S1b
-  (the second latency-mode run on 2026-08-09). Both runs are
-  above; F-11 now shows all six vendor-session cells instead
-  of collapsing to three.
+Retracted earlier claims about this table (Deepgram TTFA and its
+"on-prem thin-wrapper control" framing, S1b omission) are logged
+in [../../CORRECTIONS.md](../../CORRECTIONS.md#retracted-claims).
 
 ## Hypothesis
 

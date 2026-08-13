@@ -27,15 +27,8 @@ OpenAI is roughly **2× the median TTFA** of the next-fastest provider
 "start speaking within 300 ms" is table stakes, ~740 ms p50 is the
 difference between "responsive" and "audibly slow."
 
-**Retraction notes**:
-- (2026-08-12) Prior drafts reported Deepgram at "~180 ms p50 /
-  ~230 ms p90" — not supported by any measurement in
-  `analysis/latency-*/latency.json`; every Deepgram row shows
-  p50 = 564-583 ms, p90 = 670-674 ms. Retracted.
-- (2026-08-13) Prior drafts showed only S1a (`736 / 956`) and
-  omitted S1b (`762 / 946`) — the second run of the same day.
-  The S1b row is included above; F-11 now shows all six vendor-
-  session cells instead of collapsing to three.
+Retracted earlier claims about this table (Deepgram TTFA, S1b
+omission) are logged in [../../CORRECTIONS.md](../../CORRECTIONS.md#retracted-claims).
 
 ## Hypothesis
 

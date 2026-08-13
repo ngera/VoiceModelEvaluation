@@ -129,14 +129,13 @@ per-user matters more than aggregate throughput.
 **Why multiple sessions**: a single session of TTFA cannot
 distinguish "vendor is fast" from "vendor happened to be fast
 during our measurement window." The plan called for two sessions
-on different days. Post-review, a third session (2026-08-12) with
-concurrent ping baseline was added; it **refuted the two-session
-"stability" reading — the entire "session-to-session variance is a
-distinct vendor property" framing that appeared in earlier drafts
-of this section is retracted**. Both vendors moved 50-90% p50
-across the three sessions; two-session agreement was a coincidence.
-Full retraction in
-[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+on different days; a third session (2026-08-12) with concurrent
+ping baseline was added after review. Both vendors moved 50-90%
+p50 across the three sessions; two-session agreement turned out
+to be coincidence. See
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
+for the full retraction of the "stability is a distinct axis"
+claim.
 
 The methodology takeaways that survive:
 - **TTFA rank is stable at n=3**: rank tests are robust at low
@@ -339,8 +338,7 @@ Where the methodology cannot support the claim, name it.
 - **Absolute values on latency** — measured from residential
   Windows 11; rankings are portable. Absolute values are one
   point in a session-to-session distribution (see F-11) — not
-  ceilings. Prior drafts treated them as ceilings; that was
-  refuted by S3.
+  ceilings.
 - **Absolute WER** — inflated by wav2vec2's LibriSpeech distribution
   (F-2); relative rankings valid, absolutes are not.
 - **Findings generalize to other voices / other tiers / other

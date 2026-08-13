@@ -314,11 +314,13 @@ followed by vendor-side capacity as an untested-but-possible
 second hypothesis. See [F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
 for the full scope-of-ruleout discussion.
 
-**One data caveat**: ElevenLabs S3 landed **40/50 trials** before
-the pay-per-1K-chars spend cap tripped (S1/S2 were on the
-Creator plan's per-month credits, which don't hit the cap). n=40
-still yields well-defined p50/p90 at this magnitude, but it
-caps the confidence on tail behaviour past p90 for that session.
+**One data caveat**: ElevenLabs S2 **and** S3 both landed n=40
+(not 50). The mechanism (subscription credit exhaustion, spend
+cap, per-session cap) is not diagnosed here; the fact that both
+later sessions stopped at 40 is documented as measured in
+[F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+n=40 still yields well-defined p50/p90 at this magnitude, but
+caps the confidence on tail behaviour past p90 for those sessions.
 
 **What survives from the original finding:**
 
@@ -367,12 +369,13 @@ same scrutiny. Four verdicts worth naming:
 
 ### The T6 reversal — Speechify's voice-pick was too conservative
 
-Speechify came out #1 of 8 on the warm-rater axis on both use cases
-in the primary run. The obvious reviewer objection: "you got lucky
-with the voice pick." T6 tested this by regenerating 40 items with
-`edmund_32` (UK male, bright, dynamic) instead of the pre-registered
-`geffen_32` (US female, warm, intriguing) — the biggest voice-
-signature swap available within Speechify's Simba-3.2 model.
+Speechify came out #1 of 8 on both Audiobox axes (PQ and CE) on
+both use cases in the primary run. The obvious reviewer objection:
+"you got lucky with the voice pick." T6 tested this by
+regenerating 40 items with `edmund_32` (UK male, bright, dynamic)
+instead of the pre-registered `geffen_32` (US female, warm,
+intriguing) — the biggest voice-signature swap available within
+Speechify's Simba-3.2 model.
 
 The alt voice scored **+0.30 higher on Audiobox PQ** than the
 pre-registered pick. Still ranked #1 of 9 (including both Speechify
@@ -385,12 +388,10 @@ signature**, not a specific-voice property. Voice choice within
 Simba-3.2 moves the score up to ~35% of the cross-vendor spread —
 meaningful, but not enough to flip vendor rankings. Which means
 customers can pick a Speechify voice that fits their brand without
-worrying about a big quality drop-off. (Note: F-8's round-5
-re-derivation showed AB.PQ agrees with DNSMOS at ρ = +0.24 on
-average — so the "warm-rater lead" framing that appeared in prior
-drafts of this line was partly wrong. Speechify wins both an
-Audiobox cleanliness axis (PQ, agrees with DNSMOS) and an
-Audiobox warm-enjoyment axis (CE, anti-correlates with DNSMOS).)
+worrying about a big quality drop-off. The lead spans two Audiobox
+axes that measure different constructs — PQ (technical cleanliness;
+agrees with DNSMOS at ρ = +0.24 mean) and CE (warm / enjoyment;
+anti-correlates with DNSMOS). See F-8 for the per-pair receipt.
 
 ### The Cartesia triangulation — two independent code paths agree
 
@@ -454,36 +455,36 @@ vendor structurally?
 - Any downstream audio pipeline (MOS check, ASR, resample)?
   **Cartesia needs a peak-limiter step** first
 - Sub-500 ms p90 required (real-time voice)? **Unresolved on our
-  data — and worse than earlier drafts admitted.** Two thresholds:
-  the pre-registered gate is `ttfa_p90_ms < 400` (`configs/gates.yaml`);
-  the perception-threshold reference from the spec's A.1 is ~500 ms.
-  **No measured vendor clears the pre-registered 400 ms gate in
-  any session.** ElevenLabs Flash's best measurement was 469 ms p90
-  (S2); everything else fails more clearly (Cartesia 529, Deepgram
-  670, OpenAI 946+). Against the softer 500 ms perception reference,
-  ElevenLabs cleared it in S1+S2 (469-479 ms) but failed S3 (816 ms).
-  **Prior drafts also credited Deepgram with "~230 ms" — that figure
-  is not supported by any measurement in the repo (actual Deepgram
-  S1 was 670-674 ms p90) and is retracted.** **Do not provision
-  from any of our measurements** — real-time TTFA is
-  session-variable enough that you need ≥5 sessions on your own
-  deployment before committing (F-11, § 3 below).
+  data.** Two thresholds: the pre-registered gate is
+  `ttfa_p90_ms < 400` (`configs/gates.yaml`); the perception-
+  threshold reference from the spec's A.1 is ~500 ms. **No
+  measured vendor clears the pre-registered 400 ms gate in any
+  session.** ElevenLabs Flash's best measurement was 469 ms p90
+  (S2); everything else fails more clearly (Cartesia 529,
+  Deepgram 670, OpenAI 946+). Against the softer 500 ms perception
+  reference, ElevenLabs cleared it in S1+S2 (469-479 ms) but
+  failed S3 (816 ms). **Do not provision from any of our
+  measurements** — real-time TTFA is session-variable enough that
+  you need ≥5 sessions on your own deployment before committing
+  (F-11, § 3 below).
 - Byte-identical caching? **Impossible with any of the 8** — none
   produces the same bytes twice
 
 **Question 2 — which "quality" matches your users?**
 
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
-  leads the warm-rater axis on both use cases** at **3.7–9.5σ vs
-  the numerical #2, 3.7–7.3σ vs the deployable #2** — the numerical
-  and deployable #2 columns differ on narration AB.PQ, where
-  Orpheus (8.002) numerically beats Cartesia (7.986) but is
-  Q1-disqualified from narration workflows by its 14.59-s output
-  cap. The per-stratum recompute (footnote ¹ under 04's per-vendor
-  table) shows Orpheus's 8.002 mean is EARNED, not a truncation
-  artifact — 71% of Orpheus narration cells are on complete audio.
-  The round-2 "9.5σ was an artifact" claim is retracted. Full
-  writeup in
+  wins both Audiobox axes on both use cases** at **3.7–9.5σ vs
+  the numerical #2, 3.7–7.3σ vs the deployable #2**. The two
+  Audiobox axes measure different constructs: PQ (technical
+  cleanliness, agrees with DNSMOS at ρ = +0.24 mean) and CE
+  (warm / enjoyment, anti-correlates with DNSMOS at ρ ≈ −0.5 mean).
+  Speechify wins both. Numerical vs deployable #2 differs on
+  narration AB.PQ, where Orpheus (8.002) numerically beats Cartesia
+  (7.986) but is Q1-disqualified from narration workflows by its
+  14.59-s output cap. The per-stratum recompute in 04's footnote ¹
+  shows Orpheus's 8.002 mean is earned, not a truncation artifact
+  (per-stratum means: complete 8.008 / lightly truncated 7.974 /
+  catastrophically truncated 8.009). Full writeup in
   [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary)
   and [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8).
   At $0.10/1K words (100K/mo tier), Speechify is the cheaper of
@@ -491,15 +492,11 @@ vendor structurally?
   #2 CE and 2.2× more expensive). **At 10K/mo Speechify is
   $1.00/1K** (the Starter subscription amortized over low volume) —
   more expensive than OpenAI's pay-per-use $0.075 at that volume.
-  The 10K row of 04's cost table previously showed $0.100 for
-  Speechify — that was a 10× table error, corrected in round 5.
-  **The "Orpheus is cheapest" line is
-  also retracted here**: prior drafts said "Orpheus at $0.030/1K
-  words is nominally cheapest." That $0.030 was a `cost_model.py`
-  artefact under a 100-word-per-call default that predates T8's
-  per-call output-cap measurement; the honest Orpheus price is
-  **~$0.067-0.088/1K words** — peer-priced to OpenAI ($0.075),
-  not category-crushing cheap. See
+  Orpheus's nominal $0.030/1K words in the table is a
+  `cost_model.py` artefact under a 100-word-per-call default;
+  under T8's per-call output measurement the honest Orpheus price
+  is **~$0.067-0.088/1K words** — peer-priced to OpenAI ($0.075).
+  See
   [04_RESULTS.md § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus).
 - Clean/pristine (IVR, accessibility, transactional voice) → **OpenAI
   ties for #1 on DNSMOS OVRL on both use cases** (0.7–1.3σ vs the
@@ -592,11 +589,9 @@ produced four findings the primary campaign did not** —
 
 The primary campaign was 1200 files and **$7.85 of vendor spend**
 (from `analysis/campaign-20260809T204608Z/cost_model.json`
-`total_observed_cost_usd`). Prior drafts of this line said
-"~$50 of vendor spend" — that was a carried-over pre-project
-planning estimate, not the actual metered cost, and it's retracted
-here. The verification pack that produced these four refinements
-was ~$0.63 of vendor spend and about 2 hours of engineering time.
+`total_observed_cost_usd`). The verification pack that produced
+these four refinements was ~$0.63 of vendor spend and about
+2 hours of engineering time.
 **Cheap replication is where you learn the difference between a
 real finding and a lucky draw** — and in this project it materially
 changed what the case study says.
@@ -661,6 +656,9 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
   technical design
 - **[../DEVIATIONS.md](../DEVIATIONS.md)** — 11 pre-registered
   amendments made before results existed, each with rationale
+- **[../CORRECTIONS.md](../CORRECTIONS.md)** — every retracted
+  claim from the review rounds, dated and traceable to a
+  committed artefact + a git commit
 - **[../analysis/verification/](../analysis/verification/)** —
   per-test hypothesis + method + result + verdict for the 9-test
   Phase 2c outlier verification pack
@@ -672,9 +670,7 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
 (pilot campaigns $0.61 + primary campaign $7.85 + variance run
 $3.16 + two S1 latency sessions $0.34 + verification pack $0.63 +
 S3 latency ~$0.02, all sourced from committed
-`analysis/*/cost_model.json` `total_observed_cost_usd` fields). Prior
-drafts of this line said "~$56" — that was a pre-project planning
-estimate carried into publication as if it were actual spend, and
-it's retracted. Time: ~60 hours part-time across three weeks.
+`analysis/*/cost_model.json` `total_observed_cost_usd` fields).
+Time: ~60 hours part-time across three weeks.
 Codebase:
 [github.com/ngera/VoiceModelEvaluation](https://github.com/ngera/VoiceModelEvaluation)*

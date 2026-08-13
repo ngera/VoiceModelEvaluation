@@ -250,9 +250,8 @@ is a mix of two different behaviours**:
   especially on conv (mean ρ +0.238, +0.571 with p808). The
   correct plain-English label for PQ is Meta's own:
   **technical cleanliness** (perceived audio quality — pleasant
-  timbre, no distortion). 02_METHODOLOGY.md's D3 already uses
-  this label; 04 and this section's earlier drafts wrongly
-  called it "warm," which is retracted here.
+  timbre, no distortion). 02_METHODOLOGY.md's D3 uses this label
+  consistently.
 - **Audiobox CE (content_enjoyment) anti-correlates with DNSMOS**,
   especially against bak_mos (background noise) at ρ = −0.690.
   CE is the axis that actually behaves like the "warm / engaging /
@@ -369,28 +368,21 @@ speed-critical vendor, not two):
 | ElevenLabs | 439 | 440 | 424 | **694** | +58% | 50 / 50 / **40**¹ / **40**¹ |
 | OpenAI | 736 | 762 | 936 | **1369** | +86% | 50 / 50 / 50 / 50 |
 
-Prior drafts of this table showed **only three sessions**
-(collapsing S1a and S1b into a single "S1" row). There are two
-runs of the same day (2026-08-09T21:41 and T22:23; both n=50)
-committed in `analysis/latency-20260809T214106Z/latency.json`
-and `analysis/latency-20260809T222356Z/latency.json`; treating
-them as one session was a bookkeeping shortcut, not the reality.
-Six vendor-session cells exist, not four — which strengthens
-the argument, not weakens it: even with 2× the data, the "stability"
-signal from S1 was still coincidence.
+Two same-day S1 runs exist (2026-08-09T21:41 and T22:23; both n=50)
+committed in `analysis/latency-20260809T214106Z/latency.json` and
+`analysis/latency-20260809T222356Z/latency.json`. Six vendor-session
+cells across two vendors, not three sessions — even with 2× the
+S1 data, the "stability" signal was still coincidence.
 
-¹ ElevenLabs S2 **and** S3 both landed 40/50 trials, not just S3
-as prior drafts stated. Verified from
+¹ ElevenLabs S2 **and** S3 both landed 40/50 trials. Verified from
 `analysis/latency-20260811T183202Z/latency.json` `n_items = 40`
 (S2) and `analysis/latency-20260812T191323Z/latency.json`
-`n_items = 40` (S3). The prior claim "S1/S2 were on the Creator
-plan's per-month credits which don't hit the cap" is retracted —
-S2 was also 40. 40 trials still yields a well-defined p50/p90 at
-this magnitude (SE of p90 at n=40 ≈ 1.25 × (SD of trial times / √40)
-which for ~200 ms trial-time SD is ~40 ms — smaller than the +58%
-S1→S3 shift). The truncation is a spend-metering artifact, not a
-distribution-shape signal, but it caps how confidently we can
-claim tail behaviour beyond p90.
+`n_items = 40` (S3). Mechanism (subscription credit exhaustion,
+spend cap, per-session request cap) not diagnosed. 40 trials still
+yields a well-defined p50/p90 at this magnitude (SE of p90 at
+n=40 ≈ 1.25 × (SD of trial times / √40) ≈ ~40 ms for ~200 ms
+trial-time SD — smaller than the +58% S1→S3 shift), but caps
+confidence in tail behaviour beyond p90.
 
 The concurrent ping baseline during S3 was clean (p50 = 8 ms, p90
 = 12 ms, max = 29 ms, 0 errors on 274 probes) — **the last-mile
@@ -499,46 +491,11 @@ mechanism is not supported by the underlying artefact and a
 reviewer can falsify it in under a minute by opening the
 committed JSON.**
 
-Instances caught and retracted:
-- **Deepgram TTFA ~180 ms** (round 3) — invented; actual
-  `analysis/latency-*/latency.json` shows 583/674 ms
-- **Orpheus $0.030/1K words as "cheapest"** (round 4) — an
-  artefact of `src/veval/analyze/cost.py` line 177's
-  100-word-per-call default, propagated as a real price
-- **"Every marked-¹ cell was computed on structurally incomplete
-  audio"** (round 4) — a long-stratum figure generalised to a
-  75-item column; hygiene.json shows 27/75 truncated, not "every"
-- **"9.5σ is a truncation artifact"** (round 4) — per-stratum
-  means are essentially identical; the exclusion is a scope
-  choice, not a statistical necessity
-- **"Low variance under the fixed-length cap"** (round 4) —
-  Orpheus conv has the 2nd highest AB.PQ SD under identical
-  truncation; the mechanism is contradicted by the same
-  quality.json
-- **"−78.7 dBFS is mostly silence padding"** (round 4) —
-  Orpheus narration speech_ratio = 0.901, higher than
-  Speechify's 0.875; the quiet noise floor is a real Orpheus
-  property, not silence
-- **"F-8: Audiobox rewards warmth, DNSMOS rewards cleanliness"**
-  (rounds 1-4) — round 5 re-derivation from cross_metric.json
-  showed AB.PQ agrees with DNSMOS (+0.24 mean, +0.57 with p808),
-  only AB.CE anti-correlates. The construct-decomposition is
-  within Audiobox, not warm-vs-clean between pipelines
-- **"144 items with valid references"** (round 4) — a dedup bug
-  in an ad-hoc script; actual `wer.json` has n_valid = 75 per
-  cell = 150 items
-- **"$50 primary campaign / $56 project total"** (rounds 1-4) —
-  a pre-project planning estimate carried into publication as
-  if it were metered spend; actual `total_observed_cost_usd`
-  across all committed cost_model.json files = ~$12
-- **"5 conversational gates"** (round 4) — fabricated fifth gate
-  (`acoustic_noise_floor_dbfs`); gates.yaml has 4
-- **Speechify $0.100/1K @ 10K/mo** (all rounds) — a 10× table-
-  entry error; cost_model.json has $1.000. At 10K/mo Speechify
-  is #7 of 8 on cost, not near-cheapest
-- **"S1/S2 were on Creator credits, unaffected"** (round 4) —
-  ElevenLabs S2 was also n=40, verified from
-  `latency-20260811T183202Z/latency.json`
+**The full retraction log** — 20 claims across 5 rounds, each
+with the falsifying artefact and commit SHA — lives at
+[CORRECTIONS.md](../CORRECTIONS.md). Kept as its own file so
+the reports themselves (04, 05, 06) read as reports rather than
+as changelogs.
 
 **What made it happen**: the harness generated JSON receipts
 that were correct. The docs were written to *narrate* those

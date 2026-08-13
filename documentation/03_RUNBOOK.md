@@ -270,10 +270,9 @@ uv sync --extra admin --extra dev
 # 2. Doctor — every vendor must be green
 uv run veval doctor
 
-# 3. Run the primary campaign (~$8 measured, ~30 min wall clock —
+# 3. Run the primary campaign (~$8 measured, ~30 min wall clock;
 #    see cost_model.json `total_observed_cost_usd` in the run's
-#    analysis/ output; prior drafts of this line said "~$50" —
-#    that was a pre-project planning estimate, retracted)
+#    analysis/ output)
 uv run veval generate --mode campaign
 
 # 4. Run the variance subset for the noise-floor measurement (~$2, ~10 min)
@@ -347,15 +346,10 @@ the receipt is directly reproducible):
 - **Total measured: ~$12** across 8 vendor accounts, plus 3-4 hrs
   wall clock on a mid-tier CPU laptop.
 
-**Prior drafts of this line said "~$50 for a clean reproduction /
-~$56 total v1 project spend."** Both figures came from a
-pre-project planning estimate in the spec (§8 estimated $46-79
-worst case) that got carried into publication as if it were the
-actual metered cost. The actual metered cost is roughly one-fifth
-of that. This is a straightforwardly checkable number — every
-`analysis/*/cost_model.json` file is committed with
-`total_observed_cost_usd` in its top level — and prior claims to
-the contrary are retracted here.
+Every `analysis/*/cost_model.json` file is committed with
+`total_observed_cost_usd` at its top level — the number above is
+directly reproducible by summing that field across the six run
+directories.
 
 ---
 

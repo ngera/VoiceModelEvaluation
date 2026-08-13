@@ -40,20 +40,32 @@ case.
 Each vendor was tested with one representative voice per use case,
 locked in `configs/voices.yaml` before results existed. Voice choice
 within a vendor can shift scores by up to ~35% of the cross-vendor
-spread on the aesthetic axis (measured for Speechify via T6, where
-the alt voice `edmund_32` scored +0.30 higher on Audiobox PQ than
-the pinned `geffen_32`).
+spread on Audiobox PQ (measured for Speechify via T6, where the
+alt voice `edmund_32` scored +0.30 higher on Audiobox PQ than the
+pinned `geffen_32`). Note PQ is the technical-cleanliness Audiobox
+axis (agrees with DNSMOS at ρ = +0.24 mean — see
+[06 § F-8](06_KEY_FINDINGS.md#f-8)), not the aesthetic axis;
+CE is the aesthetic/warm-enjoyment axis. The T6 measurement was
+on PQ specifically.
 
 **v2 workstream**: run 3–5 alternate voices per vendor per use case
 (20-item pilot each; ~$5 total). Answer whether vendor rankings
 survive across the voice space, and where vendor tag-taxonomy
 (warm / bright / dynamic / etc.) reliably predicts aesthetic score.
 
-**Related asymmetric-scrutiny gap**:
-Cartesia's loser-side outlier (clipping) got two targeted
-verification pathways (F-4a's independent-pipeline corroboration +
-T1's regen plan). Speechify's winner-side outlier (Audiobox #1 on
-both use cases) got one weak test (T6, n=2 voices in same vendor).
+**Related asymmetric-scrutiny gaps**:
+
+- **Orpheus CONV truncation carries no footnote.** Orpheus's
+  conversational column is truncated 25/75 files against the same
+  14.59-s cap that gets footnoted for its narration column (see
+  04 § footnote ¹). The conv per-vendor table has no equivalent
+  footnote; a symmetric-scrutiny fix is one paragraph and a copy
+  of the AB.PQ per-stratum analysis done for narration. Not fixed
+  in v1.
+- Cartesia's loser-side outlier (clipping) got two targeted
+  verification pathways (F-4a's independent-pipeline corroboration +
+  T1's regen plan). Speechify's winner-side outlier (Audiobox #1 on
+  both use cases) got one weak test (T6, n=2 voices in same vendor).
 An equivalent adversarial hypothesis for Speechify would be: **"Does
 Audiobox systematically reward Simba-3.2's mastering signature
 (EQ / compression profile) rather than anything a listener would
