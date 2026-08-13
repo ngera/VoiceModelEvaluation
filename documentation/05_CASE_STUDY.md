@@ -249,19 +249,30 @@ cap is observed at the hosted endpoint**, not the mechanism.
 
 Two consequences that don't appear on the pricing page (either way):
 
-- **The "cheapest per 1K characters" framing needs a use-case
-  qualifier.** A 1000-character narration is ~5-6 Orpheus calls
-  chained together at this cap. Real cost: ~$0.015/1K chars, not
-  $0.003. Still cheap; not category-crushingly cheap for narration.
+- **The "cheapest per 1K words" framing is retracted, not qualified.**
+  Earlier drafts of this section said "Real cost: ~$0.015/1K chars,
+  not $0.003. Still cheap; not category-crushingly cheap for
+  narration." The "still cheap" half was wrong. Under T8's
+  per-call output measurement (~35 words per call) and 100K
+  words/month, Orpheus costs **~$0.067-0.088/1K words** —
+  **peer-priced with OpenAI ($0.075)**, not cheap. The $0.030
+  in the cost table is a `cost_model.py` artefact under a
+  100-word-per-call default that predates T8; it's kept in the
+  table as the direct pipeline output, with a † and a ⚠ block
+  explaining what it actually represents. See
+  [04_RESULTS.md § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus).
 - **This mechanically resolves a separate finding** — Orpheus's 85%
   WER on long items, which had been logged as a "possible
   intelligibility problem." It's not intelligibility; it's
   structural incompletion.
 
 For a PM building on Orpheus: use it for **conversational turns
-under 15 seconds**, or budget for chunking + stitching engineering
-work + the multiplied cost. The "cheap open-weights floor"
-positioning needs a use-case qualifier.
+under 15 seconds** where OpenAI (peer-priced) isn't preferred for
+some reason — voice character, open-weights preference, an
+experimental prototype. **The "cheap open-weights floor" archetype
+is retired** — on this data Orpheus is not cheap. It is
+capped-output at peer OpenAI prices with the worst WER in the
+roster; F-5 has been retitled accordingly.
 
 ### 3. Latency *ranking* is stable across sessions; latency *absolute values* are not
 
@@ -454,18 +465,28 @@ vendor structurally?
 **Question 2 — which "quality" matches your users?**
 
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
-  leads the warm-rater axis on both use cases** at 3.7–7.3σ vs the
-  honest #2 vendor (recomputed against Cartesia for narration PQ,
-  dropping the Orpheus truncation artifact — see the Rankings summary
-  in [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary)
-  and the Wave 1 statistical-honesty note in
-  [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8)). At $0.10/1K
-  words (100K/mo tier), Speechify is the cheaper of the top-2
-  warm-quality vendors (ElevenLabs at $0.22 is #2 warm and 2.2×
-  more expensive). Orpheus at $0.030/1K words is nominally cheapest,
-  but its narration output is capped at 14.59s (§ 2) so it is not
-  actually cheapest per delivered second of narration audio — see
-  [04_RESULTS.md § cost calculus](04_RESULTS.md#cost-calculus).
+  leads the warm-rater axis on both use cases** at **3.7–9.5σ vs
+  the numerical #2, 3.7–7.3σ vs the deployable #2** — the numerical
+  and deployable #2 columns differ on narration AB.PQ, where
+  Orpheus (8.002) numerically beats Cartesia (7.986) but is
+  Q1-disqualified from narration workflows by its 14.59-s output
+  cap. The per-stratum recompute (footnote ¹ under 04's per-vendor
+  table) shows Orpheus's 8.002 mean is EARNED, not a truncation
+  artifact — 71% of Orpheus narration cells are on complete audio.
+  The round-2 "9.5σ was an artifact" claim is retracted. Full
+  writeup in
+  [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary)
+  and [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8).
+  At $0.10/1K words (100K/mo tier), Speechify is the cheaper of
+  the top-2 warm-quality vendors (ElevenLabs at $0.22 is #2 warm
+  and 2.2× more expensive). **The "Orpheus is cheapest" line is
+  also retracted here**: prior drafts said "Orpheus at $0.030/1K
+  words is nominally cheapest." That $0.030 was a `cost_model.py`
+  artefact under a 100-word-per-call default that predates T8's
+  per-call output-cap measurement; the honest Orpheus price is
+  **~$0.067-0.088/1K words** — peer-priced to OpenAI ($0.075),
+  not category-crushing cheap. See
+  [04_RESULTS.md § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus).
 - Clean/pristine (IVR, accessibility, transactional voice) → **OpenAI
   ties for #1 on DNSMOS OVRL on both use cases** (0.7–1.3σ vs the
   tied competitor). At $0.075/1K words, OpenAI is 34% of ElevenLabs'

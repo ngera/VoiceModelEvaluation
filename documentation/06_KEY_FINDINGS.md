@@ -66,8 +66,16 @@ Across 7 measured dimensions (latency, cost, Audiobox PQ, Audiobox CE,
 DNSMOS OVRL, WER conv, WER narr), and one non-dimension (determinism),
 different vendors lead:
 
-- Latency (TTFA p50/p90) → **ElevenLabs** Flash
-- Cost per 1K words → **Orpheus** (nominal; see F-9 T8 caveat)
+- Latency (TTFA p50/p90) → **ElevenLabs** Flash (ranking; every
+  measured streaming vendor fails the pre-registered 400 ms gate,
+  see [04 § TTFA-gate admission](04_RESULTS.md#ttfa-gate-admission))
+- Cost per 1K words → **OpenAI / Fish** (tied at $0.075/1K). Prior
+  drafts of this line said "**Orpheus** (nominal; see F-9 T8 caveat)."
+  That is retracted: the $0.030 was a `cost_model.py` artefact
+  under a 100-word-per-call default. T8's per-call measurement
+  puts Orpheus's honest per-1K-words cost at ~$0.067-0.088 —
+  peer-priced to OpenAI. See
+  [04 § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus).
 - Audiobox PQ (both use cases) → **Speechify**
 - DNSMOS OVRL (both use cases) → **OpenAI**
 - Cleanest WER (conv) → **cluster** at ~13.7-14.3% (OpenAI 13.70 /
@@ -129,21 +137,51 @@ silently unusable in a quality-check pipeline.
 [`quality.json` dnsmos_errors block](../analysis) +
 [T1 verdict](../analysis/verification/T1_cartesia_clipping.md)
 
-### F-5 · Orpheus is the "cheap but risky" archetype — highest variance, worst WER
+### F-5 · Orpheus is the "capped-and-peer-priced" archetype — not cheap, output-limited, worst WER
 
-Orpheus leads on:
-- Cost (nominal, before F-9 T8 refinement)
-- Variance floor (widest between-draw spread of any provider on
-  most quality signals)
+**Retitled from "cheap but risky" (round 4)**. The cost side of
+the story evaporated when the derivation was chased down.
 
-Orpheus loses on:
-- WER (27% mean, ~2× next-worst — see F-9 T8 for mechanical
-  explanation)
-- Reliability (highest error rate at first-call attempt)
+Orpheus's `cost_model.json` figure of **$0.030/1K words** — the
+one that drove the "cheap open-weights floor" archetype in earlier
+drafts — is a model artefact. `src/veval/analyze/cost.py` line 177
+uses a default "100-word session per generation" for
+per-generation vendors; T8 measured Orpheus's actual per-call
+output as ~35 words (14.59 s of audio × ~14.6 chars/s ÷ 5.87
+chars/word). Under T8's real per-call output the honest per-1K
+number is **~$0.067-0.088** — peer-priced with OpenAI ($0.075).
+See [04 § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus)
+for the full derivation.
 
-**Impact:** Orpheus is a legitimate choice for short-turn
-conversational voice where budget dominates. For narration or any
-long-form use, F-9 T8's output cap makes it structurally unsuitable.
+**What Orpheus actually is on this data:**
+
+- **Not cheaper than OpenAI**, once you correct for the per-call
+  cap
+- **Hard 14.59-s output cap per call** — 22/75 narration items
+  (29%) exceed this cap; 8 of those (11%) are catastrophically
+  truncated (~84% content loss). See
+  [F-9 T8](#f-9--outlier-verification-verdicts-phase-2c) and
+  [04 footnote ¹](04_RESULTS.md#footnote-1).
+- **Worst WER** in the roster (27% mean, ~2× next-worst) —
+  the mechanism is the output cap, not intelligibility
+- **Widest between-draw variance** on quality signals
+
+**But not artefact-driven on quality**: per-stratum recompute
+(04 footnote ¹) shows Orpheus's narration AB.PQ mean of 8.002
+is essentially identical across complete-audio (8.008) and
+truncated-audio (7.974-8.009) strata. Its per-call rendering
+is genuinely uniform-quality; the aggregate is earned.
+
+**Impact:** Orpheus is a legitimate choice when: (a) every turn
+comfortably fits under 14.59 s of audio (so the cap never
+bites), AND (b) worst-WER + no-cost-advantage is acceptable
+(e.g., an experimental prototype, an open-weights preference,
+or a specific voice character the closed vendors don't offer).
+For narration or any long-form use, T8's output cap makes it
+structurally unsuitable. **The old "budget dominates → pick
+Orpheus" heuristic is retired** — on this data, if budget
+dominates, OpenAI at $0.075 is the pick (peer-priced to Orpheus
+and passes the cap).
 
 ### F-6 · ElevenLabs L03 monotonic fadeout
 

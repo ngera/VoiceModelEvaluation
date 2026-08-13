@@ -192,6 +192,16 @@ generation cap.
 - **Portable claim about cost**: at conservative T4 pricing,
   Orpheus is $0.0039/call. **This is our floor, not the pricing.yaml
   $0.003.** Update pricing.yaml note accordingly.
+- **Round-4 refinement (2026-08-13)**: the "cheap for short clips"
+  half of this narrative also needs qualifying. At ~35 words per
+  Orpheus call and $0.003/call, short-conversational cost is
+  ~$0.003 / 35 words = ~$0.086 per 1K words — **peer-priced to
+  OpenAI's $0.075, not "cheap."** The `cost_model.json` output of
+  $0.030/1K words uses a stale "100-word session per generation"
+  default in `src/veval/analyze/cost.py` line 177 that predates
+  this measurement. The revised F-5 archetype (in
+  `documentation/06_KEY_FINDINGS.md`) is "capped-and-peer-priced,"
+  not "cheap but risky."
 - **F-3 update candidate**: the "no universal winner" finding gets
   a new dimension — Orpheus wins short items, loses long items
   categorically (not just quality-wise, structurally).
