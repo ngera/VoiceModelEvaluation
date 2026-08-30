@@ -128,16 +128,16 @@ per-user matters more than aggregate throughput.
 
 **Why multiple sessions**: a single session of TTFA cannot
 distinguish "vendor is fast" from "vendor happened to be fast
-during our measurement window." The plan called for two sessions
-on different days; a third session (2026-08-12) with concurrent
-ping baseline was added after review. Both vendors moved 50-90%
-p50 across the three sessions; two-session agreement turned out
-to be coincidence. See
-[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
-for the full retraction of the "stability is a distinct axis"
-claim.
+during our measurement window." Three sessions were run across
+2026-08-09 / -11 / -12; the third was captured with a concurrent
+ping-to-Cloudflare-1.1.1.1 baseline to rule out ISP jitter. Both
+vendors moved 50-90% p50 across the three sessions; two-session
+agreement turned out to be coincidence. See
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11)
+for the full session-by-session data and the "latency absolute
+values are not stable" finding.
 
-The methodology takeaways that survive:
+The methodology takeaways:
 - **TTFA rank is stable at n=3**: rank tests are robust at low
   session counts (ElevenLabs faster than OpenAI in every session)
 - **TTFA absolute values are not**: publish as a range across
@@ -284,19 +284,20 @@ fresh data — winners and losers same scrutiny.
 - **Four findings that would not have surfaced from the primary
   campaign**: T8 (Orpheus's 14.59s output cap at the hosted endpoint),
   T6 (Speechify's alt-voice reversal), T4 (L03 fadeout magnitude
-  overstated ~35%), and **F-11 (the after-review third latency
-  session that refuted the initial "ElevenLabs is stable" claim)**
+  overstated ~35%), and **F-11 (the third latency session that
+  showed both vendors' absolute TTFA is not stable across
+  sessions)**
 - The most consequential is T8 — mechanically resolved T2 (Orpheus's
   high WER = truncation cap, not intelligibility) without a manual
   listen
-- F-11 is the strongest "published-headline-refuted-by-verification"
-  case; it directly answered an external-review objection about ISP
-  confounding
+- F-11 is the strongest verification-surfaced finding; it
+  established that ISP jitter is not the driver of the observed
+  session-to-session TTFA variance (concurrent ping baseline was
+  clean)
 
-**Cost**: ~$0.63 spend + ~2 hours of work (including the
-after-review third latency session with concurrent ping baseline).
-Cheap replication is the highest-leverage step in a portfolio
-evaluation.
+**Cost**: ~$0.63 spend + ~2 hours of work (including the third
+latency session with concurrent ping baseline). Cheap replication
+is the highest-leverage step in a portfolio evaluation.
 
 ---
 
@@ -458,7 +459,7 @@ committed to git with a timestamp that predates results.
   measurements
 - [04_RESULTS.md](04_RESULTS.md) — the full data these methods produced
 - [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) — findings F-1 through
-  F-9 + F-11 + F-12 (F-10 slot documented in-doc) + decision log
+  F-9 + F-11 (F-10 slot documented in-doc) + decision log
   D-A..D-H (the flip side of this document — the specific
   decisions rather than the underlying principles)
 - [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) — where

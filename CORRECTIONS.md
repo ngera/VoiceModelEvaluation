@@ -2,11 +2,9 @@
 
 *One dated table per retracted claim. Each row names the original
 assertion, the artefact that falsified it, and the commit that
-retracted it. This file is the audit trail — the reports themselves
-(04_RESULTS, 05_CASE_STUDY, 06_KEY_FINDINGS, 07_GAPS,
-03_RUNBOOK, 02_METHODOLOGY) should read as reports, not as
-changelogs. The pattern that produced these retractions is
-documented as [06 § F-12](documentation/06_KEY_FINDINGS.md#f-12--the-dominant-defect-class-was-inventing-mechanisms-next-to-real-numbers).*
+retracted it. This file is the audit trail; the numbered reports
+themselves (01-07 in `documentation/`) read as final reports, with
+no inline "prior drafts said X" narrative.*
 
 ---
 
@@ -18,9 +16,6 @@ documented as [06 § F-12](documentation/06_KEY_FINDINGS.md#f-12--the-dominant-d
   existed (e.g., roster extension 6→8, WER-threshold refinement).
   Deviations are decisions the campaign then honoured. Corrections
   are claims the results then falsified. Different things.
-- **F-12** in 06_KEY_FINDINGS.md — the meta-finding *about* this file:
-  what the retraction pattern reveals about how the docs were
-  written, and the v2 process fix that would prevent recurrence
 
 ---
 

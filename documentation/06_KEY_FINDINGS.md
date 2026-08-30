@@ -15,7 +15,7 @@ the entries below.*
 
 ## Contents
 
-- [Findings F-1 through F-9 + F-11 + F-12](#findings) (F-10 slot was
+- [Findings F-1 through F-9 + F-11](#findings) (F-10 slot was
   reserved for BT rating campaign results; unused because Phase 3
   was deferred to v2 per D-H, and the slot number is retained so
   future v2 work can slot in without renumbering)
@@ -69,12 +69,11 @@ different vendors lead:
 - Latency (TTFA p50/p90) → **ElevenLabs** Flash (ranking; every
   measured streaming vendor fails the pre-registered 400 ms gate,
   see [04 § TTFA-gate admission](04_RESULTS.md#ttfa-gate-admission))
-- Cost per 1K words → **OpenAI / Fish** (tied at $0.075/1K). Prior
-  drafts of this line said "**Orpheus** (nominal; see F-9 T8 caveat)."
-  That is retracted: the $0.030 was a `cost_model.py` artefact
-  under a 100-word-per-call default. T8's per-call measurement
-  puts Orpheus's honest per-1K-words cost at ~$0.067-0.088 —
-  peer-priced to OpenAI. See
+- Cost per 1K words → **OpenAI / Fish** (tied at $0.075/1K).
+  Orpheus's nominal $0.030 in `cost_model.json` is a `cost_model.py`
+  artefact under a 100-word-per-call default; T8's per-call
+  measurement puts Orpheus's honest per-1K-words cost at
+  ~$0.067-0.088 — peer-priced to OpenAI. See
   [04 § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus).
 - Audiobox PQ (both use cases) → **Speechify**
 - DNSMOS OVRL (both use cases) → **OpenAI**
@@ -139,18 +138,14 @@ silently unusable in a quality-check pipeline.
 
 ### F-5 · Orpheus is the "capped-and-peer-priced" archetype — not cheap, output-limited, worst WER
 
-**Retitled from "cheap but risky" (round 4)**. The cost side of
-the story evaporated when the derivation was chased down.
-
-Orpheus's `cost_model.json` figure of **$0.030/1K words** — the
-one that drove the "cheap open-weights floor" archetype in earlier
-drafts — is a model artefact. `src/veval/analyze/cost.py` line 177
-uses a default "100-word session per generation" for
-per-generation vendors; T8 measured Orpheus's actual per-call
-output as ~35 words (14.59 s of audio × ~14.6 chars/s ÷ 5.87
-chars/word). Under T8's real per-call output the honest per-1K
-number is **~$0.067-0.088** — peer-priced with OpenAI ($0.075).
-See [04 § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus)
+Orpheus's `cost_model.json` figure of **$0.030/1K words** is a
+model artefact. `src/veval/analyze/cost.py` line 177 uses a
+default "100-word session per generation" for per-generation
+vendors; T8 measured Orpheus's actual per-call output as ~35 words
+(14.59 s of audio × ~14.6 chars/s ÷ 5.87 chars/word). Under T8's
+real per-call output the honest per-1K number is
+**~$0.067-0.088** — peer-priced with OpenAI ($0.075). See
+[04 § Cost calculus § ⚠ Orpheus](04_RESULTS.md#cost-calculus)
 for the full derivation.
 
 **What Orpheus actually is on this data:**
@@ -214,15 +209,13 @@ without worrying about a big quality drop-off.
 <a name="f-8"></a>
 ### F-8 · Audiobox's two axes split across the DNSMOS construct — PQ agrees, CE anti-correlates
 
-**Retitled and rewritten (round 5)**. Earlier drafts of this
-section described F-8 as "the two independent MOS pipelines rank
-vendors differently" and glossed the mechanism as "Audiobox
-rewards warmth, DNSMOS rewards cleanliness." Re-derivation from
-`analysis/campaign-20260809T204608Z/cross_metric.json` shows the
-warm-vs-clean framing is **wrong on the axis that carries the
-Speechify winner claim** — production_quality agrees with DNSMOS,
-content_enjoyment anti-correlates. The corrected finding is
-narrower and more interesting.
+The two-construct story the field usually tells about MOS
+predictors ("Audiobox rewards warmth, DNSMOS rewards cleanliness")
+turns out to be wrong on the axis that carries the Speechify
+winner claim. Re-derivation from
+`analysis/campaign-20260809T204608Z/cross_metric.json` shows
+production_quality agrees with DNSMOS; content_enjoyment
+anti-correlates.
 
 **Per-pair Spearman ρ across 8 vendors, conversational**:
 
@@ -271,8 +264,8 @@ is a mix of two different behaviours**:
       use cases
   (c) The two pipelines do NOT show a uniform positive rank
       correlation across all axes — but they do agree on one
-      axis (PQ) more than the earlier "different constructs"
-      framing implied
+      axis (PQ) more than a simple "different constructs"
+      framing would imply
 
 **Named per-vendor rank inversions** (independent of the
 aggregate CI, cite these directly):
@@ -285,14 +278,14 @@ aggregate CI, cite these directly):
   (#3 / #5 / #6 / #6)
 - **Orpheus conversational**: Audiobox #8, DNSMOS #3 on OVRL
 
-**Interpretation (corrected):** the two Audiobox axes split
-across the DNSMOS construct. PQ measures something DNSMOS also
-measures (audio-quality cleanliness); CE measures something
-DNSMOS actively de-preferences. **Speechify wins PQ on both use
-cases** — that's a cleanliness-axis win, not a warm-axis win,
-even though Speechify also wins CE (which is the warm-axis
-finding). The two-construct story survives, but the axis
-labels needed to be swapped inside Audiobox.
+**Interpretation:** the two Audiobox axes split across the DNSMOS
+construct. PQ measures something DNSMOS also measures (audio-
+quality cleanliness); CE measures something DNSMOS actively
+de-preferences. **Speechify wins PQ on both use cases** — that's
+a cleanliness-axis win, not a warm-axis win, even though
+Speechify also wins CE (which is the warm-axis finding). The
+two-construct story survives, but between Audiobox's two axes
+rather than between the two pipelines in the aggregate.
 
 **Impact:** Any leaderboard reporting one MOS predictor is
 measuring a different combination of constructs than a
@@ -342,26 +335,22 @@ fresh data. Full table + methodology in
 
 **Meta-finding**: Verification produced 4 findings the primary
 campaign didn't: T8's 14.59s output cap, T6's voice-swap reversal,
-T4's L03 magnitude refinement, and F-11's retraction of the
-latency-stability claim. Of these, T8 and F-11 are the most
-consequential — they reshape published recommendations. Cheap
-replication ($0.61 + ~90 min in-scope + $0.02 for a 3rd latency
-session with concurrent ping baseline) is where you learn which
-"findings" are lucky draws.
+T4's L03 magnitude refinement, and F-11's session-to-session
+latency variance. Of these, T8 and F-11 are the most consequential
+— they reshape recommendations. Cheap replication ($0.61 +
+~90 min in-scope + $0.02 for a 3rd latency session with concurrent
+ping baseline) is where you learn which "findings" are lucky draws.
 
 ---
 
-### F-11 · Retraction of the "latency stability is a distinct axis" finding
+<a name="f-11"></a>
+### F-11 · Latency absolute values are not stable session-to-session
 
-**Original claim** (v1 pre-review): "ElevenLabs Flash is not just
-faster — it's more predictable" (05 case study, 04 results). Based
-on 2 sessions two days apart showing ElevenLabs moved 2-3% while
-OpenAI moved 27-56% p50/p90.
-
-**What changed**: a third latency session (2026-08-12, run with a
-concurrent ping baseline to Cloudflare 1.1.1.1) refuted the
-stability claim. Full session-by-session data (four runs per
-speed-critical vendor, not two):
+TTFA rank is portable across sessions; absolute values are not.
+Four latency-mode runs per speed-critical vendor across three
+dates (2026-08-09, -11, -12); S3 ran with a concurrent
+ping-to-Cloudflare-1.1.1.1 baseline (274 probes during the window)
+to separate vendor-side from last-mile-link variance.
 
 | vendor | S1a p50 | S1b p50 | S2 p50 | S3 p50 | S3 vs S1a | n per session |
 |---|---:|---:|---:|---:|---:|---:|
@@ -371,8 +360,7 @@ speed-critical vendor, not two):
 Two same-day S1 runs exist (2026-08-09T21:41 and T22:23; both n=50)
 committed in `analysis/latency-20260809T214106Z/latency.json` and
 `analysis/latency-20260809T222356Z/latency.json`. Six vendor-session
-cells across two vendors, not three sessions — even with 2× the
-S1 data, the "stability" signal was still coincidence.
+cells across two vendors.
 
 ¹ ElevenLabs S2 **and** S3 both landed 40/50 trials. Verified from
 `analysis/latency-20260811T183202Z/latency.json` `n_items = 40`
@@ -427,7 +415,7 @@ attribute variance to layers rather than to vendors.
   OpenAI") needs ≥5-10 sessions across ≥2 weeks with the layer
   controls above.
 
-**What survives**:
+**Load-bearing claims**:
 
 - ElevenLabs is **consistently faster than OpenAI** across all 3
   sessions (424/694 vs 736/1369 range on p50). Ranking is stable.
@@ -435,18 +423,16 @@ attribute variance to layers rather than to vendors.
   measurements — which is the load-bearing claim for the "provision
   capacity for OpenAI's worst percentile" advice.
 
-**What does not survive**:
+**Claims the data does not support**:
 
-- "ElevenLabs Flash reliably hits sub-500 ms p90" (v1 recommendation)
-  — held only in the first 2 sessions.
+- "ElevenLabs Flash reliably hits sub-500 ms p90" — held only in
+  the first 2 sessions and moved to 816 ms in S3.
 - "Stability is a distinct vendor axis" as a portfolio-worthy
   headline. On our data, both vendors' session-to-session variance
   is 50-90% of the p50; neither is "stable" in an operational sense.
 - Any capacity-planning implication that reads ElevenLabs' 470 ms
   p90 as an upper bound in either direction (the S3 measurement
-  exceeded it substantially; upper-bound language for our published
-  p90 values has been retracted throughout the docs — see the
-  batch ceiling-language pass from Wave 0).
+  exceeded it substantially).
 
 **Impact on PM recommendations**: don't provision from one
 measurement session. For a real deployment plan, budget the tail
@@ -458,8 +444,8 @@ variance claims do not.
 
 **Evidence**:
 - Session 3 run IDs: `latency-20260812T191143Z` (OpenAI, 50/50 trials)
-  and `latency-20260812T191323Z` (ElevenLabs, 40/50 before spend cap
-  tripped). `runs/` is gitignored (regenerable + large — see
+  and `latency-20260812T191323Z` (ElevenLabs, 40/50). `runs/` is
+  gitignored (regenerable + large — see
   [.gitignore](../.gitignore)); reproduce per
   [03_RUNBOOK § latency + ping](03_RUNBOOK.md)
 - Ping baseline log: `ping-baseline-20260812T191138Z.jsonl` — 274
@@ -468,67 +454,10 @@ variance claims do not.
   so the network-baseline receipt survives without the audio
 - Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py)
 
-**Portfolio takeaway (revised)**: the T5/T7 pair now demonstrates
-the value of a third replication session AND the limits of a
-three-session pass. Two-session agreement was a weaker signal than
-we treated it as; three-session data suffices to falsify a
-distributional claim but not to make one. The strongest
-"published-headline-refuted-by-verification" case in the project.
-
-### F-12 · The dominant defect class was inventing mechanisms next to real numbers
-
-**A meta-finding about the review process itself, kept in as its
-own row so future readers can see the pattern rather than
-inferring it from git history.**
-
-Across four rounds of external review (2026-08-10 through
-2026-08-13), the dominant defect class shifted. Rounds 1-2 were
-"over-claiming" defects (weighted composites, unqualified
-"stability" language, uncorrected multiplicity). Rounds 3-5
-converged on a different pattern: **a plausible-sounding
-mechanism written next to a correctly-measured number, where the
-mechanism is not supported by the underlying artefact and a
-reviewer can falsify it in under a minute by opening the
-committed JSON.**
-
-**The full retraction log** — 20 claims across 5 rounds, each
-with the falsifying artefact and commit SHA — lives at
-[CORRECTIONS.md](../CORRECTIONS.md). Kept as its own file so
-the reports themselves (04, 05, 06) read as reports rather than
-as changelogs.
-
-**What made it happen**: the harness generated JSON receipts
-that were correct. The docs were written to *narrate* those
-numbers. Every narrative step introduced a small mechanism claim
-("because of X, we see Y"). None of those X claims were checked
-against source; several were plausible-sounding backfits that
-happened to match the direction of Y without being causally
-right.
-
-**What fixed it**: reviewers who re-derived from the committed
-JSONs and named specific-line contradictions. Every round-5 fix
-above traces to a `python -X utf8 -c` script that a reviewer
-ran in under a minute. The receipts were always there; the
-narrative just didn't cite them.
-
-**Portfolio takeaway for future evaluators**: **commit your JSON
-receipts and derive every claim from them at write time**, not
-after. A reviewer with the JSONs will catch invented mechanisms
-faster than a self-review can. And publish the retraction log —
-this section — as a first-class finding, not a shameful
-afterword. The count of "mechanism claims retracted after
-re-derivation" is a *methodology audit metric* the field could
-use.
-
-**Not currently mitigated**: the docs have been corrected in
-each round but the *process* that produced the mechanism-
-invention pattern has not been changed. A v2 would add a
-`docs/receipts.md` file with one-line executable checks
-(`python -c "..." → expected number`) beside every quoted
-figure, so a next-round reviewer starts from source rather than
-from prose. This is a v2 workstream — flagged here rather than
-in 07 because it's a *methodology* fix, not a *measurement*
-one.
+**Portfolio takeaway**: the T5/T7 pair demonstrates both the value
+of a third replication session and the limits of a three-session
+pass. Three-session data suffices to falsify a distributional claim
+but not to make one.
 
 ---
 

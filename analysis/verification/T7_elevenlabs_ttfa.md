@@ -118,7 +118,7 @@ your own multi-session characterisation on your target region.
 
 - **The published "stability is a distinct axis" finding was
   refuted by S3** — full retraction in
-  [06_KEY_FINDINGS.md § F-11](../../documentation/06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+  [06_KEY_FINDINGS.md § F-11](../../documentation/06_KEY_FINDINGS.md#f-11).
 - **What the retraction demonstrates** (the actual value of this
   test as a portfolio artefact): two-session agreement is a weak
   signal even when the numbers look identical. A third session

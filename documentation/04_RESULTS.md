@@ -474,8 +474,6 @@ serial) measured Deepgram at **p50 = 583 / 564 ms, p90 = 674 / 670
 ms** — statistically consistent with the campaign value.
 Deepgram wasn't re-measured in S2/S3, so we have two consistent
 latency-mode sessions from the same day, not three days of data.
-(A prior claim of ~180 ms is logged in
-[CORRECTIONS.md](../CORRECTIONS.md#retracted-claims).)
 
 **Footnote † (Orpheus $/1K words)**: the $0.030 cell for Orpheus
 in both the conversational and narration tables is a model output
@@ -895,17 +893,14 @@ well-defined p50/p90 at this magnitude (SE of p90 ≈ 40 ms, small
 vs. the +58% S1→S3 shift); anything past p90 for S2/S3 is
 under-sampled.
 
-**Portable finding** (revised — see F-11 for the retraction of the
-prior "stability" claim):
+**Portable findings**:
 
 - **Vendor ranking on TTFA is stable**: ElevenLabs is consistently
   faster than OpenAI in every session (424/439/694 vs 736/936/1369
   on p50). The ordering is portable. Rank tests are robust at n=3.
 - **Absolute TTFA is NOT stable** for either vendor. Both moved
   50-90% p50 session-to-session on our public-tier accounts.
-  Neither vendor is "stable" in an operational sense; the initial
-  ElevenLabs "sub-500 ms p90 reliably" finding held only in the
-  first two sessions and was refuted by S3.
+  Neither vendor is "stable" in an operational sense.
 - **The observed variability is not our last-mile link.** The
   simplest single cause consistent with "both vendors slowed
   together on the same day" is **client-side** (local machine
@@ -918,20 +913,17 @@ prior "stability" claim):
 
 See [documentation/figures/f3_latency_stability.png](figures/f3_latency_stability.png)
 for the 3-session visual with concurrent ping-baseline annotation.
-Full retraction narrative in
-[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+Full write-up in
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
 Verdict details in
 [analysis/verification/T5](../analysis/verification/T5_openai_latency.md)
-and [T7](../analysis/verification/T7_elevenlabs_ttfa.md) (both
-updated with S3 data).
+and [T7](../analysis/verification/T7_elevenlabs_ttfa.md).
 
 ### <a name="rtf-admission"></a>RTF (real-time factor) — measured, but on the wrong workload
 
 **RTF was pre-committed as the narration latency gate**
 (`rtf ≥ 3.0`; see [`configs/gates.yaml`](../configs/gates.yaml))
-and is intended to fire on **long-narration throughput**. Prior
-drafts of this section said "RTF was not measured in v1" — that's
-too strong; corrected:
+and is intended to fire on **long-narration throughput**.
 
 **What was actually measured**: every latency-mode trial in
 `analysis/latency-*/latency.json` populates a per-trial `rtf`
@@ -1079,9 +1071,7 @@ tests likely produce lower numbers; we don't have that data.
   moved to 816 ms in S3, so it also fails the softer 500 ms
   perception-reference bar under session-to-session variance"
 
-A retracted earlier claim about Deepgram TTFA is logged in
-[CORRECTIONS.md](../CORRECTIONS.md#retracted-claims); every
-latency-mode Deepgram row in `analysis/latency-*/latency.json`
+Every latency-mode Deepgram row in `analysis/latency-*/latency.json`
 shows p50 = 564-583 ms, p90 = 670-674 ms.
 
 ### <a name="wer-gate-admission"></a>WER-gate admission: every vendor fails at 5% agreement error rate
@@ -1155,9 +1145,9 @@ Table below shows all 10 rows with T3's retirement noted:
 | T2 | WER ~27% (2× next) | Orpheus | **Answered by T8** — 14.59s output cap = mechanical incompletion | [T2](../analysis/verification/T2_orpheus_wer.md) |
 | T3 | Narration PQ 7.41 conv → 8.00 narr | Orpheus | **Retired** — DNSMOS #2 narr confirms direction, satisfies exit criterion | (retired) |
 | T4 | L03 monotonic fadeout (3.6 dB) | ElevenLabs | **Confirmed with refinement** — 3/3 fresh regens fade monotonically; mean delta 2.7 dB, not 3.6 dB | [T4](../analysis/verification/T4_elevenlabs_L03_fadeout.md) |
-| T5 | Latency 736/956 ms (2× next; original observation from campaign-cached row) | OpenAI | **Confirmed (slower than ElevenLabs)** — S3 = 1369/1882 ms, all 3 sessions consistently slower than ElevenLabs. Stability sub-finding refuted (see F-11). | [T5](../analysis/verification/T5_openai_latency.md) |
+| T5 | Latency 736/956 ms (2× next; original observation from campaign-cached row) | OpenAI | **Confirmed (slower than ElevenLabs)** — S3 = 1369/1882 ms, all 3 sessions consistently slower than ElevenLabs. Session-to-session absolute values not stable (F-11). | [T5](../analysis/verification/T5_openai_latency.md) |
 | T6 | Audiobox #1 both UC | Speechify | **Confirmed with reversal** — alt voice edmund_32 scores *higher* than pinned voices; still #1 of 9 | [T6](../analysis/verification/T6_speechify_voice_bias.md) |
-| T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 3 sessions. But **NOT stable** — S3 = 694/816 ms (+58%/+70% vs S1). The prior "sub-500 ms p90 reliably" recommendation is retracted; see F-11. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
+| T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 3 sessions. But **NOT stable** — S3 = 694/816 ms (+58%/+70% vs S1). Sub-500 ms p90 held in S1+S2 only; F-11 documents the session-to-session variance. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
 | T8 | "Cheapest $0.030/1K" (headline claim from `cost_model.json`) | Orpheus | **Refuted with two bigger findings** — (a) 14.59s hard output cap, cost is fixed-per-call not linear-with-text; (b) the $0.030 itself is a `cost_model.py` default-assumption artefact, honest per-1K-words is ~$0.067-0.088 (peer-priced to OpenAI). See T8 for the full analysis. | [T8](../analysis/verification/T8_orpheus_cost.md) |
 | N1 | Audiobox #8/#8 vs DNSMOS #1/#1/#2 narr | OpenAI | Pending (manual listen) | [N1](../analysis/verification/N1_openai_narration_inversion.md) |
 | N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); 3rd independent pipeline agrees | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
@@ -1173,8 +1163,9 @@ Table below shows all 10 rows with T3's retirement noted:
 Total Phase 2c spend: **~$0.63** across the T4/T6/T8 fresh regens,
 2 verification latency sessions (T5+T7), plus **1 additional latency
 session with concurrent ping baseline** (Wave 4b, 2026-08-12,
-~$0.02) that refuted the T7 stability sub-finding — see
-[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+~$0.02) that surfaced the S3 shift refuting the T7 stability
+sub-finding — see
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
 
 ---
 
@@ -1200,8 +1191,8 @@ a clear answer for your use case.
     every session it was measured. See [TTFA-gate admission](#ttfa-gate-admission).
   - Against the softer 500 ms perception reference: ElevenLabs
     Flash cleared it in S1 (479 p90) and S2 (469 p90), then
-    failed it in S3 (816 p90). The prior "reliably under 500 ms"
-    recommendation is retracted; see F-11.
+    failed it in S3 (816 p90) — no vendor reliably clears the
+    500 ms reference either; see F-11.
   - **Speechify / Fish / Google / Orpheus** are unmeasured on
     streaming TTFA (their adapters don't stream); they may or
     may not meet either bar — *unknown*, not *disqualified*.
@@ -1294,11 +1285,10 @@ Full plain-language walkthrough in
 
 - **AB.PQ** — Meta Audiobox Aesthetics *production_quality* axis
   (0–10). Meta describes this as **technical cleanliness / perceived
-  audio quality** (pleasant timbre, no distortion). Prior glossary
-  drafts described this as "rewards warmth, expressiveness,
-  engagement" — that was wrong and is retracted; F-8 shows PQ
-  agrees with DNSMOS's cleanliness axes (mean ρ +0.238 conv), which
-  matches Meta's label and contradicts the warm-axis description.
+  audio quality** (pleasant timbre, no distortion). F-8 shows PQ
+  agrees with DNSMOS's cleanliness axes (mean ρ +0.238 conv,
+  +0.571 with p808) — it's a cleanliness axis, not a warm-rater
+  axis.
 - **AB.CE** — Meta Audiobox Aesthetics *content_enjoyment* axis
   (0–10). This is the axis that behaves like a warm/aesthetic
   rater — it anti-correlates with DNSMOS in both use cases

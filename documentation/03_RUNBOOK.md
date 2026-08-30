@@ -197,7 +197,7 @@ uv run python scripts/latency_with_ping.py --provider openai
 The ping log rules out only the "last-mile link dropped packets"
 hypothesis for network-side contamination; it does not touch DNS,
 TLS, or client-side event-loop stalls. See
-[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
+[06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11)
 for the full scope-of-ruleout discussion.
 
 **Commit the ping log**: copy `runs/ping-baseline-*.jsonl` into
@@ -287,12 +287,11 @@ uv run veval generate --mode latency  # session 1 (S1)
 uv run veval generate --mode latency --provider openai      # S2 OpenAI
 uv run veval generate --mode latency --provider elevenlabs  # S2 ElevenLabs
 # wait another day
-# S3 — the after-review third session that refuted the stability
-# claim (F-11). Run this ONE with a concurrent ping-baseline log
-# to Cloudflare 1.1.1.1 so a next reviewer can rule out ISP jitter
-# independently. `scripts/latency_with_ping.py` starts the ping
-# subprocess, runs the latency call, and writes the ping log to
-# `runs/ping-baseline-<ts>.jsonl` alongside the latency run.
+# S3 — third session, run with a concurrent ping-baseline log to
+# Cloudflare 1.1.1.1 so a reader can rule out ISP jitter
+# independently (F-11). `scripts/latency_with_ping.py` starts the
+# ping subprocess, runs the latency call, and writes the ping log
+# to `runs/ping-baseline-<ts>.jsonl` alongside the latency run.
 uv run python scripts/latency_with_ping.py --provider openai
 uv run python scripts/latency_with_ping.py --provider elevenlabs
 

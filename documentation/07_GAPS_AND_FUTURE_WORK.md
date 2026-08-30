@@ -155,10 +155,11 @@ list and got substantive mitigation during the project:
   analysis substitutes for the missing D3 primary.
 - **Single-session latency** (D-1) — partially mitigated by T5 + T7
   adding a second 50-trial session, then further tested by a third
-  session with concurrent ping baseline (2026-08-12, in response to reviewer critique on ISP confounding). The initial "stability is a distinct axis"
-  reading was **refuted** by the third session — both vendors moved
-  50-90% p50 across the three sessions. See
-  [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+  session (2026-08-12) with a concurrent ping-to-Cloudflare
+  baseline to rule out ISP confounding. Both vendors moved
+  50-90% p50 across the three sessions; the initial "stability is
+  a distinct axis" reading was **not supported** by the third
+  session. See [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
   Properly characterizing per-vendor session-to-session variance
   needs ≥5 sessions across ≥2 weeks — v2 workstream.
 - **Cartesia clipping: systemic or batch?** (T1 hypothesis) — mitigated

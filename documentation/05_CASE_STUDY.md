@@ -24,8 +24,7 @@ is one of the findings.*
 > relationship with any vendor. Not legal / business / purchasing
 > advice. All findings apply to *our specific tested configuration
 > of each vendor*, not a universal statement about the vendor's
-> technology. Full scope + corrections process in
-> [DISCLAIMER.md](../DISCLAIMER.md).
+> technology. Full scope in [DISCLAIMER.md](../DISCLAIMER.md).
 
 ---
 
@@ -253,10 +252,7 @@ cap is observed at the hosted endpoint**, not the mechanism.
 
 Two consequences that don't appear on the pricing page (either way):
 
-- **The "cheapest per 1K words" framing is retracted, not qualified.**
-  Earlier drafts of this section said "Real cost: ~$0.015/1K chars,
-  not $0.003. Still cheap; not category-crushingly cheap for
-  narration." The "still cheap" half was wrong. Under T8's
+- **Orpheus is not the cheapest option on this data.** Under T8's
   per-call output measurement (~35 words per call) and 100K
   words/month, Orpheus costs **~$0.067-0.088/1K words** —
   **peer-priced with OpenAI ($0.075)**, not cheap. The $0.030
@@ -273,18 +269,11 @@ Two consequences that don't appear on the pricing page (either way):
 For a PM building on Orpheus: use it for **conversational turns
 under 15 seconds** where OpenAI (peer-priced) isn't preferred for
 some reason — voice character, open-weights preference, an
-experimental prototype. **The "cheap open-weights floor" archetype
-is retired** — on this data Orpheus is not cheap. It is
+experimental prototype. On this data Orpheus is not cheap: it is
 capped-output at peer OpenAI prices with the worst WER in the
-roster; F-5 has been retitled accordingly.
+roster.
 
 ### 3. Latency *ranking* is stable across sessions; latency *absolute values* are not
-
-*(This section was rewritten after a third latency session refuted
-the original "stability is a distinct axis" claim. Full retraction
-in [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
-The retraction itself is the finding worth publishing — see the
-"what verification is really for" note below.)*
 
 For a support-agent product, "how fast does the vendor start
 speaking?" (time-to-first-audio-frame, or TTFA) is the most
@@ -311,14 +300,14 @@ single-cause reading for "both vendors slowed together on the
 same day" is **client-side** (local machine contention, one-shot
 background scan, Python event-loop stall on the harness),
 followed by vendor-side capacity as an untested-but-possible
-second hypothesis. See [F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding)
+second hypothesis. See [F-11](06_KEY_FINDINGS.md#f-11)
 for the full scope-of-ruleout discussion.
 
 **One data caveat**: ElevenLabs S2 **and** S3 both landed n=40
 (not 50). The mechanism (subscription credit exhaustion, spend
 cap, per-session cap) is not diagnosed here; the fact that both
 later sessions stopped at 40 is documented as measured in
-[F-11](06_KEY_FINDINGS.md#f-11-retraction-of-the-latency-stability-is-a-distinct-axis-finding).
+[F-11](06_KEY_FINDINGS.md#f-11).
 n=40 still yields well-defined p50/p90 at this magnitude, but
 caps the confidence on tail behaviour past p90 for those sessions.
 
@@ -330,11 +319,11 @@ caps the confidence on tail behaviour past p90 for those sessions.
 - **OpenAI TTFA is always ≥ 736 ms p50** on our measurements. The
   "OpenAI is slow" claim is more robust than ever.
 
-**What doesn't survive:**
+**Claims the three-session data does NOT support:**
 
-- The original "ElevenLabs is not just faster — it's more
-  predictable" claim held only for the first two sessions and was
-  refuted by S3. Both vendors move 50-90% p50 session-to-session.
+- "ElevenLabs is more predictable than OpenAI" — both vendors move
+  50-90% p50 session-to-session; the two-session appearance of
+  stability was coincidence.
 - "ElevenLabs Flash reliably clears sub-500 ms p90" is not
   supported by three-session data.
 - Any distributional claim like "ElevenLabs is more stable than
@@ -343,17 +332,16 @@ caps the confidence on tail behaviour past p90 for those sessions.
   claim would need ≥5-10 sessions across ≥2 weeks with
   client-side lag controls; see F-11 for the deferred v2 setup.
 
-**What verification is really for.** The original T5/T7 finding
-was published after two sessions that happened to look similar for
-ElevenLabs. A single additional session, run specifically to
-address a reviewer's objection about ISP confounding, refuted the
-headline. The revised recommendation for a PM is stronger than the
-original: **don't provision from any single measurement session** —
-budget the tail across ≥5 sessions on your own deployment
-environment, log client-side event-loop lag, exclude warm-up trials,
-and expect 50-90% session-to-session variance on either vendor.
-Rank claims survive at n=3; variance / stability claims do not.
-This is worth more than the retracted "stability" claim ever was.
+**What verification is really for.** The T5/T7 pair demonstrates
+both the value of a third replication session and the limits of a
+three-session pass: two-session agreement was a weaker signal than
+it looked, and three sessions suffice to falsify a distributional
+claim but not to make one. The load-bearing PM recommendation:
+**don't provision from any single measurement session** — budget
+the tail across ≥5 sessions on your own deployment environment,
+log client-side event-loop lag, exclude warm-up trials, and expect
+50-90% session-to-session variance on either vendor. Rank claims
+survive at n=3; variance / stability claims do not.
 
 ---
 
@@ -584,8 +572,9 @@ produced four findings the primary campaign did not** —
    pre-registered one (reversal of the "did we cherry-pick?" test)
 3. **T4** — the ElevenLabs L03 fadeout magnitude was overstated by
    ~35% (single-draw luck)
-4. **F-11** (the after-review third latency session with concurrent
-   ping baseline) — the "ElevenLabs stability" headline was refuted
+4. **F-11** (third latency session with concurrent ping baseline) —
+   the "ElevenLabs stability" claim was not supported once a third
+   session was measured
 
 The primary campaign was 1200 files and **$7.85 of vendor spend**
 (from `analysis/campaign-20260809T204608Z/cost_model.json`
@@ -643,7 +632,7 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
 - **[04_RESULTS.md](04_RESULTS.md)** — full per-provider data table +
   cost calculus + decision framework
 - **[06_KEY_FINDINGS.md](06_KEY_FINDINGS.md)** — findings F-1
-  through F-9 + F-11 + F-12 (F-10 slot is documented in-doc), friction-point
+  through F-9 + F-11 (F-10 slot is documented in-doc), friction-point
   stories, decision log D-A..D-H
 - **[02_METHODOLOGY.md](02_METHODOLOGY.md)** — why every methodology
   choice was made (weighted-composite killed, two-pipeline design,
@@ -656,9 +645,6 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
   technical design
 - **[../DEVIATIONS.md](../DEVIATIONS.md)** — 11 pre-registered
   amendments made before results existed, each with rationale
-- **[../CORRECTIONS.md](../CORRECTIONS.md)** — every retracted
-  claim from the review rounds, dated and traceable to a
-  committed artefact + a git commit
 - **[../analysis/verification/](../analysis/verification/)** —
   per-test hypothesis + method + result + verdict for the 9-test
   Phase 2c outlier verification pack
