@@ -84,15 +84,11 @@ different vendors lead:
   categorically outside the pack.
 - Cleanest WER (narr) → **cluster** at ~12.4-13.1% (Cartesia
   12.39 / ElevenLabs 12.81 / Speechify 13.02 / Google 13.05 /
-  Openai 13.30 / Fish 13.99). No vendor cleanly leads. Prior
-  drafts of this line excluded Google from the leading cluster
-  on the grounds that "the cluster label is arbitrary without a
-  WER SE" — that exclusion was itself arbitrary (Google 13.05
-  differs from Speechify 13.02 by 0.03%; the exclusion smuggled
-  in a leadership claim we don't have data to support). Google is
-  reinstated in the cluster; the cluster is reported as a range
-  rather than a leader list. Orpheus 27.23% is the only vendor
-  categorically outside the pack.
+  Openai 13.30 / Fish 13.99). No vendor cleanly leads — Google
+  and Speechify differ by 0.03% on absolute WER, well inside
+  the F-2 wav2vec2 inflation band, so the cluster is reported
+  as a range rather than a leader list. Orpheus 27.23% is the
+  only vendor categorically outside the pack.
 - Determinism → nobody (F-1)
 
 **No single vendor leads on ≥3 of the 4 "quality" dimensions**

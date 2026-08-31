@@ -547,17 +547,16 @@ earned, not artifact):
 | DNSMOS SIG (clean) | openai | 3.679 | deepgram | 3.677 | +0.002 | 0.2σ | **TIE** |
 
 <a name="footnote-1"></a>
-¹ **Orpheus AB.PQ narration 8.002 is EARNED, not artifact.** Prior
-drafts of this table excluded Orpheus on the grounds that "9.5σ is
-a truncation artifact." The per-stratum recompute in
+¹ **Orpheus AB.PQ narration 8.002 is EARNED, not a truncation
+artifact.** The per-stratum recompute in
 [Footnote ¹ on the per-vendor table](#full-per-provider-results)
 shows Orpheus's AB.PQ mean by stratum is 8.008 (53 complete short
 items), 7.974 (14 lightly-truncated medium items), 8.009 (8
 catastrophically-truncated long items) — essentially identical.
-The 9.5σ is a real per-call rendering-consistency effect, not a
+The 9.5σ is a real per-call rendering-consistency effect, not
 truncation-collapsed variance. Same story for DNSMOS OVRL narration.
-**The honest reason to demote Orpheus from the deployable ranking is
-Q1** (14.59-s cap disqualifies real narration), not statistics.
+**The reason to demote Orpheus from the deployable ranking is Q1**
+(14.59-s cap disqualifies real narration), not statistics.
 
 ² Cartesia is the deployable AB.PQ #2 (Speechify vs Cartesia 7.0σ);
 Deepgram is the deployable DNSMOS OVRL #2 (Speechify vs Deepgram

@@ -307,16 +307,18 @@ Where the methodology cannot support the claim, name it.
 
 ### What we can claim
 
-- **Vendor rankings** on any single measurement axis, subject to the
-  per-comparison SE(diff) test documented in
+- **Vendor rankings** on any single measurement axis, subject to
+  the per-comparison SE(diff) test documented in
   [04_RESULTS.md § Rankings summary](04_RESULTS.md#rankings-summary).
-  Earlier drafts of this doc used a single-number "0.035 noise floor"
-  heuristic — that's been retired in favor of per-vendor per-signal
-  SD(75) / √75, with a σ-based test. Caveat: the current SE(diff)
-  test uses the unpaired formula on paired data (same 75 items
-  rendered by both vendors), which is conservative but not optimal;
-  a paired test would tighten TIE calls further. Multiplicity across
-  the 9 pairs tested is not corrected.
+  The test is applied as an unpaired formula on paired data (same
+  75 corpus items rendered by every vendor), which is conservative
+  for SIG_DIFF calls and anti-conservative for TIE calls; 04 also
+  publishes the paired-vs-unpaired sensitivity table (paired ratios
+  1.29×–2.40×, no SIG_DIFF verdict flips) and applies Bonferroni
+  across the 8 top-1-vs-top-2 comparisons (Bonferroni threshold
+  ≈ 2.73σ; every SIG_DIFF Audiobox call clears it; the one comparison
+  sensitive to multiplicity is OpenAI vs ElevenLabs conv DNSMOS OVRL
+  at 2.0σ paired, which flips back to TIE under Bonferroni).
 - **Cross-pipeline disagreement** (F-8) — the *fact* that two
   independent MOS pipelines rank vendors differently, with named
   rank inversions
