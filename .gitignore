@@ -69,6 +69,36 @@ analysis/*
 # reproducible without needing the audio runs/.
 !analysis/ping-baseline-*.jsonl
 
+# R3 primary campaign (2026-08-31) — same "commit analyzer JSONs, not audio"
+# pattern as the R2 campaign above. Backs the R2-vs-R3 replication story
+# in EXPERIMENTS_2026-09-01.md and analysis/round3-vs-round2-comparison.md.
+!analysis/campaign-20260831T175358Z/
+!analysis/campaign-20260831T175358Z/*.json
+
+# Round 2 vs Round 3 comparison memo — text file, small, cites the
+# committed R2 + R3 analyzer JSONs.
+!analysis/round3-vs-round2-comparison.md
+
+# Experiment pack — 2026-09-01 (F-6 deep dive: A/B/C/D/E + follow-ups).
+# JSONs (drift, inputs, item1 result), text logs, and API-call logs are
+# committed as evidence. WAVs (~200MB) stay ignored — regenerable.
+!analysis/experiments-2026-09-01/
+!analysis/experiments-2026-09-01/*.json
+!analysis/experiments-2026-09-01/*.md
+!analysis/experiments-2026-09-01/inputs/
+!analysis/experiments-2026-09-01/inputs/*.json
+!analysis/experiments-2026-09-01/logs/
+!analysis/experiments-2026-09-01/logs/*.jsonl
+!analysis/experiments-2026-09-01/logs/*.log
+# Explicitly exclude the audio subdir — regenerable, ~200MB
+analysis/experiments-2026-09-01/audio/
+
+# Synthetic run-store built from experiments-2026-09-01/E audio, for the
+# T6-style alt-voice quality/WER analysis. Analyzer output JSONs
+# committed; the audio (~130MB copy of E audio) stays ignored.
+!analysis/experiments-2026-09-01-E/
+!analysis/experiments-2026-09-01-E/*.json
+
 # Content-hash cache for synthesis (Phase D.2) — regenerable, safe to nuke
 .cache/
 

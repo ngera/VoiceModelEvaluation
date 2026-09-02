@@ -95,8 +95,7 @@ different vendors lead:
 (Audiobox PQ, Audiobox CE, DNSMOS OVRL, WER). ElevenLabs' latency +
 2 WER-cluster appearances is a support-agent-conversation strength,
 not a quality-headline strength. Every recommended vendor will be a
-trade-off, not a dominant choice. The frontier chart —
-not the leaderboard — is the artefact a decision-maker needs.
+trade-off, not a dominant choice.
 
 ### F-4 + F-4a · Cartesia's clipping is corroborated by two independent code paths
 
@@ -283,12 +282,13 @@ Speechify also wins CE (which is the warm-axis finding). The
 two-construct story survives, but between Audiobox's two axes
 rather than between the two pipelines in the aggregate.
 
-**Impact:** Any leaderboard reporting one MOS predictor is
-measuring a different combination of constructs than a
-leaderboard reporting the other. Match your predictor choice to
-your listener use case, or publish both — but the mechanism is
-**construct-decomposition within Audiobox**, not
-"warm rater vs clean rater" in the aggregate.
+**Impact:** a MOS score is only interpretable alongside the
+construct its predictor rewards. Audiobox's two reported axes do
+not measure the same thing as each other — PQ tracks the DNSMOS
+cleanliness scales (mean ρ = +0.238; +0.571 against P.808), CE
+runs against them (mean ρ = −0.506). Reporting either as "the
+Audiobox score", or averaging the two, conceals that split.
+Report the axis, not the pipeline.
 
 **Evidence:** [`analysis/campaign-20260809T204608Z/cross_metric.json`](../analysis/campaign-20260809T204608Z/cross_metric.json)
 (the `pairs` block per use case has the per-pair ρ; the

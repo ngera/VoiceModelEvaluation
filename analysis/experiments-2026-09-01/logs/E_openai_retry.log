@@ -1,0 +1,11 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+
+E: openai on alt voice nova (female alt vs pinned onyx)...
+  openai L01 (1313 chars)... ok (3865244 bytes, 10.672s)
+  openai L02: SKIP (exists)
+  openai L03: SKIP (exists)
+  openai L04: SKIP (exists)
+  openai L05: SKIP (exists)
+  openai L06: SKIP (exists)
+  openai L07: SKIP (exists)
+  openai L08 (1288 chars)... ok (3737444 bytes, 8.743s)

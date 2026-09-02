@@ -40,9 +40,8 @@ cases × 75 corpus items**. Two use cases chosen precisely because
 they pull in opposite directions: a **support-agent** voice needs
 low latency + intelligibility + warmth; a **long-form narration**
 voice needs consistency + expressive range. A vendor that wins one
-and loses the other is the *expected*, most instructive outcome —
-and none of the industry's public leaderboards make that structure
-visible.
+and loses the other is the *expected*, most instructive outcome, and
+it is what the two-use-case design was chosen to expose.
 
 Three weeks and roughly **$13 of metered vendor spend later** (see
 receipt below), we have:
@@ -214,18 +213,25 @@ quality" is not one thing:
 - **Signal cleanliness / clarity** — what a listener notices in a
   phone-tree confirmation, a screen reader, an IVR system
 
-**A leaderboard reporting one is not measuring the same thing as a
-leaderboard reporting the other.** Even at modest deployment scale
-— our cost model tops out at 1M words/month, which is ~$1-3K/year
-of vendor spend depending on the vendor — the choice between "warm
-rater winner" and "clean rater winner" is a real quality-of-product
-decision. At higher volumes the stakes scale linearly. If you make
-a vendor decision based on a leaderboard whose definition of quality
-doesn't match your users' definition, you'll pick the wrong vendor
-and not know why your users don't love it.
+**These are two different constructs, and our own data separates
+them.** Audiobox's `content_enjoyment` axis runs against all four
+DNSMOS axes (mean ρ = −0.506). Audiobox's `production_quality`
+axis runs *with* them (mean ρ = +0.238, and +0.571 against P.808).
+The split we set out to measure between two pipelines turns out to
+sit between two axes of one of them. Whichever construct a reader
+cares about, the number that tracks it has to be named
+individually — an aggregate across the two hides exactly the
+distinction that motivated running both.
 
-Every vendor evaluation you read in the industry publishes one
-number. **Ask, always: "ranked on what?"**
+The practical consequence applies to every quality score in this
+report as much as anywhere else: **a quality number is
+uninterpretable without the construct its predictor rewards.** We
+reported six quality signals from two pipelines specifically so
+the split would be visible — and still mislabelled which of our
+own two Audiobox axes measured what, across four revisions, with
+the falsifying correlation matrix committed in the repository the
+entire time. The axis label is not a presentational detail; it is
+the claim.
 
 ### 2. Every Orpheus call at the hosted endpoint stops at exactly 14.59 seconds of audio
 
@@ -526,64 +532,119 @@ uncertain (see § 3 / F-11).
 
 ---
 
-## What the exercise actually proved about the industry
+## What the audit found
 
-**The public TTS leaderboards I surveyed each pick one quality
-definition and publish one aggregate.** Three that a PM might
-plausibly cite when comparing vendors:
+This is an independent study. Its output is a set of observations
+made under stated constraints — 8 vendors, one voice each, 75 items
+per use case, paid public tiers, a single residential measurement
+environment. We do not claim the observations generalise beyond
+that configuration, and § "What wasn't done and why" below sets out
+where they stop.
 
-- **[TTS Arena](https://huggingface.co/spaces/TTS-AGI/TTS-Arena-V2)** —
-  human blind pairwise preference (Elo/Bradley-Terry style),
-  aggregated across many raters and prompts. One number per model.
-- **[Artificial Analysis TTS](https://artificialanalysis.ai/text-to-speech)** —
-  a composite of speed, cost, and quality benchmarks; the quality
-  axis is a single number.
-- **[Podonos](https://podonos.com/tts-leaderboard)** — model-family
-  MOS-style ratings on standardised text; one MOS per system.
+Given that, the meaningful test of this work is narrow and checkable:
+**do the observations reported in these documents match the
+observations actually recorded in the artifacts?**
 
-Each of these is internally coherent. Each implicitly claims to be
-*the* definition of TTS quality. None of them (in the versions I
-checked at time of writing) shows what would happen if you ran a
-second independent quality-rater pipeline against the same audio.
+We ran that check by recomputing the published figures directly from
+the committed JSON, independently of the prose.
 
-What F-8 shows on our 8-vendor slice: **two peer-reviewed machine
-raters, applied to the same audio, do not agree on the ranking**.
-The point-estimate ρ is negative on both use cases; even under the
-wide n=8 CI, the strong positive rank correlation you'd expect if
-both were measuring the same construct is not supported. That's a
-structural comment on how "voice quality" is defined, not a claim
-that any specific leaderboard is wrong.
+### The measurement layer reproduced
 
-For a PM comparing vendors at a scale worth caring about, the
-load-bearing insight isn't "which vendor is best." It's "which
-definition of quality matches your users?" A vendor evaluation
-that answers the first question and skips the second is measuring
-a proxy for one listener use case and hoping yours matches.
+Every quantitative result regenerates exactly from committed
+artifacts:
 
-**The frontier chart with a "gotcha to know" column beats any
-leaderboard.**
+- all **96** quality cells (Audiobox PQ/CE + four DNSMOS axes ×
+  8 vendors × 2 use cases) match `quality.json` to the reported
+  precision
+- all **16** per-vendor WER means match `wer.json`
+- both cross-pipeline Spearman coefficients (−0.13 conversational,
+  −0.27 narration) match `cross_metric.json`
+- all **8** paired-vs-unpaired σ values and their ratios regenerate
+  by re-running `scripts/_paired_test.py`
+- DNSMOS per-cell validity counts (Cartesia 43 conv / 38 narr,
+  Google 71 narr) match the F-4a refusal counts exactly
 
-The other meta-observation, on the process side: **verification
-produced four findings the primary campaign did not** —
+No measurement in this study was found to be wrong.
 
-1. **T8** — Orpheus's exact 14.59s output cap (mechanical
-   explanation for the 85% WER on long items)
-2. **T6** — Speechify's alt-voice actually scored higher than the
-   pre-registered one (reversal of the "did we cherry-pick?" test)
-3. **T4** — the ElevenLabs L03 fadeout magnitude was overstated by
-   ~35% (single-draw luck)
-4. **F-11** (third latency session with concurrent ping baseline) —
-   the "ElevenLabs stability" claim was not supported once a third
-   session was measured
+### The reporting layer did not
 
-The primary campaign was 1200 files and **$7.85 of vendor spend**
-(from `analysis/campaign-20260809T204608Z/cost_model.json`
-`total_observed_cost_usd`). The verification pack that produced
-these four refinements was ~$0.63 of vendor spend and about
-2 hours of engineering time.
-**Cheap replication is where you learn the difference between a
-real finding and a lucky draw** — and in this project it materially
-changed what the case study says.
+Six reported observations did not match the artifacts they were
+derived from:
+
+| Reported | Recorded | Artifact |
+|---|---|---|
+| Deepgram TTFA ~180 ms p50 / ~230 ms p90 | 583 / 674 and 564 / 670 ms; no session under 500 ms | `analysis/latency-20260809T*/latency.json` |
+| Orpheus $0.030 / 1K words | ~$0.070–0.088 / 1K words under the measured per-call output | `src/veval/analyze/cost.py` line 177 + T8 |
+| Speechify $0.100 / 1K words at 10K/mo | $1.000 / 1K words | `cost_model.json` |
+| Audiobox `production_quality` is the warmth axis | PQ correlates **+0.571** with DNSMOS p808 and +0.238 across all four DNSMOS axes — it tracks cleanliness; CE is the axis that runs against DNSMOS at −0.506 | `cross_metric.json` |
+| ElevenLabs 469 ms p90 as a stable ceiling | S3 measured 816 ms p90; both vendors moved 50–90% p50 across sessions | `analysis/latency-20260812T*/latency.json` |
+| Project spend ~$56 | $7.85 for the primary campaign, ~$12.60 across all committed runs | `analysis/*/cost_model.json` `total_observed_cost_usd` |
+
+In every case the underlying value was correct in its JSON at the
+time the report said otherwise. These are not measurement errors.
+They are failures of the step between the artifact and the sentence.
+
+### The kinds of failure
+
+Sorting them by mechanism rather than by severity is more useful,
+because the mechanisms recur:
+
+| Mechanism | Instance in this study |
+|---|---|
+| A figure that was never traced to a source | Deepgram ~180 ms — origin still unidentified; no run in the repository produces it |
+| A tool default mistaken for a measurement | Orpheus $0.030, which is `cost.py`'s 100-word-per-call assumption — an assumption T8 had already falsified at ~35 words per call |
+| A planning estimate published as a result | "~$56 project spend", carried from the pre-project budget line |
+| A transcription error that inverts a reading | Speechify $0.100 vs $1.000 — a 10× slip that moves the vendor from near-cheapest to second-most-expensive at that tier |
+| A frame imposed on data that contradicts it | The warm/clean axis labels, contradicted by a correlation matrix committed before the framing was written |
+| A mechanism invented to explain a real number | "−78.7 dBFS is silence padding" — `speech_ratio` is 0.901, higher than Speechify's 0.875; the clips are 90% speech and the quiet floor is a real property |
+| A configuration asserted rather than read | Five conversational gates reported; `configs/gates.yaml` defines four |
+| A verification step with a structural blind spot | A phrase-level grep against text hard-wrapped at ~70 characters, which cannot match a two-word phrase split across a newline |
+
+### Why the verification pack did not catch them
+
+The Phase 2c pack was designed to re-test headline outliers on fresh
+data, and it did that: T8 established the 14.59-second output cap,
+T4 corrected the L03 fadeout magnitude, T6 reversed the voice-bias
+hypothesis, and the third latency session refuted the stability
+reading in F-11.
+
+Every one of those tests asked the same question — *is this
+measurement real?* None of them could have caught the six above,
+because in each case the measurement was real and correctly stored.
+The failure was downstream of measurement entirely.
+
+**Nothing in the methodology tested the join between an artifact and
+a sentence about it.** That step had no ceremony around it, appears
+in none of the pre-registered procedures, and is where all six
+survived.
+
+### What changed as a result
+
+- Every retraction is logged in
+  [CORRECTIONS.md](../CORRECTIONS.md) — one row per claim, naming
+  the original assertion, the artifact that falsified it, and the
+  retracting commit. Twenty-six rows at time of writing.
+- The reports carry no inline correction narrative. A corrected
+  number appears as a number; its history lives in the register.
+- The verification step for that register normalises whitespace
+  before matching, after three retracted phrases survived a
+  phrase-level grep by being hard-wrapped across a newline.
+
+### The limitation this leaves
+
+We can state that the measurement layer reproduces, and that
+twenty-six reporting errors were found and logged. We **cannot**
+state that no others remain. The six above were found by auditing
+against artifacts; an audit finds what it looks for. The honest
+position is that this study's reported observations have been
+checked against their sources once, systematically, with the result
+recorded — not that they are now known to be correct.
+
+That is itself an observation worth recording. A measurement
+pipeline can be pre-registered, version-pinned, reproducible, and
+fully covered by tests, and still emit a report that says something
+its own data does not support. The pipeline and the prose are
+different artifacts, and only one of them was under test.
 
 ---
 

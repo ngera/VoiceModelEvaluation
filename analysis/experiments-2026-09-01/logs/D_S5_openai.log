@@ -1,0 +1,57 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+──────────────────────── veval generate --mode latency ────────────────────────
+Restricted providers: ['openai']
+Cache: disabled
+Spend cap: $5.00
+
+┌───────────────────── Traceback (most recent call last) ─────────────────────┐
+│ C:\cursorProjects\voiceAgentEvals\src\veval\cli.py:291 in generate          │
+│                                                                             │
+│    288 │   │   │   )                                                        │
+│    289 │   │   if items:                                                    │
+│    290 │   │   │   console.print("[yellow]--items ignored for latency mode; │
+│        use --latency-item[/yellow]")                                        │
+│ >  291 │   │   summary = runner.run_latency(                                │
+│    292 │   │   │   provider_names=provider,                                 │
+│    293 │   │   │   use_case=latency_use_case,  # type: ignore[arg-type]     │
+│    294 │   │   │   item_id=latency_item,                                    │
+│                                                                             │
+│ C:\cursorProjects\voiceAgentEvals\src\veval\runner\runner.py:704 in         │
+│ run_latency                                                                 │
+│                                                                             │
+│   701 │   │   │   │   f"latency: item_id {item_id!r} not in {use_case}      │
+│       corpus"                                                               │
+│   702 │   │   │   )                                                         │
+│   703 │   │                                                                 │
+│ > 704 │   │   run = default_run_store().new_run(kind="latency", extras={    │
+│   705 │   │   │   "mode": RunMode.latency.value,                            │
+│   706 │   │   │   "use_case": use_case,                                     │
+│   707 │   │   │   "item_id": item_id,                                       │
+│                                                                             │
+│ C:\cursorProjects\voiceAgentEvals\src\veval\store\run_store.py:126 in       │
+│ new_run                                                                     │
+│                                                                             │
+│   123 │   def new_run(self, kind: str = "run", extras: dict[str, Any] |     │
+│       None = None) -> Run:                                                  │
+│   124 │   │   run_id = _run_id(kind)                                        │
+│   125 │   │   run_dir = self.base_dir / run_id                              │
+│ > 126 │   │   run_dir.mkdir(parents=True, exist_ok=False)  # fail loud on   │
+│       collision                                                             │
+│   127 │   │   (run_dir / "audio").mkdir()                                   │
+│   128 │   │                                                                 │
+│   129 │   │   manifest = Manifest(                                          │
+│                                                                             │
+│ C:\Program                                                                  │
+│ Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz │
+│ 5n2kfra8p0\Lib\pathlib.py:1116 in mkdir                                     │
+│                                                                             │
+│   1113 │   │   Create a new directory at this given path.                   │
+│   1114 │   │   """                                                          │
+│   1115 │   │   try:                                                         │
+│ > 1116 │   │   │   os.mkdir(self, mode)                                     │
+│   1117 │   │   except FileNotFoundError:                                    │
+│   1118 │   │   │   if not parents or self.parent == self:                   │
+│   1119 │   │   │   │   raise                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+FileExistsError: [WinError 183] Cannot create a file when that file already 
+exists: 'runs\\latency-20260901T191000Z'

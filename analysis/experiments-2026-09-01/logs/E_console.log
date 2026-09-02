@@ -1,0 +1,45 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+
+E: openai on alt voice nova (female alt vs pinned onyx)...
+  openai L01 (1313 chars)... FAIL: ProviderError: OpenAI HTTP 500: {
+  "error": {
+    "message": "The server had an error while processing your request. Sorry about that!
+  openai L02 (1273 chars)... ok (3784844 bytes, 9.132s)
+  openai L03 (1345 chars)... ok (4141244 bytes, 11.419s)
+  openai L04 (1527 chars)... ok (4552244 bytes, 9.299s)
+  openai L05 (1460 chars)... ok (4374044 bytes, 10.218s)
+  openai L06 (1408 chars)... ok (4150844 bytes, 10.151s)
+  openai L07 (1364 chars)... ok (4747244 bytes, 9.68s)
+  openai L08 (1288 chars)... FAIL: ProviderError: OpenAI HTTP 500: {
+  "error": {
+    "message": "The server had an error while processing your request. Sorry about that!
+
+E: fish on alt voice 8fa1129f9e0e46beb31d1c1c40b9a7de (different English narrator (id from Fish library))...
+  fish L01 (1313 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L02 (1273 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L03 (1345 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L04 (1527 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L05 (1460 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L06 (1408 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L07 (1364 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+  fish L08 (1288 chars)... FAIL: ProviderError: Fish HTTP 400: {"message":"Reference not found","status":400}
+
+E: deepgram on alt voice aura-2-luna-en (female alt vs pinned orion (male))...
+  deepgram L01 (1313 chars)... ok (3692204 bytes, 21.631s)
+  deepgram L02 (1273 chars)... ok (3820844 bytes, 37.389s)
+  deepgram L03 (1345 chars)... ok (3776684 bytes, 22.007s)
+  deepgram L04 (1527 chars)... ok (4600364 bytes, 27.148s)
+  deepgram L05 (1460 chars)... ok (4464044 bytes, 42.907s)
+  deepgram L06 (1408 chars)... ok (3966764 bytes, 38.098s)
+  deepgram L07 (1364 chars)... ok (5020844 bytes, 48.628s)
+  deepgram L08 (1288 chars)... ok (3667244 bytes, 35.207s)
+
+E: google on alt voice en-US-Chirp3-HD-Kore (female alt vs pinned charon (male))...
+  google L01 (1313 chars)... ok (3694168 bytes, 12.684s)
+  google L02 (1273 chars)... ok (3926488 bytes, 13.444s)
+  google L03 (1345 chars)... ok (3786328 bytes, 12.962s)
+  google L04 (1527 chars)... ok (4738648 bytes, 16.015s)
+  google L05 (1460 chars)... ok (4356568 bytes, 15.905s)
+  google L06 (1408 chars)... ok (3934168 bytes, 13.361s)
+  google L07 (1364 chars)... ok (5128408 bytes, 17.469s)
+  google L08 (1288 chars)... ok (3671128 bytes, 12.362s)

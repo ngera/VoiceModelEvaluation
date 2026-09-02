@@ -1,0 +1,475 @@
+{
+  "run_id": "campaign-20260831T175358Z",
+  "signals": [
+    {
+      "id": "audiobox.PQ",
+      "source": "audiobox",
+      "axis": "production_quality"
+    },
+    {
+      "id": "audiobox.CE",
+      "source": "audiobox",
+      "axis": "content_enjoyment"
+    },
+    {
+      "id": "dnsmos.p808",
+      "source": "dnsmos",
+      "axis": "p808_mos"
+    },
+    {
+      "id": "dnsmos.ovrl",
+      "source": "dnsmos",
+      "axis": "ovrl_mos"
+    },
+    {
+      "id": "dnsmos.sig",
+      "source": "dnsmos",
+      "axis": "sig_mos"
+    },
+    {
+      "id": "dnsmos.bak",
+      "source": "dnsmos",
+      "axis": "bak_mos"
+    }
+  ],
+  "by_use_case": [
+    {
+      "use_case": "conversational",
+      "providers_ranked": [
+        "cartesia",
+        "deepgram",
+        "elevenlabs",
+        "fish",
+        "google",
+        "openai",
+        "orpheus",
+        "speechify"
+      ],
+      "n_providers": 8,
+      "ranks_by_signal": {
+        "audiobox.PQ": {
+          "speechify": 1.0,
+          "openai": 2.0,
+          "fish": 3.0,
+          "elevenlabs": 4.0,
+          "deepgram": 5.0,
+          "google": 6.0,
+          "cartesia": 7.0,
+          "orpheus": 8.0
+        },
+        "audiobox.CE": {
+          "speechify": 1.0,
+          "fish": 2.0,
+          "deepgram": 3.0,
+          "google": 4.0,
+          "openai": 5.0,
+          "orpheus": 6.0,
+          "cartesia": 7.0,
+          "elevenlabs": 8.0
+        },
+        "dnsmos.p808": {
+          "elevenlabs": 1.0,
+          "openai": 2.0,
+          "speechify": 3.0,
+          "cartesia": 4.0,
+          "orpheus": 5.0,
+          "fish": 6.0,
+          "google": 7.0,
+          "deepgram": 8.0
+        },
+        "dnsmos.ovrl": {
+          "openai": 1.0,
+          "elevenlabs": 2.0,
+          "deepgram": 3.0,
+          "orpheus": 4.0,
+          "speechify": 5.0,
+          "google": 6.0,
+          "cartesia": 7.0,
+          "fish": 8.0
+        },
+        "dnsmos.sig": {
+          "openai": 1.0,
+          "elevenlabs": 2.0,
+          "orpheus": 3.0,
+          "deepgram": 4.0,
+          "google": 5.0,
+          "speechify": 6.0,
+          "cartesia": 7.0,
+          "fish": 8.0
+        },
+        "dnsmos.bak": {
+          "openai": 1.0,
+          "elevenlabs": 2.0,
+          "cartesia": 3.0,
+          "orpheus": 4.0,
+          "speechify": 5.0,
+          "deepgram": 6.0,
+          "fish": 7.0,
+          "google": 8.0
+        }
+      },
+      "spearman_matrix": {
+        "audiobox.PQ": {
+          "audiobox.CE": 0.5476190476190477,
+          "dnsmos.p808": 0.4047619047619048,
+          "dnsmos.ovrl": 0.2142857142857143,
+          "dnsmos.sig": 0.023809523809523815,
+          "dnsmos.bak": 0.11904761904761905,
+          "audiobox.PQ": 1.0
+        },
+        "audiobox.CE": {
+          "audiobox.PQ": 0.5476190476190477,
+          "dnsmos.p808": -0.4523809523809524,
+          "dnsmos.ovrl": -0.3333333333333334,
+          "dnsmos.sig": -0.4761904761904762,
+          "dnsmos.bak": -0.6428571428571429,
+          "audiobox.CE": 1.0
+        },
+        "dnsmos.p808": {
+          "audiobox.PQ": 0.4047619047619048,
+          "audiobox.CE": -0.4523809523809524,
+          "dnsmos.ovrl": 0.4523809523809524,
+          "dnsmos.sig": 0.4285714285714286,
+          "dnsmos.bak": 0.8333333333333335,
+          "dnsmos.p808": 1.0
+        },
+        "dnsmos.ovrl": {
+          "audiobox.PQ": 0.2142857142857143,
+          "audiobox.CE": -0.3333333333333334,
+          "dnsmos.p808": 0.4523809523809524,
+          "dnsmos.sig": 0.9523809523809524,
+          "dnsmos.bak": 0.6428571428571429,
+          "dnsmos.ovrl": 1.0
+        },
+        "dnsmos.sig": {
+          "audiobox.PQ": 0.023809523809523815,
+          "audiobox.CE": -0.4761904761904762,
+          "dnsmos.p808": 0.4285714285714286,
+          "dnsmos.ovrl": 0.9523809523809524,
+          "dnsmos.bak": 0.6190476190476191,
+          "dnsmos.sig": 1.0
+        },
+        "dnsmos.bak": {
+          "audiobox.PQ": 0.11904761904761905,
+          "audiobox.CE": -0.6428571428571429,
+          "dnsmos.p808": 0.8333333333333335,
+          "dnsmos.ovrl": 0.6428571428571429,
+          "dnsmos.sig": 0.6190476190476191,
+          "dnsmos.bak": 1.0
+        }
+      },
+      "pairs": [
+        {
+          "a": "audiobox.PQ",
+          "b": "audiobox.CE",
+          "rho": 0.5476190476190477,
+          "p_value": 0.16002564253889653
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.p808",
+          "rho": 0.4047619047619048,
+          "p_value": 0.3198886412288163
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.ovrl",
+          "rho": 0.2142857142857143,
+          "p_value": 0.6103444156452669
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.sig",
+          "rho": 0.023809523809523815,
+          "p_value": 0.9553740118158806
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.bak",
+          "rho": 0.11904761904761905,
+          "p_value": 0.7788857260523796
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.p808",
+          "rho": -0.4523809523809524,
+          "p_value": 0.2604047674368853
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.ovrl",
+          "rho": -0.3333333333333334,
+          "p_value": 0.4197530864197532
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.sig",
+          "rho": -0.4761904761904762,
+          "p_value": 0.23293553465009792
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.bak",
+          "rho": -0.6428571428571429,
+          "p_value": 0.08555889101267325
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.ovrl",
+          "rho": 0.4523809523809524,
+          "p_value": 0.2604047674368853
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.sig",
+          "rho": 0.4285714285714286,
+          "p_value": 0.2894032248467901
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.bak",
+          "rho": 0.8333333333333335,
+          "p_value": 0.010175540123456752
+        },
+        {
+          "a": "dnsmos.ovrl",
+          "b": "dnsmos.sig",
+          "rho": 0.9523809523809524,
+          "p_value": 0.000260400024387251
+        },
+        {
+          "a": "dnsmos.ovrl",
+          "b": "dnsmos.bak",
+          "rho": 0.6428571428571429,
+          "p_value": 0.08555889101267325
+        },
+        {
+          "a": "dnsmos.sig",
+          "b": "dnsmos.bak",
+          "rho": 0.6190476190476191,
+          "p_value": 0.10173303745426478
+        }
+      ],
+      "cross_pipeline_mean_rho": -0.14285714285714285
+    },
+    {
+      "use_case": "narration",
+      "providers_ranked": [
+        "cartesia",
+        "deepgram",
+        "elevenlabs",
+        "fish",
+        "google",
+        "openai",
+        "orpheus",
+        "speechify"
+      ],
+      "n_providers": 8,
+      "ranks_by_signal": {
+        "audiobox.PQ": {
+          "speechify": 1.0,
+          "cartesia": 2.0,
+          "orpheus": 3.0,
+          "google": 4.0,
+          "elevenlabs": 5.0,
+          "deepgram": 6.0,
+          "openai": 7.0,
+          "fish": 8.0
+        },
+        "audiobox.CE": {
+          "speechify": 1.0,
+          "google": 2.0,
+          "elevenlabs": 3.0,
+          "deepgram": 4.0,
+          "cartesia": 5.0,
+          "fish": 6.0,
+          "orpheus": 7.0,
+          "openai": 8.0
+        },
+        "dnsmos.p808": {
+          "fish": 1.0,
+          "cartesia": 2.0,
+          "orpheus": 3.0,
+          "deepgram": 4.0,
+          "speechify": 5.0,
+          "google": 6.0,
+          "elevenlabs": 7.0,
+          "openai": 8.0
+        },
+        "dnsmos.ovrl": {
+          "openai": 1.0,
+          "orpheus": 2.0,
+          "speechify": 3.0,
+          "deepgram": 4.0,
+          "fish": 5.0,
+          "google": 6.0,
+          "elevenlabs": 7.0,
+          "cartesia": 8.0
+        },
+        "dnsmos.sig": {
+          "openai": 1.0,
+          "fish": 2.0,
+          "deepgram": 3.0,
+          "speechify": 4.0,
+          "orpheus": 5.0,
+          "elevenlabs": 6.0,
+          "google": 7.0,
+          "cartesia": 8.0
+        },
+        "dnsmos.bak": {
+          "orpheus": 1.0,
+          "speechify": 2.0,
+          "openai": 3.0,
+          "deepgram": 4.0,
+          "google": 5.0,
+          "fish": 6.0,
+          "cartesia": 7.0,
+          "elevenlabs": 8.0
+        }
+      },
+      "spearman_matrix": {
+        "audiobox.PQ": {
+          "audiobox.CE": 0.5000000000000001,
+          "dnsmos.p808": 0.07142857142857144,
+          "dnsmos.ovrl": -0.1666666666666667,
+          "dnsmos.sig": -0.6666666666666669,
+          "dnsmos.bak": 0.2380952380952381,
+          "audiobox.PQ": 1.0
+        },
+        "audiobox.CE": {
+          "audiobox.PQ": 0.5000000000000001,
+          "dnsmos.p808": -0.1666666666666667,
+          "dnsmos.ovrl": -0.4285714285714286,
+          "dnsmos.sig": -0.4523809523809524,
+          "dnsmos.bak": -0.19047619047619052,
+          "audiobox.CE": 1.0
+        },
+        "dnsmos.p808": {
+          "audiobox.PQ": 0.07142857142857144,
+          "audiobox.CE": -0.1666666666666667,
+          "dnsmos.ovrl": -0.261904761904762,
+          "dnsmos.sig": -0.11904761904761905,
+          "dnsmos.bak": -0.07142857142857144,
+          "dnsmos.p808": 1.0
+        },
+        "dnsmos.ovrl": {
+          "audiobox.PQ": -0.1666666666666667,
+          "audiobox.CE": -0.4285714285714286,
+          "dnsmos.p808": -0.261904761904762,
+          "dnsmos.sig": 0.7380952380952381,
+          "dnsmos.bak": 0.880952380952381,
+          "dnsmos.ovrl": 1.0
+        },
+        "dnsmos.sig": {
+          "audiobox.PQ": -0.6666666666666669,
+          "audiobox.CE": -0.4523809523809524,
+          "dnsmos.p808": -0.11904761904761905,
+          "dnsmos.ovrl": 0.7380952380952381,
+          "dnsmos.bak": 0.4047619047619048,
+          "dnsmos.sig": 1.0
+        },
+        "dnsmos.bak": {
+          "audiobox.PQ": 0.2380952380952381,
+          "audiobox.CE": -0.19047619047619052,
+          "dnsmos.p808": -0.07142857142857144,
+          "dnsmos.ovrl": 0.880952380952381,
+          "dnsmos.sig": 0.4047619047619048,
+          "dnsmos.bak": 1.0
+        }
+      },
+      "pairs": [
+        {
+          "a": "audiobox.PQ",
+          "b": "audiobox.CE",
+          "rho": 0.5000000000000001,
+          "p_value": 0.20703124999999994
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.p808",
+          "rho": 0.07142857142857144,
+          "p_value": 0.8665262706759088
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.ovrl",
+          "rho": -0.1666666666666667,
+          "p_value": 0.693238811728395
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.sig",
+          "rho": -0.6666666666666669,
+          "p_value": 0.07098765432098755
+        },
+        {
+          "a": "audiobox.PQ",
+          "b": "dnsmos.bak",
+          "rho": 0.2380952380952381,
+          "p_value": 0.5701563208157683
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.p808",
+          "rho": -0.1666666666666667,
+          "p_value": 0.693238811728395
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.ovrl",
+          "rho": -0.4285714285714286,
+          "p_value": 0.2894032248467901
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.sig",
+          "rho": -0.4523809523809524,
+          "p_value": 0.2604047674368853
+        },
+        {
+          "a": "audiobox.CE",
+          "b": "dnsmos.bak",
+          "rho": -0.19047619047619052,
+          "p_value": 0.6514014957024814
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.ovrl",
+          "rho": -0.261904761904762,
+          "p_value": 0.530922861565801
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.sig",
+          "rho": -0.11904761904761905,
+          "p_value": 0.7788857260523796
+        },
+        {
+          "a": "dnsmos.p808",
+          "b": "dnsmos.bak",
+          "rho": -0.07142857142857144,
+          "p_value": 0.8665262706759088
+        },
+        {
+          "a": "dnsmos.ovrl",
+          "b": "dnsmos.sig",
+          "rho": 0.7380952380952381,
+          "p_value": 0.03655276105286081
+        },
+        {
+          "a": "dnsmos.ovrl",
+          "b": "dnsmos.bak",
+          "rho": 0.880952380952381,
+          "p_value": 0.0038503204637324014
+        },
+        {
+          "a": "dnsmos.sig",
+          "b": "dnsmos.bak",
+          "rho": 0.4047619047619048,
+          "p_value": 0.3198886412288163
+        }
+      ],
+      "cross_pipeline_mean_rho": -0.22023809523809526
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+
+E: fish on alt voice 9a9cf47702da476aa4629e2506d4a857 (Fish's conv-tagged voice as narration alt (voice_id verified in R3 campaign))...
+  fish L01 (1313 chars)... ok (6531100 bytes, 16.501s)
+  fish L02 (1273 chars)... ok (6608164 bytes, 14.561s)
+  fish L03 (1345 chars)... ok (6813368 bytes, 15.652s)
+  fish L04 (1527 chars)... ok (7523524 bytes, 18.746s)
+  fish L05 (1460 chars)... ok (7593434 bytes, 19.73s)
+  fish L06 (1408 chars)... ok (7005146 bytes, 18.114s)
+  fish L07 (1364 chars)... ok (9245480 bytes, 23.301s)
+  fish L08 (1288 chars)... ok (6012208 bytes, 13.021s)

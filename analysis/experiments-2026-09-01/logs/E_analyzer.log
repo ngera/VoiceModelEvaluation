@@ -1,0 +1,23 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+─────────────────── veval analyze experiments-2026-09-01-E ────────────────────
+stages: acceptance, hygiene, cost, wer, quality
+output: analysis\experiments-2026-09-01-E
+
+acceptance - WAV header/decoded/LUFS/VAD/chars check
+  gate_ok=True passed=32/32
+hygiene - clipping / LUFS / noise floor / pauses
+  files=32 errors=0
+cost - pricing.yaml x char counts -> cost_model.json
+  observed spend: $1.0080
+wer - Parakeet + faster-whisper agreement (loads models)
+Device set to use cpu
+  items=32
+quality - TTSDS2 + Audiobox + DNSMOS (heavy)
+C:\cursorProjects\voiceAgentEvals\.venv\Lib\site-packages\torch\nn\utils\weight_norm.py:134: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\cursorProjects\voiceAgentEvals\.venv\Lib\site-packages\torch\nn\functional.py:5193: UserWarning: Support for mismatched key_padding_mask and attn_mask is deprecated. Use same type for both instead.
+  warnings.warn(
+  ran_ttsds=False ran_audiobox=True ran_dnsmos=True
+
+────────────────────────────── analyze complete ───────────────────────────────
+outputs in analysis\experiments-2026-09-01-E

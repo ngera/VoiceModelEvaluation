@@ -1,0 +1,746 @@
+{
+  "run_id": "experiments-2026-09-01-E",
+  "ran_ttsds": false,
+  "ran_audiobox": true,
+  "ran_dnsmos": true,
+  "audiobox_axes_reported": [
+    "production_quality",
+    "content_enjoyment"
+  ],
+  "dnsmos_axes_reported": [
+    "p808_mos",
+    "ovrl_mos",
+    "sig_mos",
+    "bak_mos"
+  ],
+  "ttsds_by_provider": [],
+  "audiobox_by_provider": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "audiobox_means": {
+        "content_enjoyment": 6.310411274433136,
+        "production_quality": 7.4681214690208435
+      }
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "audiobox_means": {
+        "content_enjoyment": 6.451508939266205,
+        "production_quality": 7.869246602058411
+      }
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "audiobox_means": {
+        "content_enjoyment": 6.399502635002136,
+        "production_quality": 7.927230417728424
+      }
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "audiobox_means": {
+        "content_enjoyment": 6.155178070068359,
+        "production_quality": 7.473470330238342
+      }
+    }
+  ],
+  "dnsmos_by_provider": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "dnsmos_means": {
+        "bak_mos": 4.118601225438631,
+        "ovrl_mos": 3.2488563123901715,
+        "p808_mos": 4.068132162094116,
+        "sig_mos": 3.510576570428779
+      }
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "dnsmos_means": {
+        "bak_mos": 4.122525133496126,
+        "ovrl_mos": 3.283856625958324,
+        "p808_mos": 4.023832380771637,
+        "sig_mos": 3.5204339817734986
+      }
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 7,
+      "dnsmos_means": {
+        "bak_mos": 4.202752754510834,
+        "ovrl_mos": 3.4904714029761577,
+        "p808_mos": 4.179137570517404,
+        "sig_mos": 3.7040685910616595
+      }
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "dnsmos_means": {
+        "bak_mos": 4.20650614333169,
+        "ovrl_mos": 3.4470671466374925,
+        "p808_mos": 3.976050853729248,
+        "sig_mos": 3.6510204748307498
+      }
+    }
+  ],
+  "audiobox_files": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.3673224449157715,
+        "production_quality": 7.402881622314453
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.317667025102614,
+        "sig_mos": 3.56503979283189,
+        "bak_mos": 4.163267785230564,
+        "p808_mos": 4.066197395324707
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.3215203285217285,
+        "production_quality": 7.439849853515625
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2339295325892095,
+        "sig_mos": 3.495206615269231,
+        "bak_mos": 4.113386265268659,
+        "p808_mos": 4.082943916320801
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.298454761505127,
+        "production_quality": 7.425961017608643
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.1638583172472985,
+        "sig_mos": 3.4469353637241364,
+        "bak_mos": 4.077609013196756,
+        "p808_mos": 4.059593677520752
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.391417503356934,
+        "production_quality": 7.5680341720581055
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.226043934294008,
+        "sig_mos": 3.488197320021964,
+        "bak_mos": 4.097720358452071,
+        "p808_mos": 4.09600305557251
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L05.wav",
+      "audiobox": {
+        "content_enjoyment": 6.231506824493408,
+        "production_quality": 7.458924770355225
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.1903376184138104,
+        "sig_mos": 3.4551783775580938,
+        "bak_mos": 4.091752050310608,
+        "p808_mos": 4.038153171539307
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L06.wav",
+      "audiobox": {
+        "content_enjoyment": 6.2515459060668945,
+        "production_quality": 7.57723331451416
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2941055520728426,
+        "sig_mos": 3.5516126178876286,
+        "bak_mos": 4.136350592476368,
+        "p808_mos": 4.059089183807373
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L07.wav",
+      "audiobox": {
+        "content_enjoyment": 6.266350746154785,
+        "production_quality": 7.427889347076416
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.241041015527266,
+        "sig_mos": 3.511897184169449,
+        "bak_mos": 4.104558429658782,
+        "p808_mos": 4.098747253417969
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\deepgram\\narration\\L08.wav",
+      "audiobox": {
+        "content_enjoyment": 6.3551716804504395,
+        "production_quality": 7.444197654724121
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.323867503874321,
+        "sig_mos": 3.5705452919678367,
+        "bak_mos": 4.164165308915242,
+        "p808_mos": 4.044329643249512
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.515163898468018,
+        "production_quality": 7.828140735626221
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.244101725885997,
+        "sig_mos": 3.4825445798402463,
+        "bak_mos": 4.109065823194549,
+        "p808_mos": 4.1230854988098145
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.4872846603393555,
+        "production_quality": 7.854007244110107
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.297043361676406,
+        "sig_mos": 3.5273353316514373,
+        "bak_mos": 4.13696106682626,
+        "p808_mos": 3.9928252696990967
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.429409503936768,
+        "production_quality": 7.845410346984863
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.283593698541075,
+        "sig_mos": 3.5320404571990194,
+        "bak_mos": 4.099920218495565,
+        "p808_mos": 3.9553942680358887
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.5172343254089355,
+        "production_quality": 7.9486212730407715
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.25767095963157,
+        "sig_mos": 3.5159564559776535,
+        "bak_mos": 4.083827667678452,
+        "p808_mos": 4.006948471069336
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L05.wav",
+      "audiobox": {
+        "content_enjoyment": 6.373623371124268,
+        "production_quality": 7.941131591796875
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.379500306991223,
+        "sig_mos": 3.593934911612375,
+        "bak_mos": 4.17374545012192,
+        "p808_mos": 4.0342230796813965
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L06.wav",
+      "audiobox": {
+        "content_enjoyment": 6.407238960266113,
+        "production_quality": 7.887438774108887
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.335992531719621,
+        "sig_mos": 3.5587478246204096,
+        "bak_mos": 4.1474486491337865,
+        "p808_mos": 3.9696242809295654
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L07.wav",
+      "audiobox": {
+        "content_enjoyment": 6.399373531341553,
+        "production_quality": 7.8261332511901855
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.1902600048777967,
+        "sig_mos": 3.455113780675497,
+        "bak_mos": 4.058349589132174,
+        "p808_mos": 4.016489505767822
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\fish\\narration\\L08.wav",
+      "audiobox": {
+        "content_enjoyment": 6.482743263244629,
+        "production_quality": 7.823089599609375
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2826904183429018,
+        "sig_mos": 3.497798512611349,
+        "bak_mos": 4.170882603386302,
+        "p808_mos": 4.092068672180176
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.469380855560303,
+        "production_quality": 7.948966026306152
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5034078373859536,
+        "sig_mos": 3.706174555145567,
+        "bak_mos": 4.212597990569167,
+        "p808_mos": 4.2027058601379395
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.4399824142456055,
+        "production_quality": 7.946726322174072
+      },
+      "dnsmos": {},
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": "input_peak_out_of_range=np.ndarray values must be between -1 and 1. peak_abs=1.0000"
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.370022773742676,
+        "production_quality": 7.887488842010498
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4734064887800327,
+        "sig_mos": 3.6982961285020717,
+        "bak_mos": 4.190645497066506,
+        "p808_mos": 4.120614051818848
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.453658580780029,
+        "production_quality": 7.992321968078613
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.495033286006441,
+        "sig_mos": 3.7149152584860365,
+        "bak_mos": 4.1968269332394454,
+        "p808_mos": 4.220921993255615
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L05.wav",
+      "audiobox": {
+        "content_enjoyment": 6.33685827255249,
+        "production_quality": 7.968332767486572
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4325303304339325,
+        "sig_mos": 3.656384899026922,
+        "bak_mos": 4.185332619652343,
+        "p808_mos": 4.218655586242676
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L06.wav",
+      "audiobox": {
+        "content_enjoyment": 6.292427062988281,
+        "production_quality": 7.860029697418213
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.533520626033721,
+        "sig_mos": 3.7339379732711198,
+        "bak_mos": 4.225268020985895,
+        "p808_mos": 4.150080680847168
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L07.wav",
+      "audiobox": {
+        "content_enjoyment": 6.357579231262207,
+        "production_quality": 7.880023002624512
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5160667520181264,
+        "sig_mos": 3.725150470374115,
+        "bak_mos": 4.214630491431684,
+        "p808_mos": 4.178609371185303
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\google\\narration\\L08.wav",
+      "audiobox": {
+        "content_enjoyment": 6.476111888885498,
+        "production_quality": 7.93395471572876
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.479334500174896,
+        "sig_mos": 3.693620852625784,
+        "bak_mos": 4.193967728630793,
+        "p808_mos": 4.162375450134277
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.297524452209473,
+        "production_quality": 7.522448539733887
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4511823978109653,
+        "sig_mos": 3.6576445056430997,
+        "bak_mos": 4.203285163558214,
+        "p808_mos": 3.917396068572998
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.21022891998291,
+        "production_quality": 7.393270492553711
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4662115119662666,
+        "sig_mos": 3.6677893156548143,
+        "bak_mos": 4.207773755305061,
+        "p808_mos": 3.928236484527588
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.123318672180176,
+        "production_quality": 7.389719009399414
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.489109853369984,
+        "sig_mos": 3.695674712971,
+        "bak_mos": 4.213969397183913,
+        "p808_mos": 3.93379282951355
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.238132953643799,
+        "production_quality": 7.590517997741699
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4530480468280347,
+        "sig_mos": 3.6555488940274636,
+        "bak_mos": 4.205639624948102,
+        "p808_mos": 3.9943792819976807
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L05.wav",
+      "audiobox": {
+        "content_enjoyment": 5.978349208831787,
+        "production_quality": 7.485082626342773
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.472462093496625,
+        "sig_mos": 3.665296858169271,
+        "bak_mos": 4.218891762337905,
+        "p808_mos": 4.0584797859191895
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L06.wav",
+      "audiobox": {
+        "content_enjoyment": 6.079221725463867,
+        "production_quality": 7.551092624664307
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.394010093831667,
+        "sig_mos": 3.6078430437128164,
+        "bak_mos": 4.189528467365127,
+        "p808_mos": 4.000236988067627
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L07.wav",
+      "audiobox": {
+        "content_enjoyment": 5.979038238525391,
+        "production_quality": 7.248537540435791
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4023426284954783,
+        "sig_mos": 3.606299588418279,
+        "bak_mos": 4.2003166124568425,
+        "p808_mos": 3.989041566848755
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "wav_path": "runs\\experiments-2026-09-01-E\\audio\\openai\\narration\\L08.wav",
+      "audiobox": {
+        "content_enjoyment": 6.335610389709473,
+        "production_quality": 7.607093811035156
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4481705473009185,
+        "sig_mos": 3.652066880049257,
+        "bak_mos": 4.212644363498353,
+        "p808_mos": 3.9868438243865967
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    }
+  ]
+}

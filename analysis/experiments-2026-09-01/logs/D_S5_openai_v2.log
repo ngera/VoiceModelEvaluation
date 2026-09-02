@@ -1,0 +1,29 @@
+warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+──────────────────────── veval generate --mode latency ────────────────────────
+Restricted providers: ['openai']
+Cache: disabled
+Spend cap: $5.00
+
+
+────────────────────────────── Summary — latency ──────────────────────────────
+  run_id         latency-20260901T201051Z       
+  run_dir        runs\latency-20260901T201051Z  
+  elapsed        67.5s                          
+  total items    50                             
+  results        50 ok · 0 failed               
+
+       Per provider       
+┌──────────┬────┬────────┐
+│ Provider │ OK │ Failed │
+├──────────┼────┼────────┤
+│ openai   │ 50 │      — │
+└──────────┴────┴────────┘
+
+Estimated spend (USD) 
+┌──────────┬─────────┐
+│ Provider │   Spend │
+├──────────┼─────────┤
+│ openai   │ $0.0188 │
+│ TOTAL    │ $0.0188 │
+│ cap      │   $5.00 │
+└──────────┴─────────┘

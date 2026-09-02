@@ -1,0 +1,100 @@
+{
+  "run_id": "experiments-2026-09-01-E",
+  "pricing_source": "configs\\pricing.yaml",
+  "chars_per_word_assumption": 5.0,
+  "total_observed_cost_usd": 1.008,
+  "providers": [
+    {
+      "provider": "deepgram",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 30.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 11200,
+      "observed_generations": 8,
+      "observed_cost_usd": 0.336,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.15,
+        "100K_words_per_month": 0.15,
+        "1M_words_per_month": 0.15
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 1.5,
+        "100K_words_per_month": 15.0,
+        "1M_words_per_month": 150.0
+      },
+      "note": "Aura-2. $200 one-time signup credit covers the full project."
+    },
+    {
+      "provider": "fish",
+      "tier_used": "paid",
+      "unit": "per_1M_bytes",
+      "rate_usd": 15.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 11200,
+      "observed_generations": 8,
+      "observed_cost_usd": 0.168,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.075,
+        "100K_words_per_month": 0.075,
+        "1M_words_per_month": 0.075
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.75,
+        "100K_words_per_month": 7.5,
+        "1M_words_per_month": 75.0
+      },
+      "note": "s2.1-pro. Billed per UTF-8 byte (≈ chars for English). Used for D1 latency; free tier used for quality/WER."
+    },
+    {
+      "provider": "google",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 30.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 11200,
+      "observed_generations": 8,
+      "observed_cost_usd": 0.336,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.15,
+        "100K_words_per_month": 0.15,
+        "1M_words_per_month": 0.15
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 1.5,
+        "100K_words_per_month": 15.0,
+        "1M_words_per_month": 150.0
+      },
+      "note": "Chirp3 HD. Billing counts spaces and SSML tags."
+    },
+    {
+      "provider": "openai",
+      "tier_used": "paid",
+      "unit": "per_1M_chars",
+      "rate_usd": 15.0,
+      "minimum_monthly_usd": 0.0,
+      "included_units_per_month": null,
+      "per_request_fee_usd": 0.0,
+      "observed_units": 11200,
+      "observed_generations": 8,
+      "observed_cost_usd": 0.168,
+      "dollars_per_1k_words_at": {
+        "10K_words_per_month": 0.075,
+        "100K_words_per_month": 0.075,
+        "1M_words_per_month": 0.075
+      },
+      "monthly_usd_at": {
+        "10K_words_per_month": 0.75,
+        "100K_words_per_month": 7.5,
+        "1M_words_per_month": 75.0
+      },
+      "note": "gpt-4o-mini-tts / gpt-4o-tts approximate rate. OpenAI actually bills per-character for tts-1 and per-second for the gpt-4o variants; ~$15/1M chars is the conservative approximation used for D6. Prepaid credit required (no free tier). Estimated project cost ~$0.50-2 given corpus size + variance subset. Re-verify on analysis day per D6 rule."
+    }
+  ]
+}

@@ -1,0 +1,1007 @@
+{
+  "run_id": "experiments-2026-09-01-E",
+  "normaliser": "veval.analyze.wer.normalise_v1",
+  "normaliser_hash": "75379ec82012f908cd0817bad1c8fcb4ccc0de3709f468fe7e6d3f993f5a2e14",
+  "judges": {
+    "wav2vec2": {
+      "model_id": "facebook/wav2vec2-large-robust-ft-libri-960h",
+      "revision": "TODO_pin_sha_before_campaign"
+    },
+    "faster-whisper": {
+      "model_id": "Systran/faster-whisper-large-v3",
+      "revision": "TODO_pin_sha_before_campaign"
+    }
+  },
+  "bands": {
+    "A_max": 0.02,
+    "B_max": 0.05
+  },
+  "failure_rule": {
+    "agreement_error_rate_threshold": 0.05,
+    "span_hard_fail": true
+  },
+  "by_provider": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "n_errors": 0,
+      "agreement_wer_mean": 0.124300354885004,
+      "failure_incidence_pct": 87.5,
+      "band_counts": {
+        "A": 1,
+        "B": 1,
+        "C": 6
+      },
+      "event_counts": {
+        "truncation": 0,
+        "repetition_loop": 0,
+        "word_drop": 8,
+        "hallucination": 0
+      }
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "n_errors": 0,
+      "agreement_wer_mean": 0.0922574941161596,
+      "failure_incidence_pct": 87.5,
+      "band_counts": {
+        "A": 2,
+        "B": 0,
+        "C": 6
+      },
+      "event_counts": {
+        "truncation": 0,
+        "repetition_loop": 0,
+        "word_drop": 6,
+        "hallucination": 0
+      }
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "n_errors": 0,
+      "agreement_wer_mean": 0.10937790514963995,
+      "failure_incidence_pct": 75.0,
+      "band_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 5
+      },
+      "event_counts": {
+        "truncation": 0,
+        "repetition_loop": 0,
+        "word_drop": 6,
+        "hallucination": 0
+      }
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "n_items": 8,
+      "n_valid": 8,
+      "n_errors": 0,
+      "agreement_wer_mean": 0.10279399577210112,
+      "failure_incidence_pct": 75.0,
+      "band_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 5
+      },
+      "event_counts": {
+        "truncation": 0,
+        "repetition_loop": 0,
+        "word_drop": 6,
+        "hallucination": 0
+      }
+    }
+  ],
+  "items": [
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "The town of Alderly had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret — well, the secret smelled of the sea, even though the sea was forty miles away, which was part of what made it strange. Margaret Holt had lived on the high street for sixty-two years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always been there. Her granddaughter Rosie had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was seventeen and curious in the way that seventeen always is — not curious about answers, but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "judge_1_transcript": "THE TOWN OF ALDERLEY HAD THREE CHURCHES TWO CUBS AND ONE SECRET THAT EVERYONE KNEW BUT NO ONE SPOKE ABOUT OUTLOUD THE CHURCHES WERE OLD AND COLD AND SMELT OF DAMP HIMMILS THE PUBS WERE WARM AND LOUD AND SMELLET OF EVERYTHING ELSE THE SECRET WELL THE SECRET SMELLED OF THE SEA EVEN THOUGH THE SEA WAS FORTY MILES AWAY WHICH WAS PART OF WHAT MADE IT STRANGE MARGARET HOLT HAD LIVED ON THE HIGH STREET FOR SIXTY TWO YEARS SHE HAD WATCHED THE ELM TREES GROW AND DIE AND BE REPLACED WITH SAPLINGS THAT WERE NOW THEMSELVES BEGINNING TO LOOK LIKE TREES SHE HAD WATCHED THE POST OFFICE BECOME A LETTING AGENCY AND THE LETTING AGENCY BECOME A COFFEE SHOP AND THE COFFEE SHOP BECOME BRIEFLY A YOGA STUDIO BEFORE IT BECAME A COFFEE SHOP AGAIN SHE HAD WATCHED THE SECRET PULSE THROUGH THE TOWN LIKE A SECOND HEART BEAT QUIET BUT CONSTANT SOMETHING THE YOUNG PEOPLE THOUGHT THEY DISCOVERED AND THE OLD PEOPLE KNEW HAD ALWAYS BEEN THERE HER GRANDDAUGHTER ROSIE HAD COME TO VISIT FOR THE SUMMER WHICH WAS PART OF WHYN MARGARET WAS SITTING NOW AT THE KITCHEN WINDOW WATCHING THE GARDEN AND WAGING ROSIE WAS SEVENTEEN AND CURIOUS IN THE WAY THAT SEVENTEEN ALWAYS IS NOT CURIOUS ABOUT ANSWERS BUT ABOUT THE QUESTIONS THEMSELVES WHICH IS A KIND OF COURAGE MARGARET HAD SPENT DECADES TRYING TO RELEARN",
+      "whisper": "The town of Alderley had three churches, two cubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret, well, the secret smelled of the sea, even though the sea was forty miles away, which was part of what made it strange. Margaret Holt had lived on the high street for sixty-two years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency, and the letting agency become a coffee shop, and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew. Her granddaughter, Rosie, had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was seventeen and curious in the way that seventeen always is, not curious about answers but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "agreement_wer": 0.06896551724137931,
+      "per_judge_wer": {
+        "wav2vec2": 0.0603448275862069,
+        "whisper": 0.02586206896551724
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.069 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 2,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Chapter Four: The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail — bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as 'here the light is different.' On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written: 'I have been here.' Dr. Evelyn Cross had been studying this map for eleven years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibres of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on 'light' and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "judge_1_transcript": "CHAPTER FOUR THE LAST MAP THERE IS A MAP IN TE BRITISH LIBRARY THAT IS WRONG IN A WAY THAT CAN ONLY BE DESCRIBED AS DELIBERATELY WRONG IT WAS DRAWN IN SIXTEEN O TWO BY A CARTOGRAPHER WHOSE NAME HAS BEEN LOST WHICH IS ITSELF SUSPICIOUS SINCE CARTOGRAPHERS OF THAT PERIOD WERE MATICULOUS ABOUT ATTRIBUTION THE MAP SHOWS THE EASTERN COAST OF AN ISLAND THAT DOES NOT EXIST THE ISLAND IS RENDERED IN EXTRAORDINARY DETAIL BAYS INLETS A RIVER THAT CURVES SOUTH BEFORE TURNING BACK ON ITSELF A MOUNTAIN WITH A NOTATION IN LATIN THAT TRANSLATES ROUGHLY AS HERE THE LIGHT IS DIFFERENT ON THE REVERSE SIDE OF THE MAP IN A HAND THAT APPEARS TO BE DIFFERENT FROM THE CARTOGRAPHERS SOME ONE HAS WRITTEN I HAVE BEEN HERE DOCTOR EVELIN CROSS HAD BEEN STUDYING THIS MAP FOR ELEVEN YEARS SHE HAD EXAMINED IT UNDER ULTRA VIOLET LIGHT UNDER INFORED INAGINE UNDER A MICROSCOPE POWERFUL ENOUGH TO COUNT THE INDIVIDUAL FIBRES OF THE VELUM SHE HAD TRACED THE COAST LINE AGAINST EVERY KNOWN ISLAND IN EVERY OCEAN AND FOUND NOTHING SHE HAD RUN THE LATIN TEXT THROUGH SIX DIFFERENT TRANSLATION TOLS AND RECEIVED SIX SLIGHTLY DIFFERENT ANSWERS ALL OF WHICH AGREED ON LIGHT AND DISAGREED ON EVERYTHING ELSE TO DAY FOR REASONS SHE COULDN'T FULLY EXPLAIN SHE THOUGHT SHE WAS CLOSE",
+      "whisper": "Chapter 4. The Last Map. There is a map in a British library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer, whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail. Bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as here the light is different. On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written, I have been here. Dr. Evelyn Cross had been studying this map. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibers of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on light and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "agreement_wer": 0.09216589861751152,
+      "per_judge_wer": {
+        "wav2vec2": 0.09216589861751152,
+        "whisper": 0.027649769585253458
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.092 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 4,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight: the government has announced an emergency package worth 14 billion pounds to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from the 1st of May. Under the plan, households will receive a flat payment of 400 pounds, with additional support for the lowest-income families of up to 650 pounds. Businesses in the hospitality, retail, and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67 percent over the past 18 months. Industry groups broadly welcomed the support but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent James Okafor, who is outside the Treasury.",
+      "judge_1_transcript": "GOOD EVENING I AM SYRATIN AND THIS IS THE SIX O'CLOCK NEWS OUR TALK STORY TO NIGHT THE GOVERNMENT HAS ANNOUNCED AN EMERGENCY PACKAGE WORTH FOURTEEN BILLION POUNDS TO HELP HOUSEHOLDS AN BUSINESSES WITH RISING ENERGY COSTS THE CHANCELLOR CONFIRMED THE MEASURES IN A STATEMENT TO PARLIAMENT THIS AFTERNOON SAYING THE PACKAGE WOULD TAKE EFFECT FROM THE FIRST OF MAY UNDER THE PLAN HOUSEHOLDS WILL RECEIVE A FLAT PAYMENT OF FOUR HUNDRED POUNDS WITH ADDITIONAL SUPPORT FOR THE LOWEST INCOME FAMILIES OF UP TO SIX HUNDRED FIFTY POUNDS BUSINESSIS IN THE HOSPITALITY RETAIL AND MANUFACTURING SECTORS WILL RECEIVE REBATES ON THEIR ENERGY BILLS FOR A PERIOD OF SIX MONTHS THE ANNOUNCEMENT WAS WELCOMED BY OPPOSITION LEADERS THOUGH THE SHADOW CHANCELLOR CALLED IT TOO LITTLE TOO LATE POINTING OUT THAT AVERAGE HOUSEHOLD BILLS HAVE RISEN BY SIXTY SEVEN PER CENT OVER THE PAST EIGHTEEN MONTHS INDUSTRY GROUPS BROADLY WELCOMED THE SUPPORT BUT SAID LONGER TURM SOLUTIONS WERE STILL NEEDED THE COST OF THE PACKAGE WILL BE FUNDED PARTLY THROUGH A WINDFALL TAX ON ENERGY COMPANIES WHICH THE GOVERNMENT IS EXTENDING FOR A FURTHER TWO YEARS SEVERAL ENERGY FIRMS SAID THEY WOULD REVIEW PLANNED INVESTMENT IN DOMESTIC PRODUCTION FOLLOWING THE ANNOUNCEMENT WE'LL HAVE MORE ON THIS STORY THROUGHOUT THE EVENING NOW LET'S GO TO OUR ECONOMICS CORRESPONDENT JAMES OKELFOR WHO IS OUTSIDE THE TREASURY",
+      "whisper": "Good evening. I'm Sarah Chin, and this is the 6 o'clock news. Our top story tonight, the government has announced an emergency package worth £14 billion to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from 1 May under the plan. Households will receive a flat payment of £400 with additional support for the lowest-income families of up to £650. Businesses in the hospitality, retail and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow Chancellor called it too little too late, pointing out that average household bills have risen by 67% over the past 18 months. Industry groups broadly welcomed the support, but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax, and the government will be funding it through an extension of the budget. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent, James Okafor, who is outside the Treasury.",
+      "agreement_wer": 0.16055045871559634,
+      "per_judge_wer": {
+        "wav2vec2": 0.11467889908256881,
+        "whisper": 0.0963302752293578
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.161 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 6,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Lesson 4: Understanding the Water Cycle. Water is constantly moving around our planet in a cycle — from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapour — a gas — and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapour rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapour condenses — meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude — that's because that's the point where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation — which is rain, snow, sleet, or hail depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater. And some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "judge_1_transcript": "LESSON FOUR UNDERSTANDING THE WATER CYCLE WATER IS CONSTANTLY MOVING AROUND OUR PLANET IN A CYCLE FROM THE SURFACE UP INTO THE ATMOSPHERE AND BACK DOWN AGAIN THIS IS CALLED THE WATER CYCLE OR THE HYDROLOGICAL CYCLE AND IT HAS BEEN HAPPENING FOR BILLIONS OF YEARS LET'S START WITH EVAPORATION WHEN THE SUN HEATS WATER IN OCEANS LAKES AND RIVERS SOME OF THAT WATER TURNS INTO WATER VAPOR A GAS AND RISES INTO THE AIR OCEANS ARE THE MAIN SOURCE OF EVAPORATED WATER WHICH MAKES SENSE WHEN YOU THINK ABOUT HOW MUCH OF THE EARTH'S SURFACE THEY COVER AS THE WATER VAPOR RISES IT ENTERS COOLER PARTS OF THE ATMOSPHERE WHEN WARM MOIST AIR COOLS DOWN THE WATER VAPOR CONDENSES MEANING IT TURNS BACK INTO TINY LIQUID DROPLETS THESE DROPLETS COLLECT TOGETHER TO FORM CLOUDS YOU MIGHT HAVE NOTICED THAT CLOUDS OFTEN FORM A A CERTAIN ALTITUDE THAT'S BECAUSE THAT'S THE PLITE WHERE THE RISING AIR HAS COOLED JUST ENOUGH FOR CONDENSATION TO BEGIN WHEN ENOUGH DROPLETS COLLECT IN A CLOUD THEY BECOME TOO HEAVY TO STAY SUSPENDED IN THE AIR AND THEY FALL AS PRECIPITATION WHICH IS RAIN SNOW SLEET OR HAIL DEPENDING ON THE TEMPERATURE SOME OF THIS PRECIPITATION FLOWS INTO RIVERS AND STREAMS AND EVENTUALLY BACK TO THE SEA SOME OF IT SOAKS INTO THE GROUND AND BECOMES GROUND WATER AND SOME OF IT FALLS AS SNOW ON HIGH MOUNTAINS AND STAYS FROZEN FOR MONTHS OR EVEN YEARS BEFORE SLOWLY MELTING AND THEN THE WHOLE CYCHLE BEGINS AGAIN EVERY GLASS OF WATER YOU DRINK HAS BEEN THROUGH THE CYCLE COUNTLESS TIMES",
+      "whisper": "Lesson 4. Understanding the water cycle. Water is constantly moving around our planet in a cycle, from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapor, a gas, and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapor rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapor condenses, meaning it turns back into tiny particles. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude. That's because that's the plate where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation, which is rain, snow, sleet, or hail, depending on the temperature. Some of this precipitation flows into rivers and streams, and eventually, it's called precipitation. Some of this precipitation flows into rivers and streams, and eventually, it's called precipitation. Some of it will be turned into streams water, and eventually back to the sea. Some of it soaks into the ground and becomes groundwater, and some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "agreement_wer": 0.04119850187265917,
+      "per_judge_wer": {
+        "wav2vec2": 0.03745318352059925,
+        "whisper": 0.1348314606741573
+      },
+      "failure": true,
+      "failure_reasons": [
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "B",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Pre-Procedure Instructions: Upper GI Endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9:30 AM at City General Hospital, Endoscopy Suite, Level 3. Diet: You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids — water, black tea, black coffee, apple juice, or clear broth — up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications: Take all regular medications as usual with a small sip of water on the morning of your procedure, unless your doctor has specifically told you otherwise. If you take blood-thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose — contact your diabetes team for guidance. Arrival: Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure: You will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home — you cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure — this is normal.",
+      "judge_1_transcript": "PRE PROCED OUR INSTRUCTIONS UPPER G I AN DOSCAPY YOUR UPPER AND DOSCAPY IS SCHEJULED FOR WEDNESDAY THE TWENTY SECOND AT NINE THIRTY A M AT CITY GENERAL HOSPITAL AN DOSCAPI SWEET LEGLE THREE YOU MUST HAVE NOTHING TO EAT FOR AT LEAST SIX HOURS BEFORE YOUR PROCEDURE YOU MAY DRINK CLEAR FLUIDS WATER BLACK TEA BLACK COFFEE APPLE JUICE OR CLEAR BROTH UP TO TWO HOURS BEFORE YOUR APPOINTMENT DO NOT DRINK MILK OR EAT ANY SOLID FOOD AFTER MIDNIGHT THE NIGHT BEFORE MEDICATIONS TAKE ALL REGULAR MEDICATIONS AS USUAL WITH A SMALL SIP OF WATER ON THE MORNING OF YOUR PROCEDURE UNLESS YOUR DOCTOR HAS SPECIFICALLY TOLD YOU OTHERWISE IF YOU TAKE BLENTHENING MEDICATIONS SUCH AS WARPHERIN CLOQUETTIGROL OR ASPERIN PLEASE CONTACT US AT LEAST FIVE DAYS BEFORE YOUR APPOINTMENT AS YOU MAY NEED TO TEMPORARILY STOP THESE IF YOU TAKE INSOLENT DO NOT TAKE YOUR MORNING DOSE CONTACT YOUR DIABEDIS TEAM FOR GUIDANCE ARRIVAL PLEASE ARRIVE THIRTY MINUTES BEFORE YOUR SCHEDULED TIME TO ALLOW FOR REGISTRATION AND PREPARATION BRING A LIST OF YOUR CURRENT MEDICATIONS YOUR HOSPITAL CARD IN ANY PREDIOUS INDOSCAPY REPORTS IF YOU HAVE THEM AFTER THE PROCEDURE YOU WILL BE IN RECOVERY FOR APPROXIMATELY FORTY FIVE MINUTES WHILE THE CEDATION WEARS OFF YOU MUST HAVE A RESPONSIBLE ADULT AVAILABLE TO TAKE YOU HOME YOU CANNOT TRAVEL BY TAXI OR PUBLIC TRANSPORT ALONE AND YOU MUST NOT DRIVE FOR TWENTY FOUR HOURS YOU MAY FEEL BLOADED OR GASY FOR A FEW HOURS AFTER THE PROCEDURE THIS IS NORMAL",
+      "whisper": "Pre-procedure instructions. Upper GI endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9 30 a.m. at City General Hospital Endoscopy Suite, Level 3. You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids, water, black tea, black coffee, apple juice, or clear broth up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications. Take all regular medications as usual with a small sip of water on the morning of your procedure unless your doctor has specifically told you otherwise. If you take blood thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose. If you take insulin, do not take your morning dose. If you take insulin, do not take your morning dose. Contact your diabetes team for guidance. Arrival. Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure, you will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home. You cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure. This is normal.",
+      "agreement_wer": 0.11885245901639344,
+      "per_judge_wer": {
+        "wav2vec2": 0.1557377049180328,
+        "whisper": 0.10245901639344263
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.119 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 4,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Regulatory Disclosure — Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "judge_1_transcript": "REGULATORY DISCLOSURE FINANCIAL PRODUCTS THIS DOCUMENT CONTAINS IMPORTANT INFORMATION ABOUT THE RISKS ASSOCIATED WITH THE FINANCIAL PRODUCTS DESCRIBED HEREIN YOU SHOULD READ THIS DISCLOSURE CAREFULLY BEFORE MAKING ANY INVESTMENT DECISION PAST PERFORMANCE IS NOT A RELIABLE INDICATOR OF FUTURE RESULTS THE VALUE OF INVESTMENTS AND THE INCOME DERIVED FROM THEM MAY FALL AS WELL AS RISE AND YOU MAY GET BACK LESS THAN YOU ORIGINALLY INVESTED EXCHANGE RATE FLUCTUATIONS MAY CAUSE THE VALUE OF OVERSEAS INVESTMENTS TO RISE OR FALL THIS PRODUCT IS NOT SUITABLE FOR ALL INVESTORS BEFORE INVESTING YOU SHOULD CAREFULLY CONSIDER YOUR INVESTMENT OBJECTIVES LEVEL OF EXPERIENCE RISK APPETITE AND FINANCIAL SITUATION IF YOU ARE IN ANY DOUBT ABOUT THE SUITABILITY OF THIS PRODUCT YOU SHOULD SEEK INDEPENDENT FINANCIAL ADVICE THE PRODUCTS DESCRIBED IN THIS DOCUMENT ARE NOT DEPOSITS AND ARE NOT INSURED BY ANY GOVERNMENT DEPOSIT PROTECTION SCHEME WE ARE NOT GUARANTEED BY THE ISSUE ONG ENTITY OR ANY OF ITS AFFILIATES INVESTORS COULD LOSE SOME OR ALL OF THEIR INVESTMENT THIS DOCUMENT HAS BEEN PREPARED SOLELY FOR INFORMATION PURPOSES AND DOES NOT CONSTITUTE AN OFFER TO BUY OR SELL OR A SOLICITATION OF AN OFFER TO BUY OR SELL ANY SECURITY AND SHOULD NOT BE RELIED UPON AS SUCH IT HAS BEEN PREPARED WITHOUT REGARD TO THE INDIVIDUAL FINANCIAL CIRCUMSTANCES AND OBJECTIVES OF PERSONS WHO RECEIVE IT",
+      "whisper": "Regulatory Disclosure – Financial Products This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection system. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it. Financial Procedures",
+      "agreement_wer": 0.013574660633484163,
+      "per_judge_wer": {
+        "wav2vec2": 0.013574660633484163,
+        "whisper": 0.013574660633484163
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Earnings Call Summary: TechCorp Inc., Q1 2026. Revenue: $14.2 billion, up 18 percent year-over-year and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share: $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23 percent increase year-over-year. Gross margin: 42.3 percent, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60 percent. Cloud segment: revenue of $6.1 billion, up 31 percent year-over-year, representing 43 percent of total revenue. Operating income from cloud was $1.8 billion, a margin of 29.5 percent. Guidance for Q2 2026: the company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16 to 19 percent. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management commentary: CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12 percent of total revenue, up from 4 percent a year ago. The company announced a $5 billion share repurchase programme and raised its quarterly dividend by 8 percent to $0.52 per share.",
+      "judge_1_transcript": "EARNING'S CALST SUMMARY TECK CORP INK CUE ONE TWENTY TWENTY SIX REVENUE FOURTEEN POINT TWO BILLION DOLLARS UP EIGHTEEN PER CENT YEAR OVER YEAR AND FOUR HUNDRED MILLION DOLLARS AHEAD OF ANNALIST CONCENSIS OF THIRTEEN POINT EIGHT BILLION DOLLARS THIS WAS THE FIFTH CONSECUTIVE QUARTER OF DOUBLE DIGIT REVENUE GROWTH EARNINGS PER SHARE TWO DOLLARS AND EIGHTY FOUR CENTS DILUTED COMPARED TO CONCENSIS OF TWO DOLLARS AND SIXTY ONE CENTS AND TWO DOLLARS AND THIRTY ONE CENTS IN CU ONE TWENTY TWENTY FIVE THIS REPRESENTS A TWENTY THREE PER CENT INCREASE YEAR OVER YEAR GROSS MARGIN FORTY TWO POINT THREE PER CENT EXPANDING ONE POINT FOUR PER CENTAGE POINTS COMPARED TO THE SAME QUARTER LAST YEAR DRIVEN BY A HIGHER MIX OF SOFFORAN SERVICES REVENUE WHICH CARRY MARGINS ABOVE SIXTY PER CENT CLOUD SEGMENT REVENUE OF SIX POINT ONE BILLION DOLLARS UP THIRTY ONE PER CENT YEAR OVER YEAR REPRESENTING FORTY THREE PER CENT OF TOTAL REVENUE OPERATING INCOME FROM CLOUD WAS ONE POINT EIGHT BILLION DOLLARS A MARGIN OF TWENTY NINE POINT FIVE PER CENT GUIDENCE FOR CUE TWO TWENTY TWENTY CIX THE COMPANY GUIDED FOR REVENUE OF FOURTEEN POINT SIX BILLION TO FIFTEEN BILLION REPRESENTING YEAR OVER YEAR GROWTH OF SIXTEEN TO NINETEEN PER CENT EARNINGS FOR SHARE GUIDANCE OF TWO DOLLARS AND NINETY CENTS TO THREE DOLLARS AND FIVE CENTS WAS A HEAD OF CURRENT ANALIST CONCENSIS OF TWO DOLLARS AND SEVENTY SIX CENTS MANAGEMENT COMMENTARY C  O MICHAL CHEN SAID GROWTH WAS BROUGD BASED ACROSS ALL SEGMENTS AND GEOGRAPHIES WITH PARTICULARLY STRONG PERFORMANCE IN ENTERPRISE A I TOOLS WHICH NOW REPRESENT TWELVE PER CENT OF TOTAL REVENUE UP FROM FOUR PER CENT A YEAR AGO THE COMPANY ANNOUNCED A FIVE BILLION DOLLARS SHARE REPURCHASED PROGRAME AND RAISED ITS QUARTERLY DIVIDEND BY EIGHT TO FIFTY TWO CENTS PER SHARE",
+      "whisper": "Earnings Call Summary, TechCorp Inc., Q1 2026. Revenue, $14.2 billion, up 18% year-over-year, and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share, $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23% increase year-over-year. Gross margin, 42.3%, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60%. Cloud segment, revenue of $6.1 billion, up 31% year-over-year, representing 43%. Operating income from cloud was $1.8 billion, a margin of 29.5%. Guidance for Q2 2026. The company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16% to 19%. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Manitouite Commentary, C2 2026. CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12% of total revenue, up from 4% a year ago. The company announced a $5 billion share repurchase program and raised its quarterly dividend by $0.08 to $0.52 per share.",
+      "agreement_wer": 0.4008810572687225,
+      "per_judge_wer": {
+        "wav2vec2": 0.7224669603524229,
+        "whisper": 0.08370044052863436
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.401 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 32,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "There is a village in the western Highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was A' Chomraich — meaning the sanctuary. In the eighth century a monk called Maelrubha came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This right of sanctuary held for a thousand years, and was still recognised into the seventeenth century, when Highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather — the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way — something of the sanctuary is still there, waiting for the traveller who thinks they have arrived, and finds instead that they have been received.",
+      "judge_1_transcript": "THERE IS A VILLAGE IN THE WESTERN HIGHLANDS WHERE THE SHORE ROAD ENDS AT A CATTLE GRAD AND BEYOND A CATTLE GRED THERE IS ONLY HEAVER SEA AND A SOUND OF CROLINS THE VILLAGE IS CALLED APPLE CROSS THOUGH ON THE OLDER MAPS AND IN THE OLDER GALIC IT WAS A COMRAT H MEANING THE SANCTUARY IN THE EIGHTH CENTURY A MONK CALLED MALE RUBA CAME HERE FROM BANGOR AND FOUNDED A MONASTERY WHOSE STONES LIE NOW UNDER THE CHURCHYARD GRASS WHAT HE BUILT WAS MORE THAN A MONASTERY IT WAS A PLACE OF REFUGE MARKED BY FOUR CROSSES AT THE COMPASS POINTS AND ANY FUGITIVE WHO REACHED THEM WHATEVER THE CRIME COULD NOT BE PURSUED WITHIN THEIR CIRCLE THIS RITE OF SANCTUARY HELD FOR A THOUSAND YEARS AND WAS STILL RECOGNIZED INTO THE SEVENTEENTH CENTURY WHEN HIGHLAND COURTS CONTINUE TO ACKNOWLEDGE THE BOUNDARY EVEN AS THEY OTHERWISE MILDED A PUNISHING LAW TO DAY THE CROSSES ARE BOWN OR PERHAPS BURIED AND THE ROAD ENDS WHERE THE ROAD ENDS BUT IN THE WAI OF CERTAIN LANDSCAPES HOLD MEMORY IN THEIR WEATHER THE SUDDEN HUSH THAT FALLS WHEN YOU TURN THE LAST BEND THE SENSE THAT THE LIGHT HAS CHANGED IN SOME QUIET DELIBERATE WAY SOMETHING OF THE SANCTUARY IS STILL THERE WAITING FOR THE TRAVELLER WHO THINKS THEY HAVE ARRIVED AND FINDS INSTEAD THAT THEY HAVE BEEN RECEIVED",
+      "whisper": "There is a village in the western highlands where the shore road ends at a cattle grid, and beyond a cattle grid there is only heather, sea, and the sound of crows. The village is called Applecross, though on the older maps and in the older Gaelic, it was Ae Comraech, meaning the sanctuary. In the 8th century, a monk called Melruba came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This rite of sanctuary held for a thousand years and was still recognized into the 17th century when highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather, the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way, something of the sanctuary is still there, waiting for the traveler who thinks they have arrived and finds instead that they have been received.",
+      "agreement_wer": 0.09821428571428571,
+      "per_judge_wer": {
+        "wav2vec2": 0.09821428571428571,
+        "whisper": 0.044642857142857144
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.098 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 2,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "The town of Alderly had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret — well, the secret smelled of the sea, even though the sea was forty miles away, which was part of what made it strange. Margaret Holt had lived on the high street for sixty-two years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always been there. Her granddaughter Rosie had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was seventeen and curious in the way that seventeen always is — not curious about answers, but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "judge_1_transcript": "THE TOWN OF ALDERLEY HAD THREE CHURCHES TWO PUBS AND ONE SECRET THAT EVERY ONE KNEW BUT NO ONE SPOKE ABOUT OUTLOUD THE CHURCHES WERE OLD AND COLD AND SMELLED OF DAMP HYMNELS THE PUBS WERE WARM AND LOUD AND SMELLED OF EVERYTHING ELSE THE SECRET WELL THE SECRET SMELLED OF THE SEA EVEN THOUGH THE SEA WAS FORTY MILES AWAY WHICH WAS PART OF WHAT MADE IT STRANGE MARGARET HOLT HAD LIVED ON THE HIGH STREET FOR SIXTY TWO YEARS SHE HAD WATCHED THE ELM TREES GROW AND DIE AND BE REPLACED WITH SAPLINGS THAT WERE NOW THEMSELVES BEGINNING TO LOOK LIKE TREES SHE HAD WATCHED THE POST OFFICE BECOME A LETTING AGENCY AND THE LETTING AGENCY BECOME A COFFEE SHOP AND THE COFFEE SHOP BECOME BRIEFLY A YOGA STUDIO BEFORE IT BECAME A COFFEE SHOP AGAIN SHE HAD WATCHED THE SECRET PULSE THROUGH THE TOWN LIKE A SECOND HEART BEAT QUIET BUT CONSTANT SOMETHING THE YOUNG PEOPLE THOUGHT THEY'D DISCOVERED AND THE OLD PEOPLE KNEW HAD ALWAYS BEEN THERE HER GRANDDAUGHTER ROSY HAD COME TO VISIT FOR THE SUMMER WHICH WAS PART OF WHY MARGARET WAS SITTING NOW AT THE KITCHEN WINDOW WATCHING THE GARDEN AND WAITING ROSY WAS SEVENTEEN AND CURIOUS IN THE WAY THAT SEVENTEEN ALWAYS IS NOT CURIOUS ABOUT ANSWERS BUT ABOUT THE QUESTIONS THEMSELVES WHICH IS A KIND OF COURAGE MARGARET HAD SPENT DECADES TRYING TO RELEARN",
+      "whisper": "The town of Alderley had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret, well, the secret smelled of the sea, even though the sea was 40 miles away, which was part of what made it strange. Margaret Holt had lived on the High Street for 62 years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency, and the letting agency become a coffee shop, and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always been there. Her granddaughter, Rosie, had come to town. She had been to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was 17 and curious in the way that 17 always is, not curious about answers but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "agreement_wer": 0.05172413793103448,
+      "per_judge_wer": {
+        "wav2vec2": 0.05172413793103448,
+        "whisper": 0.04310344827586207
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.052 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Chapter Four: The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail — bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as 'here the light is different.' On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written: 'I have been here.' Dr. Evelyn Cross had been studying this map for eleven years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibres of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on 'light' and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "judge_1_transcript": "CHAPTER FOUR THE LAST MAP THERE IS A MAP IN THE BRITISH LIBRARY THAT IS WRONG IN A WAY THAT CAN ONLY BE DESCRIBED AS DELIBERATELY WRONG IT WAS DRAWN IN SIXTEEN O TWO BY A CARTOGRAPHER WHOSE NAME HAS BEEN LOST WHICH IS ITSELF SUSPICIOUS SINCE CARTOGRAPHERS OF THAT PERIOD WERE MATICULOUS ABOUT ATTRIBUTION THE MAP SHOWS THE EASTERN COAST OF AN ISLAND THAT DOES NOT EXIST THE ISLAND IS RENDERED IN EXTRAORDINARY DETAIL BAYS INLETS A RIVER THAT CURVES SOUTH BEFORE TURNING BACK ON ITSELF A MOUNTAIN WITH A NOTATION IN LATIN THAT TRANSLATES ROUGHLY AS HERE THE LIGHT IS DIFFERENT ON THE REVERSE SIDE OF THE MAP IN A HAND THAT APPEARS TO BE DIFFERENT FROM THE CARTOGRAPHERS SOME ONE HAS WRITTEN I HAVE BEEN HERE DOCTOR EVELYN CROSS HAD BEEN STUDYING THIS MAP FOR ELEVEN YEARS SHE HAD EXAMINED IT UNDER ULTRAVIOLET LIGHT UNDER INFE RED IMAGING UNDER A MICROSCOPE POWERFUL ENOUGH TO COUNT THE INDIVIDUAL FIBRES OF THE VELLUM SHE HAD TRACED THE COAST LINE AGAINST EVERY KNOWN ISLAND IN EVERY OCEAN AND FOUND NOTHING SHE HAD RUN THE LATIN TEXT THROUGH SIX DIFFERENT TRANSLATION TOOLS AND RECEIVED SIX SLIGHTLY DIFFERENT ANSWERS ALL OF WHICH AGREED ON LIGHT AND DISAGREED ON EVERYTHING ELSE TO DAY FOR REASONS SHE COULDN'T FULLY EXPLAIN SHE THOUGHT SHE WAS CLOSE",
+      "whisper": "Chapter 4, The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail—bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as, Here the light is different. On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written, I have been here. Dr. Evelyn Cross had been studying this map for 11 years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibers of the vellum. She had traced the coastline against every known island in every ocean, and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on light and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "agreement_wer": 0.055299539170506916,
+      "per_judge_wer": {
+        "wav2vec2": 0.06451612903225806,
+        "whisper": 0.013824884792626729
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.055 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight: the government has announced an emergency package worth 14 billion pounds to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from the 1st of May. Under the plan, households will receive a flat payment of 400 pounds, with additional support for the lowest-income families of up to 650 pounds. Businesses in the hospitality, retail, and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67 percent over the past 18 months. Industry groups broadly welcomed the support but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent James Okafor, who is outside the Treasury.",
+      "judge_1_transcript": "GOOD EVENING I'M SARA CHEN AND THIS IS THE SIX O'CLOCK NEWS OUR TOP STORY TO NIGHT THE GOVERNMENT HAS ANNOUNCED AN EMERGENCY PACKAGE WORTH FOURTEEN BILLION POUNDS TO HELP HOUSEHOLDS AND BUSINESSES WITH RISING ENERGY COSTS THE CHANCELLOR CONFIRMED THE MEASURES IN A STATEMENT TO PARLIAMENT THIS AFTERNOON SAYING THE PACKAGE WOULD TAKE EFFECT FROM THE FIRST OF MAY UNDER THE PLAN HOUSEHOLDS WILL RECEIVE A FLAT PAYMENT OF FOUR HUNDRED POUNDS WITH ADDITIONAL SUPPORT FOR THE LOWEST INCOME FAMILIES OF UP TO SIX HUNDRED FIFTY POUNDS BUSINESSES IN THE HOSPITALITY RETAIL AND MANUFACTURING SECTRS WILL RECEIVE REBATES ON THEIR ENERGY BILLS FOR A PERIOD OF SIX MONTHS THE ANNOUNCEMENT WAS WELCOMED BY OPPOSITION LEADERS THOUGH THE SHADOW CHANCELLOR CALLED IT TOO LITTLE TOO LATE POINTING OUT THAT AVERAGE HOUSEHOLD BILLS HAVE RISEN BY SIXTY SEVEN PER CENT OVER THE PAST EIGHTEEN MONTHS INDUSTRY GROUPS BROADLY WELCOMED THE SUPPORT BUT SAID LONGER TERM SOLUTIONS WERE STILL NEEDED THE COST OF THE PACKAGE WILL BE FUNDED PARTLY THROUGH A WINDFALL TAX ON ENERGY COMPANIES WHICH THE GOVERNMENT IS EXTENDING FOR A FURTHER TWO YEARS SEVERAL ENERGY FIRM SAID THEY WOULD REVIEW PLANNED INVESTMENT IN DOMESTIC PRODUCTION FOLLOWING THE ANNOUNCEMENT WE'LL HAVE MORE ON THIS STORY THROUGHOUT THE EVENING NOW LET'S GO TO OUR ECONOMICS CORRESPONDENT JAMES OKAFOR WHO IS OUTSIDE THE TREASURY",
+      "whisper": "Good evening, I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight, the government has announced an emergency package worth £14 billion to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from 1 May. Under the plan, households will receive a flat payment of £400 with additional support for the lowest-income families of up to £650. Businesses in the hospitality, retail and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67% over the past 18 months. Industry groups broadly welcomed the support, but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent, James Okafor, who is outside the Treasury.",
+      "agreement_wer": 0.0871559633027523,
+      "per_judge_wer": {
+        "wav2vec2": 0.10091743119266056,
+        "whisper": 0.03211009174311927
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.087 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 4,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Lesson 4: Understanding the Water Cycle. Water is constantly moving around our planet in a cycle — from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapour — a gas — and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapour rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapour condenses — meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude — that's because that's the point where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation — which is rain, snow, sleet, or hail depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater. And some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "judge_1_transcript": "LESSON FOUR UNDERSTANDING THE WATER CYCLE WATER IS CONSTANTLY MOVING AROUND OUR PLANET IN A CYCLE FROM THE SURFACE UP INTO THE ATMOSPHERE AND BACK DOWN AGAIN THIS IS CALLED THE WATER CYCLE OR THE HYDROLOGICAL CYCLE AND IT HAS BEEN HAPPENING FOR BILLIONS OF YEARS LET'S START WITH EVAPORATION WHEN THE SUN HEATS WATER IN OCEANS LAKES AND RIVERS SOME OF THAT WATER TURNS INTO WATER VAPOR A GAS AND RISES INTO THE AIR OCEANS ARE THE MAIN SOURCE OF EVAPORATED WATER WHICH MAKES SENSE WHEN YOU THINK ABOUT HOW MUCH OF THE EARTH'S SURFACE THEY COVER AS THE WATER VAPOR RISES IT ENTERS COOLER PARTS OF THE ATMOSPHERE WHEN WARM MOIST AIR COOLS DOWN THE WATER VAPOR CONDENSES MEANING IT TURNS BACK INTO TINY LIQUID DROPLETS THESE DROPLETS COLLECT TOGETHER TO FORM CLOUDS YOU MIGHT HAVE NOTICED THAT CLOUDS OFTEN FORM AT A CERTAIN ALTITUDE THAT'S BECAUSE THAT'S THE POINT WHERE THE RISING AIR HAS COOLED JUST ENOUGH FOR CONDENSATION TO BEGIN WHEN ENOUGH DROPLETS COLLECT IN A CLOUD THEY BECOME TOO HEAVY TO STAY SUSPENDED IN THE AIR AND THEY FALL AS PRECIPITATION WHICH IS RAIN SNOW SLEET OR HAIL DEPENDING ON THE TEMPERATURE SOME OF THIS PRECIPITATION FLOWS INTO RIVERS AND STREAMS AND EVENTUALLY BACK TO THE SEA SOME OF IT SOAKS INTO THE GROUND AND BECOMES GROUND WATER AND SOME OF IT FALLS AS SNOW ON HIGH MOUNTAINS AND STAYS FROZEN FOR MONTHS OR EVEN YEARS BEFORE SLOWLY MELTING AND THEN THE WHOLE CYCLE BEGINS AGAIN EVERY GLASS OF WATER YOU DRINK HAS BEEN THROUGH THIS CYCLE COUNTLESS TIMES",
+      "whisper": "Lesson 4, understanding the water cycle. Water is constantly moving around our planet in a cycle, from the surface up into the atmosphere and back down again. This is called the water cycle or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapor, a gas, and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapor rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapor condenses, meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude. That's because that's the point where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation, which is rain, snow, sleet, or hail, depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater, and some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "agreement_wer": 0.018726591760299626,
+      "per_judge_wer": {
+        "wav2vec2": 0.02247191011235955,
+        "whisper": 0.011235955056179775
+      },
+      "failure": true,
+      "failure_reasons": [
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Pre-Procedure Instructions: Upper GI Endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9:30 AM at City General Hospital, Endoscopy Suite, Level 3. Diet: You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids — water, black tea, black coffee, apple juice, or clear broth — up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications: Take all regular medications as usual with a small sip of water on the morning of your procedure, unless your doctor has specifically told you otherwise. If you take blood-thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose — contact your diabetes team for guidance. Arrival: Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure: You will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home — you cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure — this is normal.",
+      "judge_1_transcript": "PREPROCEDURE INSTRUCTIONS UPPER G I AND DOSCOPY YOUR UPPER AND DOSCAPY IS SCHEDUELED FOR WEDNESDAY THE TWENTY SECOND AT NINE THIRTY A M AT CITY GENERAL HOSPITAL ANDOSCAPY SWEET LEVEL THREE DIOT YOU MUST HAVE NOTHING TO EAT FOR AT LEAST SIX HOURS BEFORE YOUR PROCEDURE YOU MAY DRINK CLEAR FLUIDS WATER BLACK TEA BLACK COFFEE APPLE JUICE OR CLEAR BROTH UP TO TWO HOURS BEFORE YOUR APPOINTMENT DO NOT DRINK MILK OR EAT ANY SOLID FOOD AFTER MIDNIGHT THE NIGHT BEFORE MEDICATIONS TAKE ALL REGULAR MEDICATIONS AS USUAL WITH A SMALL SIP OF WATER ON THE MORNING OF YOUR PROCEDURE UNLESS YOUR DOCTOR HAS SPECIFICALLY TOLD YOU OTHERWISE IF YOU TAKE BLOOD THINNING MEDICATIONS SUCH AS WARPHERIN CLOPITAGRIL OR ASPERIN PLEASE CONTACT US AT LEAST FIVE DAYS BEFORE YOUR APPOINTMENT AS YOU MAY NEED TO TEMPORARILY STOP THESE IF YOU TAKE INSOLEN DO NOT TAKE YOUR MORNING DOSE CONTACT YOUR DIABEDIES TEAM FOR GUIDANCE ARRIVAL PLEASE ARRIVE THIRTY MINUTES BEFORE YOUR SCHEDUELED TIME TO ALLOW FOR REGISTRATION AND PREPARATION BRING A LIST OF YOUR CURRENT MEDICATIONS YOUR HOSPITAL CARD AND ANY PREVIOUS ANDOSCAPY REPORTS IF YOU HAVE THEM AFTER THE PROCEDURE YOU WILL BE IN RECOVERY FOR APPROXIMATELY FORTY FIVE MINUTES WHILE THE SEDATION WEARS OFF YOU MUST HAVE A RESPONSIBLE ADULT AVAILABLE TO TAKE YOU HOME YOU CANNOT TRAVEL BY TAXY OR PUBLIC TRANSPORT ALONE AND YOU MUST NOT DRIVE FOR TWENTY FOUR HOURS YOU MAY FEEL BLOAED OR GASY FOR A FEW HOURS AFTER THE PROCEDURE THIS IS NORMAL",
+      "whisper": "Pre-procedure instructions. Upper GI endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9.30 a.m. at City General Hospital. Endoscopy suite level three, diet. You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids, water, black tea, black coffee, apple juice, or clear broth up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications. Take all regular medications as usual with a small sip of water on the morning of your procedure unless your doctor has specifically told you otherwise. If you take blood thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose. Contact your diabetes team for guidance. Arrival. Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure, you will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home. You cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure. This is normal.",
+      "agreement_wer": 0.11475409836065574,
+      "per_judge_wer": {
+        "wav2vec2": 0.14344262295081966,
+        "whisper": 0.020491803278688523
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.115 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 3,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Regulatory Disclosure — Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "judge_1_transcript": "REGULATORY DISCLOSURE FINANCIAL PRODUCTS THIS DOCUMENT CONTAINS IMPORTANT INFORMATION ABOUT THE RISKS ASSOCIATED WITH THE FINANCIAL PRODUCTS DESCRIBED HEREIN YOU SHOULD READ THIS DISCLOSURE CAREFULLY BEFORE MAKING ANY INVESTMENT DECISION PAST PERFORMANCE IS NOT A RELIABLE INDICATOR OF FUTURE RESULTS THE VALUE OF INVESTMENTS AND THE INCOME DERIVED FROM THEM MAY FALL AS WELL AS RISE AND YOU MAY GET BACK LESS THAN YOU ORIGINALLY INVESTED EXCHANGE RATE FLUCTUATIONS MAY CAUSE THE VALUE OF OVERSEAS INVESTMENTS TO RISE OR FALL THIS PRODUCT IS NOT SUITABLE FOR ALL INVESTORS BEFORE INVESTING YOU SHOULD CAREFULLY CONSIDER YOUR INVESTMENT OBJECTIVES LEVEL OF EXPERIENCE RISK APPETITE AND FINANCIAL SITUATION IF YOU ARE IN ANY DOUBT ABOUT THE SUITABILITY OF THIS PRODUCT YOU SHOULD SEEK INDEPENDENT FINANCIAL ADVICE THE PRODUCTS DESCRIBED IN THIS DOCUMENT ARE NOT DEPOSITS AND ARE NOT INSURED BY ANY GOVERNMENT DEPOSIT PROTECTION SCHEME THEY ARE NOT GUARANTEED BY THE ISSUING ENTITY OR ANY OF ITS AFFILIATES INVESTORS COULD LOSE SOME OR ALL OF THEIR INVESTMENT THIS DOCUMENT HAS BEEN PREPARED SOLELY FOR INFORMATION PURPOSES AND DOES NOT CONSTITUTE AN OFFER TO BUY OR SELL OR A SOLICITATION OF AN OFFER TO BUY OR SELL ANY SECURITY AND SHOULD NOT BE RELIED UPON AS SUCH IT HAS BEEN PREPARED WITHOUT REGARD TO THE INDIVIDUAL FINANCIAL CIRCUMSTANCES AND OBJECTIVES OF PERSONS WHO RECEIVE IT",
+      "whisper": "Regulatory Disclosure, Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell or a solicitation of an offer to buy or sell any security and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "agreement_wer": 0.0,
+      "per_judge_wer": {
+        "wav2vec2": 0.0,
+        "whisper": 0.0
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Earnings Call Summary: TechCorp Inc., Q1 2026. Revenue: $14.2 billion, up 18 percent year-over-year and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share: $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23 percent increase year-over-year. Gross margin: 42.3 percent, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60 percent. Cloud segment: revenue of $6.1 billion, up 31 percent year-over-year, representing 43 percent of total revenue. Operating income from cloud was $1.8 billion, a margin of 29.5 percent. Guidance for Q2 2026: the company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16 to 19 percent. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management commentary: CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12 percent of total revenue, up from 4 percent a year ago. The company announced a $5 billion share repurchase programme and raised its quarterly dividend by 8 percent to $0.52 per share.",
+      "judge_1_transcript": "EARNINGS CALL SUMMARY TECK CORP INK CU ONE TWENTY TWENTY SIX REVENUE FOURTEEN POINT TWO BILLION DOLLARS UP EIGHTEEN PER CENT YEAR OVER YEAR AND FOUR HUNDRED MILLION DOLLARS AHEAD OF ANNALIST CONCENCIS OF THIRTEEN POINT EIGHT BILLION DOLLARS THIS WAS THE FIFTH CONSECUTIVE QUARTER OF DOUBLE DIGIT REVENUE GROWTH EARNINGS PER SHARE TWO DOLLARS EIGHTY FOUR CENTS DELUTED COMPARED TO CONCENSUS OF TWO DOLLARS SIXTY ONE CENTS AND TWO DOLLARS THIRTY ONE CENTS IN CU ONE TWENTY TWENTY FIVE THIS REPRESENTS A TWENTY THREE PER CENT INCREASE YEAR OVER YEAR GROS MARGIN FORTY TWO POINT THREE PER CENT EXPANDING ONE POINT FOUR PER CENTAGE POINTS COMPARED TO THE SAME QUARTER LAST YEAR DRIVEN BY A HIGHER MIX OF SOFTWARE AND SERVICES REVENUE WHICH CARRY MARGINS ABOVE SIXTY PER CENT CLOUD SEGMENT REVENUE OF SIX POINT ONE BILLION DOLLARS UP THIRTY ONE PER CENT YEAR OVER YEAR REPRESENTING FORTY THREE PER CENT OF TOTAL REVENUE OPERATING INCOME FROM CLOUD WAS ONE POINT EIGHT BILLION DOLLARS A MARGIN OF TWENTY NINE POINT FIVE PER CENT GUIDANCE FOR CUW TWO TWENTY TWENTY SIX THE COMPANY GUIDED FOR REVENUE OF FOURTEEN POINT SIX BILLION DOLLARS TO FIFTEEN BILLION DOLLARS REPRESENTING YEAR OVER YEAR GROWTH OF SIXTEEN TO NINETEEN PER CENT EARNINGS PER SHARE GUIDANCE OF TWO DOLLARS NINETY CENTS TO THREE DOLLARS FIVE CENTS WAS A HEAD OF CURRENT ANNALIST CONCENSIS OF TWO DOLLARS SEVENTY SIX CENTS MANAGEMENT COMMENTARY C E O MICHAEL CHEN SAID GROWTH WAS BROAD BASED ACROSS ALL SEGMENTS AND GEOGRAPHIES WITH PARTICULARLY STRONG PERFORMANCE IN ENTERPRISE A I TOOLS WHICH NOW REPRESENT TWELVE PER CENT OF TOTAL REVENUE UP FROM FOUR PER CENT A YEAR AGO THE COMPANY ANNOUNCED A FIVE BILLION DOLLARS SHARE REPURCHASE PROGRAMME AND RAISED ITS QUARTERLY DIVIDEND BY EIGHT PER CENT TO FIFTY TWO CENTS PER SHARE",
+      "whisper": "Earnings Call Summary TechCorp Inc., Q1 2026 Revenue $14.2 billion, up 18% year-over-year and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23% increase year-over-year. Gross margin $42.3%, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60%. Cloud segment Revenue of $6.1 billion, up 31% year-over-year, representing 43% of total revenue. Operating income from cloud was $1.8 billion, a maximum of $1.8 billion. A margin of 29.5%. Guidance for Q2 2026 The company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16% to 19%. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management Commentary CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12% of total revenue, up from 4% a year ago. The company announced a $5 billion share repurchase program and raised its quarterly dividend by 8% to $0.52 per share.",
+      "agreement_wer": 0.3568281938325991,
+      "per_judge_wer": {
+        "wav2vec2": 0.6784140969162996,
+        "whisper": 0.07929515418502203
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.357 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 30,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "There is a village in the western Highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was A' Chomraich — meaning the sanctuary. In the eighth century a monk called Maelrubha came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This right of sanctuary held for a thousand years, and was still recognised into the seventeenth century, when Highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather — the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way — something of the sanctuary is still there, waiting for the traveller who thinks they have arrived, and finds instead that they have been received.",
+      "judge_1_transcript": "THERE IS A VILLAGE IN THE WESTERN HIGHLANDS WHERE THE SHORE ROAD ENDS AT A CATTLE GRID AND BEYOND THE CATTLE GRID THERE IS ONLY HEATHER SEA AND THE SOUND OF CURLUES THE VILLAGE IS CALLED APPLE CROSS THOUGH ON THE OLDER MAPS AND IN THE OLDER GALIC IT WAS A COMRIC MEANING THE SANCTUARY IN THE EIGHTH CENTURY A MONK CALLED MELRUBA CAME HERE FROM BANGOR AND FOUNDED A MONASTERY WHOSE STONES LIE NOW UNDER THE CHURCHYARD GRASS WHAT HE BUILT WAS MORE THAN A MONASTERY IT WAS A PLACE OF REFUGE MARKED BY FOUR CROSSES AT THE COMPASS POINTS AND ANY FUGITIVE WHO REACHED THEM WHATEVER THE CRIME COULD NOT BE PURSUED WITHIN THEIR CIRCLE THIS RIGHT OF SANCTUARY HELD FOR A THOUSAND YEARS AND WAS STILL RECOGNIZED INTO THE SEVENTEENTH CENTURY WHEN HIGHLAND COURTS CONTINUED TO ACKNOWLEDGE THE BOUNDARY EVEN AS THEY OTHERWISE WIELDED A PUNISHING LAW TO DAY THE CROSSES ARE GONE OR PERHAPS BURIED AND THE ROAD ENDS WHERE THE ROAD ENDS BUT IN THE WAY THAT CERTAIN LANDSCAPES HOLD MEMORY IN THEIR WEATHER THE SUDDEN HUSH THAT FALLS WHEN YOU TURN THE LAST BEND THE SENSE THAT THE LIGHT HAS CHANGED IN SOME QUIET DELIBERATE WAY SOMETHING OF THE SANCTUARY IS STILL THERE WAITING FOR THE TRAVELLER WHO THINKS THEY HAVE ARRIVED AND FINDS INSTEAD THAT THEY HAVE BEEN RECEIVED",
+      "whisper": "There is a village in the Western Highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was Akomrik, meaning the sanctuary. In the 8th century, a monk called Melruba came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This rite of sanctuary held for a thousand years and was still recognized into the 17th century, when Highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather, the sudden change in the weather is a sign of the future. The sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way. Something of the sanctuary is still there, waiting for the traveler who thinks they have arrived, and finds instead that they have been received.",
+      "agreement_wer": 0.05357142857142857,
+      "per_judge_wer": {
+        "wav2vec2": 0.04017857142857143,
+        "whisper": 0.08928571428571429
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.054 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "The town of Alderly had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret — well, the secret smelled of the sea, even though the sea was forty miles away, which was part of what made it strange. Margaret Holt had lived on the high street for sixty-two years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always been there. Her granddaughter Rosie had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was seventeen and curious in the way that seventeen always is — not curious about answers, but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "judge_1_transcript": "THE TOWN OF ALDERLEY HAD THREE CHURCHES TWO PUBS AND ONE SECRET THAT EVERYONE KNEW BUT NO ONE SPOKE ABOUT OUTLOUD THE CHURCHES WERE OLD AND COLD AND SMELLED OF DAMP HYMNALS THE PUBS WERE WARM AND LOUD AND SMELLED OF EVERYTHING ELSE THE SECRET WELL THE SECRET SMELLED OF THE SEA EVEN THOUGH THE SEA WAS FORTY MILES AWAY WHICH WAS PART OF WHAT MADE IT STRANGE MARGARET HOLT HAD LIVED ON THE HIGH STREET FOR SIXTY TWO YEARS SHE HAD WATCHED THE ELM TREES GROW AND DIE AND BE REPLACED WITH SAPLINGS THAT WERE NOW THEMSELVES BEGINNING TO LOOK LIKE TREES SHE HAD WATCHED THE POST OFFICE BECOME A LETTING AGENCY AND THE LETTING AGENCY BECOME A COFFEE SHOP AND THE COFFEE SHOP BECOME BRIEFLY A YOGA STUDIO BEFORE IT BECAME A COFFEE SHOP AGAIN SHE HAD WATCHED THE SECRET PULSE THROUGH THE TOWN LIKE A SECOND HEART BEAT QUIET BUT CONSTANT SOMETHING THE YOUNG PEOPLE THOUGHT THEY'D DISCOVERED AND THE OLD PEOPLE KNEW HAD ALWAYS BEEN THERE HER GRANDDAUGHTER ROSY HAD COME TO VISIT FOR THE SUMMER WHICH WAS PART OF WHY MARGARET WAS SITTING NOW AT THE KITCHEN WINDOW WATCHING THE GARDEN AND WAITING ROSY WAS SEVENTEEN AND CURIOUS IN THE WAY THAT SEVENTEEN ALWAYS IS NOT CURIOUS ABOUT ANSWERS BUT ABOUT THE QUESTIONS THEMSELVES WHICH IS A KIND OF COURAGE MARGARET HAD SPENT DECADES TRYING TO RELEARN",
+      "whisper": "The town of Alderley had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret, well, the secret smelled of the sea, even though the sea was 40 miles away, which was part of what made it strange. Margaret Holt had lived on the high street for 62 years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always. Her granddaughter, Rosie, had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was 17 and curious in the way that 17 always is, not curious about answers but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "agreement_wer": 0.05172413793103448,
+      "per_judge_wer": {
+        "wav2vec2": 0.03879310344827586,
+        "whisper": 0.03017241379310345
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.052 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 2,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Chapter Four: The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail — bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as 'here the light is different.' On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written: 'I have been here.' Dr. Evelyn Cross had been studying this map for eleven years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibres of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on 'light' and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "judge_1_transcript": "CHAPTER FOUR THE LAST MAP THERE IS A MAP IN THE BRITISH LIBRARY THAT IS WRONG IN A WAY THAT CAN ONLY BE DESCRIBED AS DELIBERATELY WRONG IT WAS DRAWN IN SIXTEEN O TWO BY A CARTOGRAPHER WHOSE NAME HAS BEEN LOST WHICH IS ITSELF SUSPICIOUS SINCE CARTOGRAPHERS OF THAT PERIOD WERE MITICULOUS ABOUT ATTRIBUTION THE MAP SHOWS THE EASTERN COAST OF AN ISLAND THAT DOES NOT EXIST THE ISLAND IS RENDERED AN EXTRAORDINARY DETAIL BAYS INLETS A RIVER THAT CURVES SOUTH BEFORE TURNING BACK ON ITSELF A MOUNTAIN WITH A NOTATION IN LATIN THAT TRANSLATES ROUGHLY AS HERE THE LIGHT IS DIFFERENT ON THE REVERSE SIDE OF THE MAP IN A HAND THAT APPEARS TO BE DIFFERENT FROM THE CARTOGRAPHERS SOME ONE HAS WRITTEN I HAVE BEEN HERE DOCTOR EVELYN CROSS HAD BEEN STUDYING THIS MAP FOR ELEVEN YEARS SHE HAD EXAMINED IT UNDER ULTRAVIOLET LIGHT UNDER INFERRED IMAGING UNDER A MICROSCOPE POWERFUL ENOUGH TO COUNT THE INDIVIDUAL FIBRES OF THE VELUM SHE HAD TRACED THE COAST LINE AGAINST EVERY KNOWN ISLAND IN EVERY OCEAN AND FOUND NOTHING SHE HAD RUN THE LATIN TEXT THROUGH SIX DIFFERENT TRANSLATION TOOLS AND RECEIVED SIX SLIGHTLY DIFFERENT ANSWERS ALL OF WHICH AGREED ON LIGHT AND DISAGREED ON EVERYTHING ELSE TO DAY FOR REASONS SHE COULDN'T FULLY EXPLAIN SHE THOUGHT SHE WAS CLOSE",
+      "whisper": "Chapter 4, The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail. Bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates roughly as, here, the light is different. On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written, I have been here. Dr. Evelyn Cross had been studying this map for 11 years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibers of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on, light, and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "agreement_wer": 0.06451612903225806,
+      "per_judge_wer": {
+        "wav2vec2": 0.06912442396313365,
+        "whisper": 0.013824884792626729
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.065 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight: the government has announced an emergency package worth 14 billion pounds to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from the 1st of May. Under the plan, households will receive a flat payment of 400 pounds, with additional support for the lowest-income families of up to 650 pounds. Businesses in the hospitality, retail, and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67 percent over the past 18 months. Industry groups broadly welcomed the support but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent James Okafor, who is outside the Treasury.",
+      "judge_1_transcript": "GOOD EVENING I'M SERACHEN AND THIS IS THE SIX O'CLOCK NEWS OUR TOP STORY TO NIGHT THE GOVERNMENT HAS ANNOUNCED AN EMERGENCY PACKAGE WORTH FOURTEEN BILLION POUNDS TO HELP HOUSEHOLDS AND BUSINESSES WITH RISING ENERGY COSTS THE CHANCELLOR CONFIRMED THE MEASURES IN A STATEMENT TO PARLIAMENT THIS AFTERNOON SAYING THE PACKAGE WOULD TAKE EFFECT FROM THE FIRST OF MAY UNDER THE PLAN HOUSEHOLDS WILL RECEIVE A FLAT PAYMENT OF FOUR HUNDRED POUNDS WITH ADDITIONAL SUPPORT FOR THE LOWEST INCOME FAMILIES OF UP TO SIX HUNDRED FIFTY POUNDS BUSINESSES AN THE HOSPITALITY RETAIL AND MANUFACTURING SECTORS WILL RECEIVE REBATES ON THEIR ENERGY BILLS FOR A PERIOD OF SIX MONTHS THE ANNOUNCEMENT WAS WELCOMED BY OPPOSITION LEADERS THOUGH THE SHADOW CHANCELLOR CALLED IT TOO LITTLE TOO LATE POINTING OUT THAT AVERAGE HOUSEHOLD BILLS HAVE RISEN BY SIXTY SEVEN PER CENT OVER THE PAST EIGHTEEN MONTHS INDUSTRY GROUPS BROADLY WELCOMED THE SUPPORT BUT SAID LONGER TERM SOLUTIONS WERE STILL NEEDED THE COST OF THE PACKAGE WILL BE FUNDED PARTLY THROUGH A WINDFALL TAX ON ENERGY COMPANIES WHICH THE GOVERNMENT IS EXTENDING FOR A FURTHER TWO YEARS SEVERAL ENERGY FIRM SAID THEY WOULD REVIEW PLANNED INVESTMENT IN DOMESTIC PRODUCTION FOLLOWING THE ANNOUNCEMENT WE'LL HAVE MORE ON THIS STORY THROUGHOUT THE EVENING NOW LET'S GO TO OUR ECONOMIC'S CORRESPONDENT JAMES OKAFOR WHO IS OUTSIDE THE TREASURY",
+      "whisper": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight, the government has announced an emergency package worth 14 billion pounds to help households and businesses with rising energy costs. The chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from the 1st of May. Under the plan, households will receive a flat payment of 400 pounds, with additional support for the lowest-income families of up to 650 pounds. Businesses in the hospitality, retail, and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67 percent over the past 18 months. Industry groups broadly welcomed the support, but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent, James Okafor, who is outside the Treasury.",
+      "agreement_wer": 0.07339449541284404,
+      "per_judge_wer": {
+        "wav2vec2": 0.11467889908256881,
+        "whisper": 0.0
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.073 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 2,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Lesson 4: Understanding the Water Cycle. Water is constantly moving around our planet in a cycle — from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapour — a gas — and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapour rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapour condenses — meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude — that's because that's the point where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation — which is rain, snow, sleet, or hail depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater. And some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "judge_1_transcript": "LESSON FOUR UNDERSTANDING THE WATER CYCLE WATER IS CONSTANTLY MOVING AROUND OUR PLANET IN A CYCLE FROM THE SURFACE UP INTO THE ATMOSPHERE AND BACK DOWN AGAIN THIS IS CALLED THE WATER CYCLE OR THE HYDROLOGICAL CYCLE AND IT HAS BEEN HAPPENING FOR BILLIONS OF YEARS LET'S START WITH EVAPORATION WHEN THE SUN HEATS WATER IN OCEANS LAKES AND RIVERS SOME OF THAT WATER TURNS INTO WATER VAPOR A GAS AND RISES INTO THE AIR OCEANS ARE THE MAIN SOURCE OF EVAPORATED WATER WHICH MAKES SENSE WHEN YOU THINK ABOUT HOW MUCH OF THE EARTH'S SURFACE THEY COVER AS THE WATER VAPOR RISES IT ENTERS COOLER PARTS OF THE ATMOSPHERE WHEN WARM MOIST AIR COOLS DOWN THE WATER VAPOR CONDENSES MEANING IT TURNS BACK INTO TINY LIQUID DROPLETS THESE DROPLETS COLLECT TOGETHER TO FORM CLOUDS YOU MIGHT HAVE NOTICED THAT CLOUDS OFTEN FORM AT A CERTAIN ALTITUDE THAT'S BECAUSE THAT'S THE POINT WHERE THE RISING AIR HAS COOLED JUST ENOUGH FOR CONDENSATION TO BEGIN WHEN ENOUGH DROPLETS COLLECT IN A CLOUD THEY BECOME TOO HEAVY TO STAY SUSPENDED IN THE AIR AND THEY FALL AS PRECIPITATION WHICH IS RAIN SNOW SLEET OR HAIL DEPENDING ON THE TEMPERATURE SOME OF THIS PRECIPITATION FLOWS INTO RIVERS AND STREAMS AND EVENTUALLY BACK TO THE SEA SOME OF IT SOAKS INTO THE GROUND AND BECOMES GROUND WATER AND SOME OF IT FALLS AS SNOW ON HIGH MOUNTAINS AND STAYS FROZEN FOR MONTHS OR EVEN YEARS BEFORE SLOWLY MELTING AND THEN THE WHOLE CYCLE BEGINS AGAIN EVERY GLASS OF WATER YOU DRINK HAS BEEN THROUGH THIS CYCLE COUNTLESS TIMES",
+      "whisper": "Lesson 4, Understanding the Water Cycle. Water is constantly moving around our planet in a cycle, from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapor, a gas, and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapor rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapor condenses, meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude. That's because that's the point where the rise and fall of the atmosphere is the point where rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation, which is rain, snow, sleet, or hail depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater, and some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting, and then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "agreement_wer": 0.018726591760299626,
+      "per_judge_wer": {
+        "wav2vec2": 0.02247191011235955,
+        "whisper": 0.04868913857677903
+      },
+      "failure": true,
+      "failure_reasons": [
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Pre-Procedure Instructions: Upper GI Endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9:30 AM at City General Hospital, Endoscopy Suite, Level 3. Diet: You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids — water, black tea, black coffee, apple juice, or clear broth — up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications: Take all regular medications as usual with a small sip of water on the morning of your procedure, unless your doctor has specifically told you otherwise. If you take blood-thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose — contact your diabetes team for guidance. Arrival: Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure: You will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home — you cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure — this is normal.",
+      "judge_1_transcript": "PREPROCEDURE INSTRUCTIONS UPPER G I AND DOSCAPE YOUR UPPER AND DOSCAPE IS SCHEJULED FOR WEDNESDAY THE TWENTY SECOND AT NINE THIRTY A M AT CITY GENERAL HOSPITAL AN DOSCAPY SWEET LEVEL THREE DIET YOU MUST HAVE NOTHING TO EAT FOR AT LEAST SIX HOURS BEFORE YOUR PROCEDURE YOU MAY DRINK CLEAR FLUIDS WATER BLACK TEA BLACK COFFEE APPLE JUICE OR CLEAR BROTH UP TO TWO HOURS BEFORE YOUR APPOINTMENT DO NOT DRINK MILK OR EAT ANY SOLID FOOD AFTER MIDNIGHT THE NIGHT BEFORE MEDICATIONS TAKE ALL REGULAR MEDICATIONS AS USUAL WITH A SMALL SIP OF WATER ON THE MORNING OF YOUR PROCEDURE UNLESS YOUR DOCTOR HAS SPECIFICALLY TOLD YOU OTHERWIS IF YOU TAKE BLOOD THINNING MEDICATIONS SUCH AS WARFRIN CLOPITAGRO OR ASPERIN PLEASE CONTACT US AT LEAST FIVE DAYS BEFORE YOUR APPOINTMENT AS YOU MAY NEED TO TEMPORARILY STOP THESE IF YOU TAKE INSOLEN DO NOT TAKE YOUR MORNING DOSE CONTACT YOUR DIABEDES TEAM FOR GUIDANCE ARRIVAL PLEASE ARRIVE THIRTY MINUTES BEFORE YOUR SCHEDUELED TIME TO ALLOW FOR REGISTRATION AND PREPARATION BRING A LIST OF YOUR CURRENT MEDICATIONS YOUR HOSPITAL CARD AND ANY PREVIOUS ANDOSCAPY REPORTS IF YOU HAVE THEME AFTER THE PROCEDURE YOU WILL BE IN RECOVERY FOR APPROXIMATELY FORTY FIVE MINUTES WHILE THE SEDATION WEARS OFF YOU MUST HAVE A RESPONSIBLE ADULT AVAILABLE TO TAKE YOU HOME YOU CANNOT TRAVEL BY TAXY OR PUBLIC TRANSPORT ALONE AND YOU MUST NOT DRIVE FOR TWENTY FOUR HOURS YOU MAY FEEL BLOATED OR GASY FOR A FEW HOURS AFTER THE PROCEDURE THIS IS NORMAL",
+      "whisper": "Pre-procedure instructions. Upper GI endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9 30 a.m. at City General Hospital Endoscopy Suite, Level 3. Diet. You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids, water, black tea, black coffee, apple juice, or clear broth up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications. Take all regular medications as usual with a small sip of water on the morning of your procedure unless your doctor has specifically told you otherwise. If you take blood thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose. Contact us at 888-625-4222. Contact your diabetes team for guidance. Arrival. Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure, you will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home. You cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure. This is normal. Thank you for watching.",
+      "agreement_wer": 0.11475409836065574,
+      "per_judge_wer": {
+        "wav2vec2": 0.14754098360655737,
+        "whisper": 0.04918032786885246
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.115 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 3,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Regulatory Disclosure — Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "judge_1_transcript": "REGULATORY DISCLOSURE FINANCIAL PRODUCTS THIS DOCUMENT CONTAINS IMPORTANT INFORMATION ABOUT THE RISKS ASSOCIATED WITH THE FINANCIAL PRODUCTS DESCRIBED HEREIN YOU SHOULD READ THIS DISCLOSURE CAREFULLY BEFORE MAKING ANY INVESTMENT DECISION PAST PERFORMANCE IS NOT A RELIABLE INDICATOR OF FUTURE RESULTS THE VALUE OF INVESTMENTS AND THE INCOME DERIVED FROM THEM MAY FALL AS WELL AS RISE AND YOU MAKE IT BACK LESS THAN YOURE ORIGINALLY INVESTID EXCHANGE RATE FLUCTUATIONS MAY CAUSE THE VALUE OF OVERSEAS INVESTMENTS TO RISE OR FALL THIS PRODUCT IS NOT SUITABLE FOR ALL INVESTORS BEFORE INVESTING YOU SHOULD CAREFULLY CONSIDER YOUR INVESTMENT OBJECTIVES LEVEL OF EXPERIENCE RISK APPETITE AND FINANCIAL SITUATION IF YOU ARE IN ANY DOUBT ABOUT THE SUITABILITY OF THIS PRODUCT YOU SHOULD SEEK INDEPENDENT FINANCIAL ADVICE THE PRODUCTS DESCRIBED IN THIS DOCUMENT ARE NOT DEPOSITS AND ARE NOT INSURED BY ANY GOVERNMENT DEPOSIT PROTECTION SCHEME THEY ARE NOT GUARANTEED BY THE ISSUING ENTITY OR ANY OF ITS EFFILIATES INVESTORS COULD LOSE SOME OR ALL OF THEIR INVESTMENT THIS DOCUMENT HAS BEEN PREPARED SOLELY FOR INFORMATION PURPOSES AND DOES NOT CONSTITUTE AN OFFER TO BUY OR SELL OR A SOLICITATION OF AN OFFER TO BUY OR SELL ANY SECURITY AND SHOULD NOT BE RELIED UPON AS SUCH IT HAS BEEN PREPARED WITHOUT REGARD TO THE INDIVIDUAL FINANCIAL CIRCUMSTANCES AND OBJECTIVES OF PERSONS WHO RECEIVE IT",
+      "whisper": "Regulatory Disclosure, Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "agreement_wer": 0.02262443438914027,
+      "per_judge_wer": {
+        "wav2vec2": 0.02262443438914027,
+        "whisper": 0.0
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "B",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Earnings Call Summary: TechCorp Inc., Q1 2026. Revenue: $14.2 billion, up 18 percent year-over-year and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share: $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23 percent increase year-over-year. Gross margin: 42.3 percent, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60 percent. Cloud segment: revenue of $6.1 billion, up 31 percent year-over-year, representing 43 percent of total revenue. Operating income from cloud was $1.8 billion, a margin of 29.5 percent. Guidance for Q2 2026: the company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16 to 19 percent. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management commentary: CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12 percent of total revenue, up from 4 percent a year ago. The company announced a $5 billion share repurchase programme and raised its quarterly dividend by 8 percent to $0.52 per share.",
+      "judge_1_transcript": "EARNINGS CALL SUMMARY TECK CORP INK CU ONE TWENTY TWENTY SIX REVENUE FOURTEEN POINT TWO BILLION DOLLARS UP EIGHTEEN PER CENT YEAR OVER YEAR AND FOUR HUNDRED MILLION DOLLARS AHEAD OF ANALIST CONCENSIS OF THIRTEEN POINT EIGHT BILLION DOLLARS THIS WAS THE FIFTH CONSECUTIVE QUARTER OF DOUBLE DIGIT REVENUE GROWTH EARNINGS PER SHARE TWO DOLLARS AND EIGHTY FOUR CENTS DELUDED COMPARED TO CONCENSIS OF TWO DOLLARS AND SIXTY ONE CENTS AND TWO DOLLARS AND THIRTY ONE CENTS IN KU ONE TWENTY TWENTY FIVE THIS REPRESENTS A TWENTY THREE PER CENT INCREASE YEAR OVER YEAR GROSS MARGIN FORTY TWO POINT THREE PER CENT EXPANDING ONE POINT FOUR PER CENTAGE POINTS COMPARED TO THE SAME QUARTER LAST YEAR DRIVEN BY A HIGHER MIX OF SOFTWARE AND SERVICES REVENUE WHICH CARRY MARGINS ABOVE SIXTY PER CENT CLOUD SEGMENT REVENUE OF SIX POINT ONE BILLION DOLLARS UP THIRTY ONE PER CENT YEAR OVER YEAR REPRESENTING FORTY THREE PER CENT OF TOTAL REVENUE OPERATING INCOME FROM CLOUD WAS ONE POINT EIGHT BILLION DOLLARS A MARGIN OF TWENTY NINE POINT FIVE PER CENT GUIDANCE FOR CU TWO TWO THOUSAND TWENTY CIX THE COMPANYE GUIDED FOR REVENUE OF FOURTEEN POINT SIX BILLION DOLLARS TO FIFTEEN BILLION DOLLARS REPRESENTING YEAR OVER YEAR GROWTH OF SIXTEEN TO NINETEEN PER CENT EARNINGS PER SHARE GUIDANCE OF TWO DOLLARS AND NINETY CENTS TO THREE DOLLARS AND FIVE CENTS WAS A HEAD OF CURRENT ANNALIST CONCENSIS OF TWO DOLLARS AND SEVENTY SIX CENTS MANAGEMENT COMMENTARY C E O MICHAEL CHEN SAID GROWTH WAS BROAD BASED ACROSS ALL SEGMENTS AND GEOGRAPHIES WITH PARTICULARLY STRONG PERFORMANCE AND ENTERPRISE A I TOOLS WHICH NOW REPRESENT TWELVE PER CENT OF TOTAL REVENUE UP FROM FOUR PER CENT A YEAR AGO THE COMPANY ANNOUNCED A FIVE BILLION DOLLARS SHARE REPURCHASE PROGRAME AND RAISED ITS QUARTERLY DIVIDEND BY EIGHT PER CENT TO FIFTY TWO CENTS PER SHARE",
+      "whisper": "Earnings Call Summary, TechCorp Inc., Q1 2026. Revenue, $14.2 billion, up 18% year-over-year, and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share, $2.84 diluted compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23% increase year-over-year. Gross Margin, 42.3%, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60%. Cloud Segment, revenue of $6.1 billion, up 31% year-over-year, representing 43% of 2021. Total Revenue, operating income from cloud was $1.8 billion, a margin of 29.5%. Guidance for Q2 2026. The company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16% to 19%. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management Common, Q1 2020. The company announced a $5 billion share repurchase program and raised its quarterly dividend by 8% to $0.52 per share. The company announced a $5 billion share repurchase program and raised its quarterly dividend by 8% to $0.52 per share.",
+      "agreement_wer": 0.4801762114537445,
+      "per_judge_wer": {
+        "wav2vec2": 0.7180616740088106,
+        "whisper": 0.20704845814977973
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.480 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 29,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "There is a village in the western Highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was A' Chomraich — meaning the sanctuary. In the eighth century a monk called Maelrubha came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This right of sanctuary held for a thousand years, and was still recognised into the seventeenth century, when Highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather — the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way — something of the sanctuary is still there, waiting for the traveller who thinks they have arrived, and finds instead that they have been received.",
+      "judge_1_transcript": "THERE IS A VILLAGE IN THE WESTERN HIGHLANDS WHERE THE SHORE ROAD ENDS AT A CATTLE GRID AND BEYOND THE CATTLE GRID THERE IS ONLY HEATHER SEA AND THE SOUND OF CURLUS THE VILLAGE IS CALLED APPLECROSS THOUGH ON THE OLDER MAPS AND IN THE OLDER GALIC IT WAS A CHOMRIK MEANING THE SANCTUARY IN THE EIGHTH CENTURY A MONK CALLED MAILE RUBA CAME HERE FROM BANGOR AND FOUNDED A MONASTERY WHOSE STONES LIE NOW UNDER THE CHURCHYARD GRASS WHAT HE BUILT WAS MORE THAN A MONASTERY IT WAS A PLACE OF REFUGE MARKED BY FOUR CROSSES AT THE COMPASS POINTS AND ANY FUGITIVE WHO REACHED THEM WHATEVER THE CRIME COULD NOT BE PURSUED WITHIN THEIR CIRCLE THIS RIGHT OF SANCTUARY HELD FOR A THOUSAND YEARS AND WAS STILL RECOGNIZED INTO THE SEVENTEENTH CENTURY WHEN HIGHLAND COURTS CONTINUE TO ACKNOWLEDGE THE BOUNDARY EVEN AS THEY OTHERWISE WIELDED A PUNISHING LAW TO DAY THE CROSSES ARE GONE OR PERHAPS BURIED AND THE ROAD ENDS WHERE THE ROAD ENDS BUT IN THE WAY THAT CERTAIN LANDSCAPES HOLD MEMORY IN THEIR WEATHER THE SUDDEN HUSH THAT FALLS WHEN YOU TURN THE LAST BEND THE SENSE THAT THE LIGHT HAS CHANGED IN SOME QUIET DELIBERATE WAY SOMETHING OF THE SANCTUARY IS STILL THERE WAITING FOR THE TRAVELLER WHO THINKS THEY HAVE ARRIVED AND FINDS INSTEAD THAT THEY HAVE BEEN RECEIVED",
+      "whisper": "There is a village in the western highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was A Chomraic, meaning the sanctuary. In the 8th century, a monk called Mailruba came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge marked by four crosses at the compass points and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This rite of sanctuary held for a thousand years and was still recognized into the 17th century when highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends at the top of the hill. It ends where the road ends, but in the way that certain landscapes hold memory in their weather, the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way. Something of the sanctuary is still there, waiting for the traveler who thinks they have arrived, and finds instead that they have been received.",
+      "agreement_wer": 0.049107142857142856,
+      "per_judge_wer": {
+        "wav2vec2": 0.04017857142857143,
+        "whisper": 0.06696428571428571
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "B",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "The town of Alderly had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret — well, the secret smelled of the sea, even though the sea was forty miles away, which was part of what made it strange. Margaret Holt had lived on the high street for sixty-two years. She had watched the elm trees grow and die and be replaced with saplings that were now, themselves, beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant, something the young people thought they'd discovered and the old people knew had always been there. Her granddaughter Rosie had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was seventeen and curious in the way that seventeen always is — not curious about answers, but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "judge_1_transcript": "THE TOWN OF ALDERLEY HAD THREE CHURCHES TWO PUBS AND ONE SECRET THAT EVERYONE KNEW BUT NO ONE SPOKE ABOUT OUTLOUD THE CHURCHES WERE OLD AND COLD AND SMELLED OF DAMP HYMNOLS THE PUBS WERE WARM AND LOUD AND SMELLED OF EVERYTHING ELSE THE SECRET WELL THE SECRET SMELLED OF THE SEA EVEN THOUGH THE SEA WAS FORTY MILES AWAY WHICH WAS PART OF WHAT MADE IT STRANGE MARGARET HOLT HAD LIVED ON THE HIGH STREET FOR SIXTY TWO YEARS SHE HAD WATCHED THE ELM TREES GROW AND DIE AND BE REPLACED WITH SAPLINGS THAT WERE NOW THEMSELVES BEGINNING TO LOOK LIKE TREES SHE HAD WATCHED THE POST OFFICE BECOME A LETTING AGENCY AND THE LETTING AGENCY BECOME A COFFEE SHOP AND THE COFFEE SHOP BECOME BRIEFLY A YOGA STUDIO BEFORE IT BECAME A COFFEE SHOP AGAIN SHE HAD WATCHED THE SECRET PULSE THROUGH THE TOWN LIKE A SECOND HEART BEAT QUIET BUT CONSTANT SOMETHING THE YOUNG PEOPLE THOUGHT THEY'D DISCOVERED AND THE OLD PEOPLE KNEW HAD ALWAYS BEEN THERE HER GRANDDAUGHTER ROSYE HAD COME TO VISIT FOR THE SUMMER WHICH WAS PART OF WHY MARGARET WAS SITTING NOW AT THE KITCHEN WINDOW WATCHING THE GARDEN AND WAITING ROSI WAS SEVENTEEN AND CURIOUS IN THE WAY THAT SEVENTEEN ALWAYS IS NOT CURIOUS ABOUT ANSWERS BUT ABOUT THE QUESTIONS THEMSELVES WHICH IS A KIND OF COURAGE MARGARET HAD SPENT DECADES TRYING TO RELEARN",
+      "whisper": "The town of Alderley had three churches, two pubs, and one secret that everyone knew but no one spoke about out loud. The churches were old and cold and smelled of damp hymnals. The pubs were warm and loud and smelled of everything else. The secret, well, the secret smelled of the sea, even though the sea was 40 miles away, which was part of what made it strange. Margaret Holt had lived on the high street for 62 years. She had watched the elm trees grow and die and be replaced with saplings that were now themselves beginning to look like trees. She had watched the post office become a letting agency and the letting agency become a coffee shop and the coffee shop become, briefly, a yoga studio before it became a coffee shop again. She had watched the secret pulse through the town like a second heartbeat, quiet but constant. Something the young people thought they'd discovered and the old people knew. Something the young people knew had always been there. Her granddaughter Rosie had come to visit for the summer, which was part of why Margaret was sitting now at the kitchen window, watching the garden and waiting. Rosie was 17 and curious in the way that 17 always is. Not curious about answers, but about the questions themselves, which is a kind of courage Margaret had spent decades trying to relearn.",
+      "agreement_wer": 0.04741379310344827,
+      "per_judge_wer": {
+        "wav2vec2": 0.04310344827586207,
+        "whisper": 0.04310344827586207
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "B",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Chapter Four: The Last Map. There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail — bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates, roughly, as 'here the light is different.' On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written: 'I have been here.' Dr. Evelyn Cross had been studying this map for eleven years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibres of the vellum. She had traced the coastline against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on 'light' and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "judge_1_transcript": "CHAPTER FOUR THE LAST MAP THERE IS A MAP IN THE BRITISH LIBRARY THAT IS WRONG IN A WAY THAT CAN ONLY BE DESCRIBED AS DELIBERATELY WRONG IT WAS DRAWN IN SIXTEEN O TWO BY A CARTOGRAPHER WHOSE NAME HAS BEEN LOST WHICH IS ITSELF SUSPICIOUS SINCE CARTOGRAPHERS OF THAT PERIOD WERE MATICULOUS ABOUT ATTRIBUTION THE MAP SHOWS THE EASTERN COAST OF AN ISLAND THAT DOES NOT EXIST THE ISLAND IS RENDERED IN EXTRAORDINARY DETAIL BAYS INLETS A RIVER THAT CURVES SOUTH BEFORE TURNING BACK ON ITSELF A MOUNTAIN WITH A NOTATION IN LATIN THAT TRANSLATES ROUGHLY AS HERE THE LIGHT IS DIFFERENT ON THE REVERSE SIDE OF THE MAP IN A HAND THAT APPEARS TO BE DIFFERENT FROM THE CARTOGRAPHERS SOME ONE HAS WRITTEN I HAVE BEEN HERE DOCTOR EVELIN CROSS HAD BEEN STUDYING THIS MAP FOR ELEVEN YEARS SHE HAD EXAMINED IT UNDER ULTRAVIOLET LIGHT UNDER INFA RED IMAGING UNDER A MICROSCOPE POWERFUL ENOUGH TO COUNT THE INDIVIDUAL FIBRES OF THE VELUM SHE HAD TRACED THE COAST LINE AGAINST EVERY KNOWN ISLAND IN EVERY OCEAN AND FOUND NOTHING SHE HAD RUN THE LATIN TEXT THROUGH SIX DIFFERENT TRANSLATION TOOLS AND RECEIVED SIX SLIGHTLY DIFFERENT ANSWERS ALL OF WHICH AGREED ON LIGHT AND DISAGREED ON EVERYTHING ELSE TO DAY FOR REASONS SHE COULDN'T FULLY EXPLAIN SHE THOUGHT SHE WAS CLOSE",
+      "whisper": "Chapter 4. The Last Map There is a map in the British Library that is wrong in a way that can only be described as deliberately wrong. It was drawn in 1602 by a cartographer whose name has been lost, which is itself suspicious, since cartographers of that period were meticulous about attribution. The map shows the eastern coast of an island that does not exist. The island is rendered in extraordinary detail. Bays, inlets, a river that curves south before turning back on itself, a mountain with a notation in Latin that translates roughly as here the light is different. On the reverse side of the map, in a hand that appears to be different from the cartographer's, someone has written, I have been here. Dr. Evelyn Cross had been studying this map for 11 years. She had examined it under ultraviolet light, under infrared imaging, under a microscope powerful enough to count the individual fibers of the vellum. She had traced the coastline against the island, and she had found that the island was against every known island in every ocean and found nothing. She had run the Latin text through six different translation tools and received six slightly different answers, all of which agreed on light and disagreed on everything else. Today, for reasons she couldn't fully explain, she thought she was close.",
+      "agreement_wer": 0.06451612903225806,
+      "per_judge_wer": {
+        "wav2vec2": 0.07373271889400922,
+        "whisper": 0.06451612903225806
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.065 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 2,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight: the government has announced an emergency package worth 14 billion pounds to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from the 1st of May. Under the plan, households will receive a flat payment of 400 pounds, with additional support for the lowest-income families of up to 650 pounds. Businesses in the hospitality, retail, and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the shadow chancellor called it too little too late, pointing out that average household bills have risen by 67 percent over the past 18 months. Industry groups broadly welcomed the support but said longer-term solutions were still needed. The cost of the package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economics correspondent James Okafor, who is outside the Treasury.",
+      "judge_1_transcript": "GOOD EVENING I'M SARA CHENN AND THIS IS THE SIX O'CLOCK NEWS OUR TOP STORY TO NIGHT THE GOVERNMENT HAS ANNOUNCED AN EMERGENCY PACKAGE WORTH FOURTEEN BILLION POUNDS TO HELP HOUSEHOLDS AND BUSINESSES WITH RISING ENERGY COSTS THE CHANCELLOR CONFIRMED THE MEASURES IN A STATEMENT TO PARLIAMENT THIS AFTERNOON SAYING THE PACKAGE WOULD TAKE EFFECT FROM THE FIRST OF MAY UNDER THE PLAN HOUSEHOLDS WILL RECEIVE A FLAT PAYMENT OF FOUR HUNDRED POUNDS WITH ADDITIONAL SUPPORT FOR THE LOWEST INCOME FAMILIES OF UP TO SIX HUNDRED AD FIFTY POUNDS BUSINESSES IN THE HOSPITALITY RETAIL AND MANUFACTURING SECTORS WILL RECEIVE REBATES ON THEIR ENERGY BILLS FOR A PERIOD OF SIX MONTHS THE ANNOUNCEMENT WAS WELCOMED BY OPPOSITION LEADERS THOUGH THE SHADOW CHANCELLOR CALLED IT TOO LITTLE TOO LATE POINTING OUT THAT AVERAGE HOUSEHOLD BILLS HAVE RISEN BY SIXTY SEVEN PER CENT OVER THE PAST EIGHTEEN MONTHS INDUSTRY GROUPS BROADLY WELCOMED THE SUPPORT BUT SAID LONGER TERM SOLUTIONS WERE STILL NEEDED THE COST OF THE PACKAGE WILL BE FUNDED PARTLY THROUGH A WINDFALL TAX ON ENERGY COMPANIES WHICH THE GOVERNMENT IS EXTENDING FOR A FURTHER TWO YEARS SEVERAL ENERGY FIRMS SAID THEY WOULD REVIEW PLANNED INVESTMENT IN DOMESTIC PRODUCTION FOLLOWING THE ANNOUNCEMENT WE'LL HAVE MORE ON THIS STORY THROUGHOUT THE EVENING NOW LET'S GO TO OUR ECONOMICS CORRESPONDENT JAMES OKEFORT WHO IS OUTSIDE THE TREASURY",
+      "whisper": "Good evening. I'm Sarah Chen, and this is the 6 o'clock news. Our top story tonight. The government has announced an emergency package worth £14 billion to help households and businesses with rising energy costs. The Chancellor confirmed the measures in a statement to Parliament this afternoon, saying the package would take effect from 1 May. Under the plan, households will receive a flat payment of £400 with additional support for the lowest-income families of up to £650. Businesses in the hospitality, retail and manufacturing sectors will receive rebates on their energy bills for a period of six months. The announcement was welcomed by opposition leaders, though the Shadow Chancellor called it too little too late, pointing out that average household bills have risen by 67%. The package will be funded partly through a windfall tax on energy companies, which the government is extending for a further two years. Several energy firms said they would review planned investment in domestic production following the announcement. We'll have more on this story throughout the evening. Now let's go to our economic news. We'll start with the economics correspondent James Okafor, who is outside the Treasury.",
+      "agreement_wer": 0.1743119266055046,
+      "per_judge_wer": {
+        "wav2vec2": 0.10550458715596331,
+        "whisper": 0.16055045871559634
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.174 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 6,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Lesson 4: Understanding the Water Cycle. Water is constantly moving around our planet in a cycle — from the surface up into the atmosphere and back down again. This is called the water cycle, or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapour — a gas — and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapour rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapour condenses — meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude — that's because that's the point where the rising air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation — which is rain, snow, sleet, or hail depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater. And some of it falls as snow on high mountains and stays frozen for months or even years before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "judge_1_transcript": "LESSON FOUR UNDERSTANDING THE WATER CYCLE WATER IS CONSTANTLY MOVING AROUND OUR PLANET IN A CYCLE FROM THE SURFACE UP INTO THE ATMOSPHERE AND BACK DOWN AGAIN THIS IS CALLED THE WATER CYCLE OR THE HYDROLOGICAL CYCLE AND IT HAS BEEN HAPPENING FOR BILLIONS OF YEARS LET'S START WITH EVAPORATION WHEN THE SUN HEATS WATER IN OCEANS LAKES AND RIVERS SOME OF THAT WATER TURNS INTO WATER VAPOR A GAS AND RISES INTO THE AIR OCEANS ARE THE MAIN SOURCE OF EVAPORATED WATER WHICH MAKES SENSE WHEN YOU THINK ABOUT HOW MUCH OF THE EARTH'S SURFACE THEY COVER AS THE WATER VAPOR RISES IT ENTERS COOLER PARTS OF THE ATMOSPHERE WHEN WARM MOIST AIR COOLS DOWN THE WATER VAPOR CONDENSES MEANING IT TURNS BACK INTO TINY LIQUID DROPLETS THESE DROPLETS COLLECT TOGETHER TO FORM CLOUDS YOU MIGHT HAVE NOTICED THAT CLOUDS OFTEN FORM AT A CERTAIN ALTITUDE THAT'S BECAUSE THAT'S THE POINT WHERE THE RISING AIR HAS COOLED JUST ENOUGH FOR CONDENSATION TO BEGIN WHEN ENOUGH DROPLETS COLLECT IN A CLOUD THEY BECOME TOO HEAVY TO STAY SUSPENDED IN THE AIR AND THEY FALL AS PRECIPITATION WHICH IS RAIN SNOW SLEET OR HAIL DEPENDING ON THE TEMPERATURE SOME OF THIS PRECIPITATION FLOWS INTO RIVERS AND STREAMS AND EVENTUALLY BACK TO THE SEA SOME OF IT SOAKS INTO THE GROUND AND BECOMES GROUND WATER AND SOME OF IT FALLS AS SNOW ON HIGH MOUNTAINS AND STAYS FROZEN FOR MONTHS OR EVEN YEARS BEFORE SLOWLY MELTING AND THEN THE WHOLE CYCLE BEGINS AGAIN EVERY GLASS OF WATER YOU DRINK HAS BEEN THROUGH THIS CYCLE COUNTLESS TIMES",
+      "whisper": "Lesson 4. Understanding the Water Cycle Water is constantly moving around our planet in a cycle, from the surface up into the atmosphere and back down again. This is called the water cycle or the hydrological cycle, and it has been happening for billions of years. Let's start with evaporation. When the sun heats water in oceans, lakes, and rivers, some of that water turns into water vapor, a gas, and rises into the air. Oceans are the main source of evaporated water, which makes sense when you think about how much of the Earth's surface they cover. As the water vapor rises, it enters cooler parts of the atmosphere. When warm, moist air cools down, the water vapor condenses, meaning it turns back into tiny liquid droplets. These droplets collect together to form clouds. You might have noticed that clouds often form at a certain altitude. That's because that's the point where the rising... ...air has cooled just enough for condensation to begin. When enough droplets collect in a cloud, they become too heavy to stay suspended in the air, and they fall as precipitation, which is rain, snow, sleet, or hail, depending on the temperature. Some of this precipitation flows into rivers and streams and eventually back to the sea. Some of it soaks into the ground and becomes groundwater, and some of it falls as snow on high mountains and stays frozen for months or even years. Before slowly melting. And then the whole cycle begins again. Every glass of water you drink has been through this cycle countless times.",
+      "agreement_wer": 0.018726591760299626,
+      "per_judge_wer": {
+        "wav2vec2": 0.02247191011235955,
+        "whisper": 0.011235955056179775
+      },
+      "failure": true,
+      "failure_reasons": [
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L05",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Pre-Procedure Instructions: Upper GI Endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9:30 AM at City General Hospital, Endoscopy Suite, Level 3. Diet: You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids — water, black tea, black coffee, apple juice, or clear broth — up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications: Take all regular medications as usual with a small sip of water on the morning of your procedure, unless your doctor has specifically told you otherwise. If you take blood-thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment as you may need to temporarily stop these. If you take insulin, do not take your morning dose — contact your diabetes team for guidance. Arrival: Please arrive 30 minutes before your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure: You will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home — you cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours after the procedure — this is normal.",
+      "judge_1_transcript": "PRE PROCEDURE INSTRUCTIONS UPPER G I ANDOSCAPY YOUR UPPER ENDOSCAPE IS SCHEDUELED FOR WEDNESDAY THE TWENTY SECOND AT NINE THIRTY A M AT CITY GENERAL HOSPITAL ANDOSCAPY SWEET LEVEL THREE DIET YOU MUST HAVE NOTHING TO EAT FOR AT LEAST SIX HOURS BEFORE YOUR PROCEDURE YOU MAY DRINK CLEAR FLUIDS WATER BLACK TEA BLACK COFFEE APPLE JUICE OR CLEAR BROTH UP TO TWO HOURS BEFORE YOUR APPOINTMENT DO NOT DRINK MILK OR EAT ANY SOLID FOOD AFTER MIDNIGHT THE NIGHT BEFORE MEDICATIONS TAKE ALL REGULAR MEDICATIONS AS USUAL WITH A SMALL SIP OF WATER ON THE MORNING OF YOUR PROCEDURE UNLESS YOUR DOCTOR HAS SPECIFICALLY TOLD YOU OTHERWISE IF YOU TAKE BLOOD THINNING MEDICATIONS SUCH AS WARPERIN CLOPITOGREL OR ASPERIN PLEASE CONTACT US AT LEAST FIVE DAYS BEFORE YOUR APPOINTMENT AS YOU MAY NEED TO TEMPORARILY STOP THESE IF YOU TAKE INSOLEN DO NOT TAKE YOUR MORNING DOSE CONTACT YOUR DIABEDIES TEAM FOR GUIDANCE ARRIVAL PLEASE ARRIVE THIRTY MINUTES BEFORE YOUR SCHEDULED TIME TO ALLOW FOR REGISTRATION AND PREPARATION BRING A LIST OF YOUR CURRENT MEDICATIONS YOUR HOSPITAL CARD AND ANY PREVIOUS ANDOSCAPY REPORTS IF YOU HAVE THEM AFTER THE PROCEDURE YOU WILL BE IN RECOVERY FOR APPROXIMATELY FORTY FIVE MINUTES WHILE THE SEDATION WEARS OFF YOU MUST HAVE A RESPONSIBLE ADULT AVAILABLE TO TAKE YOU HOME YOU CANNOT TRAVEL BY TAXY OR PUBLIC TRANSPORT ALONE AND YOU MUST NOT DRIVE FOR TWENTY FOUR HOURS YOU MAY FEEL BLOADED OR GASY FOR A FEW HOURS AFTER THE PROCEDURE THIS IS NORMAL",
+      "whisper": "Pre-procedure instructions. Upper GI endoscopy. Your upper endoscopy is scheduled for Wednesday the 22nd at 9.30 a.m. at City General Hospital, Endoscopy Suite Level 3. Diet. You must have nothing to eat for at least six hours before your procedure. You may drink clear fluids, water, black tea, black coffee, apple juice, or clear broth up to two hours before your appointment. Do not drink milk or eat any solid food after midnight the night before. Medications. Take all regular medications as usual with a small sip of water on the morning of your procedure, unless your doctor has specifically told you otherwise. If you take blood-thinning medications such as warfarin, clopidogrel, or aspirin, please contact us at least five days before your appointment, as you may need to temporarily stop these. If you take insulin, do not take your morning dose. Contact your diabetes team for guidance. Arrival. Please arrive 30 minutes before your schedule. Please use your scheduled time to allow for registration and preparation. Bring a list of your current medications, your hospital card, and any previous endoscopy reports if you have them. After the procedure, you will be in recovery for approximately 45 minutes while the sedation wears off. You must have a responsible adult available to take you home. You cannot travel by taxi or public transport alone, and you must not drive for 24 hours. You may feel bloated or gassy for a few hours. After the procedure this is normal.",
+      "agreement_wer": 0.10245901639344263,
+      "per_judge_wer": {
+        "wav2vec2": 0.13114754098360656,
+        "whisper": 0.02459016393442623
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.102 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 3,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L06",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Regulatory Disclosure — Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection scheme. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "judge_1_transcript": "REGULATORY DISCLOSURE FINANCIAL PRODUCTS THIS DOCUMENT CONTAINS IMPORTANT INFORMATION ABOUT THE RISKS ASSOCIATED WITH THE FINANCIAL PRODUCTS DESCRIBED HEREIN YOU SHOULD READ THIS DISCLOSURE CAREFULLY BEFORE MAKING ANY INVESTMENT DECISION PAST PERFORMANCE IS NOT A RELIABLE INDICATOR OF FUTURE RESULTS THE VALUE OF INVESTMENTS AND THE INCOME DERIVED FROM THEM MAY FALL AS WELL AS RISE AND YOU MAY GET BACK LESS THAN YOU ORIGINALLY INVESTED EXCHANGE RATE FLUCTUATIONS MAY CAUSE THE VALUE OF OVERSEAS INVESTMENTS TO RISE OR FALL THIS PRODUCT IS NOT SUITABLE FOR ALL INVESTORS BEFORE INVESTING YOU SHOULD CAREFULLY CONSIDER YOUR INVESTMENT OBJECTIVES LEVEL OF EXPERIENCE RISK APPETITE AND FINANCIAL SITUATION IF YOU ARE IN ANY DOUBT ABOUT THE SUITABILITY OF THIS PRODUCT YOU SHOULD SEEK INDEPENDENT FINANCIAL ADVICE THE PRODUCTS DESCRIBED IN THIS DOCUMENT ARE NOT DEPOSITS AND ARE NOT INSURED BY ANY GOVERNMENT DEPOSIT PROTECTION SCHEME THEY ARE NOT GUARANTEED BY THE ISSUING ENTITY OR ANY OF ITS AFFILIATES INVESTORS COULD LOSE SOME OR ALL OF THEIR INVESTMENT THIS DOCUMENT HAS BEEN PREPARED SOLELY FOR INFORMATION PURPOSES AND DOES NOT CONSTITUTE AN OFFER TO BUY OR SELL OR A SOLICITATION OF AN OFFER TO BUY OR SELL ANY SECURITY AND SHOULD NOT BE RELIED UPON AS SUCH IT HAS BEEN PREPARED WITHOUT REGARD TO THE INDIVIDUAL FINANCIAL CIRCUMSTANCES AND OBJECTIVES OF PERSONS WHO RECEIVE IT",
+      "whisper": "Regulatory Disclosure, Financial Products. This document contains important information about the risks associated with the financial products described herein. You should read this disclosure carefully before making any investment decision. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them may fall as well as rise, and you may get back less than you originally invested. Exchange rate fluctuations may cause the value of overseas investments to rise or fall. This product is not suitable for all investors. Before investing, you should carefully consider your investment objectives, level of experience, risk appetite, and financial situation. If you are in any doubt about the suitability of this product, you should seek independent financial advice. The products described in this document are not deposits and are not insured by any government deposit protection. They are not guaranteed by the issuing entity or any of its affiliates. Investors could lose some or all of their investment. This document has been prepared solely for information purposes and does not constitute an offer to buy or sell, or a solicitation of an offer to buy or sell, any security, and should not be relied upon as such. It has been prepared without regard to the individual financial circumstances and objectives of persons who receive it.",
+      "agreement_wer": 0.004524886877828055,
+      "per_judge_wer": {
+        "wav2vec2": 0.0,
+        "whisper": 0.004524886877828055
+      },
+      "failure": false,
+      "failure_reasons": [],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 0,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "A",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L07",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "Earnings Call Summary: TechCorp Inc., Q1 2026. Revenue: $14.2 billion, up 18 percent year-over-year and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share: $2.84 diluted, compared to consensus of $2.61 and $2.31 in Q1 2025. This represents a 23 percent increase year-over-year. Gross margin: 42.3 percent, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60 percent. Cloud segment: revenue of $6.1 billion, up 31 percent year-over-year, representing 43 percent of total revenue. Operating income from cloud was $1.8 billion, a margin of 29.5 percent. Guidance for Q2 2026: the company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16 to 19 percent. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $2.76. Management commentary: CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12 percent of total revenue, up from 4 percent a year ago. The company announced a $5 billion share repurchase programme and raised its quarterly dividend by 8 percent to $0.52 per share.",
+      "judge_1_transcript": "EARNINGS CALL SUMMARY TEC CORP INK CU ONE TWENTY TWENTY SIX REVENUE FOURTEEN POINT TWO BILLION UP EIGHTEEN PER CENT YEAR OVER YEAR AND FOUR HUNDRED MILLION DOLLARS AHEAD OF ANALIST CONCENSIS OF THIRTEEN POINT EIGHT BILLION THIS WAS THE FIFTH CONSECUTIVE QUARTER OF DOUBLE DIGIT REVENUE GROWTH EARNINGS PER SHARE TWO TO EIGHTY FOUR DELUDED COMPARED TO CONCENSIS OF TWO SIXTY ONE AND TWO THIRTY ONE IN CUE ONE TWENTY TWENTY FIVE THIS REPRESENTS A TWENTY THREE PER CENT INCREASE YEAR OVER YEAR GROSS MARGIN FORTY TWO POINT THREE PER CENT EXPANDING ONE POINT FOUR PER CENTAGE POINTS COMPARED TO THE SAME QUARTER LAST YEAR DRIVEN BY A HIGHER MIX OF SOFTWARE AND SERVICES REVENUE WHICH CARRY MARGINS ABOVE SIXTY PER CENT CLOUD SEGMENT REVENUE OF SIX POINT ONE BILLION UP THIRTY ONE PER CENT YEAR OVER YEAR REPRESENTING FORTY THREE PER CENT OF TOTAL REVENUE OPERATING INCOME FROM CLOUD WAS ONE POINT EIGHT BILLION DOLLARS A MARGIN OF TWENTY NINE POINT FIVE PER CENT GUIDANCE FOR CU TO TWENTY TWENTY SIX THE COMPANY GUIDED FOR REVENUE OF FOURTEEN POINT SIX BILLION DOLLARS TO FIFTEEN BILLION DOLLARS REPRESENTING YEAR OVER YEAR GROWTH OF SIXTEEN TO NINETEEN PER CENT EARNINGS PER SHARE GUIDANCE OF TWO DOLLARS AND NINETY TO THREE O FIVES WAS A HEAD OF CURRENT ANALIST CONCENSIS OF TWO TO SEVEN SIX CENTS MANAGEMENT COMMENTARY C  O MICHAEL CHEN SAID GROWTH WAS BROAD BASED ACROSS ALL SEGMENTS AND GEOGRAPHIES WITH PARTICULARLY STRONG PERFORMANCE IN ENTERPRISE A IY TOOLS WHICH NOW REPRESENT TWELVE PER CENT OF TOTAL REVENUE UP FROM FOUR PER CENT A YEAR AGO THE COMPANY ANNOUNCED O FIVE BILLION DOLLARS SHARE RE PURCHASE PROGRAMME AND RAISED ITS QUARTERLY DIVIDEND BY EIGHT PER CENT TO FIFTY TWO CENTS PER SHARE",
+      "whisper": "Earnings call summary, TechCorp Inc., Q1 2026. Revenue, $14.2 billion, up 18% year-over-year, and $400 million ahead of analyst consensus of $13.8 billion. This was the fifth consecutive quarter of double-digit revenue growth. Earnings per share, 2 to 84 diluted, compared to consensus of 2.61 and 2.31 in Q1 2025. This represents a 23% increase year-over-year. Gross margin, 42.3%, expanding 1.4 percentage points compared to the same quarter last year, driven by a higher mix of software and services revenue, which carry margins above 60%. Cloud segment, revenue of $6.1 billion, up 31% year-over-year, representing 43% of total revenue. Operating income from cloud was $1.8 billion, a margin of 29.5%. Guidance for Q2 2026. The company guided for revenue of $14.6 billion to $15 billion, representing year-over-year growth of 16% to 19%. Earnings per share guidance of $2.90 to $3.05 was ahead of current analyst consensus of $0.02 to $0.076. Management commentary. CEO Michael Chen said growth was broad-based across all segments and geographies, with particularly strong performance in enterprise AI tools, which now represent 12% of total revenue, up from 4% a year ago. The company announced a $5 billion share repurchase program and raised its quarterly dividend by 8% to 52 cents per share.",
+      "agreement_wer": 0.3568281938325991,
+      "per_judge_wer": {
+        "wav2vec2": 0.6431718061674009,
+        "whisper": 0.0881057268722467
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.357 > 0.05",
+        "span_agreed_miss"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 29,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "item_id": "L08",
+      "draw": 0,
+      "stratum": "long",
+      "reference": "There is a village in the western Highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was A' Chomraich — meaning the sanctuary. In the eighth century a monk called Maelrubha came here from Bangor and founded a monastery whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This right of sanctuary held for a thousand years, and was still recognised into the seventeenth century, when Highland courts continued to acknowledge the boundary even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather — the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way — something of the sanctuary is still there, waiting for the traveller who thinks they have arrived, and finds instead that they have been received.",
+      "judge_1_transcript": "THERE IS A VILLAGE IN THE WESTERN HIGHLANDS WHERE THE SHORE ROAD ENDS AT A CATTLE GRID AND BEYOND THE CATTLE GRID THERE IS ONLY HEATHER SEA AND THE SOUND OF CURLOUES THE VILLAGE IS CALLED APPLE CROSS THOUGH ON THE OLDER MAPS AND IN THE OLDER GALIC IT WAS CHAMRICH MEANING THE SANCTUARY IN THE EIGHTH CENTURY A MONK CALLED MALRUVA CAME HERE FROM BANGOR AND FOUNDED A MONASTERY WHOSE STONES LIE NOW UNDER THE CHURCHYARD GRASS WHAT HE BUILT WAS MORE THAN A MONASTERY IT WAS A PLACE OF REFUGE MARKED BY FOUR CROSSES AT THE COMPASS POINTS AND ANY FUGITIVE WHO REACHED THEM WHATEVER THE CRIME COULD NOT BE PURSUED WITHIN THEIR CIRCLE THIS RIGHT OF SANCTUARY HELD FOR A THOUSAND YEARS AND WAS STILL RECOGNIZED INTO THE SEVENTEENTH CENTURY WHEN HIGHLAND COURTS CONTINUED TO ACKNOWLEDGE THE BOUNDARY EVEN AS THEY OTHERWISE WIELDED A PUNISHING LAW TO DAY THE CROSSES ARE GONE OR PERHAPS BURIED AND THE ROAD ENDS WHERE THE ROAD ENDS BUT IN THE WAY THAT CERTAIN LANDSCAPES HOLD MEMORY IN THEIR WEATHER THE SUDDEN HUSH THAT FALLS WHEN YOU TURN THE LAST BEND THE SENSE THAT THE LIGHT HAS CHANGED IN SOME QUIET DELIBERATE WAY SOMETHING OF THE SANCTUARY IS STILL THERE WAITING FOR THE TRAVELLER WHO THINKS THEY HAVE ARRIVED AND FINDS INSTEAD THAT THEY HAVE BEEN RECEIVED",
+      "whisper": "There is a village in the western highlands where the shore road ends at a cattle grid, and beyond the cattle grid there is only heather, sea, and the sound of curlews. The village is called Applecross, though on the older maps and in the older Gaelic it was Chamraich, meaning the sanctuary. In the 8th century a monk called Melruba came here from Bangor and founded a monastery, whose stones lie now under the churchyard grass. What he built was more than a monastery. It was a place of refuge, marked by four crosses at the compass points, and any fugitive who reached them, whatever the crime, could not be pursued within their circle. This rite of sanctuary held for a thousand years and was still recognized into the 17th century when highland courts continued to acknowledge the boundary, even as they otherwise wielded a punishing law. Today the crosses are gone, or perhaps buried, and the road ends where the road ends. But in the way that certain landscapes hold memory in their weather, the sudden hush that falls when you turn the last bend, the sense that the light has changed in some quiet, deliberate way, something of the sanctuary is still there, waiting for the traveler who thinks they have arrived, and finds instead that they have been received.",
+      "agreement_wer": 0.05357142857142857,
+      "per_judge_wer": {
+        "wav2vec2": 0.044642857142857144,
+        "whisper": 0.03571428571428571
+      },
+      "failure": true,
+      "failure_reasons": [
+        "agreement_wer=0.054 > 0.05"
+      ],
+      "events": {
+        "truncation": false,
+        "repetition_loop_judge_1": false,
+        "repetition_loop_whisper": false,
+        "agreed_word_drop_runs": 1,
+        "agreed_hallucination_runs": 0
+      },
+      "band": "C",
+      "error": null
+    }
+  ]
+}
