@@ -233,6 +233,28 @@ per-vendor mean is over the 74 items that succeeded.
 | speechify | conversational | 61.3 | 65.3 | +4.000 | +6.5% |
 | speechify | narration | 66.7 | 65.3 | -1.333 | -2.0% |
 
+### DNSMOS coverage: n_valid per (vendor, use case)
+
+Cells where R2 or R3 `n_valid < n_items = 75` — the DNSMOS
+per-vendor means below are computed on the survivors, not the
+full item set. Any R2↔R3 comparison for a vendor whose n_valid
+differs across runs is **unpaired** — the two runs' means come
+from different item subsets. Cartesia conversational is the
+load-bearing case: 43 valid on R2 vs 51 on R3, so the R2↔R3 Δ
+on Cartesia conv DNSMOS is a difference of unmatched subsets.
+
+| Vendor | Use case | R2 n_valid | R3 n_valid | R2↔R3 paired? |
+|---|---|---:|---:|---|
+| cartesia | conversational | 43 | 51 | **no** (subsets differ by 8) |
+| cartesia | narration | 38 | 37 | **no** (subsets differ by 1) |
+| google | narration | 71 | 72 | approximately (differ by 1) |
+| speechify | narration | 75 | 74 | approximately (differ by 1) |
+| elevenlabs | conversational | 75 | 74 | approximately (differ by 1); this is the n=74 in F-12's conv DNSMOS row |
+
+Pooled DNSMOS refusal rate (both use cases): **R2 = 46.0% (69/150)**;
+**R3 = 41.3% (62/150)**. Every "46%" figure in the docs is R2;
+R3 is 41.3% and travels alongside per row 168.
+
 ### Hygiene: total clipped samples
 
 | Vendor | Use case | R2 (baseline) | R3 (replication) | Δ (R3−R2) | % change |

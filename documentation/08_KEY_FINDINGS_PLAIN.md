@@ -55,7 +55,9 @@ crackle rather than a serious defect.
 
 1. **Quality-check tools refuse to read it.** One of the two industry-
    standard MOS scoring tools (Microsoft DNSMOS) refused **46% of
-   Cartesia's files** — nearly half — because they hit the ceiling.
+   Cartesia's files on our first run and 41% on our replication
+   run** — pooled across both use cases; roughly half in every
+   round — because they hit the ceiling.
    No quality score is computable for those files. The ruler
    couldn't even measure them.
 2. **Anything downstream can make it worse.** Change the volume,
@@ -80,8 +82,9 @@ but not the only one.
 
 **What a customer would do about it**: add a one-line audio
 "peak-limiter" step that pulls the loudest samples back by about
-1 dB (a change nobody would hear). That rescues the 46% of files
-DNSMOS currently refuses. If you don't want to build that step,
+1 dB (a change nobody would hear). That rescues the roughly
+half of files (46% R2 / 41% R3, pooled across use cases) DNSMOS
+currently refuses. If you don't want to build that step,
 pick a different vendor.
 
 **Finding referenced in the technical docs as F-4 + F-4a.**

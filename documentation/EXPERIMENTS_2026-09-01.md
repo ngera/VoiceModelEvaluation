@@ -464,7 +464,7 @@ all peak-out-of-range from clipping) and 1 of 8 alt-voice files
 (L02, same cause). Only 5 items (L01, L05, L06, L07, L08) survive
 on both sides. Both means and Δ above are recomputed on that
 intersection so the delta is a paired difference on matched items
-(pinned 3.414, alt 3.493, Δ +0.079; SE_diff 0.025, paired z = +3.16).
+(pinned 3.414, alt 3.493, Δ +0.079; SE_diff 0.025, paired t = +3.16 at df=4 for n=5, p = 0.034 two-sided — borderline significant at α=0.05, not the "clean" reading a normal-approximation of z=3.16 would give at p ≈ 0.0016).
 The direction and rough magnitude of the previously-published
 unpaired 3.414 (5 items) vs 3.490 (7 items) comparison survive
 the correction; the method label ("paired delta on matched items")
@@ -473,19 +473,32 @@ now does too. Same defect class as
 across adjacent tables) and 04's Cartesia survivor-subset
 footnote pattern.
 
-### Paired-z per vendor (the project's standard inferential test)
+### Paired-t per vendor (the project's standard inferential test)
 
-The right test on 8 matched pairs is a paired t/z on the per-item
-differences — the same test used in the R2-vs-R3 replication check
-and in 04's Rankings summary. On AB.PQ (the axis carrying the
-Speechify claim in F-7):
+The right test on 8 matched pairs is a **paired t on the per-item
+differences** — not a normal-approximation z, since the sample
+size is small enough that Student's t has meaningfully wider
+tails than the normal. Same test used in the R2-vs-R3 replication
+check and in 04's Rankings summary; p values reported below are
+paired t at **df = 7**. On AB.PQ (the axis carrying the Speechify
+claim in F-7):
 
-| vendor | pinned R3 mean | alt E mean | mean Δ | SD_diff | SE_diff | **paired z** | p (two-sided) |
+| vendor | pinned R3 mean | alt E mean | mean Δ | SD_diff | SE_diff | **paired t (df 7)** | p (two-sided) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| OpenAI | 7.619 | 7.473 | −0.146 | 0.126 | 0.044 | **−3.28σ** | ≈ 0.001 |
-| Fish | 7.710 | 7.869 | +0.159 | 0.089 | 0.031 | **+5.06σ** | ≈ 4×10⁻⁷ |
-| Google | 8.032 | 7.927 | −0.105 | 0.040 | 0.014 | **−7.35σ** | ≈ 2×10⁻¹³ |
-| Deepgram | 7.948 | 7.468 | −0.480 | 0.101 | 0.036 | **−13.46σ** | ≈ 0 |
+| OpenAI | 7.619 | 7.473 | −0.146 | 0.126 | 0.044 | **−3.28** | 0.0135 |
+| Fish | 7.710 | 7.869 | +0.159 | 0.089 | 0.031 | **+5.06** | 0.0015 |
+| Google | 8.032 | 7.927 | −0.105 | 0.040 | 0.014 | **−7.35** | 1.6×10⁻⁴ |
+| Deepgram | 7.948 | 7.468 | −0.480 | 0.101 | 0.036 | **−13.46** | 2.9×10⁻⁶ |
+
+The **σ** figures (test-statistic magnitudes) are exact and
+unchanged; only the tail-area p column was affected — earlier
+revisions of this table reported normal-approximation
+p-values that overstated significance by 13× to ~10⁹×. All four
+paired shifts remain significant at α=0.05 under the correct
+Student's-t distribution; the wording "the paired-z test" in
+02 and 04 refers to the same test statistic reported here as
+"paired t" (df=n-1). Retraction of the earlier normal-tail
+p-values logged as [CORRECTIONS row 172](../CORRECTIONS.md).
 
 Reproducible from
 [`analysis/experiments-2026-09-01-E/quality.json`](../analysis/experiments-2026-09-01-E/quality.json)

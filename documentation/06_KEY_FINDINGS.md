@@ -208,8 +208,11 @@ peaks; it affects the whole waveform.
 
 **Impact:** Cartesia's audio breaks common downstream tooling.
 Adding a −1 dBFS peak-limiter before any ASR/MOS/resample step
-recovers the audio; without it, ~46% of Cartesia's output is
-silently unusable in a quality-check pipeline.
+recovers the audio; without it, **~46% of Cartesia's output on
+R2 (41.3% on R3, pooled across both use cases) is silently
+unusable in a quality-check pipeline** — per-cell rates and both
+runs' figures in
+[04 § footnote ²](04_RESULTS.md#footnote-2-cartesia-narration-dnsmos).
 
 **Evidence:** [`analysis/campaign-20260809T204608Z/hygiene.json`](../analysis) +
 [`quality.json` dnsmos_errors block](../analysis) +

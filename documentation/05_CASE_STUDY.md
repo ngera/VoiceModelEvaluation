@@ -478,7 +478,8 @@ measurement pipelines detect this**:
    items on R2/R3; Speechify 3/10 across 1). Cartesia is the
    dominant case by 1–2 orders of magnitude, not the only one.
 2. Microsoft's DNSMOS ONNX inference **refuses to score 46% of
-   Cartesia's files** for peak out of range — a hard `ValueError`
+   Cartesia's files on R2 (41.3% on R3)** — pooled across both
+   use cases — for peak out of range — a hard `ValueError`
 
 A third observation — that the 54% of Cartesia files DNSMOS *did*
 accept still rank **#8 of 8** on all three ITU P.835 axes — is

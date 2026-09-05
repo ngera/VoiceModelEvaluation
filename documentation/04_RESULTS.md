@@ -139,7 +139,15 @@ color indicators are rendered as inline color-chip images via
 [placehold.co](https://placehold.co). If images fail to load, the
 alt text ("best" / "mid" / "worst") describes the tier.*
 
-### Conversational
+**Source: R2 `campaign-20260809T204608Z` — every cell in the two
+tables below.** Verified against both R2 and R3 quality.jsons in
+the R30 audit (96 of 96 cells match R2; 24 also match R3 to two
+decimals). R3 numbers with per-cell R2→R3 deltas live in
+[`analysis/round3-vs-round2-comparison.md`](../analysis/round3-vs-round2-comparison.md).
+See also the run-source note at [§ Full per-provider results
+scope note](#full-per-provider-results) above.
+
+### Conversational (R2 — `campaign-20260809T204608Z`)
 
 <table>
 <thead>
@@ -244,13 +252,13 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 0.150</td>
 </tr>
 <tr>
-<td><b>cartesia</b></td>
+<td><b>cartesia</b> <sup>²</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 7.44</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 5.96</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.89</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.25</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.48</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.13</td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.89 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.25 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.48 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.13 <sup>²</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 406</td>
 <td align="right"><img src="https://placehold.co/40x18/c8e6c9/c8e6c9.png" alt="best"> -57.1</td>
 <td align="right">16.4</td>
@@ -274,7 +282,7 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 </tbody>
 </table>
 
-### Narration
+### Narration (R2 — `campaign-20260809T204608Z`)
 
 <table>
 <thead>
@@ -333,13 +341,13 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 0.160</td>
 </tr>
 <tr>
-<td><b>google</b></td>
+<td><b>google</b> <sup>²</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 7.97</td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 6.44</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.02</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.35</td>
-<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.60</td>
-<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.11</td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 4.02 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 3.35 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> 3.60 <sup>²</sup></td>
+<td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 4.11 <sup>²</sup></td>
 <td align="right"><img src="https://placehold.co/40x18/fff9c4/fff9c4.png" alt="mid"> 39</td>
 <td align="right"><img src="https://placehold.co/40x18/ffcdd2/ffcdd2.png" alt="worst"> -36.8</td>
 <td align="right">13.0</td>
@@ -487,14 +495,35 @@ same as the 27 truncated files. This means:
   Orpheus-included (numerical) and Orpheus-excluded (deployable)
   reads so the mechanism is transparent.
 
-**Footnote ² (Cartesia narration DNSMOS)**: 37 of 75 Cartesia
-narration clips (49%) were refused by DNSMOS for peak_out_of_range
-(F-4a). The four DNSMOS columns for Cartesia narration are
-computed on the 38 surviving clips — a **survivor-selected subset**,
-not the full column. Even so, Cartesia's DNSMOS ranks on the
-surviving subset are still #8 of 8 on OVRL / SIG / BAK — the
-mastering signature that got the other 37 refused persists in the
-38 that made it through.
+<a name="footnote-2-cartesia-narration-dnsmos"></a>
+**Footnote ² (DNSMOS survivor-subset cells, all runs)**: DNSMOS
+refuses to score files whose peak amplitude touches or exceeds
+0 dBFS (`peak_out_of_range`); the refused cells drop out of the
+per-vendor mean silently, so any cell where `n_valid < n_items`
+is a **survivor-selected subset**, not the full column. Every
+cell in the R2 tables above marked <sup>²</sup> is one such
+subset, and there are more of them in R3:
+
+| Run | Vendor | Use case | Valid / Items | Refused | Notes |
+|---|---|---|---:|---:|---|
+| R2 | cartesia | conversational | 43 / 75 | 32 (42.7%) | marked <sup>²</sup> on conv table above |
+| R2 | cartesia | narration | 38 / 75 | 37 (49.3%) | marked <sup>²</sup> on narr table above |
+| R2 | google | narration | 71 / 75 | 4 (5.3%) | marked <sup>²</sup> on narr table above |
+| R3 | cartesia | conversational | 51 / 75 | 24 (32.0%) | (R3, not shown in R2 tables) |
+| R3 | cartesia | narration | 37 / 75 | 38 (50.7%) | (R3, comparison-doc row |
+| R3 | google | narration | 72 / 75 | 3 (4.0%) | (R3) |
+| R3 | speechify | narration | 74 / 75 | 1 (1.3%) | (R3) |
+| R3 | elevenlabs | conversational | 74 / 75 | 1 (1.3%) | (R3; also drives the n=74 in F-12's conv DNSMOS row) |
+
+Whole-family framing: **Cartesia is the load-bearing case** —
+its DNSMOS ranks on the surviving subset are still **#8 of 8**
+on OVRL / SIG / BAK across both runs, so the mastering signature
+that got the ~1/3 to ~1/2 of items refused persists in the ones
+that made it through (F-4a). Google narr, Speechify narr, and
+ElevenLabs conv R3 are all small refusal counts (1-4 items) but
+should be read as `n_valid < 75` when comparing means.
+Sources: `analysis/campaign-{20260809T204608Z,20260831T175358Z}/quality.json`
+`dnsmos_by_provider[*].n_valid` per row.
 
 <a name="footnote-3-deepgram-conversational-ttfa"></a>
 **Footnote ³ (Deepgram conversational TTFA)**: the 583 ms figure
@@ -523,14 +552,21 @@ assumptions.
 
 ---
 
-## Rankings summary
+<a name="rankings-summary"></a>
+## Rankings summary (R2 — `campaign-20260809T204608Z`)
 
 **Top-2 per quality axis per use case** — the "who's actually
 worth paying for?" table. Each pair is judged **significant** iff
 `|Δ| > 1.96 × SE(diff)` where `SE(diff) = √(SE_a² + SE_b²)` and
-`SE_i = SD(vendor's 75-item column) / √75`. This is the standard
-normal-approximation test at α=0.05. Per-vendor per-signal SDs +
-SE_mean values are in [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py)
+`SE_i = SD(vendor's column) / √n_i`, with `n_i` = that cell's
+`n_valid`. All published ranking rows below have n_i = 75 on the
+Audiobox axes and n_i = 74-75 on the DNSMOS axes (three
+DNSMOS-refused cells sit off the ranking rows shown here — see
+[footnote ² below](#footnote-2-cartesia-narration-dnsmos)); the
+formula is written per-cell so it stays correct as new
+comparisons are added. Standard normal-approximation test at
+α=0.05. Per-vendor per-signal SDs + SE_mean values are in
+[`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py)
 output; run the script to reproduce.
 
 **Why this method**:
@@ -792,25 +828,30 @@ voices; chunking to ≤500 chars mitigates." See
 [06 § F-6](06_KEY_FINDINGS.md#f-6--monotonic-loudness-fade-on-long-form-tts-narration--a-cross-vendor-phenomenon-at-5-25-base-rate)
 and Phase 2's [Follow-up 1](EXPERIMENTS_2026-09-01.md#follow-up-1--cross-vendor-pinned-voice-fade-rate-on-the-primary-campaign).
 
-### Alt-voice AB.PQ shift on same 8 long items (paired-z, 4 vendors)
+### Alt-voice AB.PQ shift on same 8 long items (paired-t, 4 vendors)
 
 Same L01..L08 narration, pinned voice from R3 vs one alt voice
 from the same vendor's library (Phase 2 Experiment E). Reported
 as the **paired difference on AB.PQ** — the project's standard
-inferential test, matched pairs on the same 8 items:
+inferential test, matched pairs on the same 8 items, p reported
+at **df = 7**:
 
-| vendor | pinned R3 mean | alt E mean | mean Δ (alt − pinned) | SD_diff | SE_diff | **paired z** |
-|---|---:|---:|---:|---:|---:|---:|
-| OpenAI | 7.619 | 7.473 | **−0.146** | 0.126 | 0.044 | **−3.3σ** |
-| Fish | 7.710 | 7.869 | **+0.159** | 0.089 | 0.031 | **+5.1σ** |
-| Google | 8.032 | 7.927 | **−0.105** | 0.040 | 0.014 | **−7.3σ** |
-| Deepgram | 7.948 | 7.468 | **−0.480** | 0.101 | 0.036 | **−13.5σ** |
+| vendor | pinned R3 mean | alt E mean | mean Δ (alt − pinned) | SD_diff | SE_diff | **paired t (df 7)** | p (two-sided) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| OpenAI | 7.619 | 7.473 | **−0.146** | 0.126 | 0.044 | **−3.28** | 0.0135 |
+| Fish | 7.710 | 7.869 | **+0.159** | 0.089 | 0.031 | **+5.06** | 0.0015 |
+| Google | 8.032 | 7.927 | **−0.105** | 0.040 | 0.014 | **−7.35** | 1.6×10⁻⁴ |
+| Deepgram | 7.948 | 7.468 | **−0.480** | 0.101 | 0.036 | **−13.46** | 2.9×10⁻⁶ |
 
 **All four alt voices produce a statistically significant AB.PQ
-shift from the pinned voice on the same 8 items** (|z| ≥ 3.3 in
-every case; the smallest, OpenAI, is 3.3σ). Direction varies
-(Fish +, others −); magnitude varies substantially (OpenAI −0.146
-to Deepgram −0.480).
+shift from the pinned voice on the same 8 items** (|t| ≥ 3.28 in
+every case at df=7, all p < 0.05; the smallest, OpenAI, is
+p = 0.0135). Direction varies (Fish +, others −); magnitude
+varies substantially (OpenAI −0.146 to Deepgram −0.480). Test
+statistics themselves (t values) are exact and unchanged; p
+column normal-approximation tails retracted; see
+[CORRECTIONS row 172](../CORRECTIONS.md). Matching change in
+[EXPERIMENTS Follow-up 4](EXPERIMENTS_2026-09-01.md#paired-t-per-vendor-the-projects-standard-inferential-test).
 
 **Gender confound**: all four alt voices tested here crossed
 gender against the pinned voice — OpenAI onyx (male) → nova
@@ -831,7 +872,7 @@ on `long_stratum_clipped_samples`) and 1 of 8 Google alt files
 DN.ovrl comparison for Google is therefore reported in
 [Follow-up 4's comparison table](EXPERIMENTS_2026-09-01.md#the-comparison-table-alt-voice-vs-pinned-voice-l01l08)
 as an intersection paired delta on those 5 items (Δ +0.079,
-z = +3.16), footnoted parallel to the Cartesia survivor-subset
+paired t = +3.16 at df=4 for n=5, p = 0.034 two-sided — borderline at α=0.05), footnoted parallel to the Cartesia survivor-subset
 pattern elsewhere in this doc. AB.PQ / AB.CE / WER on Google are
 unaffected (all n=8). **T6's Speechify comparison split by use
 case**: conversational `geffen_32` (female) → `edmund_32` (male)
@@ -1470,7 +1511,7 @@ a clear answer for your use case.
 
 - **Any turn ≥ 15s?** Orpheus is out (14.59s output cap).
 - **Any downstream ASR / MOS / resample pipeline?** Cartesia needs a
-  −1 dBFS peak-limiter first, or accept ~46% loss to DNSMOS refusals.
+  −1 dBFS peak-limiter first, or accept ~46% loss to DNSMOS refusals on R2 (41.3% on R3 — pooled across both use cases; see footnote ² above for the per-cell breakdown).
 - **Real-time-voice latency ceiling?** Two thresholds to keep
   straight: the **pre-registered gate is `ttfa_p90_ms < 400`**
   (`configs/gates.yaml`, chosen as headroom below the 500-600 ms

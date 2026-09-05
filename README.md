@@ -12,6 +12,28 @@ commit that predates the results.**
 > and −0.27 on narration**. Before quoting a single vendor "quality
 > score", ask: *quality on which axis?*
 
+**Which axis matches human perception?** *This study cannot say*
+— and that is a deliberate scoping decision, not a hole in the
+work. The correlation structure decomposes cleanly (Audiobox's
+PQ axis agrees with DNSMOS at mean ρ = **+0.24**, F-8's "clean"
+side; Audiobox's CE axis anti-correlates with DNSMOS at mean
+ρ = **−0.51**, F-8's "warm" side), so the two pipelines are
+measuring genuinely different constructs — but which construct
+aligns with real listener preference is a **human-perceptual
+D4** question, and the only honest way to answer it is a
+multi-rater blinded panel. n=1 self-rating can't license
+population-level preference claims (see
+[D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2)
+for the deferral rationale — refusing an under-powered ceremony
+is a stronger position than executing it and disclaiming the
+result). What would settle it: a 15-30 rater blinded panel
+comparing the two pipelines' rankings against human preference
+per use case, spec-designed and budgeted in
+[07 § What a v2 pass would look like item 1](documentation/07_GAPS_AND_FUTURE_WORK.md#what-a-v2-pass-would-look-like).
+Until then: pick the pipeline that matches the construct your
+listener use case rewards (F-8 § construct decomposition names
+which is which), or **read both**.
+
 > **⚠ Scope disclaimer** · Findings are as of 2026-09-01, on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
@@ -45,7 +67,7 @@ artefact in this repo:
 | # | Finding | Evidence |
 |---|---|---|
 | 1 | **The two independent quality raters rank vendors differently.** Meta's Audiobox measures two axes (technical cleanliness PQ + warm/enjoyment CE); Microsoft's DNSMOS is a second family of scorers (P.808 single-model + P.835 three-scale). PQ agrees with DNSMOS at mean ρ = +0.24; CE anti-correlates at mean ρ = −0.51. That's a real construct split (PQ-side vs CE-side), not different weightings of the same signal — even though the three scoring models (Audiobox, DNSMOS P.808, DNSMOS P.835) span two construct families, not three. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
-| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). Cap may be model-intrinsic OR a deployment-config parameter (`max_new_tokens`) — untested; recommendations differ. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
+| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). Cap may be model-intrinsic OR a deployment-config parameter (`max_new_tokens`) — **T10 (~$0.01, one Replicate call, scaffolded in [03_RUNBOOK.md](documentation/03_RUNBOOK.md) at the T10 line ~530) settles it in one API call**; not yet run. Until T10 lands, recommendations differ (model-intrinsic → Orpheus off narration entirely; deployment-config → pass a larger `max_new_tokens`). | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
 | 3 | **ElevenLabs shifted downward on both Audiobox axes + DNSMOS P.808 between R2 and R3 (paired-z 2.26–7.32σ, 5 cells surviving Bonferroni-12).** The P.835 triad's 6 cells (3 conv + 3 narr) all stayed at \|z\| < 1.6. Two of three scoring models detected the drift; the third didn't. Both ElevenLabs models (Flash v2.5 conv, Multilingual v2 narr) drift together — a single-model update does not explain the pattern. This is the finding the "measurement date on every finding" discipline exists to catch — invisible without R3. | [F-12 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-12) · [analysis/round3-vs-round2-comparison.md](analysis/round3-vs-round2-comparison.md) |
 | ★ | **The verification pack changed the framing of multiple headline findings** (T4/T5/T6/T7/T8/F-11 all named individually — see [verification README](analysis/verification/)), and a targeted Phase 2 experiment pack (2026-09-01, ~$3.55) further generalised F-6 (loudness fade) from an item-specific quirk to a cross-vendor phenomenon and extended F-7's voice-swap check from 1 vendor to 5. Cheap replication is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) · [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md) |
 
