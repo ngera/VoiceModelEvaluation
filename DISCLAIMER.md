@@ -67,7 +67,7 @@ initial run. Every committed cost_model.json path is named in
   absorbed ~$1.20
 - Variance run (480 fresh files, 10 items × 3 draws × 8 vendors × 2
   use cases): $3.16 gross
-- Latency sessions S1a + S1b + S2 + S3 (50 trials each; S3 with
+- Latency sessions S1a + S1b + S2 + S3 (50 trials each on the four streaming vendors S1a/S1b measure; ElevenLabs S2 and S3 landed n=40 — see 06 § F-11 note 1; S3 with
   concurrent ping baseline): ~$0.36 gross *(S3 is the same
   session as "Wave 4b" in the verification-pack line below; the
   ~$0.36 counts it in the latency-sessions total and the
@@ -81,9 +81,9 @@ initial run. Every committed cost_model.json path is named in
 - Phase 2 experiment pack + Follow-ups (2026-09-01, 5 experiments +
   4 follow-ups incl. Sessions S4–S5): ~$3.55 gross
 
-**Rough total: ~$16.15 gross across 8 vendor accounts**, of which
+**Rough total: ~$16.16 gross across 8 vendor accounts** (0.61 + 7.85 + 3.16 + 0.36 + 0.63 + 3.55 = 16.16; the earlier "~$16.15" round-total figure was carried from before the Phase 2 line landed and does not sum from the components printed above), of which
 Deepgram absorbed ~$1.20 via signup credit. **Effective
-out-of-pocket: ~$14.95.** The earlier "~$56 gross" figure that
+out-of-pocket: ~$14.96.** The earlier "~$56 gross" figure that
 appeared in this file was a pre-project planning estimate misread
 as a metered receipt; that retraction is logged as
 [CORRECTIONS.md row 12](CORRECTIONS.md). A clean reproduction from
@@ -178,16 +178,16 @@ than "audio is bad"). Where subjective language is used, it is:
   per hygiene analyzer" rather than "audible hiss," since we did
   not conduct the manual listen. **The plain-language doc (08) and
   the docs/index.html brief map the `mean_noise_floor_dbfs` reading
-  onto a graded listener rubric** — 08 § 9 spells out the mapping
-  used: below −60 dBFS reads as broadcast-clean; around −52 to −57
-  dBFS as quiet / broadcast-clean; near −46 dBFS as "slight
-  audible hiss"; near −40 dBFS as "audible on quiet phone systems";
-  above −40 dBFS as "sounds like a bad connection" — and phrase
-  each vendor's row in listener terms because the target audience
-  is non-technical readers deciding on a vendor and the dBFS
-  values aren't self-interpreting on their own. The technical docs
-  stay at "hygiene analyzer measurement" phrasing without the
-  listener claim. Both are traced to the same `hygiene.json`
+  onto a graded listener rubric.** The mapping (as canonicalised in
+  08 § 9): ≤ −55 dBFS = "very quiet, professional"; −54 to −48 =
+  "quiet, broadcast-clean"; −47 to −41 = "slight audible hiss";
+  −40 to −36 = "audible on quiet phone systems"; ≥ −35 = "loudest
+  background — most audible hiss". Each vendor's row is phrased in
+  listener terms because the target audience is non-technical
+  readers deciding on a vendor and the dBFS values aren't
+  self-interpreting on their own. The technical docs stay at
+  "hygiene analyzer measurement" phrasing without the listener
+  claim. Both are traced to the same `hygiene.json`
   `mean_noise_floor_dbfs` field; the mapping itself is not a
   measurement, it is a plain-language interpretation authored to
   make the numbers legible.

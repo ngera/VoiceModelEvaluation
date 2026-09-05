@@ -5,7 +5,7 @@
 # gate is out of that use case regardless of how good it is elsewhere;
 # domination on the Pareto frontier is a claim about survivors only.
 #
-# Corrections in this version (per documentation/DEFECT_REGISTER.md):
+# Corrections in this version (per documentation/archive/DEFECT_REGISTER.md):
 #   3.19 — `noise_floor_rule` was incoherent by ~17×. Renamed to
 #          `measurement_noise_floor` with the correct formula (1.96 × SE
 #          of the difference of provider aggregates, per-provider).

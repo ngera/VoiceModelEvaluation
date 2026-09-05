@@ -323,7 +323,8 @@ roster), and both `mdd_at_*` values are `null`. This is the
 same shape as three other pre-registered steps that failed to
 execute: the Pareto frontier ([gap 8](#8-pareto-frontier-build--bootstrap-ci-domination-not-executed-in-v1)),
 the gate-robustness sweep ([04 § Gate-robustness sweep](04_RESULTS.md#gate-robustness-sweep),
-executed retroactively in R19), and the three analyzer SHA
+executed retroactively in a later review round — see
+[CORRECTIONS row 110](../CORRECTIONS.md)), and the three analyzer SHA
 pins (gaps a-b above). The MDD re-run completes that set: a
 specific, dated, git-tagged instruction to run before results
 existed, not carried out. [D-H deferred the BT panel on

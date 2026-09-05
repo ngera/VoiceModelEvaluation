@@ -205,12 +205,16 @@ pair count, not as a separate multiplier.
   (~3-4 hours across 8-10 sessions).
 
 The spec anticipated exactly this trade-off. Spec §7 (line 664)
-explicitly names "pairwise repetitions (5 → 3, with the CI cost
-recorded)" as the first compressible knob when the schedule pressure
+explicitly names "pairwise repetitions (5 → 3, with the CI consequence
+disclosed)" as the first compressible knob when the schedule pressure
 rises. Spec §D4 (line 379) sets the floor: "Minimum acceptable is 3
-repetitions (126 judgments); below that the CIs are too wide to be
-useful." At 3 reps × 8+1 systems the total is 216 — above the original
-minimum floor (126) despite the pair-count growth, and inside the
+repetitions (126 judgments); below that the CIs are too wide to support
+a frontier, and the write-up must say so." At 3 reps × 9 systems the total is 216 — which **IS** the
+spec's 3-rep floor evaluated at the larger pair count (C(9,2)=36 pairs
+× 2 UC × 3 reps), not a margin above the 7-system figure of 126.
+D-009 moves the campaign to the spec's minimum-viable rep count for
+the amended roster; the 126 floor was arithmetic on the pre-D-003
+7-system roster and does not carry forward. Total sits inside the
 original 2-hour session budget the spec targets.
 
 **Impact on results.**

@@ -1086,9 +1086,14 @@ justified at portfolio scope; deferred to v2.
 ### D-H · Phase 3 BT deferred to v2
 
 The full Bradley-Terry rating campaign — last pre-registered
-at **216 judgments** per
-[`D-009`](../DEVIATIONS.md#d-009) (`prereg-v1.7`) — is **not
-executed** in v1. Deferred to a proper v2 multi-rater pass.
+at **216 unique judgments** plus a **~10% consistency-repeat
+block (~22 rerated items, ≈238 total rated items on the rater's
+side)** per [`D-009`](../DEVIATIONS.md#d-009) (`prereg-v1.7`),
+implemented by `src/veval/human/pair_builder.build_manifest`
+— is **not executed** in v1. Deferred to a proper v2 multi-rater
+pass. The 216 figure other passages in this doc refer to is the
+distinct-comparison count; the 238 is what a rater would
+actually sit through.
 
 **Why**: BT's bootstrap CIs at n=1 rater are conditional on the
 single rater — they answer "would this rater still prefer A over B?"

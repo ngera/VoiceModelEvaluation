@@ -194,7 +194,9 @@ TCP handshake + first-byte-arrival) that was not run in v1. F-11
 in 06_KEY_FINDINGS.md is the receipt for both the six-session
 rank stability and the residual attribution gap; the older
 "two-session comparison is not sufficient" framing was the
-pre-R14 S3 story.
+S3-only story from before the R14 rebase (see
+[CORRECTIONS row 59](../CORRECTIONS.md) for the six-session
+receipt that superseded it).
 
 **S3 setup with concurrent ping baseline** (recommended for any
 new session that will be used to make a distributional claim):

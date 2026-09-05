@@ -70,7 +70,7 @@ crackle rather than a serious defect.
 **Not a one-off**: the same pattern showed up in both our campaign
 runs, three weeks apart, on the same corpus — Cartesia had **429
 clipped samples across 68 narration files the first time, 420
-across 70 the second**, roughly 11× more than the next-worst
+across 70 the second**, 11-14× more than the next-worst (R2 429/39 = 11.0×; R3 420/30 = 14.0×)
 vendor on narration (Google, 39/30). On conversational the gap is
 even wider — Cartesia 406/377 vs the next-worst (Speechify 1
 sample on R2, ElevenLabs 1 sample on R3), so ~400× more. Two other
@@ -476,24 +476,33 @@ measures how quiet the background is *relative to the loudest
 possible sample in a digital audio file*, not against any real-
 world reference. **More negative is quieter, less negative is
 louder.** Digital silence is −∞ dBFS. For our loudness-normalised
-audio (all clips normalised to −18 LUFS speech level), background
-below −60 dBFS reads as broadcast-clean; −40 dBFS is the
-audibility threshold for hiss under this specific normalisation;
-above −40 dBFS starts sounding like a bad connection. The dBFS
-scale is not comparable to any real acoustic measurement without a
-playback level and room reference; the ordering below is what
-matters, not the absolute values.
+audio (all clips normalised to −18 LUFS speech level) the graded
+listener rubric is:
 
-Where each vendor sits on that scale, averaged across their
-conversational audio:
+| dBFS range | Listener label |
+|---|---|
+| ≤ −55 | very quiet, professional |
+| −54 to −48 | quiet, broadcast-clean |
+| −47 to −41 | slight audible hiss |
+| −40 to −36 | audible hiss on quiet phone systems |
+| ≥ −35 | loudest background — most audible hiss |
+
+The dBFS scale is not comparable to any real acoustic measurement
+without a playback level and room reference; the ordering below
+is what matters, not the absolute values. **DISCLAIMER § Language
+and framing** carries the same rubric so the audit trail agrees
+with the presentation here.
+
+Where each vendor sits on that scale (sorted by value, ascending
+= quiet to loud), averaged across their conversational audio:
 
 | Vendor | Conversational background noise | Reads as |
 |---|---:|---|
 | Cartesia | −57 dBFS | very quiet, professional |
 | Speechify | −57 dBFS | very quiet, professional |
+| Orpheus | −53 dBFS | quiet, broadcast-clean |
 | OpenAI | −52 dBFS | quiet, broadcast-clean |
 | ElevenLabs | −52 dBFS | quiet, broadcast-clean |
-| Orpheus | −53 dBFS | quiet, broadcast-clean |
 | Deepgram | −46 dBFS | slight audible hiss |
 | **Fish** | **−39.7 dBFS** | **audible hiss on quiet phone systems** |
 | **Google** | **−34 dBFS** | **loudest background — most audible hiss** |

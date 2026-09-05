@@ -16,7 +16,7 @@ completed.*
 > **Scope + status** — This is a **new-artefact-only** report.
 > Every numbered report (01–08) is untouched. New assets live under
 > [`analysis/experiments-2026-09-01/`](../analysis/experiments-2026-09-01/):
-> `audio/` (73 fresh WAVs across all 5 experiments), `drift.json`
+> `audio/` (59 fresh WAVs across experiments A, B, C and E — D is a latency-only session with no WAV output; `drift.json` records `n_files: 59`), `drift.json`
 > (per-file loudness-thirds), `logs/` (per-experiment API logs), and
 > `inputs/` (the 20 authored items for A + the L03 halves for C).
 
@@ -30,7 +30,7 @@ appears **stochastic across runs of the same voice on the same text**.
 Across 64 primary-campaign L01..L08 narration items on 8 vendors'
 pinned voices (Item 1 addition), **6.2% fade at threshold** — with
 elevated rates on ElevenLabs (25%), Deepgram (12%), and Orpheus (12%),
-and 0% on Cartesia, Fish, Google, OpenAI's pinned voices. Two
+and 0% on Cartesia, Fish, Google, OpenAI, and Speechify's pinned voices. Two
 new-item experiments (A/E) find similar or higher rates on affected
 voices. **Chunking L03 into two halves cuts the fade sharply**
 (2.79 dB full → 1.89 dB half 1 → 0.81 dB half 2), consistent with
@@ -345,7 +345,7 @@ the actual api_log rows is:
 | Experiment A (20 ElevenLabs) | 20 | $1.1410 |
 | Experiment B (5 ElevenLabs voices) | 5 | $1.2105 |
 | Experiment C (2 L03 halves ElevenLabs) | 2 | $0.2419 |
-| Experiment E (32 items × 4 vendors) | 32 | $0.6702 |
+| Experiment E (8 items × 4 vendors) | 32 | $0.6702 |
 | **Experiments subtotal** | **59** | **$3.2636** |
 | D S4 ElevenLabs (18:57Z) | 50 | $0.1250 |
 | D S4 OpenAI (19:07Z) | 50 | $0.0188 |
@@ -409,7 +409,7 @@ where the OpenAI variance shows up:
 |---|---|---:|---:|---:|---:|
 | S4 elevenlabs | elevenlabs | 412 | 461 | **894** | 78 |
 | S4 openai | openai | 772 | 1212 | **1935** | 278 |
-| S5 elevenlabs | elevenlabs | 421 | 468 | **716** | 62 |
+| S5 elevenlabs | elevenlabs | 421 | 468 | **716** | 61 |
 | S5 openai | openai | 783 | 1206 | **4313** | 555 |
 
 OpenAI's S5 shows a single-trial max of **4.3 seconds** (vs a p90
@@ -635,7 +635,7 @@ for the per-experiment and per-vendor breakdown.
 cycles for misconfigured voice IDs and Rich TUI encoding failures.
 The generation phase itself was <90 min.
 
-**Compute time**: drift analysis on 73 experiment WAVs + 64
+**Compute time**: drift analysis on 59 experiment WAVs + 64
 primary-campaign WAVs took under 60 seconds. The Audiobox +
 DNSMOS + WER analyzer pass on the 32 Experiment E WAVs completed
 in ~5.3 hours wall-clock on CPU (a synthetic run-store,
@@ -702,7 +702,7 @@ uv run python scripts/_experiment_report.py     # render this report body
 - Long items (L01..L08) for E: [`analysis/experiments-2026-09-01/inputs/E_long_items.json`](../analysis/experiments-2026-09-01/inputs/E_long_items.json)
 
 **Outputs**:
-- All 73 WAVs: `analysis/experiments-2026-09-01/audio/{A_new_items, B_voices, C_halves, E_altvoice/{openai,fish,deepgram,google}}/*.wav`
+- All 59 WAVs: `analysis/experiments-2026-09-01/audio/{A_new_items, B_voices, C_halves, E_altvoice/{openai,fish,deepgram,google}}/*.wav` (A 20 + B 5 + C 2 + E 32 = 59; D is a latency-only session, no WAVs)
 - Drift stats: [`analysis/experiments-2026-09-01/drift.json`](../analysis/experiments-2026-09-01/drift.json)
 - API logs: `analysis/experiments-2026-09-01/logs/{A,B,C,D,E}_*.log` + `_api_log.jsonl`
 - 4 fresh D latency runs: `runs/latency-20260901T{185715,190715,191000,201051}Z/`

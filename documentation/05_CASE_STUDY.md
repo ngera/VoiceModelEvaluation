@@ -185,8 +185,10 @@ project.
 The spec's D4 slot was a blinded pairwise BT rating campaign at
 n=1 self-rater. The operative pre-registered target for this
 campaign was **216 judgments** per
-[`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) — 36 pairs across
-9 systems × 2 use cases × 3 reps, landed as `prereg-v1.7`. Under
+[`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) — 36 pairs
+(C(9,2) over 9 systems) × 2 use cases × 3 reps = 216, landed
+as `prereg-v1.7`. Formula is `pairs × use_cases × reps`; the
+systems count enters via the pair count. Under
 D-009 the target and the spec's 3-rep minimum floor collapse to
 the same number for the 9-system roster: 216 IS the 3-rep floor
 (the 5-rep design would have been 360; D-009 compressed to the
@@ -196,7 +198,7 @@ viable size before the n=1-rater problem was even reached.
 210 because the block wasn't re-synced when D-009 landed; the
 `prereg-v1.7` tag is authoritative under the last-amendment rule.
 An archived RESEARCH_LOG entry then proposed a further descope
-to 168 after D-C dropped the anchor — 8 systems × 28 pairs × 2
+to 168 after D-C dropped the anchor — 28 pairs (C(8,2) over 8 systems) × 2
 UC × 3 reps — but that revision never landed in its own
 `prereg-v1.N` amendment before D-H deferred the panel entirely.) The bootstrap CIs on those judgments
 would be *conditional on the single rater* — two n=1 raters could
@@ -915,7 +917,7 @@ different artifacts, and only one of them was under test.
 operative pre-registered target for this campaign was
 **216 blinded pairwise judgments** per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) (`prereg-v1.7`,
-2026-08-08), with bootstrap CIs. Spec minimum floor: 126. Executable at
+2026-08-08), with bootstrap CIs. Under D-009 the campaign target and the spec's 3-rep floor collapse to the same 216 for the 9-system roster (216 IS the 3-rep floor at C(9,2)=36 pairs × 2 UC × 3 reps); 126 is the pre-D-003 7-system spec floor and is superseded. Executable at
 n=1 rater — but the CIs would be conditional on that one rater, and
 publishing them as "human preference" evidence would be a shape of
 over-claim this project refuses to make. Protocol

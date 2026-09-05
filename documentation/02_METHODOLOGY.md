@@ -61,7 +61,10 @@ are moot under [D-A](06_KEY_FINDINGS.md#d-a) (TTSDS2 skipped).
 The remaining two (lines 211, 212, `mdd_at_target: null` /
 `mdd_at_minimum: null`) are the Phase-D BT power-analysis MDDs
 that were meant to say whether the operative-post-D-009 target
-of 216 judgments (or the spec's 126 minimum floor) was adequate
+of 216 judgments was adequate (the operative floor, which under
+D-009 is the same 216 — the 3-rep count evaluated on the
+9-system roster IS the spec's 3-rep floor; the older 126 was the
+7-system spec's floor and is superseded)
 — the pre-registered power calc that went with the BT panel and
 was, like the panel itself, never run. The adjacent
 `n_judgments_target: 210 / n_judgments_minimum: 126` rungs on
