@@ -9,14 +9,31 @@ commit that predates the results.**
 > Two peer-reviewed machine-quality raters, applied to the same 8
 > vendors, **rank them differently**. Meta's Audiobox and Microsoft's
 > DNSMOS have a cross-pipeline Spearman ρ of **−0.13 on conversational
-> and −0.27 on narration**. Whichever leaderboard you're used to
-> looking at, ask: *ranked on what?*
+> and −0.27 on narration**. Before quoting a single vendor "quality
+> score", ask: *quality on which axis?*
 
-> **⚠ Scope disclaimer** · Findings are as of 2026-08-12, on specific
+> **⚠ Scope disclaimer** · Findings are as of 2026-09-01, on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
-> relationship with any vendor. Not legal/business/purchasing advice.
+> relationship with any vendor. This is a scoped vendor advisory,
+> not legal / contractual / financial advice — see
+> [DISCLAIMER.md § Not legal or contractual advice](DISCLAIMER.md#not-legal-or-contractual-advice).
 > Full scope + corrections process in [DISCLAIMER.md](DISCLAIMER.md).
+
+---
+
+## Have 10 minutes? Start here
+
+**[▶ docs/index.html — one-page decision brief](docs/index.html)**
+— the three-question vendor-selection framework, the cross-pipeline
+axis-split chart, the cost table (with Orpheus + Speechify pricing
+caveats inline), and a "what I got wrong" box linking to
+[CORRECTIONS.md](CORRECTIONS.md). Self-contained HTML, no build
+step. Everything else on this page is appendix.
+
+**Have longer than 10 minutes?** The 8 numbered documents (plus EXPERIMENTS_2026-09-01.md) in
+[`documentation/`](documentation/) are the full narrative — jump to
+the [Where to read](#where-to-read) section below.
 
 ---
 
@@ -27,16 +44,16 @@ artefact in this repo:
 
 | # | Finding | Evidence |
 |---|---|---|
-| 1 | **The two independent quality raters rank vendors differently.** Consumer-facing warmth vs enterprise cleanliness are literally *different constructs*, not different weightings of the same one. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
-| 2 | **A 14.59-second output cap was observed on every Orpheus call at the hosted Replicate endpoint** (std dev 0.000s across 8 items). Long-form narration is 5-6× the nominal per-call cost at this cap, and the 85% word-error-rate on long items is mechanical incompletion. Cap may be model-intrinsic OR a deployment-config parameter (`max_new_tokens`) — untested; recommendations differ. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
-| 3 | **Latency *speed* and latency *stability* are separate axes.** OpenAI's p90 TTFA shifted 56% between two sessions on the same days as ElevenLabs Flash's shifted 2%. | [Figure 3](documentation/figures/f3_latency_stability.png) · [T5](analysis/verification/T5_openai_latency.md) & [T7](analysis/verification/T7_elevenlabs_ttfa.md) |
-| ★ | **~40% of the load-bearing findings came from the verification pack**, not the primary campaign. Cheap replication ($0.61 total spend, 90 min work) is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) |
+| 1 | **The two independent quality raters rank vendors differently.** Meta's Audiobox measures two axes (technical cleanliness PQ + warm/enjoyment CE); Microsoft's DNSMOS is a second family of scorers (P.808 single-model + P.835 three-scale). PQ agrees with DNSMOS at mean ρ = +0.24; CE anti-correlates at mean ρ = −0.51. That's a real construct split (PQ-side vs CE-side), not different weightings of the same signal — even though the three scoring models (Audiobox, DNSMOS P.808, DNSMOS P.835) span two construct families, not three. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
+| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). Cap may be model-intrinsic OR a deployment-config parameter (`max_new_tokens`) — untested; recommendations differ. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
+| 3 | **ElevenLabs shifted downward on both Audiobox axes + DNSMOS P.808 between R2 and R3 (paired-z 2.26–7.32σ, 5 cells surviving Bonferroni-12).** The P.835 triad's 6 cells (3 conv + 3 narr) all stayed at \|z\| < 1.6. Two of three scoring models detected the drift; the third didn't. Both ElevenLabs models (Flash v2.5 conv, Multilingual v2 narr) drift together — a single-model update does not explain the pattern. This is the finding the "measurement date on every finding" discipline exists to catch — invisible without R3. | [F-12 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-12) · [analysis/round3-vs-round2-comparison.md](analysis/round3-vs-round2-comparison.md) |
+| ★ | **The verification pack changed the framing of multiple headline findings** (T4/T5/T6/T7/T8/F-11 all named individually — see [verification README](analysis/verification/)), and a targeted Phase 2 experiment pack (2026-09-01, ~$3.55) further generalised F-6 (loudness fade) from an item-specific quirk to a cross-vendor phenomenon and extended F-7's voice-swap check from 1 vendor to 5. Cheap replication is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) · [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md) |
 
 ---
 
 ## Where to read
 
-The 7 numbered documents in [`documentation/`](documentation/)
+The 8 numbered documents plus EXPERIMENTS_2026-09-01.md in [`documentation/`](documentation/)
 are the full narrative. Read them in order for the end-to-end
 story, or pick the one that matches what you're here for:
 
@@ -53,10 +70,17 @@ story, or pick the one that matches what you're here for:
 5. **[05_CASE_STUDY.md](documentation/05_CASE_STUDY.md)** — long-form
    portfolio narrative on how the findings were extracted
 6. **[06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md)** — the
-   9 findings (F-1..F-9) + friction-point stories + 8-decision log
+   11 findings (F-1..F-9 + F-11 + F-12; F-10 slot reserved for BT panel) + friction-point stories + 8-decision log
    (D-A..D-H)
 7. **[07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md)** —
    what wasn't done and why; deferred items; a proper v2 outline
+8. **[08_KEY_FINDINGS_PLAIN.md](documentation/08_KEY_FINDINGS_PLAIN.md)** —
+   the same findings as 06, in plain language for non-technical
+   readers
+9. **[EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md)** —
+   Phase 2 experiment pack: five targeted experiments + four
+   follow-ups that generalised F-6, extended F-7, and confirmed
+   S3's latency spike was transient
 
 **Quick paths by reader type**:
 
@@ -75,21 +99,25 @@ story, or pick the one that matches what you're here for:
 ## Method in one paragraph
 
 Eight commercial voice AI vendors (ElevenLabs, Cartesia, Fish Audio,
-Google Cloud TTS, Deepgram, Canopy Orpheus, OpenAI, Speechify)
+Google Cloud TTS, Deepgram, Canopy Orpheus / `lucataco`
+community-fork on Replicate, OpenAI, Speechify)
 evaluated on two use cases (support-agent conversational + long-form
 narration) across a 75-item pre-registered corpus per use case. Five
 measurement dimensions:
 
 - **D1 · Latency** — TTFA p50/p90 from 50 serial trials per vendor per
-  session, with **two sessions two days apart** for the two
+  session, with **six sessions across four dates** for the two
   speed-critical vendors to separate speed from stability
 - **D2 · WER** — two ASR judges (Meta `wav2vec2-large-robust` + OpenAI
   `faster-whisper large-v3`), agreement-based failure detection.
   Judges required to differ in *organisation*, *encoder architecture
   family*, AND *training pipeline* (enforced by Pydantic validator)
-- **D3 · Quality** — two independent MOS pipelines: Meta's Audiobox
-  Aesthetics (aesthetic warmth axes) + Microsoft's DNSMOS P.835
-  (signal cleanliness axes). Six machine-quality signals total per
+- **D3 · Quality** — three scoring models: Meta's Audiobox
+  Aesthetics (2 axes: PQ = technical cleanliness, CE = warm /
+  enjoyment — see F-8 for the construct decomposition) + Microsoft's
+  DNSMOS P.808 (1 axis: single-model listening-quality MOS) +
+  Microsoft's DNSMOS P.835 (3 axes: ovrl / sig / bak from a shared
+  internal representation). Six machine-quality signals total per
   (vendor, use case)
 - **D4 · Human perceptual rating** — deferred to a v2 multi-rater
   panel with written rationale in [06_KEY_FINDINGS.md § D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
@@ -100,13 +128,30 @@ measurement dimensions:
   monthly minimums, included tiers, and per-1K-word rates at 10K /
   100K / 1M words per month
 
-Corpus, gates, voices, models, and analyzer parameters frozen in
-git tag `prereg-v1` before results existed; amendments logged in
-[DEVIATIONS.md](DEVIATIONS.md) with rationale and re-tagged (v1.1
-through v1.10). A separate **Phase 2c verification pack** (9 tests,
-~$0.61 spend) confirmed or refuted every headline outlier — verdicts
-under [analysis/verification/](analysis/verification/). Total
-project spend across 8 vendor accounts: ~$56.
+Corpus, gates, voices, vendor models, and analyzer *parameters*
+(dataset ids, axis choices, judge selections, gate thresholds)
+frozen in git tag `prereg-v1` before results existed; amendments
+logged in [DEVIATIONS.md](DEVIATIONS.md) with rationale and
+re-tagged (v1.1 through v1.10). Honest exception: the three
+analyzer **neural-model revisions** (Audiobox, wav2vec2,
+faster-whisper) were not SHA-pinned in the campaign — placeholders
+in `configs/analyzers.yaml` propagated into `wer.json`. Disclosed
+in [02 § 1](documentation/02_METHODOLOGY.md#1-pre-registration-with-git-tags)
+and tracked as [07 gap 9](documentation/07_GAPS_AND_FUTURE_WORK.md). A separate **Phase 2c verification pack** (9 tests,
+~$0.63 spend) confirmed or refuted every headline outlier — verdicts
+under [analysis/verification/](analysis/verification/). A **Phase 2
+experiment pack** (2026-09-01, ~$3.55) then addressed three
+loose ends F-6, F-7, F-11 raised, with executive writeup in
+[EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md).
+Total metered project spend across 8 vendor accounts: **~$16.15**
+(pilots + primary campaign + variance run + latency sessions +
+verification pack + Phase 2 experiment pack). Load-bearing per-run
+cost figures come from committed `analysis/*/cost_model.json`;
+two categories (doctor + pilot line ~$0.61, T4/T8/Wave-4b lines
+inside ~$0.63) are reproducible locally but not currently
+committed to git — see
+[DISCLAIMER § Cost breakdown](DISCLAIMER.md) for the
+committed-vs-reproducible split per line.
 
 ---
 
@@ -138,10 +183,14 @@ uv run veval analyze <run-id> --stages all
 # Outputs go to analysis/<run-id>/*.json
 ```
 
-**Full run** (75 items × 8 vendors × 2 use cases) is ~$50 and takes
+**Full run** (75 items × 8 vendors × 2 use cases = 1,200 audio
+outputs) is **~$7.85 metered** (per R2 and R3 both) and takes
 ~30 min end-to-end. See
-[03_RUNBOOK.md](documentation/03_RUNBOOK.md) for the phased
-execution guide, install steps, and troubleshooting.
+[03_RUNBOOK.md § Reproduce the published evaluation](documentation/03_RUNBOOK.md#reproduce-the-published-evaluation)
+for the full ~$16 minimum-reproduction breakdown (campaign +
+variance + latency S1–S3 + verification pack + Phase 2 experiment
+pack), and [DISCLAIMER § Cost breakdown](DISCLAIMER.md) for the
+committed-vs-reproducible split per line.
 
 **CPU-only by design** (see D-F in
 [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)):
@@ -156,7 +205,7 @@ wall-clock but doesn't change any measurement. See
 ```
 README.md                        ← this file
 DEVIATIONS.md                    ← 11 pre-registered amendments with rationale
-CORRECTIONS.md                   ← 20 retracted claims across 5 review rounds, each traceable to a committed artefact
+CORRECTIONS.md                   ← retracted-claim register — every claim traceable to a committed artefact; row count grows with review rounds
 CLAUDE.md                        ← project-wide conventions
 pyproject.toml                   ← uv-managed Python 3.11 env
 
@@ -164,11 +213,17 @@ configs/
 ├── providers.yaml               ← 8 vendors, endpoints, env keys
 ├── voices.yaml                  ← locked voice + model per (vendor, use case)
 ├── voices.T6.yaml               ← T6-specific overlay (edmund_32)
-├── corpus/                      ← 75 items per use case
 ├── gates.yaml                   ← pass/fail thresholds
-├── analyzers.yaml               ← pinned analyzer parameters
+├── analyzers.yaml               ← analyzer parameters (dataset ids,
+│                                  judge selection, gate thresholds
+│                                  pinned; neural-model revisions
+│                                  were TODO placeholders — see 07 gap 9)
 ├── pricing.yaml                 ← cost model per vendor + tier
 └── hardware.yaml                ← reproducibility receipt
+
+corpus/                          ← 75 items per use case (top-level, not under configs/)
+├── conversational.yaml
+└── narration.yaml
 
 src/veval/
 ├── adapters/                    ← one per vendor
@@ -187,7 +242,16 @@ src/veval/
 ├── runner/                      ← async request runner with spend cap
 ├── store/                       ← immutable run store
 ├── admin/                       ← Streamlit local dashboard
-└── rate/                        ← BT judgment ingest (deferred)
+├── human/                       ← BT rating pipeline pieces (pair_builder,
+│                                  bt, loudness) — execution deferred (D-H)
+├── report/                      ← report generation helpers
+└── score/                       ← gates.py + robustness.py (ran in v1,
+                                   receipt at analysis/campaign-20260831T175358Z/
+                                   score.json) · correlations.py (module
+                                   present, receipt block is [] this pass;
+                                   F-8's Spearman ρ comes from
+                                   analyze/cross_metric.py) · frontier.py
+                                   (D-H-blocked; frontiers block is {})
 
 documentation/
 ├── 01_ARCHITECTURE.md           ← technical spec + system design (mermaid embedded)
@@ -195,14 +259,24 @@ documentation/
 ├── 03_RUNBOOK.md                ← install + reproduce + troubleshooting
 ├── 04_RESULTS.md                ← full per-vendor data table + cost calculus + decision framework
 ├── 05_CASE_STUDY.md             ← long-form portfolio narrative
-├── 06_KEY_FINDINGS.md           ← F-1..F-9 + friction stories + D-A..D-H log
+├── 06_KEY_FINDINGS.md           ← F-1..F-9 + F-11 + F-12 + friction stories + D-A..D-H log
 ├── 07_GAPS_AND_FUTURE_WORK.md   ← threats to validity + deferred items + v2 plan
+├── 08_KEY_FINDINGS_PLAIN.md     ← same findings, non-technical framing
+├── EXPERIMENTS_2026-09-01.md    ← Phase 2 experiment pack + follow-ups
 ├── figures/                     ← f1_rank_inversion, f2_cost_vs_quality, f3_latency_stability
 └── archive/                     ← superseded v1 docs (kept for git-blame trail)
 
 analysis/
-└── verification/                ← Phase 2c per-test verdicts (T1..T8, N1, N2)
-                                   ← analysis/*.json outputs are gitignored (regenerable)
+├── verification/                ← Phase 2c per-test verdicts (T1..T8, N1, N2) — committed
+├── campaign-20260809T204608Z/   ← R2 primary campaign analyzer JSONs — committed
+├── campaign-20260831T175358Z/   ← R3 fresh-generation campaign — committed
+├── campaign-20260811T180824Z/   ← T6 Speechify voice-swap — committed
+├── variance-*/                  ← 3-draw variance subset — committed
+├── latency-*/                   ← S1a/S1b/S2/S3/S4/S5 (6 sessions) — committed
+├── experiments-2026-09-01/      ← Phase 2 experiment pack — committed
+├── experiments-2026-09-01-E/    ← Follow-up 4 alt-voice analyzer output — committed
+└── round3-vs-round2-comparison.md ← R2 vs R3 replication comparison — committed
+                                   (audio `runs/` are gitignored; analyzer outputs above are un-ignored explicitly per `.gitignore`)
 
 runs/                            ← immutable audio + api_log (gitignored — regenerable)
 
@@ -238,11 +312,14 @@ tests/                           ← pytest regression suite (~236 tests)
 - **Cross-lingual, accent-varied, or streaming** measurements —
   English-only, one voice per vendor, buffered playback in v1. See
   [07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md).
-- **Enterprise-colocated latency baseline** — TTFA numbers are from
-  a residential Windows 11 environment; enterprise cloud-VM
-  measurements would see 10-30% lower absolute numbers. Rankings
-  are portable; absolute values are labeled as upper bounds. See D-G
-  in [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions).
+- **Enterprise-colocated latency baseline** — TTFA numbers are
+  from a residential Windows 11 environment; enterprise cloud-VM
+  measurements would likely see lower absolute numbers, though we
+  cannot bound the direction rigorously. Rankings are portable
+  across the 6 sessions we ran; absolute values are
+  session-to-session observations, not ceilings. See D-G in
+  [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)
+  and F-11.
 
 ---
 
@@ -253,5 +330,28 @@ Neeraj Gera · [neeraj.gera@outlook.com](mailto:neeraj.gera@outlook.com)
 *This project is a portfolio piece demonstrating structured
 evaluation, self-critical scoping, and pre-registered methodology
 in the context of a commercially-relevant vendor-selection
-question. Everything in this repo is committed under a permissive
-open-source license; fork and adapt freely.*
+question.*
+
+---
+
+## Licence
+
+Dual-scope, per path — see [`LICENSE`](LICENSE) for the full text.
+
+- **Code** (`src/`, `tests/`, `scripts/`, `configs/`, `dx/`,
+  `pyproject.toml`, etc.) — **Apache License 2.0**. The explicit
+  patent grant is chosen deliberately for a harness others will
+  run against their own vendor accounts.
+- **Content** (`documentation/`, `docs/`, `analysis/`, `corpus/`,
+  `README.md`, `DISCLAIMER.md`, `DEVIATIONS.md`, `CORRECTIONS.md`,
+  and the figures under `documentation/figures/`) —
+  **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+  Share and adapt with attribution.
+
+The 15 contamination-probe items per use case (Harvard sentences +
+literary openings, IDs P01–P15) are pre-existing public-domain
+text; their inclusion does not create additional rights over that
+source material. Vendor and analyzer names are trademarks of their
+respective owners, used for factual identification only. `LICENSE`
+governs re-use rights only; it does not modify [`DISCLAIMER.md`](DISCLAIMER.md)'s
+scope, non-affiliation, and not-advice statements.

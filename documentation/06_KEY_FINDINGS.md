@@ -6,19 +6,61 @@ backed by a specific artefact under [analysis/](../analysis/) or
 here is backed by a specific reasoning section reachable from
 the entries below.*
 
-> **⚠ Scope disclaimer** · Findings as of 2026-08-12 on specific
+> **⚠ Scope disclaimer** · Findings as of 2026-09-01 on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. See
 > [../DISCLAIMER.md](../DISCLAIMER.md).
+
+> **Two-phase structure** · Findings below are from **Phase 1**
+> (R2 baseline 2026-08-09 + R3 replication 2026-08-31, 8 vendors ×
+> 2 use cases × 75 items each). Phase 1 raised three specific
+> follow-up questions that a targeted **Phase 2 experiment pack**
+> (2026-09-01) answered — the F-6 fade extent (cross-vendor + cross-
+> voice + within-run stochasticity), the F-7 voice-swap consistency
+> (whether Speechify's model-family-quality story generalises), and
+> the F-11 latency variance (adding S4+S5 to the 4-session baseline).
+> Findings that were sharpened or extended by Phase 2 explicitly say
+> so; the full experiment-pack report lives at
+> [EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md).
+
+> **R2-vs-R3 replication surfaced three additional signals** beyond
+> just reproducing R2's rankings (12 of 14 top-1 positions
+> unchanged; per-axis Spearman ρ 0.905–1.000; the two flips are
+> DN.p808 narration and WER conv, both inside noise floor). All
+> three live in
+> [`analysis/round3-vs-round2-comparison.md`](../analysis/round3-vs-round2-comparison.md).
+> **(a)** F-8's construct decomposition replicates (conv PQ-vs-DN
+> ρ: R2 +0.238 → R3 +0.190; conv CE-vs-DN ρ: R2 −0.506 → R3
+> −0.476).
+> **(b)** ElevenLabs shifted significantly downward (paired-z
+> |z| > 2) on 6 of 12 quality axes — the two Audiobox axes
+> (PQ + CE) plus DNSMOS's P.808 single-model MOS, on both use
+> cases. The 6 non-significant axes are the DNSMOS P.835 triad
+> (ovrl / sig / bak) on both use cases. The partition is by
+> scoring-model architecture (two of three scoring models
+> detected the drift, the third did not), not by construct —
+> F-8 already establishes that PQ and CE track *opposite*
+> constructs. Both ElevenLabs models (Flash v2.5 conv,
+> Multilingual v2 narr) moved together, so a single-model update
+> does not explain the pattern (two independent models updating
+> in the same direction in the same window is possible but not
+> parsimonious). Written up as [F-12](#f-12) below.
+> **(c)** The pre-registered
+> `long_stratum_acoustic_noise_floor_dbfs ≤ −40` hygiene gate has
+> **R2 = 6 pass / 2 fail** (Cartesia + ElevenLabs) and
+> **R3 = 5 pass / 3 fail** (Orpheus's worst-of-8 shifted 25 dB);
+> mean noise floor itself has ±3 dB R2/R3 replication variance so
+> Google's ~2 dB gate margin is pass-with-uncertainty.
 
 ---
 
 ## Contents
 
-- [Findings F-1 through F-9 + F-11](#findings) (F-10 slot was
+- [Findings F-1 through F-9 + F-11 + F-12](#findings) (F-10 slot was
   reserved for BT rating campaign results; unused because Phase 3
   was deferred to v2 per D-H, and the slot number is retained so
-  future v2 work can slot in without renumbering)
+  future v2 work can slot in without renumbering; F-12 covers the
+  R2→R3 ElevenLabs Audiobox+P.808 scorer-partition shift)
 - [Friction points — the portfolio narrative bank](#friction-points)
 - [Decisions D-A through D-H](#decisions)
 - [Threats to validity](#threats-to-validity)
@@ -40,6 +82,42 @@ tests), you must save the audio yourself. Re-requesting is not
 equivalent. This is universal, not vendor-specific.
 
 **Evidence:** [`analysis/variance-20260809T205319Z/variance.json`](../analysis)
+
+<a name="f-1a"></a>
+### F-1a · Streaming WAV headers ship placeholder lengths; every duration-derived number in the project rests on the fix
+
+During Phase A adapter integration (captured in
+[`dx/friction_log.md`](../dx/friction_log.md)) the Deepgram
+adapter's raw WAV output was found to carry a
+`0x7FFFAC00` placeholder in the header `data`-chunk length
+field — declaring **44,737 seconds** of audio for a **2.8-second
+clip**. Anything trusting the header (analyzers that read
+duration from the header rather than counting frames) would
+divide by a 12-hour "duration" and silently produce nonsense.
+
+**The fix**: every streaming adapter passes bytes through
+[`finalize_wav_header()`](../src/veval/adapters/base.py) in
+`adapters/base.py`, which recomputes the true `data`-chunk
+length from the actual sample count before the audio hits the
+run store. Not optional; enforced at the adapter-base level so
+new streaming vendors inherit it automatically.
+
+**What rests on this fix**: RTF (needs true duration to divide
+wall-clock by), speech-ratio (needs true duration to compute the
+speech / silence split), the Orpheus 14.59-s output-cap discovery
+(F-5 / T8 — the 14.59-s consistency across long-item calls only
+reads as a *cap* once the header lies about length are removed;
+otherwise it reads as "Orpheus sometimes generates 12 hours of
+audio"), and the per-third loudness drift analysis (F-6 — needs
+correct thirds to compare LUFS across). Without F-1a the entire
+speed and duration surface of the study would be silently wrong.
+
+**How it was caught**: D7-friction integration log, Phase A
+walking skeleton. The provenance is cited in
+[01_ARCHITECTURE.md](01_ARCHITECTURE.md) line 211,
+[03_RUNBOOK.md](03_RUNBOOK.md) line 541, and
+[DEVIATIONS.md](../DEVIATIONS.md) line 282, and by cross-doc
+pointers to F-1a from every duration-derived metric.
 
 ### F-2 · Wav2vec2 is a noisy WER judge on TTS-distribution audio
 
@@ -99,9 +177,15 @@ trade-off, not a dominant choice.
 
 ### F-4 + F-4a · Cartesia's clipping is corroborated by two independent code paths
 
-**F-4** (original observation): Cartesia produced 429 clipped samples
-on narration + 406 on conversational — **100× the next-worst
-provider**. `hygiene.json`, sample-level peak detection.
+**F-4** (original observation): Cartesia produced 429 clipped
+samples on narration (across 68 files) + 406 on conversational
+(across 54 files) — **~11× the next-worst vendor on narration**
+(Google 39/30) and **~400× on conversational** (Speechify 1 /
+ElevenLabs 1). Two other vendors also fail the narration
+long-stratum clipping gate at lower magnitudes: Google 36/28
+clipped samples across the 8 long items on R2/R3; Speechify 3/10
+across 1 long item on R2/R3. Reproducible from `hygiene.json`'s
+sample-level peak detection.
 
 **F-4a** (independent-pipeline corroboration): Microsoft DNSMOS
 refuses to score any file with peak > 1.0, raising a `ValueError`.
@@ -147,9 +231,10 @@ for the full derivation.
 
 - **Not cheaper than OpenAI**, once you correct for the per-call
   cap
-- **Hard 14.59-s output cap per call** — 22/75 narration items
-  (29%) exceed this cap; 8 of those (11%) are catastrophically
-  truncated (~84% content loss). See
+- **Hard 14.59-s output cap per call** — **27 of 75 narration items
+  (36%) are truncated** at the cap (long 8/8, medium 18/20,
+  probe 1/15); the 8 long-stratum items lose ~84% of their
+  expected content. See
   [F-9 T8](#f-9--outlier-verification-verdicts-phase-2c) and
   [04 footnote ¹](04_RESULTS.md#footnote-1).
 - **Worst WER** in the roster (27% mean, ~2× next-worst) —
@@ -157,9 +242,10 @@ for the full derivation.
 - **Widest between-draw variance** on quality signals
 
 **But not artefact-driven on quality**: per-stratum recompute
-(04 footnote ¹) shows Orpheus's narration AB.PQ mean of 8.002
-is essentially identical across complete-audio (8.008) and
-truncated-audio (7.974-8.009) strata. Its per-call rendering
+(04 footnote ¹) shows Orpheus's narration AB.PQ mean of 8.002 is
+essentially identical between the 48 complete items (mean 8.009)
+and the 27 truncated items (mean 7.989) — Δ ≈ 0.02. Its per-call
+rendering
 is genuinely uniform-quality; the aggregate is earned.
 
 **Impact:** Orpheus is a legitimate choice when: (a) every turn
@@ -173,33 +259,146 @@ Orpheus" heuristic is retired** — on this data, if budget
 dominates, OpenAI at $0.075 is the pick (peer-priced to Orpheus
 and passes the cap).
 
-### F-6 · ElevenLabs L03 monotonic fadeout
+<a name="f-6"></a>
+### F-6 · Monotonic loudness fade on long-form TTS narration — a cross-vendor phenomenon at ~5-25% base rate
 
-Item L03 in the narration corpus produces a **reproducible monotonic
-loudness fadeout** across the audio on ElevenLabs — every fresh
-regeneration shows loudness decreasing across thirds. Mean delta
-across 4 total draws: **2.7 dB** (original campaign observation was
-3.6 dB, on the high side of the natural range — see F-9 T4).
+Long-form TTS narration exhibits a monotonic loudness fade on a
+subset of generations — the audio gradually loses ~2-3 dB from
+first third to last third of a single call. Phase 1 observed it
+first on ElevenLabs L03 (2.7 dB mean across 4 draws, 100% direction
+reproducible); Phase 2 established it is **not L03-specific, not
+ElevenLabs-specific, and not fully deterministic**.
 
-**Impact:** ElevenLabs has text-dependent quirks that can't be
-predicted from marketing materials. A production quality-check
-step that flags monotonic loudness drift catches this class of
-issue cheaply.
+**Phase 2 evidence** — the [F-6 experiment pack](EXPERIMENTS_2026-09-01.md):
 
-**Evidence:** [`analysis/campaign-20260809T204608Z/drift.json`](../analysis) +
-[T4 verdict](../analysis/verification/T4_elevenlabs_L03_fadeout.md)
+| test | design | result |
+|---|---|---|
+| Follow-up 1 | drift analyzer on R3 primary-campaign L01..L08 for all 8 vendors' pinned narration voices | **4 / 64 (6.2%) fade at threshold** (Δ≥2 dB, monotonic-decr). ElevenLabs 25% (L02, L06), Deepgram 12% (L01), Orpheus 12% (L02), other 5 vendors 0%. **L03 itself does NOT fade on charlotte in R3** (Δ = −0.26 dB, non-monotonic). |
+| Experiment A | 20 new long-form paragraphs on ElevenLabs charlotte | 2 / 20 fade at threshold (EMOT02, FACT03). 9 / 20 monotonically decreasing at any magnitude. |
+| Experiment B | L03 on 5 different ElevenLabs voices | 2 / 5 voices fade (charlotte 2.79 dB, josh 2.92 dB); 3 / 5 don't (rachel, antoni, bella). Text × voice interaction. |
+| Experiment C | L03 split into halves, generated as two independent calls | Full L03 fades 2.79 dB; half 1 fades 1.89 dB (below threshold); half 2 shows no fade. Cumulative state resets on fresh call. |
+| Experiment E | alt-voice on OpenAI/Fish/Deepgram/Google on L01..L08 | OpenAI's nova voice fades on 2 / 8 items (25%); Deepgram/Fish/Google alt voices don't fade. |
 
-### F-7 · Speechify's Audiobox lead is consistent AND transferable
+**Impact:** long-form TTS narration on **at least ElevenLabs,
+Deepgram, Orpheus, and OpenAI's affected voices** exhibits this
+fade at 6-25% rate — high enough that a production pipeline
+using long-form should include a loudness-drift monitor over
+every generated audio. **The fade is stochastic across runs of
+the same voice on the same text** (L03 fades 2.79 dB in one run
+and 0.00 dB in another on the same day, same charlotte voice), so
+avoiding specific "problem items" doesn't work — the problem items
+shift. **Chunking mitigates**: splitting text at ≤500-char
+boundaries drops the fade sharply.
+
+Prior "reproducible L03 quirk on ElevenLabs" framing retracted;
+see [CORRECTIONS row 22](../CORRECTIONS.md).
+
+**Evidence:**
+[`analysis/campaign-20260809T204608Z/drift.json`](../analysis/campaign-20260809T204608Z) (R2 original),
+[`analysis/experiments-2026-09-01/item1_primary_narration_drift.json`](../analysis/experiments-2026-09-01/item1_primary_narration_drift.json) (R3 cross-vendor),
+[`analysis/experiments-2026-09-01/drift.json`](../analysis/experiments-2026-09-01/drift.json) (A/B/C/E per-file),
+[T4 verdict](../analysis/verification/T4_elevenlabs_L03_fadeout.md) (Phase 1 verification pack).
+
+<a name="f-7"></a>
+### F-7 · Voice choice within a vendor shifts AB.PQ at ≥3σ — including under same-gender swap on Speechify (T6 narration)
 
 Speechify tops **both** Audiobox axes on **both** use cases with
-the pre-registered voice picks. Verification (F-9 T6) confirmed
-the ranking with a deliberately-different alt voice — the alt
-voice scored *higher* than the pinned voice, not lower.
+the pre-registered voice picks. Verification (F-9 T6) tested
+Speechify with a deliberately-different alt voice — `edmund_32`
+scored **+0.30 higher on AB.PQ on conversational** (cross-gender:
+pre-registered `geffen_32` female → `edmund_32` male) and
+**+0.10 higher on narration** (same-gender: pre-registered
+`wyatt_32` male → `edmund_32` male, T6 verdict "same gender
+(both male)") and still ranked #1 across the 8 vendors on both
+use cases.
 
-**Impact:** Speechify's Audiobox #1 rank is a **Simba-3.2 model**
-property, not a lucky voice pick. Vendor-agnostic buyers can
-select from Speechify's 8 Simba-3.2 voices based on brand fit
-without worrying about a big quality drop-off.
+**Phase 2 extension** — the [F-6 experiment pack's Follow-up 4](EXPERIMENTS_2026-09-01.md#follow-up-4--alt-voice-qualitywer-analysis-on-experiment-e-audio)
+ran an alt-voice regeneration on 4 more vendors (OpenAI, Fish,
+Deepgram, Google) on the same L01..L08 long-narration items, then
+full Audiobox + DNSMOS + WER analysis. The correct inferential test
+on n=8 matched pairs is a paired-z on per-item differences — the
+same test the project uses everywhere else for quality claims:
+
+| vendor | pinned R3 AB.PQ | alt E AB.PQ | mean Δ | SE_diff | **paired z on AB.PQ** |
+|---|---:|---:|---:|---:|---:|
+| OpenAI | 7.619 | 7.473 | −0.146 | 0.044 | **−3.28σ** |
+| Fish | 7.710 | 7.869 | +0.159 | 0.031 | **+5.06σ** |
+| Google | 8.032 | 7.927 | −0.105 | 0.014 | **−7.35σ** |
+| Deepgram | 7.948 | 7.468 | −0.480 | 0.036 | **−13.46σ** |
+
+**Every alt voice tested produces a statistically significant AB.PQ
+shift on the same 8 items.** The smallest, OpenAI, is 3.28σ; the
+largest, Deepgram, is 13.46σ. Direction is not stable (Fish
+positive, others negative).
+
+**Gender make-up of the swap pairs**: all four Phase 2 Follow-up 4
+alt voices crossed gender against the pinned voice — OpenAI onyx
+(male) → nova (female), Deepgram orion (male) → luna (female),
+Google Charon (male) → Kore (female). Fish uses opaque UUIDs so
+gender is not directly verifiable from the config, but the alt
+was Fish's conversational-tagged voice against a narration-tagged
+pinned — a different design confound (voice-purpose swap). **T6's
+Speechify split by use case**: conversational was cross-gender
+(geffen_32 female → edmund_32 male, +6.05σ AB.PQ); **T6 narration
+was same-gender** (wyatt_32 male → edmund_32 male, verified in
+[T6 verdict](../analysis/verification/T6_speechify_voice_bias.md), which says of the narration pair "same gender (both male)"),
+paired-z on the 20-item T6 set = **+4.02σ AB.PQ**. **T6 narration
+therefore already establishes a >3σ voice-choice effect that
+survives gender matching within one vendor.** The four Follow-up-4
+cross-gender pairs do not settle whether the voice-choice
+signal survives gender matching *across* vendors (Deepgram's
+−13.5σ is 3× OpenAI's −3.3σ; a same-gender sweep on the other
+vendors could either flatten that spread or preserve it).
+
+Prior "HOLDS / SHIFTS" verdict framing retracted; see
+[CORRECTIONS row 25](../CORRECTIONS.md).
+
+**What the data supports**:
+
+- Every alt voice tested (5 vendors including Speechify's T6)
+  produced a statistically significant AB.PQ shift from its
+  pinned counterpart on the paired-z test (Speechify T6
+  narration +4.02σ same-gender, +6.05σ conv cross-gender;
+  Follow-up-4 vendors 3.3–13.5σ under cross-gender confound).
+- Speechify's T6 narration result establishes that a within-
+  vendor same-gender voice swap can shift AB.PQ at ≥4σ — the
+  falsification test Phase 1 originally proposed for v2 is
+  already satisfied on one vendor.
+- Deepgram's Δ = −0.480 (13.5σ) is roughly 3× OpenAI's Δ = −0.146
+  (3.3σ). The magnitude varies substantially across vendors and
+  is a real between-vendor signal.
+- Speechify's T6 rank-level result — alt scored higher and still
+  ranked #1 across the 8 vendors — remains a rank-preservation
+  observation (top-1 stable under a voice swap), not a "quality
+  holds within noise" claim at the item level.
+
+**What Phase 1 F-7 got right and got wrong**: T6 established that
+Speechify's Audiobox #1 rank was not a lucky-voice-pick at the
+rank level. Phase 2 + a re-read of T6's own numbers shows that
+per-item scores shift under a voice swap in every vendor tested,
+including under same-gender swap on the one vendor where the
+same-gender test has been done, so the rank-level observation
+does not carry to an item-level "quality is a vendor-family
+property" claim.
+
+**What a v2 same-gender sweep would need** (T6's Speechify
+narration leg already answered this on one vendor at +4.02σ;
+the sweep extends to the other 7): 2 same-gender voices per
+vendor × 8 vendors × 20 items × 1 draw ≈ 320 fresh generations
+(~$0.75, ~2 hours synthesis, ~10 hours analyzer wall-clock, or
+a smaller 8-item pilot per vendor to keep it cheap). Compute
+paired-z per vendor per axis. If same-gender paired-z stays >3σ
+across the 7 other vendors (as it did on Speechify narration),
+the current Follow-up-4 shifts are voice-choice effects, not
+gender effects; if it drops <2σ on some vendors, those vendors'
+Follow-up-4 shifts are attributable to the gender component.
+
+**Evidence:** [`analysis/experiments-2026-09-01-E/quality.json`](../analysis/experiments-2026-09-01-E/quality.json) +
+[`analysis/experiments-2026-09-01-E/wer.json`](../analysis/experiments-2026-09-01-E/wer.json) +
+[`analysis/campaign-20260831T175358Z/quality.json`](../analysis/campaign-20260831T175358Z/quality.json)
+(pinned R3 counterparts) +
+[T6 verdict](../analysis/verification/T6_speechify_voice_bias.md) (Phase 1) +
+[F-6 experiment pack Follow-up 4](EXPERIMENTS_2026-09-01.md#follow-up-4--alt-voice-qualitywer-analysis-on-experiment-e-audio) (Phase 2).
 
 <a name="f-8"></a>
 ### F-8 · Audiobox's two axes split across the DNSMOS construct — PQ agrees, CE anti-correlates
@@ -324,8 +523,9 @@ fresh data. Full table + methodology in
   produces exactly **14.59 seconds** of audio per call regardless of
   input length (std dev 0.000s across 8 items). This is the single
   most-cited verification finding of the project.
-- **N2 Fish noise floor** — Confirmed automatically (+12.6 dB above
-  median; 3rd independent pipeline)
+- **N2 Fish noise floor** — Confirmed automatically (+12.6 dB
+  above median; DNSMOS ONNX + hygiene analyzer are two independent
+  code paths agreeing)
 - **N1 OpenAI narration inversion** — Pending manual listen (n=1
   observer, low-signal at this scale)
 
@@ -340,23 +540,24 @@ ping baseline) is where you learn which "findings" are lucky draws.
 ---
 
 <a name="f-11"></a>
-### F-11 · Latency absolute values are not stable session-to-session
+### F-11 · Latency absolute values are not stable session-to-session (6-session data)
 
 TTFA rank is portable across sessions; absolute values are not.
-Four latency-mode runs per speed-critical vendor across three
-dates (2026-08-09, -11, -12); S3 ran with a concurrent
-ping-to-Cloudflare-1.1.1.1 baseline (274 probes during the window)
-to separate vendor-side from last-mile-link variance.
+**Six latency-mode runs per speed-critical vendor** across four
+dates (2026-08-09, -11, -12, -09-01) — S1a and S1b (same-day pair),
+S2, S3 (with concurrent Cloudflare-1.1.1.1 ping baseline), and
+Phase 2's S4 + S5 (same-day pair on 2026-09-01, added as
+[Follow-up 3](EXPERIMENTS_2026-09-01.md#follow-up-3--d-latency-sanity-check)).
 
-| vendor | S1a p50 | S1b p50 | S2 p50 | S3 p50 | S3 vs S1a | n per session |
-|---|---:|---:|---:|---:|---:|---:|
-| ElevenLabs | 439 | 440 | 424 | **694** | +58% | 50 / 50 / **40**¹ / **40**¹ |
-| OpenAI | 736 | 762 | 936 | **1369** | +86% | 50 / 50 / 50 / 50 |
+| vendor | S1a p50 | S1b p50 | S2 p50 | S3 p50 | **S4 p50** | **S5 p50** | range | n per session |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| ElevenLabs | 439 | 440 | 424 | **694** | **412** | **421** | 412–694 (+68%) | 50/50/40¹/40¹/50/50 |
+| OpenAI | 736 | 762 | 936 | **1369** | **772** | **783** | 736–1369 (+86%) | 50/50/50/50/50/50 |
 
-Two same-day S1 runs exist (2026-08-09T21:41 and T22:23; both n=50)
-committed in `analysis/latency-20260809T214106Z/latency.json` and
-`analysis/latency-20260809T222356Z/latency.json`. Six vendor-session
-cells across two vendors.
+Phase 2's S4+S5 landed in the S1 baseline range for both vendors
+— corroborates that **S3 was a real transient outlier, not the
+new normal**. Rank held **6 of 6 sessions** (ElevenLabs < OpenAI
+on both p50 and p90 in every session).
 
 ¹ ElevenLabs S2 **and** S3 both landed 40/50 trials. Verified from
 `analysis/latency-20260811T183202Z/latency.json` `n_items = 40`
@@ -400,60 +601,276 @@ session (a) from an isolated VM, (b) with warm-up trials excluded,
 (c) with per-trial client-side CPU / event-loop lag logged, then
 attribute variance to layers rather than to vendors.
 
-**What n=3 sessions can and cannot support**:
+**What the 6-session data can and cannot support**:
 
 - **Can support**: rank stability (ElevenLabs faster than OpenAI in
-  all 3 sessions). Rank tests are robust at low n.
-- **Cannot support**: characterisation of the session-to-session
-  variance distribution. n=3 cannot distinguish "wide-tail vendor"
-  from "unlucky session" from "client-side contamination." Any
-  distributional claim (e.g., "ElevenLabs is more stable than
-  OpenAI") needs ≥5-10 sessions across ≥2 weeks with the layer
-  controls above.
+  all 6 sessions). Rank tests are robust at low n.
+- **Cannot support without further controls**: a per-vendor
+  variance distribution claim. Six sessions clears the ≥5-session
+  count Phase 1 called out, but Phase 1 also called for
+  **client-side event-loop lag logging on each session** as a
+  control (see § "What the ping baseline does NOT rule out" above).
+  That was not run on any of the 6 sessions, so we cannot cleanly
+  separate "wide-tail vendor" from "client-side contamination"
+  even at n=6. "ElevenLabs is more stable than OpenAI"
+  descriptively holds on this data (ElevenLabs p90 range 461–816,
+  OpenAI 946–1,882 across the 6 sessions) but the mechanism is
+  not fully attributed.
 
 **Load-bearing claims**:
 
-- ElevenLabs is **consistently faster than OpenAI** across all 3
-  sessions (424/694 vs 736/1369 range on p50). Ranking is stable.
+- ElevenLabs is **consistently faster than OpenAI** across all 6
+  sessions (412–694 vs 736–1,369 range on p50). Ranking is
+  stable.
 - OpenAI TTFA is high — always at least 736 ms p50 on our
   measurements — which is the load-bearing claim for the "provision
   capacity for OpenAI's worst percentile" advice.
 
 **Claims the data does not support**:
 
-- "ElevenLabs Flash reliably hits sub-500 ms p90" — held only in
-  the first 2 sessions and moved to 816 ms in S3.
+- "ElevenLabs Flash reliably hits sub-500 ms p90" — held on 5 of
+  6 sessions (461–479 ms) but moved to 816 ms in S3.
 - "Stability is a distinct vendor axis" as a portfolio-worthy
-  headline. On our data, both vendors' session-to-session variance
-  is 50-90% of the p50; neither is "stable" in an operational sense.
-- Any capacity-planning implication that reads ElevenLabs' 470 ms
-  p90 as an upper bound in either direction (the S3 measurement
-  exceeded it substantially).
+  headline without the client-side controls above. Descriptively
+  ElevenLabs is tighter (excluding S3: p50 412–440 ms / 6.8%
+  variance; p90 461–479 ms / 3.9%) than OpenAI (excluding S3:
+  p50 736–936 ms / 27%; p90 946–1,493 ms / 58%); mechanism
+  unattributed.
+- Any capacity-planning implication that reads ElevenLabs' 461 ms
+  p90 (S4) as an upper bound in either direction (S3 exceeded it
+  substantially).
 
 **Impact on PM recommendations**: don't provision from one
 measurement session. For a real deployment plan, budget the tail
 observation across ≥5 sessions on the vendor's serving region from
 your actual deployment environment, with client-side lag logged and
-warm-up trials excluded — public-tier measurements at n=1-3 sessions
-are not enough to characterise the tail. Rank claims survive at n=3;
-variance claims do not.
+warm-up trials excluded — public-tier measurements without lag
+logging (which is what we have, at n=6) are not enough to
+*attribute* the tail. Rank claims survive at n=6; descriptive
+variance ranges are reportable; mechanism attribution still needs
+the lag-logged sweep.
+
+**Evidence** — per-session `latency.json` files committed under
+`analysis/latency-*/`:
+
+| session | ElevenLabs run ID | OpenAI run ID |
+|---|---|---|
+| S1a | [`latency-20260809T214106Z`](../analysis/latency-20260809T214106Z/latency.json) | (same run) |
+| S1b | [`latency-20260809T222356Z`](../analysis/latency-20260809T222356Z/latency.json) | (same run) |
+| S2 | [`latency-20260811T183202Z`](../analysis/latency-20260811T183202Z/latency.json) (n=40) | [`latency-20260811T183028Z`](../analysis/latency-20260811T183028Z/latency.json) |
+| S3 | [`latency-20260812T191323Z`](../analysis/latency-20260812T191323Z/latency.json) (n=40) | [`latency-20260812T191143Z`](../analysis/latency-20260812T191143Z/latency.json) |
+| S4 | [`latency-20260901T185715Z`](../analysis/latency-20260901T185715Z/latency.json) | [`latency-20260901T190715Z`](../analysis/latency-20260901T190715Z/latency.json) |
+| S5 | [`latency-20260901T191000Z`](../analysis/latency-20260901T191000Z/latency.json) | [`latency-20260901T201051Z`](../analysis/latency-20260901T201051Z/latency.json) (T19:10 attempt crashed, rerun at T20:10) |
+
+Ping baseline log: [`analysis/ping-baseline-20260812T191138Z.jsonl`](../analysis/ping-baseline-20260812T191138Z.jsonl)
+— 274 probes to Cloudflare 1.1.1.1 during the S3 window.
+Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py).
+
+**Portfolio takeaway**: the T5/T7 pair and the 6-session sweep
+together demonstrate the value of stacking sessions and the
+persistent limit of not running client-side controls. Six
+sessions falsifies a distributional stability claim built on 2
+and supports the descriptive-variance range; mechanism attribution
+still needs client-side lag logging.
+
+---
+
+<a name="f-12"></a>
+### F-12 · ElevenLabs shifted downward on both Audiobox axes and DNSMOS P.808, not on the P.835 triad (both use cases) between R2 and R3
+
+Under the paired per-item test the project uses for every other
+quality claim (Δ_i on the same 75 items, R3 − R2; SE_diff on the
+per-vendor SD of the item-wise differences; z = mean_diff /
+SE_diff), ElevenLabs shows a statistically significant downward
+shift on **6 of its 12 quality-axis × use-case cells** — and the
+6 are structured, not scattered:
+
+| use case | axis | n paired | Δ (R3 − R2) | SE_diff | paired z | |z| > 2 ? |
+|---|---|---:|---:|---:|---:|---|
+| conv | **AB.PQ** | 75 | −0.074 | 0.017 | **−4.36σ** | ✓ significant |
+| conv | **AB.CE** | 75 | −0.045 | 0.015 | **−2.92σ** | ✓ significant |
+| conv | **DN.p808** | 74 | −0.039 | 0.017 | **−2.26σ** | ✓ significant |
+| conv | DN.ovrl | 74 | −0.010 | 0.010 | −0.98σ | not |
+| conv | DN.sig | 74 | −0.006 | 0.008 | −0.80σ | not |
+| conv | DN.bak | 74 | −0.006 | 0.008 | −0.76σ | not |
+| narr | **AB.PQ** | 75 | −0.074 | 0.010 | **−7.32σ** | ✓ significant |
+| narr | **AB.CE** | 75 | −0.048 | 0.009 | **−5.09σ** | ✓ significant |
+| narr | **DN.p808** | 75 | −0.047 | 0.013 | **−3.69σ** | ✓ significant |
+| narr | DN.ovrl | 75 | −0.023 | 0.014 | −1.56σ | not |
+| narr | DN.sig | 75 | −0.014 | 0.009 | −1.48σ | not |
+| narr | DN.bak | 75 | −0.020 | 0.014 | −1.38σ | not |
+
+*The 4 conv DNSMOS cells are n=74 because one conversational item
+failed DNSMOS scoring on the R3 pass (R3 `n_valid = 74` on all four
+DNSMOS axes; R2 was `n_valid = 75`). The paired-z test uses the
+intersection of the two rounds' valid-item sets. The 8 Audiobox +
+narration DNSMOS cells are the full n=75.*
+
+**The 6 significant axes partition by scoring model, not by
+construct.** The three scoring models we run on each audio file
+are: (a) Meta's **Audiobox Aesthetics** model, which outputs two
+axes PQ + CE that F-8 established are on *opposite* sides of the
+DNSMOS construct axis (PQ agrees with DNSMOS at ρ mean +0.24; CE
+anti-correlates at ρ mean −0.51); (b) Microsoft's **DNSMOS
+P.808** single-model predictor, which outputs one axis
+(`p808_mos`); and (c) Microsoft's **DNSMOS P.835** three-scale
+predictor, which outputs three axes (`ovrl_mos` / `sig_mos` /
+`bak_mos`) from a shared internal representation. The 6
+significant ElevenLabs cells are the outputs of models (a) and
+(b) on both use cases; the 6 non-significant cells are the
+outputs of model (c) on both use cases. **The split is by
+scorer architecture — two of three scoring models detected the
+ElevenLabs drift, the third didn't.** It is not a construct
+split: F-8 already shows Audiobox PQ and Audiobox CE track
+different constructs, so bundling them under one "construct
+cluster" would contradict F-8. Whether P.835 missed the drift
+because it is less sensitive to whatever ElevenLabs changed, or
+because ElevenLabs changed something P.835's construct
+(overall / signal / background separation) genuinely does not
+index, is not separable from this data.
+
+**Multiplicity caveat**: 12 axes are NOT 12 independent trials.
+The three DNSMOS P.835 axes are correlated by construction; AB.CE
+correlates with DNSMOS at ρ = −0.51 by construct; even within
+Audiobox, PQ and CE correlate at Spearman ρ = +0.31 at the
+*vendor-mean* level and much more tightly at the *item* level
+(Spearman ρ ≈ +0.81 on conv, +0.57 on narr for ElevenLabs' 75
+items; Pearson r ≈ +0.79 / +0.71 on the same items) — the
+paired-z tests are item-level, so the effective dependence is
+even larger than the vendor-level ρ suggests. A sign-count
+argument ("12 of 12 negative") is much less than 1-in-4096
+impressive on correlated axes. Bonferroni correction within the
+12 ElevenLabs tests (threshold |z| > 2.87) moves DN.p808 conv
+(z = −2.26) below the line; conv AB.CE (z = −2.92) survives
+**marginally** (0.05σ above threshold); the other 4 cells clear
+comfortably. Under the sharper Bonferroni-96 correction (all 8
+vendors × 12 axes, threshold |z| > 3.47), only the 4 largest-|z|
+ElevenLabs cells survive — narr AB.PQ (−7.32σ), narr AB.CE
+(−5.09σ), conv AB.PQ (−4.36σ), narr DN.p808 (−3.69σ).
+
+**Comparison vendors under the same paired-z test**: three
+non-ElevenLabs cells cross the raw |z| > 2 threshold — Speechify
+narration AB.CE (−2.49σ), Speechify narration DN.sig (+2.03σ),
+Fish narration DN.p808 (+2.06σ). Across 96 tests at α = 0.05,
+you expect roughly 5 cells that size by chance alone, so three
+observed under-independence is *fewer* than chance would produce,
+and none survives Bonferroni-12 or -96. Every other axis on
+every other vendor lands at |z| < 2. **The claim that
+distinguishes ElevenLabs is not "only vendor with any |z| > 2
+shift"** — that would be false — **but "only vendor with any
+Bonferroni-surviving shift, and the surviving cells partition
+by scoring-model architecture (Audiobox + DNSMOS P.808 shifted,
+DNSMOS P.835 did not)."** That is the stronger and true
+claim.
+
+**Mechanism** — and where the naive read gets it wrong:
+
+The ElevenLabs conv pin is [`eleven_flash_v2_5`](../configs/voices.yaml),
+the narr pin is [`eleven_multilingual_v2`](../configs/voices.yaml)
+(the `reasoning` field for the narr row says in capitals
+"**a DIFFERENT model from the conversational entry above**"). Both
+show the same-direction, same-scorer-partition shift (narration
+is stronger at −7.32σ than conversational's −4.36σ on PQ).
+**A single-model update does not explain the pattern** — one
+update would touch one model, not both. The two-model
+synchronous drift points at something shared:
+
+- **Voice embeddings** (voice IDs are picked from ElevenLabs' voice
+  library; the underlying embedding representation may be shared
+  across Flash and Multilingual)
+- **Serving / post-processing** (audio codec, sample-rate
+  resampling, loudness normalisation, or a shared pre-emphasis
+  filter on the serving side)
+- **Client-side cause specific to the ElevenLabs adapter** —
+  ruled out by `git log`: [`src/veval/adapters/elevenlabs.py`](../src/veval/adapters/elevenlabs.py)
+  has been unchanged since commit `8372dbd` on 2026-08-07, two
+  days before R2 and 24 days before R3. If the adapter was going
+  to bias the score, it would have biased both runs the same way.
+
+We have no vendor-side model-version metadata per call, so the
+Voice-embedding vs serving-chain question is not settled from
+client-side data alone.
+
+**Interval**: R3 ran fresh (`--no-cache`) on 2026-08-31. R2's
+`analysis/campaign-20260809T204608Z/latency.json` shows
+`n_fresh = 0` for every vendor — R2 was a cache-only replay,
+and the manifest records only the cache-hit timestamp (2026-08-09),
+not the underlying synthesis date. The honest interval is
+**"between R2's unrecorded synthesis date (≤ 2026-08-09) and
+2026-08-31"**, not "between 2026-08-09 and 2026-08-31".
+
+**What the data supports**:
+
+- 5 of 6 ElevenLabs shifts on the Audiobox + DNSMOS-P.808
+  scorer partition (AB.PQ + AB.CE + p808, both use cases)
+  survive Bonferroni-12 (threshold |z| > 2.87). Conv AB.CE
+  (z = −2.92) survives **marginally**, 0.05σ above threshold.
+  The 6th (DN.p808 conv, z = −2.26) is significant at α = 0.05
+  uncorrected but does not survive Bonferroni-12. Under the
+  sharper Bonferroni-96 across all 8 vendors × 12 axes, 4
+  ElevenLabs cells survive (the two AB.PQ cells + narr AB.CE +
+  narr DN.p808).
+- No ElevenLabs shift is significant on the DNSMOS P.835 triad
+  (ovrl / sig / bak) on either use case.
+- **No other vendor has any Bonferroni-surviving shift** — three
+  non-ElevenLabs cells cross the raw |z| > 2 threshold (Speechify
+  narr AB.CE, Speechify narr DN.sig, Fish narr DN.p808), fewer
+  than the ~5 expected across 96 tests under independence, and
+  none survives Bonferroni-12 or -96.
+- The two ElevenLabs models — Flash v2.5 conv and Multilingual v2
+  narr — moved the same direction on the same scorer partition
+  (Audiobox + P.808), so a **single-model update does not explain
+  the pattern** (two independent models updating in the same
+  direction in the same window is possible but not parsimonious).
+- The adapter file was unchanged across both runs; a client-side
+  adapter-code cause is ruled out cleanly.
+
+**What the data does NOT support**:
+
+- "ElevenLabs regressed on every quality axis" — a sign-count
+  claim that does not survive the paired test. Half the axes did
+  not move significantly. The correct statement is: ElevenLabs
+  regressed significantly on both Audiobox axes and DNSMOS P.808;
+  the DNSMOS P.835 triad (ovrl / sig / bak) did not move.
+- That ElevenLabs' voice quality *audibly* changed between R2
+  and R3 — the shifts are small in absolute terms (max −0.074 on
+  an AB.PQ scale of 0–10, ≈ 0.7% of scale). This is a numerical-
+  drift observation, not an audible-regression claim.
+- A single-model-update explanation (see above).
+
+**Impact on published rankings**: none of R2's headline claims
+change under R3. ElevenLabs remains #1 fastest TTFA, its Audiobox
++ DNSMOS ranks are essentially unchanged relative to the pack,
+and its leads / gaps over the tie band remain within tie bounds.
+But **any absolute-value quotation of an ElevenLabs quality score
+should be dated** to the run that measured it.
+
+**Load-bearing takeaway**: this is the finding the "measurement
+date on every finding" discipline exists to catch. It is
+invisible without a replication campaign, and it is a live
+example of why any static single-shot benchmark drifts out of
+usefulness over time — the vendor didn't announce a change, but
+one appears to have shipped that two of three scoring models
+detect (Audiobox + DNSMOS P.808) and the third (DNSMOS P.835)
+does not.
 
 **Evidence**:
-- Session 3 run IDs: `latency-20260812T191143Z` (OpenAI, 50/50 trials)
-  and `latency-20260812T191323Z` (ElevenLabs, 40/50). `runs/` is
-  gitignored (regenerable + large — see
-  [.gitignore](../.gitignore)); reproduce per
-  [03_RUNBOOK § latency + ping](03_RUNBOOK.md)
-- Ping baseline log: `ping-baseline-20260812T191138Z.jsonl` — 274
-  probes to Cloudflare 1.1.1.1 during the S3 window. Committed as
-  [`analysis/ping-baseline-20260812T191138Z.jsonl`](../analysis/ping-baseline-20260812T191138Z.jsonl)
-  so the network-baseline receipt survives without the audio
-- Analysis: [`scripts/latency_with_ping.py`](../scripts/latency_with_ping.py)
-
-**Portfolio takeaway**: the T5/T7 pair demonstrates both the value
-of a third replication session and the limits of a three-session
-pass. Three-session data suffices to falsify a distributional claim
-but not to make one.
+- Paired-z per axis: reproducible from
+  [`analysis/campaign-20260809T204608Z/quality.json`](../analysis/campaign-20260809T204608Z/quality.json)
+  and
+  [`analysis/campaign-20260831T175358Z/quality.json`](../analysis/campaign-20260831T175358Z/quality.json),
+  matched on (provider, use_case, item_id).
+- Per-vendor R2 → R3 delta table (raw signs, all 8 vendors):
+  [`analysis/round3-vs-round2-comparison.md`](../analysis/round3-vs-round2-comparison.md).
+- Two-model pin: [`configs/voices.yaml`](../configs/voices.yaml)
+  `elevenlabs.conversational.model` = `eleven_flash_v2_5`,
+  `elevenlabs.narration.model` = `eleven_multilingual_v2`.
+- Adapter file unchanged since 2026-08-07:
+  `git log --follow src/veval/adapters/elevenlabs.py` shows one
+  commit, `8372dbd`, predating R2.
+- R2 cache-only, no synthesis date: `by_provider[*].n_fresh = 0`
+  in
+  [`analysis/campaign-20260809T204608Z/latency.json`](../analysis/campaign-20260809T204608Z/latency.json).
 
 ---
 
@@ -467,10 +884,14 @@ one is backed by a specific artefact.*
 The v1 plan had `quality_score = 0.4·PQ + 0.3·CE + 0.2·MOS + 0.1·noise`.
 Cut it in Phase A. **Weights are always arguable; pre-registered
 gates are falsifiable.** The v2 model has hard gates (pass/fail
-against thresholds committed in `configs/gates.yaml`) + Pareto
-frontiers on remaining axes. A reader who prefers their own
-weighting can construct one from the raw data; nobody can undo a
-pre-registered hard gate.
+against thresholds committed in `configs/gates.yaml`, adjudicated
+in 04) + Pareto frontiers with bootstrap-CI domination on remaining
+axes. The **frontier + bootstrap-CI half of that model was not
+executed in v1** — the `frontier.py` module exists but no
+`analysis/score.json` was produced; 04 reports per-axis SE(diff)
+tie bands as the v1 substitute (see [07 § gap 8](07_GAPS_AND_FUTURE_WORK.md)).
+A reader who prefers their own weighting can construct one from
+the raw data; nobody can undo a pre-registered hard gate.
 
 ### The VERSA drop
 
@@ -526,8 +947,14 @@ in [`scripts/_t8_analysis.py`](../scripts/_t8_analysis.py) +
 
 ### The BT deferral
 
-The pre-registered plan called for a 168-judgment human perceptual
-BT panel. Executable at n=1 self-rater, but the bootstrap CIs
+The operative pre-registered target for this campaign was
+**216 judgments** per
+[`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) (`prereg-v1.7`)
+— 36 pairs across the 9-system roster × 2 use cases × 3 reps.
+Under D-009 the target and the spec's 3-rep minimum floor
+collapse to the same number for the 9-system roster: 216 IS
+the 3-rep floor. The 5-rep design would have been 360; D-009
+compressed to the spec minimum-viable rep count. Executable at n=1 self-rater, but the bootstrap CIs
 would be *conditional on the single rater* — two n=1 raters could
 produce non-overlapping "95% CIs" on opposite preferences.
 Publishing such CIs would read to a casual reader as "we confirmed
@@ -559,6 +986,7 @@ final plan.
 *The decision log. Each entry: what changed, why, alternatives
 considered, impact. Roughly ordered by when they were made.*
 
+<a name="d-a"></a>
 ### D-A · Skip TTSDS2 in first analyzer run
 
 TTSDS2 requires ~30 GB of reference-set downloads that would have
@@ -587,12 +1015,21 @@ Landed as `prereg-v1.10` per [D-011 in DEVIATIONS.md](../DEVIATIONS.md#d-011).
 
 ### D-C · Reduce BT scope — drop human anchor
 
-The original 168-judgment BT plan included an anchor recording (the
-evaluator's own voice, unprocessed) as a reference point for
-"human-like." Cut the anchor from the plan — the recording overhead
-and consent complications aren't worth the additional axis for
-portfolio scope. Retained the 168-judgment BT plan (before D-H
-subsequently deferred it entirely).
+The BT plan pinned by [`D-009`](../DEVIATIONS.md#d-009)
+(`prereg-v1.7`) at **216 judgments** for the 9-system roster
+included an anchor recording (the evaluator's own voice,
+unprocessed) as a reference point for "human-like." Cut the
+anchor from the plan — the recording overhead and consent
+complications aren't worth the additional axis for portfolio
+scope. Dropping the anchor takes the roster from 9 systems back
+to 8, so the arithmetically consistent judgment count becomes
+**168** (28 pairs × 2 use cases × 3 reps). That revision was
+logged in the archived RESEARCH_LOG but never landed in its own
+`prereg-v1.N` config amendment before D-H deferred the panel
+entirely, so no single ratified pre-registered figure survives
+the D-C anchor cut. D-009's 216 is the last landed target;
+168 is the arithmetic implication D-C would have re-tagged
+had the panel not been deferred first.
 
 ### D-D · Outlier verification test pack — symmetric winner + loser tests
 
@@ -637,13 +1074,17 @@ they are not upper bounds. Provider *rankings*
 are portable to enterprise deployments; absolute *values* are
 session-to-session observations, not ceilings (F-11). Alternative
 (re-measure on cloud VMs colocated with each vendor's serving
-region, across ≥3 sessions per venue) is a 1-3 day workstream not
+region, across ≥5-10 sessions per venue to match F-11's evidence
+threshold for the client-side environment, not the ≥3 v2 design
+target this block previously named) is a 1-3 day workstream not
 justified at portfolio scope; deferred to v2.
 
 <a name="d-h-bt-deferred-to-v2"></a>
 ### D-H · Phase 3 BT deferred to v2
 
-The full 168-judgment Bradley-Terry rating campaign is **not
+The full Bradley-Terry rating campaign — last pre-registered
+at **216 judgments** per
+[`D-009`](../DEVIATIONS.md#d-009) (`prereg-v1.7`) — is **not
 executed** in v1. Deferred to a proper v2 multi-rater pass.
 
 **Why**: BT's bootstrap CIs at n=1 rater are conditional on the
@@ -663,13 +1104,62 @@ independent MOS pipelines + cross-pipeline agreement analysis
 directly supported by that data; it doesn't require human
 validation.
 
-**Reversibility**: Fully reversible. The BT machinery
-(`veval rate build/score`, judgment ingest, bootstrap CIs) is
-implemented and tested. A v2 pass at n≥15-30 raters can run against
-the existing infrastructure without code changes.
+**Reversibility**: Reversible with two small code additions. The
+BT machinery — `veval rate {build,normalize,serve,fit}` driving
+[`src/veval/human/`](../src/veval/human/) (`pair_builder.py` for
+paired items, `loudness.py` for −18 LUFS normalization, `bt.py`
+for the fit + bootstrap CIs) — is implemented and unit-tested. A
+v2 pass at n≥15-30 raters would additionally need (a) a
+`veval invites` tokened-URL builder (described in the spec, never
+written) and (b) a small glue call from `veval rate fit`'s BTFit
+output into [`src/veval/score/frontier.py`](../src/veval/score/frontier.py)
+to produce the frontier receipt that gap 8 names.
 
 See [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) for
 the full v2 roadmap.
+
+<a name="d-i"></a>
+### D-I · D7-timing descoped (friction reported, wall-clock unrecoverable)
+
+Spec § A.7 pre-registers **two** D7 outputs: a wall-clock timed
+docs-to-first-audio session per provider ("DX minutes"), and a
+friction log. Timing is formally **descoped**; friction is
+reported.
+
+**Why timing is descoped, not deferred**: unlike D-H (BT panel,
+executable at v2), the DX-minutes measurement is *unrecoverable*
+by [`dx/friction_log.md`](../dx/friction_log.md)'s own
+pre-registered rule: *"Cannot be reconstructed later — event
+timestamps and specific errors are the measurement. Start the
+clock at 'open provider docs' for each provider and log every
+friction event as it happens."* The clock wasn't started. Three
+log entries explicitly declare their own wall-clock figures
+void — Fish (*"wall-clock time for adapter authoring is NOT [a
+D7 measurement]"*), Google (*"user opened Google docs, so
+wall-clock time is not a true D7 measurement"*), OpenAI (*"from
+prior API knowledge, so wall-clock isn't a valid D7
+measurement"*). All 8 `DX minutes` cells in the log read
+`TODO`. A v2 run on the same 8 vendors cannot recover the
+first-time-onboarding tail because the developer has already
+onboarded.
+
+**What was published instead** — friction as a reported
+dimension: the 8-vendor friction log, a taxonomy (signup · auth
+· first call · undocumented behaviour · errors-as-data ·
+streaming ergonomics · model/voice mapping · audio-format
+quirks), an audio-format fact-sheet verified through Phase F,
+4 cross-provider patterns, 3 environment gotchas. See D7
+section in [02](02_METHODOLOGY.md#d7--developer-experience--friction-reported-timing-descoped-d-i)
+for the write-up + [F-1a](#f-1a) for the load-bearing catch that
+came out of it.
+
+**Reversibility**: not reversible for the R2 + R3 measurement
+period (the clock rule makes the measurement recovery-proof).
+Fresh timing measurements on a v2 developer + fresh vendor
+onboarding *would* be a legitimate DX-minutes v2 run — but that
+is a different measurement (a v2 developer's tail, not this
+project's), and the honest framing is that the pre-registered
+v1 timing metric is void.
 
 ---
 
@@ -681,9 +1171,19 @@ mitigated (mitigation named) or documented as a v2 workstream.*
 ### Structural
 
 - **n=1 rater for human perceptual dimension** (D-H) → deferred to v2
-- **One voice per vendor** — voice choice can shift scores by up to
-  ~35% of cross-vendor spread on Audiobox (measured for Speechify
-  via T6); other vendors untested → deferred to v2 alt-voice sweep
+- **One voice per vendor** — voice choice can shift scores by up
+  to ~35% of cross-vendor spread on Audiobox. Phase 2 Follow-up 4
+  extended the alt-voice test from 1 vendor (Speechify via T6) to
+  5 (adding OpenAI, Fish, Deepgram, Google); every alt-voice pair
+  produced a statistically significant AB.PQ shift under the
+  paired test (see F-7). T6's Speechify narration leg (wyatt_32
+  → edmund_32) is same-gender and shows +4.02σ, so voice-choice
+  effects survive gender matching on at least Speechify; the four
+  Follow-up-4 pairs are all cross-gender, so on the other 7
+  vendors the voice-vs-gender split is not yet separated.
+  Residual gap: **same-gender** voice sweep across the other 7
+  vendors is a v2 workstream (see
+  [07 § gap 2](07_GAPS_AND_FUTURE_WORK.md#2-one-voice-per-vendor-per-use-case-partially-closed-by-phase-2))
 - **Corpus authored by evaluator** — committed to git for
   reproducibility with alternate corpora → deferred to v2
 - **English only** — multilingual claims untested → deferred to v2
@@ -702,12 +1202,14 @@ mitigated (mitigation named) or documented as a v2 workstream.*
 - **Ranking depends on MOS predictor family choice** (F-8) →
   mitigated by publishing both matrices and naming rank inversions
   rather than aggregating
-- **Single-session latency** → the T5 + T7 second-session pass was
-  the design intended to mitigate this; F-11 (300 lines above)
-  documents that the two-session design was itself too weak — the
-  third session with concurrent ping baseline refuted the "stability"
-  reading the two-session pass had produced. Full mitigation would
-  require ≥5 sessions across ≥2 weeks (v2 workstream)
+- **Single-session latency** → 6 total sessions across 4 dates
+  (S1a, S1b, S2, S3, S4, S5) on the two speed-critical vendors;
+  descriptive-variance claim is now sustainable (ranking stable
+  in all 6 sessions), but the client-side event-loop lag logging
+  that Phase 1 called for as a control was not run on any of the
+  6 sessions, so mechanism attribution ("wide-tail vendor" vs
+  "client-side contamination") remains a v2 workstream. See
+  [F-11](#f-11).
 - **Cartesia clipping: systemic or batch?** → mitigated by F-4a
   triangulation
 

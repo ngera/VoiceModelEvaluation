@@ -15,7 +15,7 @@ covers the code that implements them.*
 flowchart TB
     subgraph FRONT["Two front doors — one implementation"]
         F1["CLI: veval doctor · generate<br/>analyze · score · report"]
-        F2["Admin panel: Streamlit<br/>Doctor · Run · Results · Frontier<br/>thin wrapper — never duplicates logic"]
+        F2["Admin panel: Streamlit<br/>Doctor · Run · Results · Frontier*<br/>*score.json exists (survivals + robustness populated); its<br/>frontiers block is empty because BT is D-H-blocked — see 07 gap 8<br/>thin wrapper — never duplicates logic"]
     end
 
     subgraph CONFIG["Pre-registered config — git-tagged before results"]
@@ -106,10 +106,32 @@ src/veval/                       the Python package
 ├── runner/                      async orchestrator + spend cap
 ├── store/                       immutable run store
 ├── admin/                       Streamlit local dashboard
-└── rate/                        BT judgment ingest (implemented, execution deferred)
+├── human/                       BT rating pipeline pieces (pair_builder,
+│                                bt, loudness) — execution deferred, D-H
+├── report/                      report generation helpers
+└── score/                       gates.py (applies pre-registered
+                                 gates), robustness.py (sweep at
+                                 adjacent thresholds) — both ran in
+                                 v1, receipt at analysis/campaign-
+                                 20260831T175358Z/score.json (survivals
+                                 + robustness blocks populated) ·
+                                 correlations.py (Spearman ρ helper;
+                                 receipt block is [] this pass — F-8's
+                                 cross-pipeline ρ comes from
+                                 analyze/cross_metric.py) · frontier.py
+                                 (Pareto + Bootstrap-CI — the only
+                                 piece that consumes BTFit, therefore
+                                 D-H-blocked; `frontiers` block is
+                                 {} in the receipt — see 07 gap 8)
 
-analysis/                        per-run analyzer outputs (JSON — gitignored except verification/)
-└── verification/                Phase 2c per-test verdicts (evidence — in git)
+analysis/                        per-run analyzer outputs (JSON — gitignored
+│                                by default via `analysis/*`; specific
+│                                subdirs un-ignored so they ship in git —
+│                                see .gitignore for the full un-ignore list)
+├── verification/                Phase 2c per-test verdicts (evidence — in git)
+├── campaign-*/                  R2/R3 primary campaign outputs (in git)
+├── latency-*/                   per-session latency + ping (in git)
+└── variance-*/                  3-draw variance subset (in git)
 
 runs/                            immutable audio + logs (gitignored — regenerable)
 
@@ -357,11 +379,35 @@ normalization + number expansion.
 - `veval doctor` — per-vendor adapter probe
 - `veval generate` — campaign / variance / latency runs
 - `veval analyze` — analyzer chain
-- `veval rate build/score` — BT judgment building (execution deferred, D-H)
-- `veval score` — apply gates + build Pareto frontiers (partial in v1)
+- `veval rate {build,normalize,serve,fit}` — Phase F human A/B
+  rating pipeline (execution deferred, D-H)
+- `veval score` — apply gates + gate-robustness sweep + Pareto
+  frontiers + cross-metric Spearman. **What actually shipped in
+  v1**: (a) the gate + sweep halves ran to a committed artefact
+  (`analysis/campaign-20260831T175358Z/score.json`; `survivals`
+  has 16 entries, `robustness` has 8);
+  (b) 04's headline gate-outcome tables were adjudicated
+  independently from the per-analyzer JSON flags
+  (`gate_clipped_samples_pass`, `gate_long_stratum_noise_floor_pass`,
+  etc.) and from comparing `long_stratum_rtf_p50` against the
+  threshold — that is, the docs' gate claims come from the analyzer
+  outputs directly, and the `score.json` from `veval score` is a
+  second receipt that agrees on the same survivors; (c) the
+  frontier half is D-H-blocked (`frontiers: {}` in the receipt —
+  no BTFit input) — see gap 8 in
+  [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md); (d)
+  `veval score`'s own `correlations` block is `[]` in the receipt
+  (the code path exists but produced no output on this pass) —
+  F-8's cross-pipeline Spearman ρ comes from a different module,
+  [`src/veval/analyze/cross_metric.py`](../src/veval/analyze/cross_metric.py),
+  and its output lives in `analysis/campaign-*/cross_metric.json`,
+  not in `score.json`
 - `veval report` — generate memo + case study (partial in v1)
-- `veval invites` — build tokened invite URLs for a rating panel
-  (unused in v1 given D-H)
+- **Not implemented**: `veval invites` — a tokened-invite-URL
+  builder for a rating panel was described in the spec but never
+  written; v1 tester workflow used the local `veval rate serve`
+  page directly. Would need adding before a remote-rater
+  execution of the D-H BT panel.
 
 Each subcommand has consistent flags: `--providers-file`, `--voices-file`,
 `--analyzers-file`, `--corpus-dir`, `--analysis-dir` (all default to
@@ -377,8 +423,17 @@ runs locally, no auth (private). Pages:
 - **Doctor** — vendor status matrix with re-run buttons
 - **Run** — trigger a `generate` invocation with filter UI
 - **Results** — browse analyzer outputs per run
-- **Rate** — the local A/B rating page (BT judgment collection)
-- **Frontier** — interactive Pareto chart with vendor toggles
+- **Rate** — the local A/B rating page (BT judgment collection —
+  execution deferred per D-H, so this page collects judgments but
+  no v1 run produced enough to fit a BT model)
+- **Frontier** — interactive Pareto chart with vendor toggles;
+  reads the `frontiers` block inside `analysis/score.json`. The
+  score.json file itself exists (survivals + robustness are
+  populated), but the `frontiers` block is `{}` because
+  [`src/veval/score/frontier.py`](../src/veval/score/frontier.py)
+  is D-H-blocked (no BTFit input — see
+  [07 gap 8](07_GAPS_AND_FUTURE_WORK.md)). The page is wired
+  and will render as soon as that block populates.
 
 **Design constraint**: the admin panel never duplicates the logic
 in `src/veval/`. Every page is a thin wrapper that imports and
@@ -387,22 +442,31 @@ panel and CLI never diverge.
 
 ---
 
-## The BT rating pipeline (implemented, execution deferred)
+## The BT rating pipeline (partially implemented, execution deferred)
 
-[`src/veval/rate/`](../src/veval/rate/) implements the full
-Bradley-Terry rating pipeline:
+[`src/veval/human/`](../src/veval/human/) implements the
+Bradley-Terry pieces:
 
 - **`pair_builder.py`** — per-rater manifest generator with
   order randomization + blinded codes
-- Judgment ingest via `veval rate build` → CSV per rater
-- **`bt.py`** — Bradley-Terry MLE fit
-- **Clustered bootstrap** — item-level resamples, difference-CI
-  computation (spec §4.3 line 398)
+- **`bt.py`** — Bradley-Terry MLE fit + clustered-bootstrap
+  difference-CI computation (spec §4.3 line 398)
+- **`loudness.py`** — LUFS normalisation for A/B clips
 
-Full protocol is executable — the deferral (D-H) is a scope call,
-not a code-completeness call. To run: recruit n≥15 raters, use
-the existing `veval invites` + `veval rate` CLIs, publish the
-addendum. No code changes required.
+CLI surface exists at `veval rate {build,normalize,serve,fit}`
+— judgment collection via `serve`, manifest build via `build`,
+per-clip normalisation via `normalize`, BT fit via `fit`.
+
+Two pieces described in the spec are **not implemented** in v1
+and would need writing before a remote-rater execution of the
+D-H BT panel: (a) `veval invites` — a tokened-invite-URL builder
+for panel recruitment (the local `veval rate serve` was used for
+tester workflows in v1); (b) a wire between `veval rate fit`
+output and `veval score` (`src/veval/score/frontier.py` consumes
+a `BTFit` object but there is no glue that reads `veval rate fit`'s
+output into it). Both would extend the pre-registered scoring
+model from partial to complete on this dataset. See
+[07 § gap 8](07_GAPS_AND_FUTURE_WORK.md).
 
 ---
 
@@ -422,8 +486,11 @@ addendum. No code changes required.
 
 Run locally with `uv run pytest`. See
 [`pyproject.toml`](../pyproject.toml) for the pytest configuration.
-No GitHub Actions workflow is set up in v1 — CI-on-commit is a v2
-gap tracked in [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
+No GitHub Actions workflow is set up in v1 — CI-on-commit is not
+wired up, and this is one of the honest gaps a v2 pass would
+close (not currently enumerated in
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md) —
+tracked here as the sole surface where the gap is named).
 
 ---
 

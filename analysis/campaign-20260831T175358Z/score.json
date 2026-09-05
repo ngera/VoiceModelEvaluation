@@ -1,0 +1,1000 @@
+{
+  "analysis_dir": "analysis\\campaign-20260831T175358Z",
+  "bt_fit_source": null,
+  "survivals": [
+    {
+      "provider": "cartesia",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "cartesia",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 65.33333333333333,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "65.3 lt 2 -> fail"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 377.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "377 eq 0 -> fail"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "deepgram",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 66.66666666666667,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "66.7 lt 2 -> fail"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "elevenlabs",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 68.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "68 lt 2 -> fail"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 1.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "1 eq 0 -> fail"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "fish",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "fish",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "fish",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 64.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "64 lt 2 -> fail"
+        },
+        {
+          "provider": "fish",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "fish",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "google",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "google",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "google",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 70.66666666666667,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "70.7 lt 2 -> fail"
+        },
+        {
+          "provider": "google",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "google",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "openai",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "openai",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 65.33333333333333,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "65.3 lt 2 -> fail"
+        },
+        {
+          "provider": "openai",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "openai",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "orpheus",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 78.37837837837837,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "78.4 lt 2 -> fail"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "survives": false,
+      "exempt_gates": [
+        "ttfa_p90_ms"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "speechify",
+          "use_case": "conversational",
+          "gate_metric": "ttfa_p90_ms",
+          "op": "lt",
+          "threshold": 400.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for ttfa_p90_ms"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "conversational",
+          "gate_metric": "failure_incidence_pct",
+          "op": "lt",
+          "threshold": 2.0,
+          "measured": 65.33333333333333,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "65.3 lt 2 -> fail"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "conversational",
+          "gate_metric": "clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "conversational",
+          "gate_metric": "commercial_use_permitted",
+          "op": "eq",
+          "threshold": 1.0,
+          "measured": 1.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "1 eq 1 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "cartesia",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "cartesia",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 3.464929917176358,
+          "passed": true,
+          "na_policy": "exempt-and-annotate",
+          "reason": "3.46 gte 3 -> pass"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -32.31140427881569,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "-32.3 lte -40 -> fail"
+        },
+        {
+          "provider": "cartesia",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 1.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "1 eq 0 -> fail"
+        }
+      ]
+    },
+    {
+      "provider": "deepgram",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "deepgram",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 2.0782990880894134,
+          "passed": false,
+          "na_policy": "exempt-and-annotate",
+          "reason": "2.08 gte 3 -> fail"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -45.03316173744019,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "-45 lte -40 -> pass"
+        },
+        {
+          "provider": "deepgram",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "elevenlabs",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "elevenlabs",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 6.5917563921980955,
+          "passed": true,
+          "na_policy": "exempt-and-annotate",
+          "reason": "6.59 gte 3 -> pass"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -34.843044023315116,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "-34.8 lte -40 -> fail"
+        },
+        {
+          "provider": "elevenlabs",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "fish",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "fish",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 1.4196340591859413,
+          "passed": false,
+          "na_policy": "exempt-and-annotate",
+          "reason": "1.42 gte 3 -> fail"
+        },
+        {
+          "provider": "fish",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "fish",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -50.966620225441446,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "-51 lte -40 -> pass"
+        },
+        {
+          "provider": "fish",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "google",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "google",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 5.87551291368946,
+          "passed": true,
+          "na_policy": "exempt-and-annotate",
+          "reason": "5.88 gte 3 -> pass"
+        },
+        {
+          "provider": "google",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "google",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -41.54773483393801,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "-41.5 lte -40 -> pass"
+        },
+        {
+          "provider": "google",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 1.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "1 eq 0 -> fail"
+        }
+      ]
+    },
+    {
+      "provider": "openai",
+      "use_case": "narration",
+      "survives": true,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "openai",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 7.781138780055436,
+          "passed": true,
+          "na_policy": "exempt-and-annotate",
+          "reason": "7.78 gte 3 -> pass"
+        },
+        {
+          "provider": "openai",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "openai",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -55.84484773725585,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "-55.8 lte -40 -> pass"
+        },
+        {
+          "provider": "openai",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "orpheus",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "orpheus",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 0.828810725976444,
+          "passed": false,
+          "na_policy": "exempt-and-annotate",
+          "reason": "0.829 gte 3 -> fail"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -27.752243941651425,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "-27.8 lte -40 -> fail"
+        },
+        {
+          "provider": "orpheus",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 0.0,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "0 eq 0 -> pass"
+        }
+      ]
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "survives": false,
+      "exempt_gates": [
+        "monotonic_quality_drift_flag"
+      ],
+      "gate_outcomes": [
+        {
+          "provider": "speechify",
+          "use_case": "narration",
+          "gate_metric": "rtf",
+          "op": "gte",
+          "threshold": 3.0,
+          "measured": 6.243200527845115,
+          "passed": true,
+          "na_policy": "exempt-and-annotate",
+          "reason": "6.24 gte 3 -> pass"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "narration",
+          "gate_metric": "monotonic_quality_drift_flag",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": null,
+          "passed": null,
+          "na_policy": "exempt-and-annotate",
+          "reason": "NA (exempt-and-annotate): no measurement for monotonic_quality_drift_flag"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+          "op": "lte",
+          "threshold": -40.0,
+          "measured": -54.01748626808878,
+          "passed": true,
+          "na_policy": "fail",
+          "reason": "-54 lte -40 -> pass"
+        },
+        {
+          "provider": "speechify",
+          "use_case": "narration",
+          "gate_metric": "long_stratum_clipped_samples",
+          "op": "eq",
+          "threshold": 0.0,
+          "measured": 1.0,
+          "passed": false,
+          "na_policy": "fail",
+          "reason": "1 eq 0 -> fail"
+        }
+      ]
+    }
+  ],
+  "robustness": [
+    {
+      "use_case": "conversational",
+      "gate_metric": "ttfa_p90_ms",
+      "robustness_points": [
+        300.0,
+        400.0,
+        500.0,
+        600.0
+      ],
+      "survivors_per_point": {
+        "300.0": [],
+        "400.0": [],
+        "500.0": [],
+        "600.0": []
+      },
+      "is_stable": true
+    },
+    {
+      "use_case": "conversational",
+      "gate_metric": "failure_incidence_pct",
+      "robustness_points": [
+        1.0,
+        2.0,
+        5.0
+      ],
+      "survivors_per_point": {
+        "1.0": [],
+        "2.0": [],
+        "5.0": []
+      },
+      "is_stable": true
+    },
+    {
+      "use_case": "conversational",
+      "gate_metric": "clipped_samples",
+      "robustness_points": [
+        0.0
+      ],
+      "survivors_per_point": {
+        "0.0": []
+      },
+      "is_stable": true
+    },
+    {
+      "use_case": "conversational",
+      "gate_metric": "commercial_use_permitted",
+      "robustness_points": [
+        1.0
+      ],
+      "survivors_per_point": {
+        "1.0": []
+      },
+      "is_stable": true
+    },
+    {
+      "use_case": "narration",
+      "gate_metric": "rtf",
+      "robustness_points": [
+        2.0,
+        3.0,
+        5.0,
+        10.0
+      ],
+      "survivors_per_point": {
+        "2.0": [
+          "deepgram",
+          "openai"
+        ],
+        "3.0": [
+          "openai"
+        ],
+        "5.0": [
+          "openai"
+        ],
+        "10.0": []
+      },
+      "is_stable": false
+    },
+    {
+      "use_case": "narration",
+      "gate_metric": "monotonic_quality_drift_flag",
+      "robustness_points": [
+        0.0
+      ],
+      "survivors_per_point": {
+        "0.0": [
+          "openai"
+        ]
+      },
+      "is_stable": true
+    },
+    {
+      "use_case": "narration",
+      "gate_metric": "long_stratum_acoustic_noise_floor_dbfs",
+      "robustness_points": [
+        -30.0,
+        -40.0,
+        -50.0
+      ],
+      "survivors_per_point": {
+        "-30.0": [
+          "elevenlabs",
+          "openai"
+        ],
+        "-40.0": [
+          "openai"
+        ],
+        "-50.0": [
+          "openai"
+        ]
+      },
+      "is_stable": false
+    },
+    {
+      "use_case": "narration",
+      "gate_metric": "long_stratum_clipped_samples",
+      "robustness_points": [
+        0.0
+      ],
+      "survivors_per_point": {
+        "0.0": [
+          "openai"
+        ]
+      },
+      "is_stable": true
+    }
+  ],
+  "frontiers": {},
+  "correlations": []
+}

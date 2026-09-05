@@ -22,6 +22,7 @@ Format:
 
 ---
 
+<a name="d-011"></a>
 ## D-011 — D3 stack extended with DNSMOS; UTMOS attempted and blocked on Windows (2026-08-11)
 
 **What changed.** `analyzers.yaml` grew a new pre-registered block:
@@ -100,6 +101,7 @@ DNSMOS analyzer). Re-tagged **prereg-v1.10**.
 
 ---
 
+<a name="d-001"></a>
 ## D-001 — Interpreter pinned to stable 3.11 (2026-08-05)
 
 **What changed.** The devcontainer base originally installed Ubuntu 22.04's
@@ -118,6 +120,7 @@ receipt.
 
 ---
 
+<a name="d-010"></a>
 ## D-010 — Judge 1 swapped from `parakeet-rnnt` to `wav2vec2` (transformers can't load parakeet_rnnt) (2026-08-09)
 
 **What changed.** WER judge 1 swapped from
@@ -185,17 +188,20 @@ _transcribe_judge_1, repetition_loop_judge_1).
 
 ---
 
+<a name="d-009"></a>
 ## D-009 — D4 pairwise repetitions 5 → 3 (compressed default for 8-provider roster) (2026-08-08)
 
 **What changed.** Phase F Bradley-Terry judgment target reduced from the
-original spec's **210 judgments** (7 systems × 21 pairs × 2 use cases ×
-5 reps) to **216 judgments** (9 systems × 36 pairs × 2 use cases × 3
-reps) as the new default for this campaign.
+original spec's **210 judgments** (7 systems → C(7,2) = 21 pairs × 2 use
+cases × 5 reps = 210) to **216 judgments** (9 systems → C(9,2) = 36
+pairs × 2 use cases × 3 reps = 216) as the new default for this campaign.
+Formula is `pairs × use_cases × reps`; the systems count enters via the
+pair count, not as a separate multiplier.
 
 **Why.** Two multipliers moved:
 - **Systems**: 7 → 9 (6 providers + anchor → 8 providers + anchor per
   D-003). Distinct pairs grew C(9,2) = 36, up from 21.
-- **Reps at 5**: 9 systems × 5 reps × 2 use cases = **360 judgments**
+- **Reps at 5**: 36 pairs × 2 use cases × 5 reps = **360 judgments**
   (~3-4 hours across 8-10 sessions).
 
 The spec anticipated exactly this trade-off. Spec §7 (line 664)
@@ -225,6 +231,7 @@ campaign starts. Re-tagged **prereg-v1.7**.
 
 ---
 
+<a name="d-008"></a>
 ## D-008 — Speechify endpoint reverted to `/v1/audio/speech`; TTFA not measurable (2026-08-08)
 
 **What changed.** Speechify adapter now hits `POST /v1/audio/speech`
@@ -284,6 +291,7 @@ JSON parse, base64 decode); `src/veval/analyze/acceptance.py`
 
 ---
 
+<a name="d-007"></a>
 ## D-007 — OpenAI narration voice cedar → onyx (not in tts-1-hd enum) (2026-08-08)
 
 **What changed.** Second pilot re-run after D-006 still showed 5/10
@@ -321,6 +329,7 @@ narration row. Re-tagged **prereg-v1.5**.
 
 ---
 
+<a name="d-006"></a>
 ## D-006 — OpenAI narration model gpt-4o-tts → tts-1-hd; Speechify concurrency 3 → 1 (2026-08-08)
 
 **What changed.** Two adjacent fixes discovered when the D.7 $1 pilot
@@ -371,6 +380,7 @@ narration model row), `src/veval/runner/runner.py`
 
 ---
 
+<a name="d-005"></a>
 ## D-005 — Orpheus version SHA pinned; adapter uses version-explicit endpoint (2026-08-07)
 
 **What changed.** Two related fixes to Orpheus discovered when D-004's
@@ -422,6 +432,7 @@ requires self.version), `src/veval/doctor.py` (passes
 
 ---
 
+<a name="d-004"></a>
 ## D-004 — Orpheus pinned to community fork; voice + adapter corrected (2026-08-07)
 
 **What changed.** Three related corrections to the Orpheus provider,
@@ -478,6 +489,7 @@ Re-tagged **prereg-v1.2**.
 
 ---
 
+<a name="d-003"></a>
 ## D-003 — Provider roster expanded 6 → 8 (2026-08-07)
 
 **What changed.** Two providers added to the locked portfolio-edition
@@ -511,8 +523,13 @@ budget, +33–71% D4 pairwise volume.
   archetype now unrepresented; reviewer questions on missing providers
   should be answered by presence rather than by rationale.
 - D4 pairwise volume: 21 unique pairs → 28 (adding OpenAI only) → 36
-  (adding both). Target reps preserved (5 per pair) — total judgments
-  360 for 8 providers (was 210). Minimum acceptable still 3 reps = 216.
+  (adding both, on 9 systems = 8 providers + anchor). Target reps
+  preserved at this amendment (5 per pair) — total judgments 360 for
+  the 9-system roster (was 210 on the 7-system spec). Minimum
+  acceptable still 3 reps = 216. **[Superseded by D-009 (2026-08-08,
+  `prereg-v1.7`)]** which compressed reps 5 → 3 to bring the operative
+  target down to 216, and re-tagged the arithmetic basis to `pairs ×
+  use_cases × reps` — see D-009 for the current pre-registered target.
 - Budget: OpenAI absorbs in signup credit / low-volume trivial cost
   (~$0.05 for the doctor probe + campaign trivial). Speechify Starter
   $10 (1 month). New budget subtotal: ~$46–57 (was ~$36–47). Ceiling
@@ -528,6 +545,7 @@ provider table, CLAUDE.md project-overview roster line updated.
 
 ---
 
+<a name="d-002"></a>
 ## D-002 — Corpus authored fresh, not curated from the parent (2026-08-07)
 
 **What changed.** The spec/plan language framed the 60 novel items per use case

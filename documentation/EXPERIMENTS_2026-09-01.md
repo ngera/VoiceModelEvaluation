@@ -10,7 +10,8 @@ inform a future v2 amendment to 06/08, but no in-place edits were made.
 
 *Five targeted experiments probing F-6 (ElevenLabs L03 monotonic
 loudness fadeout) and adjacent hypotheses, run as a standalone probe
-after the round-3 replication campaign completed.*
+after the R3 replication campaign (`campaign-20260831T175358Z`)
+completed.*
 
 > **Scope + status** — This is a **new-artefact-only** report.
 > Every numbered report (01–08) is untouched. New assets live under
@@ -154,11 +155,15 @@ LUFS) — the fresh call resets the loudness envelope. This is
 consistent with an **internal state that decays as the model
 processes more tokens** and resets at the start of each new call.
 
-**Actionable finding**: for long-form ElevenLabs narration workflows
-with charlotte-family voices, **chunking to ≤500 chars per call
-substantially reduces (though may not fully eliminate) the fade**.
-The engineering cost of chunking is trivial; the quality improvement
-is real.
+**Observation**: chunking L03 into ≤500-char halves substantially
+reduces the measured fade on charlotte-family voices in this
+experiment. The mechanism is consistent with a per-generation
+internal-state decay that resets on each fresh call. Whether
+chunking eliminates the fade entirely or only reduces it is not
+settled by n=2 halves. Advisory phrasing of this observation
+(e.g., what production narration workflows should do about it)
+lives in [06 § F-6](06_KEY_FINDINGS.md#f-6--monotonic-loudness-fade-on-long-form-tts-narration--a-cross-vendor-phenomenon-at-5-25-base-rate)
+and [08 finding #12](08_KEY_FINDINGS_PLAIN.md), not here.
 
 ---
 
@@ -166,7 +171,9 @@ is real.
 
 **Design.** Two fresh latency-mode runs of 50 serial trials each,
 on the same S01 conversational item, for both ElevenLabs Flash v2.5
-and OpenAI tts-1-hd. Same-day (2026-09-01), separated by ~1 hour.
+and OpenAI gpt-4o-mini-tts (the pre-registered conversational
+model; latency sessions all ran the S01 conversational item).
+Same-day (2026-09-01), separated by ~1 hour.
 
 ⚠ **Same-day caveat**: F-11's methodology note specifies that
 characterizing session-to-session variance properly needs **≥5
@@ -242,12 +249,13 @@ the one used in the primary campaign. Alt-voice picks:
 | Deepgram | `aura-2-orion-en` (male) | `aura-2-luna-en` (female) | different gender |
 | Google | `en-US-Chirp3-HD-Charon` (male) | `en-US-Chirp3-HD-Kore` (female) | different gender |
 
-**Full quality/WER analysis is deferred** because the round-3 quality
-stage took ~5 hours on this CPU; the E audio is on disk and can be
-run through Audiobox/DNSMOS/WER later if needed. What we do have from
-E right now is the **drift analysis** — the same LUFS-thirds check
-that surfaced the F-6 fade — which unexpectedly answered an
-adjacent question:
+**Full quality/WER analysis completed in Follow-up 4** below (~5.3 h
+of CPU analyzer time on the 32 alt-voice WAVs; synthetic run-store
+at `runs/experiments-2026-09-01-E/`, analyzer output at
+[`analysis/experiments-2026-09-01-E/`](../analysis/experiments-2026-09-01-E/)).
+This section retains the **drift analysis** — the same LUFS-thirds
+check that surfaced the F-6 fade — because it answered an adjacent
+question that Follow-up 4's quality tables don't cover:
 
 ### E drift results — the fade shows up in OpenAI's `nova` voice too
 
@@ -263,12 +271,14 @@ Two of OpenAI's `nova` voice generations on long narration items
 ElevenLabs' L03 — Δ ≥ 2 dB, monotonically decreasing across thirds.
 
 **Verdict on E's original question** (does Speechify's voice-agnostic
-Simba-3.2 story hold for other vendors?): **cannot answer without
-running quality/WER on the alt-voice audio**. The drift-only view
-above says nothing about whether the alt voices score similarly to
-the pinned voices on Audiobox/DNSMOS/WER; that requires the ~5-hour
-CPU analysis pass. Audio is generated and available; running the
-pass is a follow-up if that question matters.
+Simba-3.2 story hold for other vendors?): **answered in
+[Follow-up 4](#follow-up-4--alt-voice-qualitywer-analysis-on-experiment-e-audio)**
+below via full Audiobox + DNSMOS + WER on the alt-voice audio.
+Short answer: every alt voice tested (4 vendors) produces a
+statistically significant AB.PQ shift from its pinned counterpart
+on n=8 items (paired-z 3.28σ to 13.46σ). The "voice-choice matters"
+observation is real; the gender-swap confound on every alt-voice
+pair prevents attributing the effect to voice-model choice alone.
 
 **Verdict on E's unexpected finding** (loudness fade on other
 vendors): **OpenAI's `nova` voice also fades** at 25% rate on the
@@ -310,14 +320,14 @@ another doesn't**. What R3 charlotte did produce was fade on L02
 (+2.59 dB) and L06 (+2.86 dB) — different items than the R2 flag.
 
 **Implication for F-6**: the "L03 is a reproducible text-dependent
-quirk" framing is broken by this data. The fade is a **run-level
-stochastic phenomenon** — some fraction of long-form generations
-on affected voices fade, and the specific items that fade shift
-across runs. This makes the "know your content" recommendation
-harder (you can't just flag specific problem items and avoid them)
-and makes the "monitor loudness on every generation in production"
-recommendation stronger (it's the only way to catch a shifting
-target).
+quirk" framing does not survive this data. The fade behaviour is
+better described as **run-level stochastic** — some fraction of
+long-form generations on affected voices fade, and the specific
+items that fade shift across runs. Advisory phrasing of what this
+implies for production monitoring lives in
+[06 § F-6](06_KEY_FINDINGS.md#f-6--monotonic-loudness-fade-on-long-form-tts-narration--a-cross-vendor-phenomenon-at-5-25-base-rate)
+and [08 finding #12](08_KEY_FINDINGS_PLAIN.md); this section
+describes what the R3 charlotte data showed.
 
 Detail: [`analysis/experiments-2026-09-01/item1_primary_narration_drift.json`](../analysis/experiments-2026-09-01/item1_primary_narration_drift.json)
 
@@ -326,8 +336,9 @@ Detail: [`analysis/experiments-2026-09-01/item1_primary_narration_drift.json`](.
 ## Follow-up 2 — Cost reconciliation
 
 Approximate cost tracking during the experiment run was
-["~$0.62 total"](analysis/experiments-2026-09-01/EXPERIMENTS_2026-09-01.md);
-the reconciled total from the actual api_log rows is:
+"~$0.62 total" (the pre-flight estimate quoted in the executive
+summary at the top of this document); the reconciled total from
+the actual api_log rows is:
 
 | segment | rows (ok) | metered USD |
 |---|---:|---:|
@@ -371,8 +382,13 @@ on **both p50 AND p90** in every single measured session from
 | 2026-08-09 22:23 (S1b) | 440 | 762 | 474 | 946 | ✓✓ |
 | 2026-08-11 (S2) | 424 | 936 | 469 | 1493 | ✓✓ |
 | 2026-08-12 (S3) | 694 | 1369 | 816 | 1882 | ✓✓ |
-| **2026-09-01 18:57 (S4)** | **412** | **772** | **461** | **1212** | ✓✓ |
-| **2026-09-01 19:10 (S5)** | **421** | **783** | **468** | **1206** | ✓✓ |
+| **2026-09-01 EL 18:57 / OAI 19:07 (S4)** | **412** | **772** | **461** | **1212** | ✓✓ |
+| **2026-09-01 EL 19:10 / OAI 20:10 (S5)**¹ | **421** | **783** | **468** | **1206** | ✓✓ |
+
+¹ S5 OpenAI's 19:10 attempt crashed (run-dir collision with the
+concurrent EL run); the successful rerun is `latency-20260901T201051Z`
+at T20:10 UTC, one hour after S5 EL. See F-11 for the per-session
+run-ID table.
 
 **Cross-session mean-p50 shift** (S4+S5 vs S1a/S1b/S2/S3):
 - ElevenLabs: pre-mean 499 ms → new-mean 416 ms (**−17%**)
@@ -438,60 +454,111 @@ voice on the SAME 8 long items?
 | **deepgram** | WER | 0.1066 | 0.1243 | **+0.018** | **+16.7%** | 8 |
 | google | AB.PQ | 8.032 | 7.927 | −0.105 | −1.3% | 8 |
 | google | AB.CE | 6.571 | 6.400 | −0.171 | −2.6% | 8 |
-| google | DN.ovrl | 3.414 | 3.490 | +0.076 | +2.2% | 5* |
+| google | DN.ovrl | 3.414 | 3.493 | +0.079 | +2.3% | 5* |
 | google | WER | 0.1010 | 0.1094 | +0.008 | +8.3% | 8 |
 
-*Google DNSMOS: 3 of 8 alt-voice files refused by DNSMOS (peak-out-of-range).
+*Google DNSMOS DN.ovrl row is computed on the 5-item intersection of items
+valid on both sides — a survivor-selected subset, not the full 8 —
+because DNSMOS refused **3 of 8 pinned-voice** files (L02, L03, L04,
+all peak-out-of-range from clipping) and 1 of 8 alt-voice files
+(L02, same cause). Only 5 items (L01, L05, L06, L07, L08) survive
+on both sides. Both means and Δ above are recomputed on that
+intersection so the delta is a paired difference on matched items
+(pinned 3.414, alt 3.493, Δ +0.079; SE_diff 0.025, paired z = +3.16).
+The direction and rough magnitude of the previously-published
+unpaired 3.414 (5 items) vs 3.490 (7 items) comparison survive
+the correction; the method label ("paired delta on matched items")
+now does too. Same defect class as
+[CORRECTIONS row 19](../CORRECTIONS.md) (mismatched groupings
+across adjacent tables) and 04's Cartesia survivor-subset
+footnote pattern.
 
-### T6-style verdict per vendor
+### Paired-z per vendor (the project's standard inferential test)
 
-**Definition of "holds"**: all Audiobox deltas < 0.15, DNSMOS delta
-< 0.15, |WER delta| < 3 percentage points. This matches the
-noise-floor magnitudes established in R2/R3 for the primary
-campaign.
+The right test on 8 matched pairs is a paired t/z on the per-item
+differences — the same test used in the R2-vs-R3 replication check
+and in 04's Rankings summary. On AB.PQ (the axis carrying the
+Speechify claim in F-7):
 
-| vendor | verdict | key deltas |
-|---|---|---|
-| **OpenAI** | **✓ HOLDS** | All deltas ≤ 0.15 on Audiobox, 0.04 on DNSMOS, +1% on WER. Nova ≈ Onyx on quality axes. |
-| Fish | ⚠ SHIFTS | AB axes flat, but **DN.ovrl drops 0.19 (−5.5%)** — Fish's alt voice sounds noticeably less clean to DNSMOS than the pinned voice, without changing on Audiobox. |
-| **Deepgram** | ⚠ **SHIFTS BIG** | AB.PQ down 0.48 (−6%), DN.ovrl down 0.27 (−8%), WER up 17% — luna scores much lower than orion on multiple axes on the same items. |
-| Google | ⚠ SHIFTS | AB.CE down 0.17 (−2.6%), DN.ovrl swings +0.08 but only n=5 (DNSMOS refused 3 of 8). Kore diverges from Charon less dramatically than Deepgram but still outside noise. |
+| vendor | pinned R3 mean | alt E mean | mean Δ | SD_diff | SE_diff | **paired z** | p (two-sided) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| OpenAI | 7.619 | 7.473 | −0.146 | 0.126 | 0.044 | **−3.28σ** | ≈ 0.001 |
+| Fish | 7.710 | 7.869 | +0.159 | 0.089 | 0.031 | **+5.06σ** | ≈ 4×10⁻⁷ |
+| Google | 8.032 | 7.927 | −0.105 | 0.040 | 0.014 | **−7.35σ** | ≈ 2×10⁻¹³ |
+| Deepgram | 7.948 | 7.468 | −0.480 | 0.101 | 0.036 | **−13.46σ** | ≈ 0 |
 
-### T6-generalisation reading
+Reproducible from
+[`analysis/experiments-2026-09-01-E/quality.json`](../analysis/experiments-2026-09-01-E/quality.json)
+`audiobox_files[].audiobox.production_quality` vs
+[`analysis/campaign-20260831T175358Z/quality.json`](../analysis/campaign-20260831T175358Z/quality.json)
+`audiobox_files[].audiobox.production_quality`, keyed on
+(provider, item_id) for L01..L08.
 
-**F-7 established that Speechify's Audiobox lead is a Simba-3.2
-model-family property**, not a lucky-voice-pick — confirmed by T6's
-alt-voice regeneration on Speechify (edmund_32 scored even *higher*
-than the pinned geffen_32).
+**All four alt voices produce a statistically significant AB.PQ
+shift** from the pinned voice on the same 8 items. Direction
+varies (Fish positive, others negative); magnitude ranges 3×
+(OpenAI 0.146 → Deepgram 0.480). Under the paired test the
+project uses for every other quality claim, **no alt voice
+"holds within noise" against its pinned counterpart at n=8**.
 
-**This experiment establishes that F-7's cross-voice consistency is
-NOT universal**. Of the 4 other vendors tested:
+Prior "HOLDS / SHIFTS" verdict column retracted; see
+[CORRECTIONS row 25](../CORRECTIONS.md).
 
-- **1 of 4** (OpenAI) shows the same property — alt voice holds
-- **3 of 4** (Fish, Deepgram, Google) show materially different
-  quality scores under voice swap on the same items
+### Gender confound
 
-**Practical implication for buyers**: when picking a Speechify voice
-or an OpenAI voice, brand fit dominates — you can browse the voice
-catalogue confidently that quality is roughly consistent. When
-picking a Fish, Deepgram, or Google voice, **audition candidates on
-your own content** — voice choice within these vendors materially
-affects the measured quality on the same text. Deepgram is the
-starkest example: 6% AB.PQ swing and 17% WER swing between two of
-its own Aura-2 English voices.
+All four alt voices tested crossed gender against the pinned
+voice — OpenAI onyx (male) → nova (female), Deepgram orion
+(male) → luna (female), Google Charon (male) → Kore (female).
+Fish uses opaque UUIDs so gender is not directly verifiable from
+configs, but the alt was Fish's conversational-tagged voice — a
+different design confound (voice-purpose swap). **T6's Speechify
+comparison split by use case**: conversational was cross-gender
+(geffen_32 female → edmund_32 male), but **narration was
+same-gender** (wyatt_32 male → edmund_32 male; T6 verdict says
+of the narration pair "same gender (both male)"). The T6
+narration same-gender leg (recomputed paired-z
+on 20 T6 items) is **+4.02σ AB.PQ**, so a within-vendor voice
+swap already produces a >3σ shift **even when gender is
+matched** on the one vendor where the same-gender test has been
+done. The four Follow-up-4 cross-gender pairs cannot on their
+own separate voice-choice from gender across the other 7
+vendors; T6 narration establishes that voice-choice ≥3σ effects
+exist independent of gender on at least Speechify.
 
-**Where this DOESN'T generalise**:
+### What the data actually supports
 
-- n=1 alt voice per vendor. A larger voice-space sweep might find
-  vendors where the alt voice happens to be closer to the pinned
-  one, softening the "SHIFTS" verdicts above.
-- Only 8 long items (L01..L08). A broader content sweep might change
-  the magnitudes.
-- The direction of the shift matters. Deepgram luna scoring lower
-  than orion on 3 of 4 axes could mean orion was cherry-picked (by
-  us or by the D-002 selection process), not that luna is bad. We
-  didn't run 3 or 4 more Deepgram voices to establish where orion
-  sits in the vendor's voice space.
+- Every alt voice tested produced a statistically significant
+  AB.PQ shift from its pinned counterpart on the paired-z test:
+  Speechify T6 narration (n=20, same-gender) +4.02σ; Speechify
+  T6 conversational (n=20, cross-gender) +6.05σ; Follow-up 4's
+  4 vendors on L01–L08 (n=8 each, cross-gender) 3.28σ–13.46σ.
+- **T6's Speechify narration leg is same-gender** and already
+  establishes a >3σ voice-choice effect independent of gender
+  on at least one vendor; the four Follow-up-4 cross-gender
+  pairs do not on their own separate voice-choice from gender
+  across the other 7 vendors, but "voice choice matters within
+  a vendor" is now supported directly rather than being written
+  off as a possible gender artefact.
+- Speechify's T6 result — alt voice scored +0.30 higher on
+  conv (cross-gender) and +0.10 higher on narr (same-gender)
+  and still ranked #1 — remains a **rank-preservation**
+  observation at the vendor level, not a "quality holds within
+  noise" claim at the item level.
+- Deepgram's Δ = −0.480 (13.5σ) is the largest per-vendor shift
+  observed and would remain a large shift even after subtracting
+  the maximum plausible gender component.
+
+### What a v2 same-gender sweep would need
+
+- 2 same-gender voices per vendor × 8 vendors × 8 items × 1 draw
+  = 128 fresh generations; ~$0.30 spend; ~1 hour synthesis;
+  ~5 hours analyzer wall-clock.
+- Compute the same paired-z per vendor per axis. If same-gender
+  paired-z is <2σ across vendors, the gender confound is
+  eliminated as an explanation and the current 3.3–13.5σ shifts
+  can be attributed to voice-model differences within the
+  vendor. If same-gender paired-z remains >3σ, the current
+  shifts are voice-choice effects that survive gender matching.
 
 Detail script: [`scripts/_item4_e_vs_pinned.py`](../scripts/_item4_e_vs_pinned.py)
 
@@ -520,22 +587,15 @@ finding on three axes:
    ~40s halves cuts the fade sharply. Suggests the mechanism is a
    cumulative-state effect that resets on a fresh call.
 
-**Proposed F-6 rewrite** (not applied to 06 in this pass — flagged
-here for consideration):
-
-> **F-6 · Monotonic loudness fade on long-form TTS narration is a
-> cross-vendor phenomenon at ~10-25% base rate on affected voices.**
-> Not confined to any single item or vendor. The mechanism appears
-> to be a cumulative internal-state decay across a single generation
-> call, mitigated by chunking. Actionable: production narration
-> workflows should include a loudness-drift monitor over each
-> generated audio; catches this whole class of issue for ~20 lines
-> of code.
-
-**What's NOT proposed for change**: the R2/R3 replication table in
-04, the ranking-summary tables, or any other findings. The upgrade
-would be scoped to F-6's framing in 06 and the corresponding
-plain-language finding in 08.
+**F-6 rewrite landed** in
+[06 § F-6](06_KEY_FINDINGS.md#f-6--monotonic-loudness-fade-on-long-form-tts-narration--a-cross-vendor-phenomenon-at-5-25-base-rate)
+based on Follow-up 1 (the cross-vendor pinned-voice fade table
+below). Plain-language version in
+[08 finding #12](08_KEY_FINDINGS_PLAIN.md). Advisory phrasing
+("production narration workflows should include a loudness-drift
+monitor over each generated audio") lives in those two files, not
+here — this document reports the measurements the rewrite was
+based on.
 
 ---
 
@@ -564,10 +624,11 @@ The generation phase itself was <90 min.
 
 **Compute time**: drift analysis on 73 experiment WAVs + 64
 primary-campaign WAVs took under 60 seconds. The Audiobox +
-DNSMOS + WER analyzer pass on the 32 Experiment E WAVs is running
-in the background at report time; expected wall clock 40-75 min
-(a synthetic run-store, `runs/experiments-2026-09-01-E/`, makes
-the standard `veval analyze` command work on the E audio).
+DNSMOS + WER analyzer pass on the 32 Experiment E WAVs completed
+in ~5.3 hours wall-clock on CPU (a synthetic run-store,
+`runs/experiments-2026-09-01-E/`, made the standard
+`veval analyze` command work on the E audio). Results are in
+Follow-up 4.
 
 ---
 
@@ -593,10 +654,15 @@ the standard `veval analyze` command work on the E audio).
    vendor's pinned narration voice — data is already on disk, just
    needs the drift analyzer run over
    `runs/campaign-20260831T175358Z/audio/*/narration/L*.wav`.
-4. **Whether the alt voices in Experiment E score similarly to the
-   pinned voices on Audiobox/DNSMOS/WER** (the original T6-style
-   question). Audio is on disk; the ~5-hour analyzer pass is
-   deferred.
+4. ~~Whether the alt voices in Experiment E score similarly to the
+   pinned voices on Audiobox/DNSMOS/WER~~ — **answered in
+   [Follow-up 4](#follow-up-4--alt-voice-qualitywer-analysis-on-experiment-e-audio)**;
+   paired-z 3.28σ–13.46σ on AB.PQ across 4 vendors, plus T6's
+   Speechify narration same-gender leg at +4.02σ AB.PQ.
+   Residual v2: same-gender alt-voice sweep across the **other 7
+   vendors** (T6 narration answered it for Speechify at +4.02σ,
+   so we already know within-vendor voice-choice ≥3σ effects
+   exist independent of gender on at least one vendor).
 5. **Multi-week variance for D**. S4+S5 today are same-day; genuinely
    answering F-11's ≥5-sessions-across-≥2-weeks question needs
    sessions on different calendar dates.

@@ -1,0 +1,97 @@
+Voice AI Provider Evaluation — dual-scope license
+==================================================
+
+This repository contains two categories of material under two
+different licenses. Which license applies depends on the path.
+
+--------------------------------------------------------------------
+CODE — Apache License 2.0
+--------------------------------------------------------------------
+
+Covers:
+  - src/**                (the veval Python package)
+  - tests/**              (pytest regression suite)
+  - scripts/**            (analysis + figure generation)
+  - configs/**            (YAML config files)
+  - pyproject.toml, uv.lock, .gitignore, CLAUDE.md
+  - dx/**                 (integration friction log — code-adjacent)
+  - Any file with a code file extension not otherwise listed
+
+Copyright 2026 Neeraj Gera.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this material except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+
+The Apache-2.0 patent grant is chosen deliberately for this scope:
+this is an evaluation harness that others will run against their
+own vendor accounts, and the explicit patent grant matters for
+that use.
+
+--------------------------------------------------------------------
+CONTENT — Creative Commons Attribution 4.0 International (CC BY 4.0)
+--------------------------------------------------------------------
+
+Covers:
+  - documentation/**      (the eight numbered docs + EXPERIMENTS)
+  - docs/**               (the one-page HTML brief)
+  - analysis/**           (all committed analyzer outputs + verdicts)
+  - corpus/**             (the 75-item per-use-case corpus, both
+                          the 60 authored items and the 15
+                          contamination-probe items — Harvard
+                          sentences + literary openings, themselves
+                          public-domain; the corpus files' selection,
+                          ordering, and metadata are licensed CC BY 4.0)
+  - README.md, DISCLAIMER.md, DEVIATIONS.md, CORRECTIONS.md
+  - Figures under documentation/figures/**
+
+Copyright 2026 Neeraj Gera.
+
+Licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0). You may share and adapt the material for any
+purpose, including commercially, provided you give appropriate
+credit, provide a link to the license, and indicate if changes
+were made.
+
+Full license text:
+    https://creativecommons.org/licenses/by/4.0/legalcode
+
+Attribution format:
+    "Voice AI Provider Evaluation — Neeraj Gera, 2026-09
+    (https://github.com/ngera/VoiceModelEvaluation), CC BY 4.0"
+
+--------------------------------------------------------------------
+Third-party material
+--------------------------------------------------------------------
+
+The 15 contamination-probe items per use case (`corpus/*.yaml`
+IDs P01–P15) are pre-existing public-domain text — Harvard
+sentences (conversational) and literary openings (Dickens, Austen,
+Tolstoy, Melville, Doyle, Twain, Joyce; narration). Their inclusion
+here does not create any additional rights over that source
+material.
+
+Vendor names (ElevenLabs, Cartesia, Fish Audio, Google, Deepgram,
+OpenAI, Speechify, Canopy Orpheus / lucataco community-fork on
+Replicate) and analyzer names (Meta Audiobox Aesthetics,
+Microsoft DNSMOS, NVIDIA Parakeet, Systran faster-whisper, jiwer)
+are trademarks of their respective owners and are used here for
+factual identification only.
+
+--------------------------------------------------------------------
+No warranty; not vendor-affiliated
+--------------------------------------------------------------------
+
+See [DISCLAIMER.md](DISCLAIMER.md) for the full scope statement,
+non-affiliation with any vendor evaluated, cost breakdown, and
+"not legal / contractual / financial advice" caveat. This LICENSE
+file governs re-use rights only; it does not modify or supersede
+DISCLAIMER's scope statements.

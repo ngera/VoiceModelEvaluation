@@ -6,10 +6,10 @@ voices, or corpora.*
 
 > **⚠ Scope disclaimer** · Absolute measurement values depend on
 > your environment (network, hardware, subscription tier) and on
-> when the measurement was taken (see F-11 for our 3-session
-> per-vendor TTFA spread). Vendor *rankings* are portable; absolute
-> *values* are one point in a session-to-session distribution, not
-> ceilings. See [../DISCLAIMER.md](../DISCLAIMER.md).
+> when the measurement was taken (see F-11 for our 6-session
+> per-vendor TTFA spread across four dates). Vendor *rankings* are
+> portable; absolute *values* are one point in a session-to-session
+> distribution, not ceilings. See [../DISCLAIMER.md](../DISCLAIMER.md).
 
 ---
 
@@ -164,9 +164,14 @@ uv run veval generate --mode variance --provider deepgram
 
 **Cache is forced OFF** in variance mode — fresh draws *are* the
 measurement. Feeds `variance.py` to compute per-vendor within-vendor
-SD (the measurement noise floor). Every between-vendor delta is
-compared against `1.96 × SE(difference)` to check whether it
-exceeds the acoustic noise floor.
+SD (the **measurement noise floor**, statistical). Every
+between-vendor delta is compared against `1.96 × SE(difference)`
+to check whether it exceeds that measurement noise floor. This is
+separate from the **acoustic** noise floor — the dBFS hygiene
+metric with its own pre-registered gate in `configs/gates.yaml`
+(`long_stratum_acoustic_noise_floor_dbfs ≤ −40`); the two share
+a name for historical reasons and are otherwise unrelated (per
+CORRECTIONS row B2's vocabulary retirement).
 
 ### <a name="latency--ping"></a>Latency mode (Phase D speed measurement)
 
@@ -180,9 +185,16 @@ uv run veval generate --mode latency --provider elevenlabs --trials 50
 
 Cache forced OFF (fresh trials = fresh measurements). Serial, not
 parallel — measures per-user tail experience, not aggregate
-throughput. For a proper stability characterisation you need **≥3
-sessions on different days**; F-11 in 06_KEY_FINDINGS.md is the
-receipt for why a two-session comparison is not sufficient.
+throughput. Phase 1 called for **≥5 sessions on different days**
+for a proper stability characterisation; the project has run
+**6 sessions on 4 dates** (S1a, S1b, S2, S3, S4, S5) and F-11
+concludes that even at n=6 mechanism attribution remains blocked
+on **client-side lag logging** (per-request timestamps for DNS +
+TCP handshake + first-byte-arrival) that was not run in v1. F-11
+in 06_KEY_FINDINGS.md is the receipt for both the six-session
+rank stability and the residual attribution gap; the older
+"two-session comparison is not sufficient" framing was the
+pre-R14 S3 story.
 
 **S3 setup with concurrent ping baseline** (recommended for any
 new session that will be used to make a distributional claim):
@@ -299,11 +311,16 @@ uv run python scripts/latency_with_ping.py --provider elevenlabs
 #    quality + wer must land before variance reads them
 uv run veval analyze <campaign-run-id> --stages all --skip-ttsds
 uv run veval analyze <variance-run-id> --stages quality,wer,variance --skip-ttsds
-uv run veval analyze <latency-run-id-s1> --stages latency
+uv run veval analyze <latency-run-id-s1a> --stages latency
+uv run veval analyze <latency-run-id-s1b> --stages latency
 uv run veval analyze <latency-run-id-s2-oai> --stages latency
 uv run veval analyze <latency-run-id-s2-el>  --stages latency
 uv run veval analyze <latency-run-id-s3-oai> --stages latency
 uv run veval analyze <latency-run-id-s3-el>  --stages latency
+uv run veval analyze <latency-run-id-s4-el>  --stages latency  # Phase 2 Follow-up 3
+uv run veval analyze <latency-run-id-s4-oai> --stages latency
+uv run veval analyze <latency-run-id-s5-el>  --stages latency
+uv run veval analyze <latency-run-id-s5-oai> --stages latency  # T19:10 attempt crashed; use T20:10 rerun
 
 # 7. Recompute the per-comparison SE(diff) tie tests and the paired
 #    vs unpaired comparison (Wave 1 statistical honesty pass —
@@ -330,25 +347,203 @@ in `documentation/figures/`. Compare against the published
 per-vendor per-signal SE(diff) bands documented in
 [04's Rankings summary](04_RESULTS.md#rankings-summary) and computed
 by [`scripts/_noise_floor_recompute.py`](../scripts/_noise_floor_recompute.py).
-Prior versions of this doc referenced a single-number ~0.035 noise
-floor — that heuristic has been retired.
+**One caveat**: the three analyzer neural models
+(Audiobox, wav2vec2, faster-whisper) were not SHA-pinned in the
+campaign (see [02 § 1 honest exception](02_METHODOLOGY.md#1-pre-registration-with-git-tags)
+and [07 gap 9](07_GAPS_AND_FUTURE_WORK.md)); a fresh clone
+today re-downloads them at whatever `main` serves, so exact-value
+reproduction is only guaranteed inside the R2↔R3 measurement
+interval where the resolved stack was stable
+(ρ = 0.905-1.000). Rank-level reproduction is the load-bearing
+promise.
 
 **Estimated cost of a clean reproduction** (from committed
 `analysis/*/cost_model.json` `total_observed_cost_usd` fields —
 the receipt is directly reproducible):
 
-- Primary campaign (1200 files): **$7.85**
-- Variance run (10 items × 6 vendors × 3 draws): **$3.16**
-- Two S1 latency sessions (50 trials × 4 streaming vendors): **$0.34**
-- Verification pack (T4 + T6 + T8 fresh regens): **~$0.63**
-- Third latency session with ping baseline (2026-08-12): **~$0.02**
-- **Total measured: ~$12** across 8 vendor accounts, plus 3-4 hrs
-  wall clock on a mid-tier CPU laptop.
+**Minimum reproduction** — one fresh campaign is enough to
+reproduce every ranking claim in [04_RESULTS.md](04_RESULTS.md)
+and adjudicate every pre-registered gate:
 
-Every `analysis/*/cost_model.json` file is committed with
-`total_observed_cost_usd` at its top level — the number above is
-directly reproducible by summing that field across the six run
-directories.
+- Doctor probes + pilot runs: **~$0.61**
+- Primary campaign (1200 fresh files, `--no-cache`): **~$7.84**
+- Variance run (10 items × 3 draws × 8 vendors × 2 use cases = 480 files): **$3.16**
+- Two S1 latency sessions (50 trials × 4 streaming vendors): **$0.34**
+- Verification pack (T4 + T6 + T8 fresh regens + S2 verification
+  latency session covering T5 + T7): **~$0.63** (per
+  [04's verification-pack cost line](04_RESULTS.md#verification-pack-outcomes-phase-2c);
+  DISCLAIMER's breakdown lists S2 as part of the latency-sessions
+  aggregate, so summing DISCLAIMER's lines does not double-count S2 — it
+  sits inside the $0.63 total here, and inside the latency-sessions
+  line there)
+- Third latency session with ping baseline: **~$0.02**
+- Phase 2 experiment pack (5 experiments + 4 follow-ups): **~$3.55**
+- **Minimum total: ~$16** across 8 vendor accounts, plus 8-12 hrs
+  wall clock on a mid-tier CPU laptop (~5 hrs of that is the
+  campaign analyzer pass; ~5 hrs is Phase 2 Experiment E's
+  alt-voice quality pass).
+
+**Full replication (R2 + R3)** — additionally runs a second full
+campaign three weeks later to verify measurement stability
+(reproduces the R2→R3 ranking comparison, the ElevenLabs cross-axis
+regression signal, and the hygiene-gate R2→R3 flip on Orpheus):
+
+- Add a second campaign 2-4 weeks after the first: **+~$7.84**
+- **Full total: ~$24**, plus another ~5 hrs analyzer wall clock
+
+The load-bearing per-run cost figures come from
+`total_observed_cost_usd` in each committed
+`analysis/*/cost_model.json`; the pilot-runs and T4/T8/Wave-4b
+lines are reproducible from `runs/<id>/api_log.jsonl` via
+`veval analyze <id> --stages cost` but `runs/` is gitignored
+(regenerable audio, not versioned) so re-deriving those cost
+figures requires either (i) running the corresponding
+`veval generate` again from a fresh clone or (ii) having the
+original `runs/` tree on disk from the initial run. See
+DISCLAIMER's cost breakdown for the committed-vs-reproducible
+split per line. **Effective out-of-pocket** for our specific project
+was lower because Deepgram's $200 signup credit absorbed ~$1.20
+and Speechify Starter's $10/mo subscription and ElevenLabs
+Creator's $22/mo Creator plan absorbed within-month re-runs; your
+own out-of-pocket depends on your credit balances and subscription
+timing.
+
+---
+
+## Reproduce R3 (the fresh-generation replication)
+
+R3 is a second full campaign run 3 weeks after R2, with `--no-cache`,
+that adjudicates the pre-registered `rtf ≥ 3.0` narration gate that
+R2's cache-only replay could not (no `synthesis_time` on cached
+rows). It also stress-tests the R2 rankings under a fresh generation
+set and surfaces vendor-side drift signals.
+
+```powershell
+# Full campaign, fresh, ~$7.84 metered
+uv run veval generate --mode campaign --no-cache
+
+# Analyze — same stages as R2
+uv run veval analyze <r3-run-id> --stages all --skip-ttsds
+
+# Recompute the R2-vs-R3 replication comparison
+uv run python scripts/_r2_vs_r3.py --r2 campaign-20260809T204608Z `
+                                    --r3 <r3-run-id>
+# Writes analysis/round3-vs-round2-comparison.md — same table shape
+# as our published version. Redirect stderr to /dev/null (or $null on
+# PowerShell) to avoid capturing uv's VIRTUAL_ENV warning into the doc
+# (see CORRECTIONS row 29).
+```
+
+**What R3 adjudicates that R2 does not**:
+
+- Pre-registered `rtf ≥ 3.0` narration gate (5 pass / 3 fail on our
+  R3; see [04 § RTF admission](04_RESULTS.md#rtf-admission)).
+- Vendor-side model drift over the 3-week interval (our R3 showed
+  ElevenLabs shifting significantly downward on 5 of 6 Audiobox +
+  DNSMOS P.808 cells under paired-z + Bonferroni-12; the 6 DNSMOS
+  P.835 cells showed no significant shift; two of three scoring
+  models detected the drift, the third did not — see F-12 in
+  [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md#f-12)).
+- Long-stratum hygiene gate flip: Orpheus's `worst_noise_floor_dbfs`
+  moved from −52.78 dB (R2, pass) to −27.75 dB (R3, fail), most likely
+  a truncation-tail artefact on the 14.59-s output cap.
+
+**When to run R3**: if you want to publish a "measurement stable
+over N weeks" claim; if you need to adjudicate the RTF gate; if you
+want to see whether a specific vendor's model has drifted since your
+first run.
+
+---
+
+## Reproduce the Phase 2 experiment pack
+
+The 5-experiment pack (2026-09-01) + 4 follow-ups answered three
+loose ends from R2+R3 (F-6 fade generalisation, F-7 voice-swap
+consistency, F-11 latency session-count). Full report:
+[EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md). Total
+metered spend: **~$3.55**.
+
+Each experiment reproduces from a single script:
+
+```powershell
+# A — 20 authored long-form items × ElevenLabs charlotte
+uv run python scripts/_experiment_pack.py A
+
+# B — 5 ElevenLabs voices on L03
+uv run python scripts/_experiment_pack.py B
+
+# C — L03 halves (chunk-mitigation check)
+uv run python scripts/_experiment_pack.py C
+
+# D — S4 + S5 latency sessions (OpenAI + ElevenLabs, 50 trials each)
+uv run python scripts/_experiment_pack.py D
+
+# E — alt-voice sweep (OpenAI, Fish, Deepgram, Google — 8 items each)
+uv run python scripts/_experiment_pack.py E
+
+# Drift analysis on every generated WAV (Experiments A/B/C/E + the
+# R3 primary-campaign narration audio for Follow-up 1's cross-vendor
+# fade rate)
+uv run python scripts/_experiment_pack.py drift
+```
+
+**Follow-up analyses**:
+
+```powershell
+# Follow-up 1 — cross-vendor pinned-voice fade rate on R3 primary
+uv run python scripts/_item1_primary_narration_drift.py
+
+# Follow-up 2 — cost reconciliation (per-experiment + per-vendor)
+uv run python scripts/_item2_cost_reconcile.py
+
+# Follow-up 3 — S4 + S5 latency sanity vs S1-S3 baseline
+uv run python scripts/_item3_latency_sanity.py
+
+# Follow-up 4 — alt-voice E audio through the full analyzer chain
+#   Step 1: build a synthetic run-store that lets `veval analyze`
+#   work on the E audio (copies E WAVs + fabricates a manifest.json)
+uv run python scripts/_build_synthetic_e_runstore.py
+#   Step 2: analyze quality + WER (~5 hrs CPU wall-clock)
+uv run veval analyze experiments-2026-09-01-E `
+  --stages acceptance,quality,wer --skip-ttsds
+#   Step 3: compute the alt-vs-pinned paired-z table
+uv run python scripts/_item4_e_vs_pinned.py
+```
+
+**Render the report body**:
+
+```powershell
+# Renders EXPERIMENTS_2026-09-01.md body from the committed
+# analysis/experiments-2026-09-01/*.json + logs/*.jsonl
+uv run python scripts/_experiment_report.py
+```
+
+**Inputs**:
+
+- 20 authored items for A: [`analysis/experiments-2026-09-01/inputs/A_items.json`](../analysis/experiments-2026-09-01/inputs/A_items.json)
+- L03 halves for C: [`analysis/experiments-2026-09-01/inputs/C_l03_halves.json`](../analysis/experiments-2026-09-01/inputs/C_l03_halves.json)
+- Long items (L01..L08) for E: [`analysis/experiments-2026-09-01/inputs/E_long_items.json`](../analysis/experiments-2026-09-01/inputs/E_long_items.json)
+
+**Uncompleted cheap tests** (proposed, not yet run — flagged for
+future revision):
+
+- **T10 — Orpheus `max_new_tokens` check.** ~$0.01, one Replicate
+  call. Passes a large `max_new_tokens` in the request payload and
+  measures whether the 14.59-s output cap extends. Distinguishes
+  "model-intrinsic cap" from "deployment-config default", which
+  changes the PM recommendation (one API-flag flip vs a
+  chunking-engineering workstream). Currently the README and
+  05_CASE_STUDY.md footnote both flag this as untested.
+- **Sample-rate header sweep.** ~$0.10, one probe per vendor. For
+  each vendor, generates a short clip and verifies the WAV header's
+  declared sample rate matches the actual data-chunk sample rate.
+  Related to the streamed-WAV-header defect class fixed by
+  `finalize_wav_header()` (see F-1a and
+  [`dx/friction_log.md`](../dx/friction_log.md)) — this test would
+  confirm no vendor is *still* shipping a placeholder sample rate.
+
+Both scaffolds sit in the "cheap tests not yet run" list at
+[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
 
 ---
 

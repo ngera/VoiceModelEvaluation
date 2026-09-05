@@ -1,5 +1,4 @@
-warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
-# Round-2 (2026-08-09) vs Round-3 (2026-08-31) — replication comparison
+# R2 (2026-08-09) vs R3 (2026-08-31) — replication comparison
 
 - R2 run: `campaign-20260809T204608Z` — campaign-20260809T204608Z
 - R3 run: `campaign-20260831T175358Z` — campaign-20260831T175358Z
@@ -18,8 +17,17 @@ warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` do
 | fish | 0.5854 | 0.5854 | +0.0000 | +0.0% |
 | google | 1.1675 | 1.1675 | +0.0000 | +0.0% |
 | openai | 0.5837 | 0.5837 | +0.0000 | +0.0% |
-| orpheus | 0.4500 | 0.4470 | -0.0030 | -0.7% |
+| orpheus | 0.4500 | 0.4470¹ | -0.0030 | -0.7% |
 | speechify | 0.3892 | 0.3892 | +0.0000 | +0.0% |
+
+¹ Orpheus R3 = **149 generations, not 150** — one narration call
+failed in the R3 fresh run. `observed_generations = 149` and
+`observed_cost_usd = $0.447` in
+[`campaign-20260831T175358Z/cost_model.json`](campaign-20260831T175358Z/cost_model.json).
+The -$0.003 R2→R3 delta is exactly one Orpheus generation at
+$0.003/call, not a per-call price change. The narration quality
+tables handle the missing item as a missing draw in aggregation;
+per-vendor mean is over the 74 items that succeeded.
 
 ### AB.PQ
 
@@ -297,3 +305,164 @@ warning: `VIRTUAL_ENV=C:\Users\njger\AppData\Local\Programs\Python\Python311` do
 ### F-8 decomposition (PQ vs DNSMOS mean ρ, CE vs DNSMOS mean ρ per use case)
 | Use case | Axis | R2 mean ρ | R3 mean ρ | Δ |
 |---|---|---:|---:|---:|
+| conversational | PQ vs DNSMOS (4 pairs) | +0.238 | +0.190 | −0.048 |
+| conversational | CE vs DNSMOS (4 pairs) | −0.506 | −0.476 | +0.030 |
+| narration | PQ vs DNSMOS (4 pairs) | −0.167 | −0.131 | +0.036 |
+| narration | CE vs DNSMOS (4 pairs) | −0.375 | −0.310 | +0.065 |
+
+**F-8 replicates**: PQ agrees with DNSMOS on conv in both runs
+(+0.238 → +0.190); CE anti-correlates with DNSMOS on both use cases
+in both runs (mean ρ stays between −0.31 and −0.51). The "aggregate
+ρ of −0.13/−0.27 is a mix of two constructs" story is present in
+R3 with a similar magnitude split. Reproduction: same
+`by_use_case[*].pairs[].rho` grouping computed on
+[R2 cross_metric.json](campaign-20260809T204608Z/cross_metric.json)
+and [R3 cross_metric.json](campaign-20260831T175358Z/cross_metric.json).
+
+### ElevenLabs R2→R3 shift: significant on Audiobox + DNSMOS P.808, not on the P.835 triad
+
+Under the paired per-item test (Δ_i on matched 75 items, SE_diff
+on per-vendor SD of item differences, z = mean_diff / SE_diff),
+ElevenLabs has significant R3−R2 shifts on **6 of 12 quality-axis
+× use-case cells**, all downward. The 6 significant cells are
+the outputs of two scoring models (Meta's Audiobox — PQ + CE — and
+Microsoft's DNSMOS P.808 single-model predictor), on both use
+cases. The 6 non-significant cells are the outputs of the third
+scoring model (Microsoft's DNSMOS P.835 three-scale predictor —
+ovrl + sig + bak, all derived from a shared internal
+representation), on both use cases:
+
+| use case | axis | Δ (R3 − R2) | SE_diff | paired z | significant (|z| > 2) |
+|---|---|---:|---:|---:|---|
+| conv | AB.PQ | −0.074 | 0.017 | **−4.36σ** | ✓ |
+| conv | AB.CE | −0.045 | 0.015 | **−2.92σ** | ✓ |
+| conv | DN.p808 | −0.039 | 0.017 | **−2.26σ** | ✓ (not after Bonferroni) |
+| conv | DN.ovrl | −0.010 | 0.010 | −0.98σ | not |
+| conv | DN.sig | −0.006 | 0.008 | −0.80σ | not |
+| conv | DN.bak | −0.006 | 0.008 | −0.76σ | not |
+| narr | AB.PQ | −0.074 | 0.010 | **−7.32σ** | ✓ |
+| narr | AB.CE | −0.048 | 0.009 | **−5.09σ** | ✓ |
+| narr | DN.p808 | −0.047 | 0.013 | **−3.69σ** | ✓ |
+| narr | DN.ovrl | −0.023 | 0.014 | −1.56σ | not |
+| narr | DN.sig | −0.014 | 0.009 | −1.48σ | not |
+| narr | DN.bak | −0.020 | 0.014 | −1.38σ | not |
+
+**Under the same paired-z test, three non-ElevenLabs cells cross
+the raw |z| > 2 threshold** — Speechify narr AB.CE (−2.49σ),
+Speechify narr DN.sig (+2.03σ), Fish narr DN.p808 (+2.06σ).
+Across the 96 (vendor × use_case × axis) cells at α = 0.05, you
+expect ~5 hits that size by chance under independence; three
+observed is fewer than chance, and none survives Bonferroni-12
+or -96. Every other axis on every other vendor lands at
+|z| < 2. Google, which has a sign-count tilt (10 of 12 axes
+negative in the raw delta table below), is uniformly |z| < 1.6
+under the paired test: sign-count only, not a statistical shift.
+**What distinguishes ElevenLabs is 5 cells surviving
+Bonferroni-12 (4 surviving Bonferroni-96) vs 0 for every other
+vendor, and the surviving cells partitioning cleanly by
+scoring-model architecture: Audiobox + DNSMOS P.808 both detected
+the drift; DNSMOS P.835 did not. This is not the F-8 construct
+axis — F-8 has PQ and CE on opposite sides of the DNSMOS-agrees
+vs DNSMOS-anti-correlates split.**
+
+**Sign-count table (kept as raw material, not as inference)** —
+positive = R3 improved, negative = R3 regressed:
+
+| vendor | sign pattern across 12 axes | max |Δ| | note |
+|---|---|---:|---|
+| **elevenlabs** | **12 of 12 negative** | 0.074 (AB.PQ) | 5 cells surviving Bonferroni-12 (see table above) — the only vendor with any Bonferroni-surviving shift |
+| cartesia | 11 of 12 positive | 0.041 (DN.p808 conv) | max |z| < 2.0 under paired-z |
+| deepgram | 6 of 12 negative (all narration) | 0.026 (DN.ovrl conv) | max |z| < 2.0 |
+| google | 10 of 12 negative | 0.037 (DN.bak conv) | max |z| < 1.6 |
+| speechify | mixed 6/6 | 0.035 (DN.bak narr) | narr AB.CE |z| = 2.49 + narr DN.sig |z| = 2.03 (both fail Bonferroni) |
+| openai | mixed 6/6 | 0.016 (DN.p808 conv) | max |z| < 2.0 |
+| orpheus | mixed 6/6 | 0.036 (AB.PQ conv) | max |z| < 2.0 |
+| fish | mixed 7/5 | 0.034 (DN.ovrl conv) | narr DN.p808 |z| = 2.06 (fails Bonferroni) |
+
+**Multiplicity caveat**: 12 axes are NOT 12 independent trials —
+the DNSMOS P.835 triad is correlated by construction, AB.CE
+anti-correlates with DNSMOS by construct, AB.PQ and CE correlate
+at ρ = +0.31. A "12 of 12 same-sign" statement is much weaker
+evidence than 2⁻¹² would suggest. Bonferroni across 12 tests
+would push DN.p808 conv (z = −2.26) below the α = 0.05 line;
+the other 5 significant cells survive Bonferroni.
+
+**Interval**: R3 ran fresh on 2026-08-31. R2 was cache-only
+(`n_fresh = 0` in
+[`analysis/campaign-20260809T204608Z/latency.json`](campaign-20260809T204608Z/latency.json))
+so the manifest records only the cache-hit timestamp
+(2026-08-09), not the underlying synthesis date. The honest
+R2→R3 interval is **"between R2's unrecorded synthesis date
+(≤ 2026-08-09) and 2026-08-31"**, not "between 2026-08-09 and
+2026-08-31".
+
+**Two-model observation**: the conv pin
+([`configs/voices.yaml`](../configs/voices.yaml)
+`elevenlabs.conversational.model`) is `eleven_flash_v2_5`; the
+narr pin is `eleven_multilingual_v2`. The `reasoning` field on
+the narr row says in capitals "a **DIFFERENT** model from the
+conversational entry above". Both models show the same-direction
+shift on the same scorer partition (Audiobox + DNSMOS P.808).
+**A single-model update does not touch both** — the shared cause
+has to sit somewhere the
+two models share: voice embeddings, serving / post-processing,
+or the adapter. Adapter is ruled out by
+`git log --follow src/veval/adapters/elevenlabs.py` — one commit,
+`8372dbd`, 2026-08-07, predating both runs.
+
+### Hygiene: noise-floor replication variance is ±3 dB at the mean level
+The `mean_noise_floor_dbfs` field on narration items varies R2→R3 by
+up to ±3.2 dB on some cells even with the same voice ID and the
+same source text:
+
+| vendor | R2 narr mean_nf_dbfs | R3 narr mean_nf_dbfs | Δ |
+|---|---:|---:|---:|
+| speechify | −55.24 | −58.40 | **−3.16** |
+| orpheus | −78.74 | −75.78 | **+2.96** |
+| cartesia | −55.32 | −52.63 | **+2.68** |
+| fish | −46.57 | −47.93 | −1.36 |
+| openai | −54.52 | −55.12 | −0.59 |
+| elevenlabs | −41.48 | −40.91 | +0.57 |
+| google | −36.84 | −36.75 | +0.09 |
+| deepgram | −46.83 | −46.89 | −0.06 |
+
+**Three of eight vendors** show a run-to-run mean-noise-floor shift
+of **≥ 2.5 dB**. The direction is not consistent (Speechify quieter,
+Orpheus + Cartesia louder). This is genuine within-vendor draw
+variance on this specific metric, not a measurement systematics
+issue — F-1 already established none of the vendors is byte-
+reproducible, and noise floor is one of the metrics most sensitive
+to that.
+
+**Consequence for the pre-registered narration hygiene gate**
+(`long_stratum_acoustic_noise_floor_dbfs ≤ −40`, worst-of-8): any
+vendor whose R2 worst-of-8 lands within ~3 dB of −40 should be
+adjudicated with the uncertainty flagged, not as a hard pass. On
+R2, Google (−42.01, 2.0 dB margin) is the only such case. On R3,
+worst-of-8 shifts add Orpheus as a new failure: R2 worst = −52.78
+(passes by 12.8 dB), R3 worst = −27.75 (fails by 12.3 dB) — a
++25.03 dB jump on the worst item, most likely a truncation-artifact
+tail on Orpheus's 14.59-s output cap (see F-5), but the gate result
+flipped either way.
+
+**R2 vs R3 long-stratum noise-floor gate outcomes** (correcting the
+earlier "7 pass / 1 fail | Fish" tally in [04's narration gate table](../documentation/04_RESULTS.md#pre-registered-gate-outcomes),
+which named the wrong vendor):
+
+| vendor | R2 worst-of-8 | R2 gate | R3 worst-of-8 | R3 gate |
+|---|---:|---|---:|---|
+| cartesia | −37.47 | ✗ FAIL | −32.31 | ✗ FAIL |
+| elevenlabs | −37.93 | ✗ FAIL | −34.84 | ✗ FAIL |
+| orpheus | −52.78 | ✓ PASS | **−27.75** | **✗ FAIL** (R2→R3 flip) |
+| google | −42.01 | ✓ pass (2 dB margin) | −41.55 | ✓ pass (1.6 dB margin) |
+| deepgram | −44.46 | ✓ PASS | −45.03 | ✓ PASS |
+| fish | −46.20 | ✓ PASS | −50.97 | ✓ PASS |
+| speechify | −47.10 | ✓ PASS | −54.02 | ✓ PASS |
+| openai | −56.47 | ✓ PASS | −55.84 | ✓ PASS |
+
+**R2 result: 6 pass / 2 fail** (Cartesia + ElevenLabs). **R3
+result: 5 pass / 3 fail** (add Orpheus). The current 04 gate table
+row saying "Fish (persistent noise floor)" is wrong on both counts
+— Fish passes cleanly on both runs — and is retracted as
+[CORRECTIONS row 31](../CORRECTIONS.md). Orpheus's R2→R3 flip is
+logged as [CORRECTIONS row 32](../CORRECTIONS.md).

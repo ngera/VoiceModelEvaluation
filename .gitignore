@@ -61,6 +61,29 @@ analysis/*
 !analysis/latency-20260811T183028Z/latency.json
 !analysis/latency-20260811T183202Z/
 !analysis/latency-20260811T183202Z/latency.json
+# S1b (2026-08-09 T22:23 rerun same day) — cited in the 6-session
+# F-11 table alongside S1a.
+!analysis/latency-20260809T222356Z/
+!analysis/latency-20260809T222356Z/latency.json
+# S3 sessions (2026-08-12) with concurrent Cloudflare ping baseline
+# — the "S3 doubled" observation that F-11 hangs the "absolute
+# values are not stable" claim on.
+!analysis/latency-20260812T191143Z/
+!analysis/latency-20260812T191143Z/latency.json
+!analysis/latency-20260812T191323Z/
+!analysis/latency-20260812T191323Z/latency.json
+# S4 + S5 sessions (2026-09-01, Phase 2 Follow-up 3) — added by
+# the experiment pack. Two ElevenLabs runs (S4 T18:57, S5 T19:10)
+# and two OpenAI runs (S4 T19:07, S5 T20:10 — the T19:10 attempt
+# collided with the ElevenLabs run-dir and was rerun at T20:10).
+!analysis/latency-20260901T185715Z/
+!analysis/latency-20260901T185715Z/latency.json
+!analysis/latency-20260901T190715Z/
+!analysis/latency-20260901T190715Z/latency.json
+!analysis/latency-20260901T191000Z/
+!analysis/latency-20260901T191000Z/latency.json
+!analysis/latency-20260901T201051Z/
+!analysis/latency-20260901T201051Z/latency.json
 !analysis/variance-20260809T205319Z/
 !analysis/variance-20260809T205319Z/*.json
 # Ping-baseline log for F-11's S3 latency session — small text file,
@@ -74,6 +97,12 @@ analysis/*
 # in EXPERIMENTS_2026-09-01.md and analysis/round3-vs-round2-comparison.md.
 !analysis/campaign-20260831T175358Z/
 !analysis/campaign-20260831T175358Z/*.json
+
+# T6 campaign — Speechify voice-swap test (20 items × 2 use cases with
+# alt voice edmund_32). Load-bearing for F-7's "voice-choice ≥3σ
+# survives same-gender matching on Speechify narration" observation.
+!analysis/campaign-20260811T180824Z/
+!analysis/campaign-20260811T180824Z/*.json
 
 # Round 2 vs Round 3 comparison memo — text file, small, cites the
 # committed R2 + R3 analyzer JSONs.
@@ -150,3 +179,10 @@ documentation/judgment_tests/
 # regenerable via `veval report`. The score JSON (in analysis/) IS
 # committed as the receipt; the rendered memos + charts are not.
 site/
+
+# Round-30 review defect register — a personal working checklist (40 items,
+# what's wrong / plain-language / the fix), not part of the published research
+# output. Ticked-off progress lives in browser localStorage, so the file itself
+# is a static snapshot; the live copy with cross-device sync is the claude.ai
+# artifact. Regenerable, personal, and would only churn the diff — not versioned.
+DEFECT_REGISTER_R30.html

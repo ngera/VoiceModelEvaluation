@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voice AI evaluation — 10-minute brief</title>
+<meta name="description" content="An independent evaluation of 8 commercial voice AI vendors. One page: the 3-question decision framework, the cross-pipeline axis split, the cost table, and what was retracted.">
+<style>
+:root{
+  --bg:#faf9f6;--fg:#1c1c1e;--muted:#5c5c65;--rule:#d8d5cc;
+  --card:#fff;--accent:#0a3d62;--warn:#9c3d00;--good:#0f6a3f;
+  --code:#f0ede4;--mono:'SF Mono',Consolas,'Liberation Mono',monospace;
+}
+*{box-sizing:border-box}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--fg);background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  line-height:1.55;
+}
+main{max-width:820px;margin:0 auto;padding:2rem 1.5rem 5rem}
+header{border-bottom:1px solid var(--rule);padding-bottom:1.5rem;margin-bottom:2rem}
+h1{font-size:1.9rem;margin:0 0 .3rem;line-height:1.15;letter-spacing:-.01em}
+h2{font-size:1.35rem;margin:2.5rem 0 .6rem;letter-spacing:-.005em;border-bottom:1px solid var(--rule);padding-bottom:.4rem}
+h3{font-size:1.05rem;margin:1.5rem 0 .4rem;color:var(--accent)}
+.tagline{color:var(--muted);font-size:1.05rem;margin:.2rem 0 0}
+.meta{color:var(--muted);font-size:.85rem;margin-top:.8rem}
+.meta a{color:var(--muted);text-decoration:underline}
+a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+a:hover{text-decoration-thickness:2px}
+p{margin:.7rem 0}
+ul,ol{padding-left:1.4rem}
+li{margin:.3rem 0}
+code{background:var(--code);padding:.1rem .35rem;border-radius:3px;font-family:var(--mono);font-size:.9em}
+.pill{display:inline-block;background:var(--code);color:var(--fg);padding:.15rem .55rem;border-radius:12px;font-size:.78rem;margin-right:.35rem;vertical-align:middle}
+.callout{background:#fff8ec;border-left:4px solid var(--warn);padding:.9rem 1.1rem;border-radius:3px;margin:1rem 0}
+.callout.good{background:#eef7f0;border-left-color:var(--good)}
+.callout.neutral{background:#fff;border-left-color:var(--accent);border:1px solid var(--rule)}
+.callout p:first-child{margin-top:0}
+.callout p:last-child{margin-bottom:0}
+.qbox{background:var(--card);border:1px solid var(--rule);padding:1rem 1.2rem;border-radius:6px;margin:.9rem 0}
+.qbox h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem}
+th,td{padding:.5rem .55rem;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+th{background:var(--code);font-weight:600;font-size:.85rem}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.88em}
+tr.hi{background:#fbf6d9}
+.small{font-size:.85rem;color:var(--muted)}
+.chart{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:1rem;margin:1rem 0;overflow-x:auto}
+.chart svg{display:block;max-width:100%;height:auto}
+.legend{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:.85rem;margin-top:.6rem}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.legend i{width:14px;height:14px;border-radius:2px;display:inline-block}
+.footnote{font-size:.83rem;color:var(--muted);margin-top:.4rem}
+.tabbtn{display:inline-block;background:var(--code);border:1px solid var(--rule);padding:.3rem .7rem;border-radius:3px;margin-right:.4rem;cursor:pointer;font-size:.85rem}
+.hero{background:#fff;border:1px solid var(--rule);padding:1.2rem 1.4rem;border-radius:6px;margin-top:1rem}
+.hero p{margin:.4rem 0}
+.rankgrid{display:grid;grid-template-columns:9rem repeat(6,1fr);gap:.15rem;font-size:.75rem;margin-top:.6rem}
+.rankgrid .cell{padding:.35rem .2rem;text-align:center;border-radius:2px;font-variant-numeric:tabular-nums}
+.rankgrid .row-lbl{text-align:right;padding:.35rem .5rem .35rem 0;font-weight:500;color:var(--fg)}
+.rankgrid .col-hdr{background:var(--code);font-weight:600;padding:.35rem .1rem;text-align:center;font-size:.7rem}
+/* rank cell colour scale — 1 = darkest, 8 = lightest, on a hue for pipeline family */
+.pq1{background:#1e2a56;color:#fff}.pq2{background:#2f4180;color:#fff}.pq3{background:#4b5fa1}
+.pq4{background:#7482b6}.pq5{background:#9ba5c8}.pq6{background:#c2c9dc}.pq7{background:#e2e5ee}.pq8{background:#f0f2f5}
+.ce1{background:#7a2c0f;color:#fff}.ce2{background:#9c4020;color:#fff}.ce3{background:#b95a3a}
+.ce4{background:#d17e5f}.ce5{background:#e0a086}.ce6{background:#ecc1ae}.ce7{background:#f4dccd}.ce8{background:#faedde}
+.dn1{background:#0f3d1f;color:#fff}.dn2{background:#245c37;color:#fff}.dn3{background:#3d7a52}
+.dn4{background:#5f9673}.dn5{background:#87ae95}.dn6{background:#b0c6b8}.dn7{background:#d4dfd8}.dn8{background:#eaefeb}
+.footer{margin-top:3.5rem;padding-top:1.4rem;border-top:1px solid var(--rule);color:var(--muted);font-size:.85rem}
+.footer a{color:var(--muted)}
+.appendix{margin-top:2rem;border:1px dashed var(--rule);padding:1rem 1.2rem;border-radius:6px;background:#fff}
+.appendix summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.appendix ul{margin:.6rem 0}
+@media (max-width:520px){
+  .rankgrid{grid-template-columns:7rem repeat(6,1fr);font-size:.65rem}
+  h1{font-size:1.55rem}
+  main{padding:1.2rem 1rem 3rem}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+<h1>Voice AI evaluation — the 10-minute brief</h1>
+<p class="tagline">Eight commercial TTS vendors, two production use cases,
+two independent quality pipelines, one pre-registered spec. What survives
+scrutiny and what doesn't.</p>
+<p class="meta">
+  Neeraj Gera · findings as of 2026-09-01 · page revised through
+  2026-09-04 alongside the numbered documents (see the retractions
+  box below for the audit trail) · residential Windows 11
+  measurement environment ·
+  <a href="../DISCLAIMER.md">full scope</a> ·
+  <a href="../README.md">longer path (8 numbered docs + EXPERIMENTS)</a>
+</p>
+</header>
+
+<div class="hero">
+  <p><strong>The one thing to know:</strong> two peer-reviewed quality
+  raters, applied to the same 8 vendors, <strong>rank them
+  differently</strong>. Meta's Audiobox and Microsoft's DNSMOS have
+  cross-pipeline Spearman ρ of <strong>−0.13 conversational,
+  −0.27 narration</strong>. That's not a bug — they measure
+  different constructs, and both are load-bearing depending on your
+  use case. See <a href="#axis-split">the axis split</a> below.</p>
+  <p class="small">Every number on this page is derived from a
+  committed JSON in
+  <a href="../analysis/campaign-20260809T204608Z/"><code>analysis/</code></a>.
+  Every retraction is in
+  <a href="../CORRECTIONS.md">CORRECTIONS.md</a>.</p>
+</div>
+
+<h2 id="framework">Three questions, in order</h2>
+<p>Not "which vendor is best" — that question has no answer on this
+data. Instead:</p>
+
+<div class="qbox">
+<h3>Q1 · Does anything structurally rule out a vendor?</h3>
+<ul>
+  <li><strong>Long-form narration (&gt;15 s per turn)?</strong>
+  <span class="pill">Orpheus out</span> — the hosted Replicate
+  endpoint <strong>caps output at exactly 14.59 s</strong> (std
+  dev 0.000 across 8 long-narration items in T8; 27 of 75
+  narration items in the full corpus were truncated, 48 came back
+  complete because they fit under the cap).
+  (<a href="../analysis/verification/T8_orpheus_cost.md">T8</a>.)
+  Whether the cap is model-intrinsic or a deployment-config
+  parameter is untested; either way, the hosted endpoint truncates
+  long items.</li>
+  <li><strong>Any downstream audio pipeline (MOS check, ASR,
+  resample)?</strong> <span class="pill">Cartesia needs a
+  peak-limiter step first</span> — 49% of Cartesia
+  <strong>narration</strong> files are refused by Microsoft's
+  DNSMOS for peak-out-of-range (37/75; the 46% figure pools both
+  use cases)
+  (<a href="../documentation/06_KEY_FINDINGS.md#f-4">F-4</a> +
+  F-4a's independent-pipeline corroboration).</li>
+  <li><strong>Sub-500 ms p90 required for real-time voice?</strong>
+  <span class="pill">Unresolved on our data</span> — no measured
+  vendor cleared the pre-registered <code>ttfa_p90_ms &lt; 400</code>
+  gate in any session. Best measurement across all 6 sessions: ElevenLabs Flash 461 ms p90 (S4).
+  The pre-registered gate-robustness sweep on that gate
+  (<code>robustness_points: [300, 400, 500, 600]</code>) shows
+  discrimination starts at 500 ms (ElevenLabs alone) and reaches
+  two vendors at 600 ms (+Cartesia 529 ms) — the gate is not
+  discriminating at 400 ms, but the pre-registered sweep names
+  where it would (see
+  <a href="../documentation/04_RESULTS.md#gate-robustness-sweep">04 § Gate-robustness sweep</a>).
+  Absolute latency swings 50-90% session-to-session across 6
+  sessions on 4 days
+  (<a href="../documentation/06_KEY_FINDINGS.md#f-11">F-11</a>).
+  Measure from your own environment, not our numbers, not vendor
+  marketing.</li>
+  <li><strong>Byte-identical caching?</strong> <span class="pill">All
+  8 are out</span> — no vendor produces the same bytes twice; every
+  request is a fresh generation
+  (<a href="../documentation/06_KEY_FINDINGS.md#f-1">F-1</a>).</li>
+</ul>
+</div>
+
+<div class="qbox">
+<h3>Q2 · Which "quality" matches your users?</h3>
+<p>This is where the two-pipeline design pays off. The two
+peer-reviewed MOS raters we used <em>agree</em> on some things and
+<em>disagree strongly</em> on others — and the disagreement is
+structural, not noise. See <a href="#axis-split">chart below</a>.</p>
+<ul>
+  <li><strong>Warm / engaging</strong> (audiobook, storytelling,
+  brand voiceover) → <strong>Speechify</strong> wins Audiobox CE
+  significantly on both use cases (7.3σ narration lead over
+  ElevenLabs' #2 CE; not a tie). At $0.10/1K words above 100K/mo
+  it's also 55% cheaper per word than ElevenLabs' $0.22 for a
+  significantly-better-CE score.</li>
+  <li><strong>Clean / pristine</strong> (IVR, accessibility,
+  transactional voice) → <strong>OpenAI</strong> ties for #1 on
+  DNSMOS OVRL on both use cases. At $0.075/1K words flat OpenAI is
+  <strong>50–66% cheaper</strong> than the tied alternatives (34%
+  vs ElevenLabs $0.22 = 66% saving; 50% vs Deepgram $0.15 = 50%
+  saving).</li>
+  <li><strong>Fast response</strong> (support-agent, conversational
+  turns) → <strong>ElevenLabs Flash</strong> is consistently
+  fastest across all 6 latency sessions (rank portable), but no
+  vendor clears the 400 ms p90 bar.</li>
+</ul>
+<p class="footnote">The Audiobox <em>PQ</em> axis correlates
+<strong>+0.24 mean</strong> with DNSMOS (agree on cleanliness); the
+Audiobox <em>CE</em> axis correlates <strong>−0.506 mean</strong>
+with DNSMOS (anti-correlate — measures warmth). Any single quality
+score is silently choosing which construct wins.</p>
+</div>
+
+<div class="qbox">
+<h3>Q3 · Is #1 on quality worth the cost premium over #2?</h3>
+<p>Read from the <a href="#cost">cost table</a> below.
+Most-cited tie-break: <strong>OpenAI vs ElevenLabs on DNSMOS
+conversational</strong>. Δ = 0.022, 1.3σ (tied at α=0.05). OpenAI
+is <strong>66% cheaper</strong> for tied-on-cleanliness quality.</p>
+<p>Between quality tiers within the same construct, σ measures
+precision of the estimate, not perceptual magnitude. Speechify's
+3.7σ Audiobox lead is a Δ of 0.14 on a 0–10 scale (1.4% of scale).
+Whether that gap is <em>audible</em> to a listener is untested — no
+human perceptual panel was run
+(<a href="../documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2">D-H</a>).</p>
+</div>
+
+<h2 id="axis-split">The axis split — one chart, F-8</h2>
+<p>Per-vendor ranks across the 6 quality signals (2 from Audiobox,
+4 from DNSMOS). Darker = better rank. The mismatch between the two
+darker columns on the left (Audiobox) and the darker columns on the
+right (DNSMOS) is the <strong>construct split</strong>: they
+measure different things.</p>
+
+<div class="chart">
+<div style="font-weight:600;font-size:.9rem;margin-bottom:.4rem">Narration use case — per-vendor rank per signal (1 = best, 8 = worst)</div>
+<div class="rankgrid" role="table" aria-label="Per-vendor ranks per quality signal, narration">
+  <div></div>
+  <div class="col-hdr">AB.PQ</div>
+  <div class="col-hdr">AB.CE</div>
+  <div class="col-hdr">DN.p808</div>
+  <div class="col-hdr">DN.ovrl</div>
+  <div class="col-hdr">DN.sig</div>
+  <div class="col-hdr">DN.bak</div>
+
+  <div class="row-lbl">Speechify</div>
+  <div class="cell pq1">1</div><div class="cell ce1">1</div><div class="cell dn6">6</div><div class="cell dn4">4</div><div class="cell dn5">5</div><div class="cell dn3">3</div>
+
+  <div class="row-lbl">OpenAI</div>
+  <div class="cell pq8">8</div><div class="cell ce8">8</div><div class="cell dn8">8</div><div class="cell dn1">1</div><div class="cell dn1">1</div><div class="cell dn2">2</div>
+
+  <div class="row-lbl">Orpheus</div>
+  <div class="cell pq2">2</div><div class="cell ce7">7</div><div class="cell dn4">4</div><div class="cell dn2">2</div><div class="cell dn4">4</div><div class="cell dn1">1</div>
+
+  <div class="row-lbl">Cartesia</div>
+  <div class="cell pq3">3</div><div class="cell ce5">5</div><div class="cell dn1">1</div><div class="cell dn8">8</div><div class="cell dn8">8</div><div class="cell dn8">8</div>
+
+  <div class="row-lbl">Google</div>
+  <div class="cell pq4">4</div><div class="cell ce3">3</div><div class="cell dn7">7</div><div class="cell dn6">6</div><div class="cell dn7">7</div><div class="cell dn5">5</div>
+
+  <div class="row-lbl">ElevenLabs</div>
+  <div class="cell pq5">5</div><div class="cell ce2">2</div><div class="cell dn5">5</div><div class="cell dn7">7</div><div class="cell dn6">6</div><div class="cell dn7">7</div>
+
+  <div class="row-lbl">Deepgram</div>
+  <div class="cell pq6">6</div><div class="cell ce4">4</div><div class="cell dn3">3</div><div class="cell dn3">3</div><div class="cell dn2">2</div><div class="cell dn4">4</div>
+
+  <div class="row-lbl">Fish</div>
+  <div class="cell pq7">7</div><div class="cell ce6">6</div><div class="cell dn2">2</div><div class="cell dn5">5</div><div class="cell dn3">3</div><div class="cell dn6">6</div>
+</div>
+<div class="legend">
+  <span><i style="background:#1e2a56"></i>Audiobox PQ (Meta — technical cleanliness)</span>
+  <span><i style="background:#7a2c0f"></i>Audiobox CE (Meta — warm/enjoyment)</span>
+  <span><i style="background:#0f3d1f"></i>DNSMOS (Microsoft — the four columns pool P.808 single-model listening quality + the P.835 triad ovrl/sig/bak; the rank-inversion bullet below splits them)</span>
+</div>
+<div class="footnote" style="margin-top:.6rem">
+Source: <a href="../analysis/campaign-20260809T204608Z/cross_metric.json"><code>analysis/campaign-20260809T204608Z/cross_metric.json</code></a>
+· narration use case · 8 vendors, 75 items each · cross-pipeline
+mean Spearman ρ = <strong>−0.27</strong> on this table (small
+sample; point estimate directional but not significant at n=8).
+Cartesia's DNSMOS row is over its 51% survivor subset (38 valid
+of 75) — 37 files refused for peak-out-of-range, see F-4a. Numbers
+match the R2 chart source above; the 04 § footnote ² reports the
+same 37/75 refused (49% refusal rate) and 38 surviving items.
+</div>
+</div>
+
+<div class="callout">
+<p><strong>The rank inversion in three lines:</strong></p>
+<ul>
+  <li><strong>OpenAI narration</strong>: last (#8) on both Audiobox
+  axes, first (#1) on 2 of 4 DNSMOS axes. Technically pristine, but
+  Audiobox reads it as unengaging.</li>
+  <li><strong>Speechify narration</strong>: first (#1) on both
+  Audiobox axes, mid-pack on DNSMOS. Warm and engaging, DNSMOS
+  doesn't reward that.</li>
+  <li><strong>Cartesia narration</strong>: high on DNSMOS.p808
+  (P.808 single-model listening-quality MOS), last (#8) on the
+  other 3 DNSMOS axes (P.835 triad). The P.835 axes see the
+  clipping problem; p808 doesn't.</li>
+</ul>
+<p>An aggregate "quality score" hides this. That's why this project
+reports six signals, not one.</p>
+</div>
+
+<h2 id="cost">Cost table — with the caveats inline</h2>
+<p>Per-vendor cost at three volume tiers (10K / 100K / 1M words per
+month), from the pre-registered
+<a href="../configs/pricing.yaml"><code>pricing.yaml</code></a>.
+<strong>Read the notes column</strong> — two of these prices are
+misleading without the story behind them.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Vendor</th>
+  <th class="num">$/1K words<br>@ 10K/mo</th>
+  <th class="num">$/1K words<br>@ 100K/mo</th>
+  <th class="num">$/1K words<br>@ 1M/mo</th>
+  <th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>OpenAI</td><td class="num">$0.075</td><td class="num">$0.075</td><td class="num">$0.075</td>
+<td>Pay-per-use flat rate. Cheapest at any volume where the
+    <em>construct</em> DNSMOS rewards is what you want.</td></tr>
+<tr><td>Fish</td><td class="num">$0.075</td><td class="num">$0.075</td><td class="num">$0.075</td>
+<td>Pay-per-use flat rate. But audible <strong>−39.7 dBFS background
+    hiss</strong> vs the pack's −52 to −57 (N2). Alt-voice paired-z
+    on AB.PQ = +5.1σ (Fish alt is a <em>voice-purpose</em> swap
+    — opaque UUIDs, narration-tagged → conversational-tagged — not
+    a gender swap; see F-7 for the same-gender within-vendor
+    receipt from T6 narration).</td></tr>
+<tr class="hi"><td>Speechify</td>
+<td class="num" style="color:var(--warn)">$1.000 ⚠</td>
+<td class="num" style="color:var(--good)">$0.100 ✓</td>
+<td class="num" style="color:var(--good)">$0.040 ✓✓</td>
+<td>Starter subscription is <strong>flat $10/mo for 100K
+    words</strong>. Cheap warm-quality winner above 100K/mo. Below
+    that, the $10 fixed cost dominates — at 10K/mo Speechify is the
+    second-most-expensive vendor. Match the pricing model to your
+    actual volume, not to the marketing number.</td></tr>
+<tr><td>Deepgram</td><td class="num">$0.150</td><td class="num">$0.150</td><td class="num">$0.150</td>
+<td>Pay-per-use flat rate. Largest observed alt-voice AB.PQ shift
+    of the 4 vendors tested (paired-z −13.5σ on orion→luna).</td></tr>
+<tr><td>Google</td><td class="num">$0.150</td><td class="num">$0.150</td><td class="num">$0.150</td>
+<td>Pay-per-use flat rate. Billing counts spaces + SSML tags.
+    Audible <strong>−34 dBFS background hiss</strong> — the noisiest
+    on the roster. Alt-voice paired-z −7.4σ on Charon→Kore
+    (cross-gender). DNSMOS refused 3 of 8 Google pinned long
+    items (peak-out-of-range from clipping) on the F-7 alt-voice
+    comparison — AB.PQ is unaffected at n=8, DN.ovrl reported on
+    the 5-item intersection paired subset in EXPERIMENTS
+    Follow-up 4.</td></tr>
+<tr><td>Cartesia</td><td class="num">$0.500</td><td class="num">$0.160</td><td class="num">$0.196</td>
+<td>Pro $5/mo + per-1M-chars overage. <strong>Adds a
+    peak-limiter step downstream</strong> if you plan to run MOS,
+    ASR, or resampling on the output (see Q1).</td></tr>
+<tr class="hi"><td>Orpheus</td>
+<td class="num" style="color:var(--warn)">$0.030 ⚠</td>
+<td class="num" style="color:var(--warn)">$0.030 ⚠</td>
+<td class="num" style="color:var(--warn)">$0.030 ⚠</td>
+<td><strong>Nominal $0.030 is a `cost_model.py` artefact</strong>
+    under a 100-word-per-call default. T8's per-call measurement
+    (~35 words per call, from the 14.59-s output cap) gives an
+    honest rate of <strong>~$0.067–0.088/1K words</strong> — peer-
+    priced to OpenAI, not cheap. See
+    <a href="../analysis/verification/T8_orpheus_cost.md">T8</a> and
+    <a href="../CORRECTIONS.md">CORRECTIONS row #5</a>.</td></tr>
+<tr><td>ElevenLabs</td><td class="num">$2.200</td><td class="num">$0.220</td><td class="num">$0.244</td>
+<td>Creator subscription $22/mo. Fastest measured TTFA. No
+    alt-voice <em>quality</em> comparison — Phase 2 Experiment B
+    tested 5 ElevenLabs voices (charlotte, josh, rachel, antoni,
+    bella) on L03 for the loudness-fade check (F-6), not for
+    AB.PQ / DN.ovrl rankings against the pinned voice.</td></tr>
+</tbody>
+</table>
+
+<div class="callout neutral">
+<p><strong>The cost tie-break worth knowing.</strong>
+<strong>OpenAI vs ElevenLabs on DNSMOS conversational</strong> is
+tied at α=0.05 (Δ = 0.022, 1.3σ). OpenAI at $0.075 vs ElevenLabs at
+$0.22 = <strong>66% cheaper for tied-on-cleanliness quality</strong>.
+If DNSMOS cleanliness is your target construct, this is a clean
+saving. If Audiobox warmth is the construct, the trade is different
+(see the axis split above).</p>
+</div>
+
+<h2 id="wrong">What I got wrong</h2>
+<p>A portfolio project that reads as "look at all the confirmations"
+demonstrates only that the author is good at post-hoc
+rationalisation. Every published claim that turned out to be
+falsified by the same JSONs it was derived from is logged as a
+retraction in <a href="../CORRECTIONS.md">CORRECTIONS.md</a>.
+Each row is dated, links to the artefact that falsified it, and
+either names the retracting commit SHA or is marked "(this
+round)" — which currently covers a backlog of rows staged across
+multiple review rounds not yet committed to git. Committing
+resolves the "(this round)" markers to the SHA that lands them.
+Row count grows with review rounds; see the register itself for
+the current total.</p>
+
+<div class="callout">
+<p><strong>Representative retractions</strong> (full list in
+<a href="../CORRECTIONS.md">CORRECTIONS.md</a>):</p>
+<ul>
+  <li><strong>#1</strong> "Deepgram TTFA ~180 ms p50 / ~230 ms
+  p90" — origin never traced; every recorded measurement is
+  &gt;500 ms.</li>
+  <li><strong>#5</strong> "Orpheus $0.030/1K words is cheapest
+  overall" — the $0.030 is a cost-model default under an assumption
+  T8 had already falsified. Honest rate is ~$0.07–0.09.</li>
+  <li><strong>#9 + #10</strong> Audiobox axis labels reversed —
+  Audiobox <em>PQ</em> is the cleanliness axis (agrees with DNSMOS
+  at ρ=+0.238); Audiobox <em>CE</em> is the warm-enjoyment axis
+  (anti-correlates with DNSMOS at ρ=−0.506). The falsifying
+  correlation matrix was committed in the repo the whole time.</li>
+  <li><strong>#11</strong> "Speechify @10K/mo = $0.100/1K words" —
+  transcription error. Actual is $1.00/1K (10× slip that moved
+  Speechify from cheapest to second-most-expensive at that tier).</li>
+  <li><strong>#12</strong> "Project spend ~$56" — a
+  pre-project planning estimate published as if metered. Actual
+  metered spend across 8 vendor accounts: ~$16.15.</li>
+  <li><strong>#22</strong> (Phase 2) "F-6 is an ElevenLabs L03
+  quirk" — Phase 2 Follow-up 1 generalised it to a cross-vendor
+  phenomenon (ElevenLabs 25%, Deepgram 12%, Orpheus 12%, aggregate
+  6.2%). Scope changed; magnitude didn't.</li>
+  <li><strong>#23</strong> (Phase 2) "F-7's voice-swap check
+  transfers" — Phase 2 Follow-up 4 extended the check from 1
+  vendor to 5, but see #25 below.</li>
+  <li><strong>#25</strong> The Phase 2 "HOLDS / SHIFTS" alt-voice
+  verdict column used two rules — rank-preservation for Speechify,
+  fixed |Δ|&lt;0.15 for the other four — and neither is the
+  project's own paired-z test. Under paired-z on n=8 items, every
+  alt voice shifts significantly (3.3σ to 13.5σ on AB.PQ).</li>
+  <li><strong>#68</strong> (R15) The follow-up companion claim
+  that voice-choice could not be separated from gender on this
+  design (all four Phase 2 pairs were cross-gender) was itself
+  falsified once T6's Speechify narration leg was verified as
+  <em>same-gender</em> (<code>wyatt_32</code> male →
+  <code>edmund_32</code> male, per the T6 verdict) and produces a
+  <strong>+4.02σ AB.PQ shift</strong> on 20 matched items. So
+  within-vendor voice-choice matters at ≥3σ <em>even under
+  same-gender swap</em>; the four Follow-up 4 cross-gender pairs
+  are the additional 4-vendor sweep, not the only voice-choice
+  signal. F-7's heading was rewritten to reflect this.</li>
+  <li>Selected additional rows since #25 — <strong>#26</strong>
+  R2 was a cache-only replay (R3 is the fresh reference);
+  <strong>#37</strong> the tautological "cost 100% matched pricing.yaml"
+  claim removed; <strong>#50</strong> F-12 relabelled from a
+  construct-cluster claim (which contradicted F-8) to a
+  scorer-architecture split; <strong>#101</strong> F-12 paired-z
+  range corrected from 3.3-7.3σ to 2.26-7.32σ;
+  <strong>#110</strong> the gate-robustness sweep disclosed as
+  the fourth pre-registered scoring component (added to
+  <a href="../documentation/04_RESULTS.md#gate-robustness-sweep">04 § Gate-robustness sweep</a>);
+  <strong>#126</strong> EXPERIMENTS' Google DN.ovrl alt-voice
+  row corrected from an unpaired-subset difference to a paired
+  5-item intersection Δ + inverted attribution ("pinned lost 3,
+  alt lost 1"). Full register in
+  <a href="../CORRECTIONS.md">CORRECTIONS.md</a>.</li>
+</ul>
+<p class="footnote" style="margin-top:.6rem">
+<strong>How the retractions were found:</strong> every published
+number was recomputed from committed JSON, then the recomputed
+number was diffed against the sentence in the report. Six
+disagreed in the <em>original</em> audit that produced this
+mechanism story (the "6-of-14 headline claims" pass documented in
+<a href="../documentation/05_CASE_STUDY.md">05_CASE_STUDY.md § What
+the audit found</a>) — the retraction register has grown well past
+that as later review rounds recomputed further claims from the same
+JSONs (row count in the register itself). The <em>measurement
+layer</em> reproduced perfectly across every pass; the
+<em>reporting layer</em> is what accumulated corrections.</p>
+</div>
+
+<div class="callout good">
+<p><strong>Why this belongs on the first page.</strong> A vendor
+evaluation that hides its retractions is asking the reader to trust
+the surviving claims on faith. Making the retraction register the
+first-page artefact reverses the default: the surviving claims are
+trustworthy <em>because</em> the register catalogues every claim
+that didn't survive.</p>
+</div>
+
+<details class="appendix">
+<summary>Where to go for the longer reads</summary>
+<ul>
+  <li><a href="../documentation/04_RESULTS.md"><strong>04_RESULTS.md</strong></a>
+  — full per-vendor table, rankings, cost calculus, decision
+  framework in detail</li>
+  <li><a href="../documentation/05_CASE_STUDY.md"><strong>05_CASE_STUDY.md</strong></a>
+  — long-form portfolio narrative on how the findings were
+  extracted, including the "what I got wrong" audit</li>
+  <li><a href="../documentation/06_KEY_FINDINGS.md"><strong>06_KEY_FINDINGS.md</strong></a>
+  — the 11 published findings (F-1..F-9 + F-11 + F-12; F-10 slot reserved for BT panel) with σ ratios and JSON pointers</li>
+  <li><a href="../documentation/08_KEY_FINDINGS_PLAIN.md"><strong>08_KEY_FINDINGS_PLAIN.md</strong></a>
+  — the same findings, rewritten for a non-technical reader</li>
+  <li><a href="../documentation/02_METHODOLOGY.md"><strong>02_METHODOLOGY.md</strong></a>
+  — why every methodology choice was made</li>
+  <li><a href="../documentation/07_GAPS_AND_FUTURE_WORK.md"><strong>07_GAPS_AND_FUTURE_WORK.md</strong></a>
+  — what wasn't done and why; v2 workstream list</li>
+  <li><a href="../documentation/EXPERIMENTS_2026-09-01.md"><strong>EXPERIMENTS_2026-09-01.md</strong></a>
+  — Phase 2 experiment pack (5 experiments + 4 follow-ups) that
+  generalised F-6, extended F-7, and confirmed S3's latency spike
+  was transient</li>
+  <li><a href="../CORRECTIONS.md"><strong>CORRECTIONS.md</strong></a>
+  — every retracted claim, dated, with artefact + commit</li>
+  <li><a href="../DEVIATIONS.md"><strong>DEVIATIONS.md</strong></a>
+  — 11 pre-registered amendments made before results existed</li>
+  <li><a href="../README.md"><strong>README.md</strong></a> — repo
+  entry point, reproduce-the-work instructions</li>
+</ul>
+</details>
+
+<div class="footer">
+<p>Neeraj Gera ·
+<a href="mailto:neeraj.gera@outlook.com">neeraj.gera@outlook.com</a>
+· All numbers reproducible from
+<a href="../analysis/campaign-20260809T204608Z/"><code>analysis/</code></a>
+JSONs. Full scope + no-affiliation disclosure in
+<a href="../DISCLAIMER.md">DISCLAIMER.md</a>.</p>
+<p>This page is self-contained HTML with inline CSS. No external
+CDN calls, no JavaScript, no build step. Serve it, print it, or
+open <code>file://</code> — same result.</p>
+</div>
+
+</main>
+</body>
+</html>

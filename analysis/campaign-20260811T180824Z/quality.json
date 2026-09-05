@@ -1,0 +1,867 @@
+{
+  "run_id": "campaign-20260811T180824Z",
+  "ran_ttsds": false,
+  "ran_audiobox": true,
+  "ran_dnsmos": true,
+  "audiobox_axes_reported": [
+    "production_quality",
+    "content_enjoyment"
+  ],
+  "dnsmos_axes_reported": [
+    "p808_mos",
+    "ovrl_mos",
+    "sig_mos",
+    "bak_mos"
+  ],
+  "ttsds_by_provider": [],
+  "audiobox_by_provider": [
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "n_items": 20,
+      "n_valid": 20,
+      "audiobox_means": {
+        "content_enjoyment": 6.478272914886475,
+        "production_quality": 8.235702991485596
+      }
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "n_items": 20,
+      "n_valid": 20,
+      "audiobox_means": {
+        "content_enjoyment": 6.566323304176331,
+        "production_quality": 8.228246784210205
+      }
+    }
+  ],
+  "dnsmos_by_provider": [
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "n_items": 20,
+      "n_valid": 20,
+      "dnsmos_means": {
+        "bak_mos": 4.173924379204315,
+        "ovrl_mos": 3.414452226709797,
+        "p808_mos": 4.080090129375458,
+        "sig_mos": 3.6199694491326952
+      }
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "n_items": 20,
+      "n_valid": 20,
+      "dnsmos_means": {
+        "bak_mos": 4.1775936083752345,
+        "ovrl_mos": 3.4210421010405105,
+        "p808_mos": 4.089866650104523,
+        "sig_mos": 3.6270757475161437
+      }
+    }
+  ],
+  "audiobox_files": [
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.611608982086182,
+        "production_quality": 8.275108337402344
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4655586670944194,
+        "sig_mos": 3.657005112458298,
+        "bak_mos": 4.202062027438125,
+        "p808_mos": 4.0758771896362305
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.603854656219482,
+        "production_quality": 8.262229919433594
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.3879828126784517,
+        "sig_mos": 3.5853629216837373,
+        "bak_mos": 4.174844592132206,
+        "p808_mos": 4.141313552856445
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.5998854637146,
+        "production_quality": 8.261553764343262
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4199626999407564,
+        "sig_mos": 3.631229672621489,
+        "bak_mos": 4.160097996014272,
+        "p808_mos": 4.1702141761779785
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.588590145111084,
+        "production_quality": 8.269073486328125
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.414472103418676,
+        "sig_mos": 3.6218727941486044,
+        "bak_mos": 4.170735108758859,
+        "p808_mos": 4.156337738037109
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\S01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.175614356994629,
+        "production_quality": 8.053936004638672
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.3014082980087927,
+        "sig_mos": 3.5256556866027204,
+        "bak_mos": 4.134353471272863,
+        "p808_mos": 3.73742413520813
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "S02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\S02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.3153076171875,
+        "production_quality": 8.27983283996582
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4331441225859702,
+        "sig_mos": 3.6204503189944264,
+        "bak_mos": 4.230941217770551,
+        "p808_mos": 3.80187726020813
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "S03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\S03.wav",
+      "audiobox": {
+        "content_enjoyment": 5.69871711730957,
+        "production_quality": 7.851729393005371
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.177748359916765,
+        "sig_mos": 3.435889827635453,
+        "bak_mos": 4.081836853503442,
+        "p808_mos": 3.842371940612793
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "S04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\S04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.302917957305908,
+        "production_quality": 8.42444133758545
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2385110789251272,
+        "sig_mos": 3.479048465832768,
+        "bak_mos": 4.11291805885933,
+        "p808_mos": 3.9582815170288086
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "M01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\M01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.62983512878418,
+        "production_quality": 8.232507705688477
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.501667301688906,
+        "sig_mos": 3.704228025602675,
+        "bak_mos": 4.1937746124365,
+        "p808_mos": 4.365741729736328
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "M02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\M02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.524374008178711,
+        "production_quality": 8.233424186706543
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.525665000223639,
+        "sig_mos": 3.6999233026579654,
+        "bak_mos": 4.206783684391234,
+        "p808_mos": 4.198001384735107
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "M03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\M03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.538846015930176,
+        "production_quality": 8.205850601196289
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.455614662174655,
+        "sig_mos": 3.659131199498562,
+        "bak_mos": 4.183769497313983,
+        "p808_mos": 4.026166915893555
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "M04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\M04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.6220221519470215,
+        "production_quality": 8.24341869354248
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4779563399051754,
+        "sig_mos": 3.6746351253330496,
+        "bak_mos": 4.197169778253782,
+        "p808_mos": 4.147874355316162
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "J01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\J01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.523268222808838,
+        "production_quality": 8.248567581176758
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2998941869086096,
+        "sig_mos": 3.5099081725113943,
+        "bak_mos": 4.130680152951788,
+        "p808_mos": 4.083576202392578
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "J02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\J02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.504847526550293,
+        "production_quality": 8.29146957397461
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.435592235393976,
+        "sig_mos": 3.6407703904449003,
+        "bak_mos": 4.191593563788277,
+        "p808_mos": 4.211129188537598
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "J03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\J03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.469261646270752,
+        "production_quality": 8.259206771850586
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4791862750681375,
+        "sig_mos": 3.6602577928445967,
+        "bak_mos": 4.202987973790711,
+        "p808_mos": 4.1700615882873535
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "J04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\J04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.643261432647705,
+        "production_quality": 8.35869312286377
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.3835195585931466,
+        "sig_mos": 3.6078709840230077,
+        "bak_mos": 4.1573336941287184,
+        "p808_mos": 3.8683712482452393
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "E01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\E01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.551671028137207,
+        "production_quality": 8.232184410095215
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5090452248814743,
+        "sig_mos": 3.6996391031049014,
+        "bak_mos": 4.186412878121381,
+        "p808_mos": 4.004941940307617
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "E02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\E02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.575145244598389,
+        "production_quality": 8.310927391052246
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4735624107417085,
+        "sig_mos": 3.6765693839591593,
+        "bak_mos": 4.1914518796334885,
+        "p808_mos": 4.211428165435791
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "E03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\E03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.695096969604492,
+        "production_quality": 8.300037384033203
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4240055089566725,
+        "sig_mos": 3.626496447529902,
+        "bak_mos": 4.17414337586723,
+        "p808_mos": 4.2494964599609375
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "conversational",
+      "item_id": "E04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\conversational\\E04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.391332626342773,
+        "production_quality": 8.119867324829102
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.484547687090884,
+        "sig_mos": 3.683444255166296,
+        "bak_mos": 4.194597167659549,
+        "p808_mos": 4.181315898895264
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\L01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.716538906097412,
+        "production_quality": 8.259942054748535
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5129784735081393,
+        "sig_mos": 3.6925620541423725,
+        "bak_mos": 4.217676137654346,
+        "p808_mos": 4.131887435913086
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\L02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.670729637145996,
+        "production_quality": 8.24434757232666
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.3957106456686006,
+        "sig_mos": 3.596175340794226,
+        "bak_mos": 4.16616187377576,
+        "p808_mos": 4.145637035369873
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\L03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.619898319244385,
+        "production_quality": 8.180319786071777
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4071976590698467,
+        "sig_mos": 3.6197016163888547,
+        "bak_mos": 4.157880449536506,
+        "p808_mos": 4.118616104125977
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "L04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\L04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.723834037780762,
+        "production_quality": 8.275630950927734
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4554927324357245,
+        "sig_mos": 3.64535168113734,
+        "bak_mos": 4.195515147048139,
+        "p808_mos": 4.144972801208496
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "S01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\S01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.440365791320801,
+        "production_quality": 8.234305381774902
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.3495728667308167,
+        "sig_mos": 3.5999557419737678,
+        "bak_mos": 4.102245561093515,
+        "p808_mos": 3.885956287384033
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "S02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\S02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.276371479034424,
+        "production_quality": 8.1746244430542
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.0803237987299332,
+        "sig_mos": 3.3075581319565006,
+        "bak_mos": 4.125310994192729,
+        "p808_mos": 3.6919312477111816
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "S03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\S03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.012115001678467,
+        "production_quality": 8.236590385437012
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.2744027559917215,
+        "sig_mos": 3.5210444221544686,
+        "bak_mos": 4.120386983844081,
+        "p808_mos": 3.9250471591949463
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "S04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\S04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.441516876220703,
+        "production_quality": 8.211949348449707
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.21390151374386,
+        "sig_mos": 3.434865522371567,
+        "bak_mos": 4.155734705364785,
+        "p808_mos": 4.036149501800537
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "M01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\M01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.628371238708496,
+        "production_quality": 8.236894607543945
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.410775471305186,
+        "sig_mos": 3.6185148532270652,
+        "bak_mos": 4.180347084440326,
+        "p808_mos": 4.286560535430908
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "M02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\M02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.6319355964660645,
+        "production_quality": 8.255480766296387
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.422902551600184,
+        "sig_mos": 3.627806812771234,
+        "bak_mos": 4.160378880147276,
+        "p808_mos": 4.200290203094482
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "M03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\M03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.689901351928711,
+        "production_quality": 8.309901237487793
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.474816706528848,
+        "sig_mos": 3.6606501297787424,
+        "bak_mos": 4.2210483469852065,
+        "p808_mos": 3.991337299346924
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "M04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\M04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.815910816192627,
+        "production_quality": 8.20108699798584
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4983733292787185,
+        "sig_mos": 3.713138061168717,
+        "bak_mos": 4.194223734167265,
+        "p808_mos": 4.12451171875
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "J01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\J01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.532527923583984,
+        "production_quality": 8.296283721923828
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4678755136895294,
+        "sig_mos": 3.6694427678535235,
+        "bak_mos": 4.194399916491777,
+        "p808_mos": 4.141317844390869
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "J02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\J02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.596970558166504,
+        "production_quality": 8.249134063720703
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4596827196247126,
+        "sig_mos": 3.677746578341707,
+        "bak_mos": 4.177060067449526,
+        "p808_mos": 4.115467071533203
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "J03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\J03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.509103775024414,
+        "production_quality": 8.259493827819824
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.415666235824462,
+        "sig_mos": 3.612751544332397,
+        "bak_mos": 4.163740557227331,
+        "p808_mos": 4.019921779632568
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "J04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\J04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.584074020385742,
+        "production_quality": 8.191465377807617
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.4966060192769164,
+        "sig_mos": 3.7051056541643037,
+        "bak_mos": 4.170136635275847,
+        "p808_mos": 4.175982475280762
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "E01",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\E01.wav",
+      "audiobox": {
+        "content_enjoyment": 6.60933256149292,
+        "production_quality": 8.142899513244629
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5422227722971495,
+        "sig_mos": 3.7476683519434024,
+        "bak_mos": 4.203289809388359,
+        "p808_mos": 4.107791900634766
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "E02",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\E02.wav",
+      "audiobox": {
+        "content_enjoyment": 6.588240146636963,
+        "production_quality": 8.132431030273438
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.501944988564896,
+        "sig_mos": 3.6871984114296628,
+        "bak_mos": 4.211496544315707,
+        "p808_mos": 4.116427898406982
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "E03",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\E03.wav",
+      "audiobox": {
+        "content_enjoyment": 6.558013439178467,
+        "production_quality": 8.225911140441895
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.5219714172424923,
+        "sig_mos": 3.7010526031036144,
+        "bak_mos": 4.220314183286789,
+        "p808_mos": 4.114681720733643
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    },
+    {
+      "provider": "speechify",
+      "use_case": "narration",
+      "item_id": "E04",
+      "draw": 0,
+      "wav_path": "runs\\campaign-20260811T180824Z\\audio\\speechify\\narration\\E04.wav",
+      "audiobox": {
+        "content_enjoyment": 6.6807146072387695,
+        "production_quality": 8.246243476867676
+      },
+      "dnsmos": {
+        "ovrl_mos": 3.518423849698476,
+        "sig_mos": 3.70322467128941,
+        "bak_mos": 4.214524555819421,
+        "p808_mos": 4.322844982147217
+      },
+      "error": null,
+      "audiobox_error": null,
+      "dnsmos_error": null
+    }
+  ]
+}

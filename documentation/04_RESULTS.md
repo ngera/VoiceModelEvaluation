@@ -4,7 +4,7 @@
 plus the verification-pack verdicts and the cost calculus a
 decision-maker needs.*
 
-> **⚠ Scope disclaimer** · Results as of 2026-08-12 on specific
+> **⚠ Scope disclaimer** · Results as of 2026-09-01 on specific
 > vendor accounts (paid public tiers), specific voice_ids, and a
 > residential Windows 11 measurement environment. No financial
 > relationship with any vendor. Not legal/business/purchasing
@@ -22,6 +22,26 @@ axis your listener use case maps to, and on which failure mode you
 can absorb. See [05_CASE_STUDY.md](05_CASE_STUDY.md) for the full
 narrative and [06_KEY_FINDINGS.md](06_KEY_FINDINGS.md) for the F-8 /
 T8 / T5+T7 headline findings.
+
+**Two-phase results structure**: **numbers below are from R2**
+(`campaign-20260809T204608Z`, 2026-08-09), which ran fully from
+the content-hash cache (see cache-only scope note below). **R3
+replication** (`campaign-20260831T175358Z`, 2026-08-31) ran fresh
+(`--no-cache`) and adjudicates the RTF gate; per-vendor
+R2-vs-R3 deltas per quality axis (12 of 14 top-1 positions
+unchanged across 6 quality axes + WER × 2 use cases; per-axis
+full-ranking Spearman ρ = 0.905–1.000) live
+in [`analysis/round3-vs-round2-comparison.md`](../analysis/round3-vs-round2-comparison.md).
+Phase 1 raised three follow-up questions — the F-6 loudness fade
+extent, the F-7 voice-swap consistency for non-Speechify vendors,
+and F-11's ≥5-session latency variance — that a targeted
+**Phase 2 experiment pack** (2026-09-01) answered. Phase 2
+additions appear as `Follow-up N` subsections in the relevant
+tables and are linked back to the full write-up at
+[EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md). No
+Phase 1 number in this document changed as a result; Phase 2
+sharpened findings and rewrote F-7's framing (see F-7 for the
+retraction), it did not overturn the R2 quality tables.
 
 ---
 
@@ -44,30 +64,40 @@ component (which is small for aggregates over 75 items — see the
 Orpheus narration + Cartesia DNSMOS narration, the story is
 different — see the footnotes on those rows.
 
-**Important scope note (cache-only campaign)**: the campaign run
-`campaign-20260809T204608Z` **ran fully from the content-hash
+**Important scope note (cache-only R2, fresh R3)**: the R2 campaign
+run `campaign-20260809T204608Z` **ran fully from the content-hash
 cache** — every audio file it "produced" was replayed from bytes
-generated at an earlier, unrecorded date. This is why:
+generated at an earlier, unrecorded date. That has two knock-on
+effects on R2 alone:
 
 - Latency's `n_fresh = 0` and `n_with_ttfa = 0` for every vendor
   in [`analysis/campaign-20260809T204608Z/latency.json`](../analysis/campaign-20260809T204608Z/latency.json)
-  (the campaign has no timing data — TTFA / RTF come from the
-  dedicated latency-mode sessions instead).
-- No `synthesis_time` is available, so **RTF was not adjudicated
-  in v1** — see the [RTF admission](#rtf-admission).
-- Combined with F-1 (nothing is byte-reproducible), **each cell
+  (R2 has no timing data — TTFA comes from the dedicated
+  latency-mode sessions instead).
+- Combined with F-1 (nothing is byte-reproducible), **each R2 cell
   is a frozen single draw whose exact synthesis date is not
   recorded in `runs/<id>/manifest.json`** — only the cache-hit
   timestamp is. The published-date-on-every-finding discipline
   in 02 is genuine at the *analysis-artefact* level but degrades
-  at the *raw-audio-generation* level for cache-hit rows.
-- The RTF gate row therefore reports "not adjudicated" rather
-  than pass/fail. All quality-axis and hygiene claims are
-  unaffected — they read audio bytes, not timestamps.
+  at the *raw-audio-generation* level for cache-hit R2 rows.
 
-A v2 pass would re-run the campaign with `--no-cache` to get
-per-item `synthesis_time` and adjudicate RTF; see
-[07_GAPS_AND_FUTURE_WORK.md § Deferred by scope](07_GAPS_AND_FUTURE_WORK.md#deferred-by-scope-not-attempted-in-v1).
+**R3 (`campaign-20260831T175358Z`) closes this gap**: it ran with
+`--no-cache`, so `n_fresh = 75` and `n_with_total = 75` for every
+(vendor, use case) pair except Orpheus conversational (74 / 74;
+one call failed silently, see [round3-vs-round2 § footnote 1](../analysis/round3-vs-round2-comparison.md#per-vendor-observed-cost-delta)
+and [CORRECTIONS row 30](../CORRECTIONS.md)). That gave the
+campaign a fresh generation timestamp per row and populated
+`long_stratum_rtf_p50` for all 16 cells — adjudicating the
+pre-registered `rtf ≥ 3.0` narration gate for the first time
+(5 pass / 3 fail; see [RTF admission](#rtf-admission)
+below). All R2 quality-axis and hygiene claims are unaffected —
+they read audio bytes, not timestamps — and R3 reproduced them
+at **12 of 14 top-1 positions unchanged** (6 quality axes + WER,
+each × 2 use cases). The two flips are DN.p808 narration
+(Cartesia → Fish) and WER conv (OpenAI → Speechify), both inside
+noise-floor bands. Cost is not a replication signal — modelled
+cost = chars × rate, and both runs used the same corpus, so cost
+matches by construction regardless of what audio came back.
 
 **Colour legend** (per column, direction-normalized):
 
@@ -403,7 +433,7 @@ question.
 **Orpheus CONV is also truncated: 25 / 75 files > 14.55 s.** The
 conversational per-vendor table above does not currently carry a
 truncation footnote — symmetric-scrutiny gap logged in
-[07 § "One voice per vendor per use case"](07_GAPS_AND_FUTURE_WORK.md#2-one-voice-per-vendor-per-use-case),
+[07 § "One voice per vendor per use case"](07_GAPS_AND_FUTURE_WORK.md#2-one-voice-per-vendor-per-use-case-partially-closed-by-phase-2),
 not fixed in v1.
 
 **Per-hygiene-stratum Orpheus AB.PQ + DNSMOS narration means**
@@ -548,20 +578,24 @@ earned, not artifact):
 
 <a name="footnote-1"></a>
 ¹ **Orpheus AB.PQ narration 8.002 is EARNED, not a truncation
-artifact.** The per-stratum recompute in
-[Footnote ¹ on the per-vendor table](#full-per-provider-results)
-shows Orpheus's AB.PQ mean by stratum is 8.008 (53 complete short
-items), 7.974 (14 lightly-truncated medium items), 8.009 (8
-catastrophically-truncated long items) — essentially identical.
-The 9.5σ is a real per-call rendering-consistency effect, not
-truncation-collapsed variance. Same story for DNSMOS OVRL narration.
+artifact.** Splitting the 75 narration items by whether Orpheus's
+14.59-s output cap truncated them (`total_seconds > 14.5` in
+`hygiene.json`): **48 complete items** produce AB.PQ mean 8.009;
+**27 truncated items** (long 8/8, medium 18/20, probe 1/15) produce
+mean 7.989 — Δ ≈ 0.02, both essentially at Orpheus's overall
+narration mean of 8.002. The 9.5σ Speechify-vs-Orpheus lead is a
+real per-call rendering-consistency effect, not a truncation-
+collapsed-variance artefact. Same story for DNSMOS OVRL narration.
 **The reason to demote Orpheus from the deployable ranking is Q1**
-(14.59-s cap disqualifies real narration), not statistics.
+(14.59-s cap disqualifies real narration), not statistics. Prior
+text-length grouping retracted; see
+[CORRECTIONS row 19](../CORRECTIONS.md).
 
 ² Cartesia is the deployable AB.PQ #2 (Speechify vs Cartesia 7.0σ);
-Deepgram is the deployable DNSMOS OVRL #2 (Speechify vs Deepgram
-1.1σ). Under the paired test the Orpheus tie call for DNSMOS OVRL
-tightens slightly but stays a tie; the AB.PQ 9.5σ tightens further.
+Deepgram is the deployable DNSMOS OVRL #2 on narration (OpenAI vs
+Deepgram 1.1σ — OpenAI is #1 on DN.ovrl in both use cases). Under
+the paired test the Orpheus tie call for DNSMOS OVRL tightens
+slightly but stays a tie; the AB.PQ 9.5σ tightens further.
 
 **Interpretation:** All four Audiobox comparisons are meaningfully
 different in both the numerical and deployable rankings — Speechify's
@@ -684,8 +718,9 @@ they do not tell you the *audible size* of the gap.
 review (D-H) did not run a multi-rater BT panel. We cannot map an
 Audiobox Δ of 0.14 or 0.20 to "X% of listeners would pick vendor
 A over B in a blinded pair." A future v2 pass would run the
-existing `veval rate build/score` pipeline (already implemented in
-`src/veval/rate/`) with 15–30 blinded raters and compare BT
+`veval rate {build,normalize,serve,fit}` pipeline (implemented in
+[`src/veval/human/`](../src/veval/human/) — `pair_builder.py`,
+`loudness.py`, `bt.py`) with 15–30 blinded raters and compare BT
 rankings to the two machine-pipeline rankings — see
 [07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md#1-no-human-perceptual-validation-n1-rater-is-not-enough).
 
@@ -723,6 +758,113 @@ See [documentation/figures/f1_rank_inversion.png](figures/f1_rank_inversion.png)
 for the vendor-by-vendor rank comparison, and
 [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8) for the full
 finding writeup + interpretation.
+
+---
+
+## Phase 2 additions
+
+Two follow-up questions from Phase 1 got answered by the Phase 2
+experiment pack (2026-09-01, ~$3.55 total metered). Full writeup
+in [EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md); the
+two tables that directly extend the primary results above:
+
+### Cross-vendor loudness-fade rate on long-form narration
+
+Every vendor's pinned narration voice, R3 primary-campaign
+L01..L08 audio, run through the drift analyzer (fade =
+Δ(t1−t3) ≥ 2 dB AND monotonically decreasing across thirds):
+
+| vendor | fade rate | mono-decr any magnitude | fading items |
+|---|---:|---:|---|
+| **ElevenLabs** | **2 / 8 (25%)** | 4 / 8 | L02 (+2.59 dB), L06 (+2.86 dB) |
+| Deepgram | 1 / 8 (12%) | 2 / 8 | L01 (+2.49 dB) |
+| Orpheus | 1 / 8 (12%) | 2 / 8 | L02 (+2.18 dB) |
+| Cartesia, Fish, Google, OpenAI, Speechify | 0 / 8 (0%) | 0-3 / 8 | – |
+| **Cross-vendor** | **4 / 64 (6.2%)** | **15 / 64 (23.4%)** | see per-vendor above |
+
+**Companion finding — the fade is stochastic across runs of the
+same voice**: ElevenLabs L03 does NOT fade on charlotte in the
+R3 campaign audio (Δ = −0.26 dB, non-monotonic) — but fades
+2.79 dB on the same voice, same text, generated same-day in
+Phase 2's Experiment B. F-6 refined from "reproducible L03
+quirk" to "run-level stochastic fade at ~5-25% rate on affected
+voices; chunking to ≤500 chars mitigates." See
+[06 § F-6](06_KEY_FINDINGS.md#f-6--monotonic-loudness-fade-on-long-form-tts-narration--a-cross-vendor-phenomenon-at-5-25-base-rate)
+and Phase 2's [Follow-up 1](EXPERIMENTS_2026-09-01.md#follow-up-1--cross-vendor-pinned-voice-fade-rate-on-the-primary-campaign).
+
+### Alt-voice AB.PQ shift on same 8 long items (paired-z, 4 vendors)
+
+Same L01..L08 narration, pinned voice from R3 vs one alt voice
+from the same vendor's library (Phase 2 Experiment E). Reported
+as the **paired difference on AB.PQ** — the project's standard
+inferential test, matched pairs on the same 8 items:
+
+| vendor | pinned R3 mean | alt E mean | mean Δ (alt − pinned) | SD_diff | SE_diff | **paired z** |
+|---|---:|---:|---:|---:|---:|---:|
+| OpenAI | 7.619 | 7.473 | **−0.146** | 0.126 | 0.044 | **−3.3σ** |
+| Fish | 7.710 | 7.869 | **+0.159** | 0.089 | 0.031 | **+5.1σ** |
+| Google | 8.032 | 7.927 | **−0.105** | 0.040 | 0.014 | **−7.3σ** |
+| Deepgram | 7.948 | 7.468 | **−0.480** | 0.101 | 0.036 | **−13.5σ** |
+
+**All four alt voices produce a statistically significant AB.PQ
+shift from the pinned voice on the same 8 items** (|z| ≥ 3.3 in
+every case; the smallest, OpenAI, is 3.3σ). Direction varies
+(Fish +, others −); magnitude varies substantially (OpenAI −0.146
+to Deepgram −0.480).
+
+**Gender confound**: all four alt voices tested here crossed
+gender against the pinned voice — OpenAI onyx (male) → nova
+(female), Deepgram orion (male) → luna (female), Google Charon
+(male) → Kore (female). Fish uses opaque UUIDs so the pinned/alt
+gender pair is not directly verifiable from configs, but the
+pinned was narration-tagged and the alt was Fish's
+conversational-tagged voice — a *different* design confound
+(voice-purpose swap).
+
+**Google DNSMOS attrition on this same 8-item set**: the AB.PQ
+paired test above runs on n=8 for every vendor (Audiobox accepted
+all 16 Google files on both sides). On the DN.ovrl axis, however,
+DNSMOS refused **3 of 8 Google pinned files** (L02, L03, L04, all
+peak-out-of-range from clipping — same defect that gates Google
+on `long_stratum_clipped_samples`) and 1 of 8 Google alt files
+(L02, same cause), leaving 5 items valid on both sides. The
+DN.ovrl comparison for Google is therefore reported in
+[Follow-up 4's comparison table](EXPERIMENTS_2026-09-01.md#the-comparison-table-alt-voice-vs-pinned-voice-l01l08)
+as an intersection paired delta on those 5 items (Δ +0.079,
+z = +3.16), footnoted parallel to the Cartesia survivor-subset
+pattern elsewhere in this doc. AB.PQ / AB.CE / WER on Google are
+unaffected (all n=8). **T6's Speechify comparison split by use
+case**: conversational `geffen_32` (female) → `edmund_32` (male)
+crossed gender, but **narration `wyatt_32` (male) → `edmund_32`
+(male) was same-gender** (verified in
+[T6 verdict](../analysis/verification/T6_speechify_voice_bias.md), which says of the narration pair "same gender (both male)").
+Recomputed paired-z on the T6 20-item set (matched on item_id):
+**narration same-gender swap = +0.103 AB.PQ (+4.02σ)**;
+conversational cross-gender swap = +0.299 (+6.05σ). **T6
+narration already shows a >3σ voice-choice effect that survives
+gender matching**, so the four Follow-up-4 cross-gender pairs are
+not the only same-vendor voice-choice signal — voice choice
+matters at ≥3σ even within one gender within one vendor. What
+Phase 2's 4-vendor sweep does add is that the magnitude ranges
+3× across vendors (OpenAI 0.146 to Deepgram 0.480 on AB.PQ,
+under a cross-gender confound); a same-gender sweep across the
+other vendors is still v2 workstream (see
+[07 § gap 2](07_GAPS_AND_FUTURE_WORK.md#2-one-voice-per-vendor-per-use-case-partially-closed-by-phase-2)).
+
+**What the data actually supports**: voice choice matters
+materially within every vendor tested, at every measured axis;
+the magnitude of the shift ranges over 3× (OpenAI 0.146 to
+Deepgram 0.480 on AB.PQ); the sign is not stable across vendors;
+and voice choice within a vendor shifts AB.PQ at ≥3σ even under
+same-gender swap on Speechify (T6 narration). **Speechify's T6
+result — that its alt voice ranked #1 on AB.PQ with a +0.30 (conv)
+/ +0.10 (narr) numerical lead over the
+pinned voice — remains a rank-preservation observation, not a
+"holds within noise" claim.**
+
+See
+[06 § F-7](06_KEY_FINDINGS.md#f-7)
+and Phase 2's [Follow-up 4](EXPERIMENTS_2026-09-01.md#follow-up-4--alt-voice-qualitywer-analysis-on-experiment-e-audio).
 
 ---
 
@@ -838,21 +980,22 @@ for the visual.
 
 ---
 
-## Latency (up to 4 sessions across 3 dates, with concurrent ping baseline on S3)
+## Latency (up to 6 sessions across 4 dates, with concurrent ping baseline on S3)
 
 Time-to-first-audio-frame (TTFA), 50 serial trials per session,
-conversational S01 corpus item. **Six latency-mode runs total**
-across 2026-08-09 (two runs same day, S1a and S1b), 2026-08-11
-(S2, one run per streaming vendor), and 2026-08-12 (S3, one run
-per vendor, with concurrent ping baseline).
+conversational S01 corpus item. **Six latency-mode runs total for
+the speed-critical vendors** across 2026-08-09 (S1a, S1b same day),
+2026-08-11 (S2), 2026-08-12 (S3, with concurrent ping baseline),
+and 2026-09-01 (S4, S5 same day — added by Phase 2's
+[Follow-up 3](EXPERIMENTS_2026-09-01.md#follow-up-3--d-latency-sanity-check)).
 
-| Vendor | S1a p50 / p90 (n=50) | S1b p50 / p90 (n=50) | S2 p50 / p90 | S3 p50 / p90 | Sessions | Range summary |
-|---|---|---|---|---|---|---|
-| **elevenlabs** (Flash v2.5) | 439 / 479 | 440 / 474 | **424 / 469 (n=40)** ¹ | **694 / 816 (n=40)** ¹ | 4 | p50: 424–694 ms (+64% max shift) |
-| openai (tts-1-hd) | 736 / 956 | 762 / 946 | 936 / 1493 | **1369 / 1882** | 4 | p50: 736–1369 ms (+86% max shift) |
-| deepgram | 583 / 674 | 564 / 670 | not re-measured | not re-measured | 2 same-day | p50: 564–583 ms (no cross-day range measured) |
-| cartesia | 467 / 529 | 468 / 530 | not re-measured | not re-measured | 2 same-day | p50: 467–468 ms (no cross-day range measured) |
-| speechify · fish · google · orpheus | not applicable* | | | | 0 | adapters don't stream |
+| Vendor | S1a p50/p90 | S1b p50/p90 | S2 p50/p90 | S3 p50/p90 | **S4 p50/p90** | **S5 p50/p90** | Sessions | Range summary |
+|---|---|---|---|---|---|---|---|---|
+| **elevenlabs** (Flash v2.5) | 439 / 479 | 440 / 474 | **424 / 469 (n=40)** ¹ | **694 / 816 (n=40)** ¹ | **412 / 461** | **421 / 468** | 6 | p50: 412–694 ms (+68% max) |
+| openai (gpt-4o-mini-tts) | 736 / 956 | 762 / 946 | 936 / 1493 | **1369 / 1882** | **772 / 1212** | **783 / 1206** | 6 | p50: 736–1369 ms (+86% max) |
+| deepgram | 583 / 674 | 564 / 670 | not re-measured | not re-measured | not re-measured | not re-measured | 2 same-day | p50: 564–583 ms (no cross-day range measured) |
+| cartesia | 467 / 529 | 468 / 530 | not re-measured | not re-measured | not re-measured | not re-measured | 2 same-day | p50: 467–468 ms (no cross-day range measured) |
+| speechify · fish · google · orpheus | not applicable* | | | | | | 0 | adapters don't stream |
 
 ¹ ElevenLabs S2 and S3 both landed **n=40** trials (not 50);
 verified against `analysis/latency-20260811T183202Z/latency.json`
@@ -864,8 +1007,9 @@ later sessions stopped at 40 is documented as measured.
 
 **Every measured streaming vendor's p90 exceeds the pre-registered
 400 ms `ttfa_p90_ms` gate** in every session in which they were
-measured. ElevenLabs at 479 ms (S1 low) is the closest to the
-threshold but still failed. See the
+measured. ElevenLabs at **461 ms (S4)** is the closest to the
+threshold across all 6 sessions (S1a 479, S1b 474, S2 469, S3 816,
+S4 461, S5 468) but still failed. See the
 [Pre-registered gate outcomes § TTFA-gate admission](#ttfa-gate-admission)
 section below for the full pass/fail table.
 
@@ -892,43 +1036,109 @@ well-defined p50/p90 at this magnitude (SE of p90 ≈ 40 ms, small
 vs. the +58% S1→S3 shift); anything past p90 for S2/S3 is
 under-sampled.
 
-**Portable findings**:
+**Portable findings** (across all 6 sessions):
 
 - **Vendor ranking on TTFA is stable**: ElevenLabs is consistently
-  faster than OpenAI in every session (424/439/694 vs 736/936/1369
-  on p50). The ordering is portable. Rank tests are robust at n=3.
-- **Absolute TTFA is NOT stable** for either vendor. Both moved
-  50-90% p50 session-to-session on our public-tier accounts.
-  Neither vendor is "stable" in an operational sense.
-- **The observed variability is not our last-mile link.** The
-  simplest single cause consistent with "both vendors slowed
-  together on the same day" is **client-side** (local machine
-  contention, one-shot background scan, Python event-loop stall).
-  Vendor-side capacity is a candidate but not parsimonious for a
-  simultaneous slowdown of two independent SaaS providers.
-- **n=3 sessions cannot characterise the variance distribution.**
-  Rank claims survive at n=3; stability claims need ≥5-10 sessions
-  across ≥2 weeks with per-trial client-lag logging.
+  faster than OpenAI in every one of the 6 sessions (p50 range
+  ElevenLabs 412–694 vs OpenAI 736–1,369). The ordering is
+  portable at n=6.
+- **Absolute TTFA is NOT stable** for either vendor. Descriptive
+  ranges excluding S3: **ElevenLabs p50 412–440 ms (6.8%), p90
+  461–479 ms (3.9%); OpenAI p50 736–936 ms (27%), p90 946–1,493
+  ms (58%)**. ElevenLabs is descriptively tighter; both fail the
+  "quotable as a vendor spec" bar.
+- **The observed variability is not our last-mile link** during
+  S3. Beyond that, "wide-tail vendor" vs "client-side
+  contamination" attribution is not separable at n=6 without the
+  client-side event-loop lag logging Phase 1 called for as a
+  control — that logging was not run on any of the 6 sessions.
+- **Six sessions cleared the ≥5-session count Phase 1 called out**
+  for characterising per-vendor variance, but the mechanism
+  attribution workstream remains v2. Rank claims survive at n=6;
+  stability *attribution* still needs ≥5-10 sessions across ≥2
+  weeks *with* per-trial client-lag logging.
 
 See [documentation/figures/f3_latency_stability.png](figures/f3_latency_stability.png)
-for the 3-session visual with concurrent ping-baseline annotation.
+for the latency-stability visual with concurrent ping-baseline annotation.
 Full write-up in
 [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
 Verdict details in
 [analysis/verification/T5](../analysis/verification/T5_openai_latency.md)
 and [T7](../analysis/verification/T7_elevenlabs_ttfa.md).
 
-### <a name="rtf-admission"></a>RTF (real-time factor) — measured, but on the wrong workload
+### <a name="rtf-admission"></a>RTF (real-time factor) — adjudicated on R3: 5 pass / 3 fail
 
 **RTF was pre-committed as the narration latency gate**
 (`rtf ≥ 3.0`; see [`configs/gates.yaml`](../configs/gates.yaml))
-and is intended to fire on **long-narration throughput**.
+and is intended to fire on **long-narration throughput**. RTF is
+defined as `decoded_audio_seconds / total_wall_clock_seconds`
+(higher is faster).
 
-**What was actually measured**: every latency-mode trial in
-`analysis/latency-*/latency.json` populates a per-trial `rtf`
-field (with `n_with_total = 50` per session). RTF is defined as
-`decoded_audio_seconds / total_wall_clock_seconds` (higher is
-faster). Data from the six sessions:
+**R3 campaign adjudication**: `campaign-20260831T175358Z` ran with
+`--no-cache` — `n_fresh = 75` and `n_with_total = 75` for every
+(vendor, use case) pair (Orpheus conv is 74 / 74; one call failed
+silently — see [CORRECTIONS row 30](../CORRECTIONS.md)) in
+[`analysis/campaign-20260831T175358Z/latency.json`](../analysis/campaign-20260831T175358Z/latency.json).
+Every narration long-stratum item therefore has fresh
+`synthesis_time`, populating `long_stratum_rtf_p50` for all
+8 vendors (`long_stratum_n = 8` each):
+
+| Vendor | long_stratum_rtf_p50 | Gate (`rtf ≥ 3.0`) |
+|---|---:|---|
+| OpenAI | **10.37** | ✓ PASS |
+| ElevenLabs | **6.79** | ✓ PASS |
+| Speechify | **6.58** | ✓ PASS |
+| Google | **6.03** | ✓ PASS |
+| Cartesia | **3.70** | ✓ PASS |
+| Deepgram | 2.14 | ✗ FAIL |
+| Fish | 1.70 | ✗ FAIL |
+| Orpheus | 0.83 | ✗ FAIL (slower than real-time) ⚠ |
+
+**Result: 5 pass / 3 fail.** This is the **first pre-registered
+gate in the evaluation with a discriminating outcome** — the WER
+gate failed all 8, the TTFA gate failed all 4 measured, the
+conversational clipping gate isolated Cartesia + one other vendor
+per run (Speechify 1 sample R2, ElevenLabs 1 sample R3). RTF actually
+splits the roster.
+
+**Is the 3.0 threshold arbitrary?** This is what the pre-registered
+gate-robustness sweep is for.
+[`configs/gates.yaml`](../configs/gates.yaml) carries
+`robustness_points: [2.0, 3.0, 5.0, 10.0]` for this gate;
+`veval score` runs the sweep and writes it to
+[`analysis/campaign-20260831T175358Z/score.json`](../analysis/campaign-20260831T175358Z/score.json).
+Marginal per-gate survivors on `long_stratum_rtf_p50`:
+
+| threshold | marginal survivors | vendors |
+|---:|---:|---|
+| ≥ 2.0 | 6 | Cartesia, Deepgram, ElevenLabs, Google, OpenAI, Speechify |
+| **≥ 3.0 (pre-registered)** | **5** | Cartesia, ElevenLabs, Google, OpenAI, Speechify |
+| ≥ 5.0 | 4 | ElevenLabs, Google, OpenAI, Speechify |
+| ≥ 10.0 | 1 | OpenAI |
+
+The 5-vendor survivor set at the pre-registered 3.0 threshold is
+stable to a small threshold change (dropping to 4 at 5.0), but
+collapses to one vendor (OpenAI alone) at 10×. The published
+5-of-8 discrimination isn't an artefact of picking exactly 3.0;
+it is stable inside the 2-5 band and only becomes single-vendor
+at the aggressive 10.0 endpoint.
+
+**Orpheus caveat**: `long_stratum_rtf_p50 = 0.83` measures
+wall-clock against the **truncated 14.59-s output** (see F-5 and
+[T8](../analysis/verification/T8_orpheus_cost.md)), not against
+the full requested content. Even under that generous denominator,
+Orpheus is slower than real-time on this endpoint — the 3.0-gate
+fail is unambiguous. A denominator based on requested content
+would make the fail larger, not smaller.
+
+**Historical S01-only data** (pre-R3 latency-mode sessions,
+retained as measurement provenance): every session ran the
+conversational S01 item (~2.6 s of audio), and no vendor cleared
+3.0 on that workload — ElevenLabs S1b p90 (3.13) was the only
+value above 3.0 in the whole S01 dataset, and every p50 was
+well below 3.0. On S01, RTF is dominated by per-request overhead
+and does not characterise sustained throughput; the R3
+long-stratum table above is what the pre-registered gate targets.
 
 | Session | Vendor | n | rtf p10 | rtf p50 | rtf p90 |
 |---|---|---:|---:|---:|---:|
@@ -941,42 +1151,8 @@ faster). Data from the six sessions:
 | S3 2026-08-12 | openai | 50 | 1.03 | 1.57 | 1.99 |
 | S3 2026-08-12 | elevenlabs | 40 | 1.43 | 1.67 | 1.81 |
 
-**But on the wrong workload**: every session ran the
-**conversational S01 item** (~2.6 s of audio). RTF is a
-throughput-bound metric that only becomes meaningful on longer
-audio, where per-request overhead becomes a small fraction of the
-total time. RTF on a 2.6-s clip mostly measures per-request
-overhead — the pre-committed narration gate targets sustained
-throughput on 60-90 s audio, which these numbers don't
-characterise.
-
-**What the S01 RTF data does show**: **no vendor cleared the
-pre-registered rtf ≥ 3.0 gate on this workload** in any session.
-ElevenLabs S1b p90 (3.13) is the only value above 3.0 in the
-whole dataset; every p50 is well below 3.0. On the workload the
-gate targets (long narration), the numbers would likely be much
-higher (per-request overhead amortises) — but that's an inference,
-not a measurement.
-
-**Impact**: the pre-committed narration RTF gate remains
-**not adjudicated on v1 data** — the S01 measurements are on the
-wrong workload. Neither vendor is called out as "failed RTF" or
-"passed RTF" in the results above.
-
-**Why not just re-analyse the campaign for RTF?** The primary
-campaign ran fully from content-hash cache and its
-`latency.json` has `long_stratum_rtf_p50` / `long_stratum_rtf_p10`
-fields, all `null` because `n_with_total = 0` on cache-hit rows.
-The dedicated latency sessions did generate fresh audio but only
-on S01. Neither is a substitute for a narration-workload session.
-
-**v2 workstream**: run a dedicated **narration-latency session**
-(8 long items × 8 vendors × 1 draw = 64 fresh generations with
-`synthesis_time` logged; ~$0.30 spend; ~30 min wall-clock).
-Compute per-vendor `audio_duration_s / synthesis_time_s` per
-long item; report `long_stratum_rtf_p10 / p50 / p90` per vendor
-and pass/fail against `rtf ≥ 3.0`. Documented in
-[07_GAPS_AND_FUTURE_WORK.md](07_GAPS_AND_FUTURE_WORK.md).
+Prior "not adjudicated in v1" wording retracted; see
+[CORRECTIONS row 24](../CORRECTIONS.md).
 
 ---
 
@@ -1000,19 +1176,19 @@ long-stratum items.
 
 | Gate | Threshold | Pass | Fail | Exempt / N/A | Fail admission |
 |---|---|---:|---:|---:|---|
-| `ttfa_p90_ms < 400` | streaming, 4 measured | **0** | **4** | 4 (na_policy = exempt-and-annotate) | **Every measured streaming vendor fails.** Best measurement: ElevenLabs S1 at 479 ms. All others (Cartesia 529, Deepgram 670-674, OpenAI 946-1882) fail more clearly. See [TTFA-gate admission](#ttfa-gate-admission) below. |
-| `failure_incidence_pct < 2.0` (WER-based) | all 8 | **0** | **8** | 0 | **Every vendor fails.** Failure incidence 61.3% (Fish, Speechify) to 73.3% (Orpheus). See [WER-gate admission](#wer-gate-admission) below. |
-| `clipped_samples == 0` | all 8 | 7 | 1 | 0 | Cartesia (429/406 clipped samples/item on average, F-4) |
-| `commercial_use_permitted == 1` | all 8 | 8 | 0 | 0 | All 8 vendors on paid tiers permit commercial use |
+| `ttfa_p90_ms < 400` | streaming, 4 measured | **0** | **4** | 4 (na_policy = exempt-and-annotate) | **Every measured streaming vendor fails.** Best measurement across all 6 sessions: ElevenLabs S4 at **461 ms** (S1a 479, S1b 474, S2 469, S3 816, S4 461, S5 468). All others (Cartesia 529, Deepgram 670-674, OpenAI 946-1882) fail more clearly. See [TTFA-gate admission](#ttfa-gate-admission) below. |
+| `failure_incidence_pct < 2.0` (WER-based) | all 8 | R2: **0** / R3: **0** | R2: **8** / R3: **8** | 0 | **Every vendor fails in both rounds.** R2 failure incidence 61.3% (Fish, Speechify) to 73.3% (Orpheus). R3 64.0% (Fish, the R3 floor) to 78.4% (Orpheus). See [WER-gate admission](#wer-gate-admission) below. |
+| `clipped_samples == 0` | all 8, conversational | R2: **6** / R3: **6** | R2: **2** / R3: **2** | 0 | **R2 fails**: Cartesia (406 total clipped samples across 54 files, ~5.4/item; F-4), Speechify (1 sample across 1 file). **R3 fails**: Cartesia (377 total), ElevenLabs (1 sample). Prior "7 pass / 1 fail | Cartesia only" wording retracted; see [CORRECTIONS row 52](../CORRECTIONS.md). |
+| `commercial_use_permitted == 1` | all 8 | 8 | 0 | 0 | **Adjudicated against [`configs/capabilities.yaml`](../configs/capabilities.yaml) `commercial_use` column** (per-vendor `value` + `source_url` + `date_verified`, spec § A.8 D8 matrix). All 8 vendors on paid tiers permit commercial use; 6 as `yes` (paid public tier standard terms), Fish + Orpheus as `partial` (Fish free tier had commercial restrictions during the pre-2026-08-31 window; Orpheus community-fork's model licence should be re-read per-deployment). Row previously read "asserted, not evidenced" — closed by capabilities.yaml this round (see [CORRECTIONS row 162](../CORRECTIONS.md)). |
 
 ### Narration gates (4 gates; each row states its own denominator)
 
 | Gate | Threshold | Pass | Fail | Exempt / not adjudicated | Fail admission |
 |---|---|---:|---:|---:|---|
-| `rtf ≥ 3.0` | streaming, throughput-bound | 0 | 0 | **8 (not adjudicated in v1)** | RTF *was* measured across all latency sessions but only on the 2.6-s conversational S01 item (per-trial `rtf` field, n=50 per session) — wrong workload for a narration throughput gate. On that workload no vendor cleared 3.0 (best: ElevenLabs S1b p90 = 3.13). `long_stratum_rtf_p50 / _p10` on the cached primary campaign is `null` for every row. Full data + workload discussion in [RTF admission](#rtf-admission) below. |
+| `rtf ≥ 3.0` | narration long stratum, n=8 per vendor | **5** | **3** | 0 | **Adjudicated on R3** (`campaign-20260831T175358Z`, `n_fresh=75`, `n_with_total=75` per vendor per use case — Orpheus conv is 74/74, one call failed silently, see [CORRECTIONS row 30](../CORRECTIONS.md); `long_stratum_rtf_p50` for all 16 cells). Pass: OpenAI (10.37), ElevenLabs (6.79), Speechify (6.58), Google (6.03), Cartesia (3.70). Fail: Deepgram (2.14), Fish (1.70), Orpheus (0.83, slower than real-time; measured against the truncated 14.59-s output — see F-5). Full breakdown in [RTF admission](#rtf-admission) below. First pre-registered gate in the evaluation with a discriminating outcome (WER failed all 8; TTFA failed all 4 measured). |
 | `monotonic_quality_drift_flag == 0` | TTSDS2-based | 0 | 0 | **8 (n/a — TTSDS2 skipped per D-A)** | see [D-B decision block](06_KEY_FINDINGS.md#d-b) |
-| `long_stratum_acoustic_noise_floor_dbfs ≤ −40` | hygiene, long items only | 7 | 1 | 0 | Fish (persistent noise floor) |
-| `long_stratum_clipped_samples == 0` | hygiene, long items only | 7 | 1 | 0 | Cartesia |
+| `long_stratum_acoustic_noise_floor_dbfs ≤ −40` | hygiene, long items only, worst-of-8 | R2: **6** / R3: **5** | R2: **2** / R3: **3** | 0 | **R2 fails**: Cartesia (worst = −37.47), ElevenLabs (worst = −37.93). **R3 adds Orpheus** as a third fail (worst-of-8 shifted from −52.78 in R2 to −27.75 in R3, +25 dB, most likely a truncation-tail artefact on the 14.59-s output cap). Full per-vendor R2/R3 table in [`round3-vs-round2-comparison.md § Hygiene`](../analysis/round3-vs-round2-comparison.md#hygiene-noise-floor-replication-variance-is-3-db-at-the-mean-level). Google is within ~2 dB of the gate on both runs and should be read as pass-with-uncertainty, not clean pass. Prior "Fish (persistent noise floor)" wording retracted; see [CORRECTIONS rows 31 + 32](../CORRECTIONS.md). |
+| `long_stratum_clipped_samples == 0` | hygiene, long items only (L01–L08), worst-of-8 | R2: **5** / R3: **5** | R2: **3** / R3: **3** | 0 | **R2 fails**: Cartesia (224 clipped samples across all 8 long items), Google (36 across 4 long items), Speechify (3 across 1 long item). **R3 fails**: Cartesia (201 across 8), Google (28 across 3), Speechify (10 across 1). Prior "7 pass / 1 fail | Cartesia only" wording retracted; see [CORRECTIONS row 52](../CORRECTIONS.md). |
 
 ### <a name="ttfa-gate-admission"></a>TTFA-gate admission: every measured streaming vendor fails at 400 ms p90
 
@@ -1026,20 +1202,39 @@ budget (LLM + TTS + network)."
 
 Measured p90 by vendor and session (best measurement in bold):
 
-| Vendor | S1 p90 | S2 p90 | S3 p90 | Best measured | Gate |
-|---|---:|---:|---:|---:|---|
-| ElevenLabs Flash v2.5 | 479 / 474 | 469 | 816 | **469 ms** (S2) | **FAIL** — closest to threshold |
-| Cartesia | 529 / 530 | (not re-measured) | — | **529 ms** (S1a) | **FAIL** |
-| Deepgram Aura-2 | 674 / 670 | (not re-measured) | — | **670 ms** (S1b) | **FAIL** |
-| OpenAI tts-1-hd | 956 / 946 | 1493 | 1882 | **946 ms** (S1b) | **FAIL** |
-| Speechify · Fish · Google · Orpheus | not applicable — adapters don't stream | | | | exempt (na_policy = exempt-and-annotate, see D-008) |
+| Vendor | S1a / S1b p90 | S2 p90 | S3 p90 | S4 p90 | S5 p90 | Best | Gate |
+|---|---:|---:|---:|---:|---:|---:|---|
+| ElevenLabs Flash v2.5 | 479 / 474 | 469 | 816 | 461 | 468 | **461 ms** (S4) | **FAIL** — closest to threshold |
+| Cartesia | 529 / 530 | (not re-measured) | — | — | — | **529 ms** (S1a) | **FAIL** |
+| Deepgram Aura-2 | 674 / 670 | (not re-measured) | — | — | — | **670 ms** (S1b) | **FAIL** |
+| OpenAI gpt-4o-mini-tts | 956 / 946 | 1,493 | 1,882 | 1,212 | 1,206 | **946 ms** (S1b) | **FAIL** |
+| Speechify · Fish · Google · Orpheus | not applicable — adapters don't stream | | | | | | exempt (na_policy = exempt-and-annotate, see D-008) |
 
 **Every measured streaming vendor fails the pre-registered gate.**
 The gate as committed is non-discriminating on this data.
 
-**Why the gate fails everyone**: 400 ms was chosen as headroom
-below the 500-600 ms perception threshold from the spec's A.1
-literature review. The measurements come from a **residential
+**Where does the gate start to discriminate?** This is exactly
+what the pre-registered gate-robustness sweep in
+[`configs/gates.yaml`](../configs/gates.yaml)'s
+`robustness_points: [300, 400, 500, 600]` was written to answer.
+Applied to the best-of-6-sessions TTFA per vendor, marginal
+per-gate survivors:
+
+| threshold | marginal survivors | vendors |
+|---:|---:|---|
+| < 300 ms | 0 | — |
+| **< 400 ms (pre-registered)** | **0** | — |
+| < 500 ms | 1 | ElevenLabs (461 ms S4) |
+| < 600 ms | 2 | + Cartesia (529 ms S1a) |
+
+Discrimination starts at 500 ms (one survivor) and expands to two
+at 600 ms; the 400 ms gate is inside the flat "everybody fails"
+zone. The sweep is the pre-registered way to publish this without
+amending the gate post-hoc.
+
+**Why the gate fails everyone at 400 ms**: 400 ms was chosen as
+headroom below the 500-600 ms perception threshold from the spec's
+A.1 literature review. The measurements come from a **residential
 Windows 11 client** with vendor endpoints resolved to whatever
 the DNS returned that session (see F-11 for the client-side
 parsimony discussion). The vendors' own SDKs / datacenter-local
@@ -1051,6 +1246,8 @@ tests likely produce lower numbers; we don't have that data.
 - We DO report the per-vendor measured p50 / p90 as a **comparative
   ranking** for the residential-client venue, with F-11's scope
   disclaimer attached
+- We DO publish the pre-registered sweep above so the discrimination
+  threshold is visible without amending anything
 - The 500 ms framing that appears in Q1 and F-11 discussion
   paragraphs is the perception-threshold *reference point*
   (spec A.1), not the pre-registered gate. The pre-registered
@@ -1062,13 +1259,14 @@ tests likely produce lower numbers; we don't have that data.
 **What this does NOT change**:
 - **Vendor ranking on TTFA is stable**: ElevenLabs consistently
   faster than the rest (see F-11); Deepgram / Cartesia consistently
-  slower than ElevenLabs but faster than OpenAI in the one session
-  they were measured
+  slower than ElevenLabs but faster than OpenAI in the two
+  sessions (S1a + S1b) they were measured
 - Q1's real-time-voice guidance now reads "no measured vendor
   cleared the pre-registered 400 ms gate; ElevenLabs got closest
-  at 469 ms but that held only for the first two sessions and
-  moved to 816 ms in S3, so it also fails the softer 500 ms
-  perception-reference bar under session-to-session variance"
+  at 461 ms (S4) and cleared the softer 500 ms perception
+  reference in 5 of 6 sessions (S3 alone breached at 816), so it
+  is descriptively-close-but-not-guaranteed against the perception
+  reference under session-to-session variance"
 
 Every latency-mode Deepgram row in `analysis/latency-*/latency.json`
 shows p50 = 564-583 ms, p90 = 670-674 ms.
@@ -1118,10 +1316,105 @@ falsified as decision rules on this data.
 
 **Gate outcomes JSON**: derived from
 [`analysis/campaign-20260809T204608Z/wer.json`](../analysis/campaign-20260809T204608Z/wer.json)
-(band counts + failure incidence per provider/use-case) and
+(band counts + failure incidence per provider/use-case),
+[`analysis/campaign-20260809T204608Z/hygiene.json`](../analysis/campaign-20260809T204608Z/hygiene.json)
+(clipping + noise-floor per-vendor + long-stratum gate flags —
+the hygiene gates fail Cartesia + Speechify on conversational
+clipping and Cartesia + Google + Speechify on narration
+long-stratum clipping, per the rows above), and
 [`analysis/campaign-20260809T204608Z/acceptance.json`](../analysis/campaign-20260809T204608Z/acceptance.json)
-(hygiene gates: 1200 files, 1200 pass — the hygiene rules
-discriminate; the WER rule does not).
+(the file-level *acceptance* check on duration / LUFS / VAD /
+character sanity — 1200 files, 1200 pass; this is upstream of
+the hygiene gates and is not what "hygiene gates discriminate"
+was meant to say).
+
+### <a name="gate-robustness-sweep"></a>Gate-robustness sweep
+
+The four-component scoring model in
+[02 § 5](02_METHODOLOGY.md#5-pre-committed-hard-gates--tie-band-ranking-not-a-weighted-composite)
+lists the sweep as the second pre-registered component after the
+gates themselves. Each gate in
+[`configs/gates.yaml`](../configs/gates.yaml) carries an explicit
+`robustness_points` list — spec §5 / defect 3.40 flagged that a
+±20% envelope on 400 ms tops out at 480 ms and never reaches the
+500-600 ms perception threshold the gate's rationale cites, so
+the sweep uses named points per gate.
+[`src/veval/score/robustness.py`](../src/veval/score/robustness.py)
+implements it; `veval score` writes the output to
+[`analysis/campaign-20260831T175358Z/score.json`](../analysis/campaign-20260831T175358Z/score.json).
+
+The score.json field `robustness[*].survivors_per_point` reports
+the **full-intersection** survivor set (a provider must pass
+*every* other gate too) at each swept threshold. The TTFA and
+RTF admission subsections above report the **per-gate marginal**
+sweep — how many vendors' measurement clears just that gate at
+each threshold, in isolation. Both framings are useful and both
+are traceable to the same source data.
+
+**Trap in the receipt's own summary flag**: score.json's
+`is_stable` field is set from the intersection sweep, not the
+marginal one. All four conversational gates in the receipt read
+`is_stable: true` with zero survivors at every swept point —
+which sounds like "threshold-insensitive" but is actually the
+intersection collapsing (the WER gate fails all 8 regardless of
+which point the sweep is at, so the intersection is zero at
+every point, so the flag reads stable). The marginal TTFA sweep
+above is 0 → 0 → 1 → 2 at 300/400/500/600 ms — anything but
+flat. Same shape for the R3 conversational clipping gate, which
+6 of 8 vendors clear marginally (only Cartesia + ElevenLabs
+fail) yet reads `is_stable: true` at its single sweep point
+because the WER + zero-tolerance gates keep the intersection at
+zero. **A reader opening the score.json should treat `is_stable`
+as an intersection property, not evidence that any single gate
+is threshold-insensitive** — the per-gate marginal tables in
+this section are the answer to that question.
+
+Third gate that carried a nontrivial sweep — narration
+`long_stratum_acoustic_noise_floor_dbfs`, `robustness_points:
+[−30, −40, −50]` on the worst-of-8 long-stratum reading per
+vendor. Computed on the R3 campaign
+(`campaign-20260831T175358Z/hygiene.json`), which is what the
+committed score.json sweeps:
+
+| threshold | R3 marginal survivors | R3 vendors | R2 marginal survivors |
+|---:|---:|---|---:|
+| ≤ −30 dBFS | 7 | all except Orpheus (−27.75) | 8 (all pass) |
+| **≤ −40 dBFS (pre-registered)** | **5** | Deepgram, Fish, Google, OpenAI, Speechify | 6 (adds Orpheus, which R2 measured at −52.78 before the R3 truncation-tail shift; drops nobody) |
+| ≤ −50 dBFS | 3 | Fish, OpenAI, Speechify | 2 (OpenAI + Orpheus) |
+
+The 5-vendor R3 survivor set at −40 dBFS matches the R3 gate
+outcome in the narration table above (which also fails Cartesia,
+ElevenLabs, and Orpheus on the worst-of-8 long-stratum reading).
+R2 gives 8 / 6 / 2 — a visibly different shape because Orpheus's
+worst-of-8 long-stratum reading shifted from −52.78 in R2 to
+−27.75 in R3 (F-12 area; most likely a truncation-tail artefact
+on the 14.59-s cap). Discrimination at −40 is not an artefact
+of the exact threshold in either round: −30 adds only Cartesia +
+ElevenLabs back in on R3; −50 drops Deepgram + Google.
+
+Fourth gate that carried a nontrivial sweep — conversational
+`failure_incidence_pct`, `robustness_points: [1.0, 2.0, 5.0]`:
+
+| threshold | marginal survivors | vendors |
+|---:|---:|---|
+| < 1.0 | 0 | — |
+| **< 2.0 (pre-registered)** | **0** | — |
+| < 5.0 | 0 | — |
+
+Genuinely flat: on R3 every vendor lands between 64.0% (Fish, the
+floor) and 78.4% (Orpheus, the ceiling); on R2 between 61.3%
+(Fish + Speechify at the floor) and 73.3% (Orpheus). No vendor
+in either round clears even the loosest 5.0 sweep point. The
+sweep is the strongest statement of "the WER gate is broken as
+an absolute rule on this data": not just non-discriminating at
+2.0, but non-discriminating across the full pre-registered sweep.
+F-2 documents the two-judge-inflation mechanism; the sweep is
+the receipt.
+
+Gates whose sweep was flat by design (`robustness_points: [0.0]`
+— clipping gates and the commercial-use gate) reflect that zero
+is pre-committed as non-negotiable; the flatness is by design,
+not a missing measurement.
 
 ---
 
@@ -1145,11 +1438,11 @@ Table below shows all 10 rows with T3's retirement noted:
 | T3 | Narration PQ 7.41 conv → 8.00 narr | Orpheus | **Retired** — DNSMOS #2 narr confirms direction, satisfies exit criterion | (retired) |
 | T4 | L03 monotonic fadeout (3.6 dB) | ElevenLabs | **Confirmed with refinement** — 3/3 fresh regens fade monotonically; mean delta 2.7 dB, not 3.6 dB | [T4](../analysis/verification/T4_elevenlabs_L03_fadeout.md) |
 | T5 | Latency 736/956 ms (2× next; original observation from campaign-cached row) | OpenAI | **Confirmed (slower than ElevenLabs)** — S3 = 1369/1882 ms, all 3 sessions consistently slower than ElevenLabs. Session-to-session absolute values not stable (F-11). | [T5](../analysis/verification/T5_openai_latency.md) |
-| T6 | Audiobox #1 both UC | Speechify | **Confirmed with reversal** — alt voice edmund_32 scores *higher* than pinned voices; still #1 of 9 | [T6](../analysis/verification/T6_speechify_voice_bias.md) |
-| T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 3 sessions. But **NOT stable** — S3 = 694/816 ms (+58%/+70% vs S1). Sub-500 ms p90 held in S1+S2 only; F-11 documents the session-to-session variance. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
+| T6 | Audiobox #1 both UC | Speechify | **Confirmed with reversal** — alt voice edmund_32 scores +0.30 higher on conv (cross-gender: geffen_32 female → edmund_32 male, +6.05σ) and +0.10 higher on narr (same-gender: wyatt_32 male → edmund_32 male, +4.02σ); still #1 of 9 on both use cases | [T6](../analysis/verification/T6_speechify_voice_bias.md) |
+| T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 6 sessions. Sub-500 ms p90 held in 5 of 6 sessions (S1a 479, S1b 474, S2 469, S4 461, S5 468); S3 alone breached at 816 ms. F-11 documents the session-to-session variance. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
 | T8 | "Cheapest $0.030/1K" (headline claim from `cost_model.json`) | Orpheus | **Refuted with two bigger findings** — (a) 14.59s hard output cap, cost is fixed-per-call not linear-with-text; (b) the $0.030 itself is a `cost_model.py` default-assumption artefact, honest per-1K-words is ~$0.067-0.088 (peer-priced to OpenAI). See T8 for the full analysis. | [T8](../analysis/verification/T8_orpheus_cost.md) |
 | N1 | Audiobox #8/#8 vs DNSMOS #1/#1/#2 narr | OpenAI | Pending (manual listen) | [N1](../analysis/verification/N1_openai_narration_inversion.md) |
-| N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); 3rd independent pipeline agrees | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
+| N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); DNSMOS ONNX + hygiene analyzer are two independent code paths agreeing on the same defect. | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
 
 **Verdict tally (10 rows):**
 - **Confirmed cleanly**: 3 (T1, T7, N2)
@@ -1184,14 +1477,15 @@ a clear answer for your use case.
   perception threshold), and the **perception-threshold reference
   from the literature is ~500 ms** (spec A.1).
   - Against the pre-registered 400 ms gate: **no measured vendor
-    passes.** ElevenLabs Flash's best measurement was 469 ms p90
-    (S2); Cartesia 529 ms; Deepgram 670 ms; OpenAI 946 ms. Every
+    passes.** ElevenLabs Flash's best measurement was 461 ms p90
+    (S4); Cartesia 529 ms; Deepgram 670 ms; OpenAI 946 ms. Every
     measured streaming vendor fails the pre-committed gate in
     every session it was measured. See [TTFA-gate admission](#ttfa-gate-admission).
   - Against the softer 500 ms perception reference: ElevenLabs
-    Flash cleared it in S1 (479 p90) and S2 (469 p90), then
-    failed it in S3 (816 p90) — no vendor reliably clears the
-    500 ms reference either; see F-11.
+    Flash cleared it in **5 of 6 sessions** (S1a 479, S1b 474, S2
+    469, S4 461, S5 468 — all under 500 ms p90) and failed only
+    in S3 (816 p90) — no other vendor cleared 500 ms in any
+    session; see F-11.
   - **Speechify / Fish / Google / Orpheus** are unmeasured on
     streaming TTFA (their adapters don't stream); they may or
     may not meet either bar — *unknown*, not *disqualified*.
@@ -1259,10 +1553,6 @@ Look at the Rankings summary above. Each pair reports
   magnitude; a 6σ result on a 0.14/10 = 1.4%-of-scale delta
   means "we're certain the delta is not zero," not "the delta
   is audibly large."
-
-The rewrite of the SE methodology is in the Rankings summary above.
-Prior versions of this doc used a heuristic 0.05 threshold — that's
-been replaced with the per-comparison SE(diff) test.
 
 **Statistical caveats you should know before quoting these σ
 ratios**: (a) multiplicity is not corrected — Bonferroni for 8
@@ -1339,20 +1629,24 @@ Full measurement methodology in
 uv run veval analyze campaign-20260809T204608Z --stages all
 uv run veval analyze variance-20260809T205319Z --stages quality
 
-# --- Latency: all three sessions (S1 + S2 + S3) ---
-# S1 (2026-08-09) — first pass, 50 trials × 4 streaming vendors
+# --- Latency: all 6 sessions (S1a + S1b + S2 + S3 + S4 + S5) ---
+# S1a + S1b (2026-08-09) — first-day pair, 50 trials × 4 streaming vendors
 uv run veval analyze latency-20260809T214106Z --stages latency
 uv run veval analyze latency-20260809T222356Z --stages latency
 # S2 (2026-08-11) — second pass, adds T5/T7 verification
 uv run veval analyze latency-20260811T183028Z --stages latency
 uv run veval analyze latency-20260811T183202Z --stages latency
-# S3 (2026-08-12) — third pass with concurrent ping baseline; the
-# session that refuted the "ElevenLabs stability" claim (F-11).
+# S3 (2026-08-12) — third pass with concurrent ping baseline.
 # The concurrent ping-baseline log is committed at
 # `analysis/ping-baseline-20260812T191138Z.jsonl` (274 probes to
 # Cloudflare 1.1.1.1); the audio runs/ are regenerable per 03.
 uv run veval analyze latency-20260812T191143Z --stages latency  # OpenAI, 50/50
 uv run veval analyze latency-20260812T191323Z --stages latency  # ElevenLabs, 40/50 (spend-cap)
+# S4 + S5 (2026-09-01, Phase 2 Follow-up 3) — same-day pair
+uv run veval analyze latency-20260901T185715Z --stages latency  # S4 ElevenLabs
+uv run veval analyze latency-20260901T190715Z --stages latency  # S4 OpenAI
+uv run veval analyze latency-20260901T191000Z --stages latency  # S5 ElevenLabs
+uv run veval analyze latency-20260901T201051Z --stages latency  # S5 OpenAI (T19:10 attempt crashed, this is the T20:10 rerun)
 
 # --- Cross-metric analysis + per-comparison SE(diff) + paired test ---
 uv run veval analyze campaign-20260809T204608Z --stages cross_metric

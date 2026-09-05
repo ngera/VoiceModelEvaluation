@@ -1,0 +1,474 @@
+# capabilities.yaml — D8 capability audit per spec §A.8
+#
+# "Desk research against official docs, ~30 minutes per provider,
+#  recorded as a ✓/✗/partial matrix with a source link and date per cell.
+#  No scoring — facts, not judgments." — spec §A.8
+#
+# Same per-cell provenance shape as `configs/pricing.yaml`:
+#   value        one of: yes | no | partial
+#   source_url   canonical vendor doc / API reference URL
+#   date_verified YYYY-MM-DD the cell was last read against the source
+#
+# Three rules (per 02 § D8):
+#   (1) FACTS, NOT JUDGMENTS — no "good/poor", just the value + where read.
+#   (2) DATE EVERY CELL — vendor feature pages change faster than findings.
+#       An undated ✓ is worthless in six months.
+#   (3) USE `partial` HONESTLY — where a capability exists but sits
+#       behind an enterprise tier not bought, record `partial` with the
+#       tier named in `notes`; never `no`. That distinction is what a
+#       procurement reader actually needs.
+#
+# Cells sourced from artifacts already in this repo (F-1, pricing.yaml,
+# providers.yaml, voices.yaml, D-008) are dated to their source-artifact's
+# `date_verified` where present, or to the R3 campaign date 2026-08-31 as
+# the "measurement-day" fallback. Cells marked `TODO_desk_research` need
+# the docs read against the vendor's live page and dated on read.
+#
+# Ships as `prereg-v1.11` amendment: adding this file does not change any
+# other pre-registered artifact; it fills the D8 dimension the spec
+# committed to and closes the commercial_use_permitted gate's evidence
+# gap (04:1181, previously "asserted, not evidenced").
+
+# Nine columns per spec §A.8 — one row per (vendor, column) so a
+# capability sweep is one YAML file to read.
+capabilities:
+
+  # ============================================================
+  # Deepgram — Aura-2 (control provider, D-008 non-streaming)
+  # ============================================================
+  - vendor: deepgram
+    voice_count:
+      value: partial
+      notes: "Aura-2 English-only line; ~14 voices across pitch/gender at time of pinning."
+      source_url: "https://developers.deepgram.com/docs/tts-models"
+      date_verified: 2026-08-07
+    languages:
+      value: partial
+      notes: "Aura-2 is English-only on release; other languages roadmap-only per docs."
+      source_url: "https://developers.deepgram.com/docs/tts-models"
+      date_verified: 2026-08-07
+    cloning:
+      value: no
+      notes: "voices.yaml comment: 'Deepgram — no cloning'. No voice-cloning endpoint in the Aura-2 docs."
+      source_url: "https://developers.deepgram.com/docs/tts"
+      date_verified: 2026-08-07
+    ssml_controls:
+      value: TODO_desk_research
+      notes: "SSML / speaking-style / speed knobs not verified against live docs."
+      source_url: null
+      date_verified: null
+    streaming_protocol:
+      value: partial
+      notes: "REST /v1/speak (buffered) is documented; websocket streaming was not used per D-008 workflow decision."
+      source_url: "https://developers.deepgram.com/reference/tts-api-rest"
+      date_verified: 2026-08-08
+    word_level_timestamps:
+      value: TODO_desk_research
+      notes: "Deepgram STT exposes word timestamps; TTS side not verified."
+      source_url: null
+      date_verified: null
+    sla_and_data_residency:
+      value: TODO_desk_research
+      notes: "Enterprise SLA + regional-hosting terms not read."
+      source_url: null
+      date_verified: null
+    pricing_model_shape:
+      value: yes
+      notes: "$0.150/1K words flat pay-per-use, no minimums (see pricing.yaml)."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical on variance subset."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: yes
+      notes: "Paid public tier; $200 signup credit used. Standard commercial terms per Deepgram ToS at signup."
+      source_url: "https://deepgram.com/terms"
+      date_verified: 2026-08-07
+
+  # ============================================================
+  # Fish Audio — S2.1-Pro (D-004 lineage; free window closed 2026-08-31)
+  # ============================================================
+  - vendor: fish
+    voice_count:
+      value: TODO_desk_research
+      notes: "Public voice library plus opaque UUID upload; catalogue size not counted."
+      source_url: null
+      date_verified: null
+    languages:
+      value: TODO_desk_research
+      notes: "Multilingual per marketing; specific coverage not verified against docs."
+      source_url: null
+      date_verified: null
+    cloning:
+      value: yes
+      notes: "Voice-cloning is a documented product line; the pinned narration voice is an opaque UUID reference. See voices.yaml Fish narration entry."
+      source_url: "https://fish.audio/docs"
+      date_verified: 2026-08-07
+    ssml_controls:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    streaming_protocol:
+      value: TODO_desk_research
+      notes: "HTTP endpoint used in adapter; streaming websocket not evaluated."
+      source_url: null
+      date_verified: null
+    word_level_timestamps:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    sla_and_data_residency:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    pricing_model_shape:
+      value: yes
+      notes: "$0.075/1K words flat pay-per-use per pricing.yaml (paid tier post free-window)."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: partial
+      notes: "Free tier (s2.1-pro-free, closed 2026-08-31) had commercial restrictions in ToS; paid tier is commercial-permitted. This project's audio was generated on the free tier during the free window."
+      source_url: "https://fish.audio/terms"
+      date_verified: 2026-08-07
+
+  # ============================================================
+  # Google Cloud TTS — Chirp3-HD (D-006 REST-buffered per D-008)
+  # ============================================================
+  - vendor: google
+    voice_count:
+      value: partial
+      notes: "Chirp3-HD English voices ~24 at time of pinning; broader Google TTS library covers hundreds."
+      source_url: "https://cloud.google.com/text-to-speech/docs/voices"
+      date_verified: 2026-08-08
+    languages:
+      value: yes
+      notes: "Broadest language coverage of the roster — WaveNet + Neural2 + Chirp3-HD collectively ~50 languages."
+      source_url: "https://cloud.google.com/text-to-speech/docs/voices"
+      date_verified: 2026-08-08
+    cloning:
+      value: partial
+      notes: "Custom Voice is available behind Google-review approval; not the general TTS API surface."
+      source_url: "https://cloud.google.com/text-to-speech/custom-voice/docs"
+      date_verified: 2026-08-08
+    ssml_controls:
+      value: yes
+      notes: "Full SSML support on non-Chirp3 voices; Chirp3-HD supports a subset — verify per campaign."
+      source_url: "https://cloud.google.com/text-to-speech/docs/ssml"
+      date_verified: 2026-08-08
+    streaming_protocol:
+      value: partial
+      notes: "Streaming synthesize documented for Chirp3-HD; this project used buffered REST per D-006 / D-008 (TTFA not measurable on buffered path)."
+      source_url: "https://cloud.google.com/text-to-speech/docs/streaming"
+      date_verified: 2026-08-08
+    word_level_timestamps:
+      value: yes
+      notes: "TimepointType.SSML_MARK returns per-mark timestamps; word-level via SSML mark injection."
+      source_url: "https://cloud.google.com/text-to-speech/docs/reference/rest/v1beta1/text/synthesize"
+      date_verified: 2026-08-08
+    sla_and_data_residency:
+      value: yes
+      notes: "GCP standard SLA + region selection at project level; data-residency terms per GCP contract."
+      source_url: "https://cloud.google.com/text-to-speech/sla"
+      date_verified: 2026-08-08
+    pricing_model_shape:
+      value: yes
+      notes: "$0.150/1K words flat per pricing.yaml; billed on characters + SSML tags (see D7 friction log for the tag-billing gotcha)."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: yes
+      notes: "Standard GCP commercial terms; production use permitted."
+      source_url: "https://cloud.google.com/terms"
+      date_verified: 2026-08-08
+
+  # ============================================================
+  # Cartesia — Sonic-2 (Pro $5/mo)
+  # ============================================================
+  - vendor: cartesia
+    voice_count:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    languages:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    cloning:
+      value: yes
+      notes: "Instant voice cloning available on Pro tier."
+      source_url: "https://docs.cartesia.ai/user-guides/voice-management/instant-voice-cloning"
+      date_verified: 2026-08-07
+    ssml_controls:
+      value: partial
+      notes: "Speed control via `speed` param; SSML support scope not verified."
+      source_url: "https://docs.cartesia.ai/api-reference/tts/tts-bytes"
+      date_verified: 2026-08-07
+    streaming_protocol:
+      value: yes
+      notes: "Websocket streaming + SSE documented; header `X-API-Key`."
+      source_url: "https://docs.cartesia.ai/api-reference/tts/tts-sse"
+      date_verified: 2026-08-07
+    word_level_timestamps:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    sla_and_data_residency:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    pricing_model_shape:
+      value: yes
+      notes: "Pro $5/mo + per-1M-chars overage per pricing.yaml (tier-shape flip between 10K and 100K/mo)."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: yes
+      notes: "Pro subscription is commercial-permitted per Cartesia terms."
+      source_url: "https://cartesia.ai/terms"
+      date_verified: 2026-08-07
+
+  # ============================================================
+  # ElevenLabs — Flash v2.5 (conv) + Multilingual v2 (narr), Creator $22/mo
+  # ============================================================
+  - vendor: elevenlabs
+    voice_count:
+      value: yes
+      notes: "Largest curated voice library on the roster; 121K included Creator credits/mo per pricing.yaml."
+      source_url: "https://elevenlabs.io/voice-library"
+      date_verified: 2026-08-07
+    languages:
+      value: yes
+      notes: "Multilingual v2 spans ~29 languages per marketing."
+      source_url: "https://elevenlabs.io/docs/api-reference/text-to-speech"
+      date_verified: 2026-08-07
+    cloning:
+      value: yes
+      notes: "Instant Voice Cloning (Creator+) and Professional Voice Cloning (Pro+); gated by tier."
+      source_url: "https://elevenlabs.io/docs/product/voices/voice-lab/instant-voice-cloning"
+      date_verified: 2026-08-07
+    ssml_controls:
+      value: partial
+      notes: "Stability / similarity / style / use-speaker-boost knobs; native SSML support limited — pause tags supported."
+      source_url: "https://elevenlabs.io/docs/api-reference/text-to-speech"
+      date_verified: 2026-08-07
+    streaming_protocol:
+      value: yes
+      notes: "REST streaming + websocket streaming documented; Flash v2.5 is the low-TTFA endpoint."
+      source_url: "https://elevenlabs.io/docs/api-reference/streaming"
+      date_verified: 2026-08-07
+    word_level_timestamps:
+      value: partial
+      notes: "Character-level timestamps returned from streaming endpoint; word-level requires post-processing."
+      source_url: "https://elevenlabs.io/docs/api-reference/text-to-speech-with-timestamps"
+      date_verified: 2026-08-07
+    sla_and_data_residency:
+      value: TODO_desk_research
+      notes: "Enterprise SLA terms + data-residency options not read on paid tier."
+      source_url: null
+      date_verified: null
+    pricing_model_shape:
+      value: yes
+      notes: "Creator $22/mo + overage per pricing.yaml."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical. Also F-12: model-string outputs drifted between R2 and R3."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-31
+    commercial_use:
+      value: yes
+      notes: "Creator subscription is commercial-permitted per ElevenLabs terms."
+      source_url: "https://elevenlabs.io/terms"
+      date_verified: 2026-08-07
+
+  # ============================================================
+  # Canopy Orpheus / lucataco fork (D-004, D-005; Replicate-hosted)
+  # ============================================================
+  - vendor: orpheus
+    voice_count:
+      value: partial
+      notes: "Community-fork on Replicate; voice count depends on the specific Orpheus model version — small vs the commercial vendors."
+      source_url: "https://replicate.com/lucataco/orpheus-3b-0.1-ft"
+      date_verified: 2026-08-07
+    languages:
+      value: partial
+      notes: "Base Orpheus is English-primary; community forks may add languages."
+      source_url: "https://replicate.com/lucataco/orpheus-3b-0.1-ft"
+      date_verified: 2026-08-07
+    cloning:
+      value: TODO_desk_research
+      notes: "Model card mentions voice-conditioning; scope not verified."
+      source_url: null
+      date_verified: null
+    ssml_controls:
+      value: no
+      notes: "Community fork exposes plain-text input; no SSML pipeline on the Replicate endpoint."
+      source_url: "https://replicate.com/lucataco/orpheus-3b-0.1-ft"
+      date_verified: 2026-08-07
+    streaming_protocol:
+      value: no
+      notes: "Replicate REST prediction API is non-streaming; output cap of 14.59s per call is the load-bearing limit (F-5 / T8)."
+      source_url: "https://replicate.com/docs"
+      date_verified: 2026-08-07
+    word_level_timestamps:
+      value: no
+      notes: "Community-fork endpoint returns audio only."
+      source_url: null
+      date_verified: 2026-08-07
+    sla_and_data_residency:
+      value: no
+      notes: "Replicate is a research-model hosting platform; no vendor SLA in the enterprise sense. Data-residency governed by Replicate's terms, not Orpheus."
+      source_url: "https://replicate.com/terms"
+      date_verified: 2026-08-07
+    pricing_model_shape:
+      value: partial
+      notes: "$0.030/1K words nominal per pricing.yaml is under the 100-word-per-call default that predates T8's measured ~35-word per-call output; honest per-1K-words is ~$0.067-0.088 (see F-5 / T8)."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: partial
+      notes: "Model licence permits commercial use; Replicate hosting is commercial-permitted. Base Orpheus licence should be re-read per-deployment (community-fork variant)."
+      source_url: "https://replicate.com/lucataco/orpheus-3b-0.1-ft"
+      date_verified: 2026-08-07
+
+  # ============================================================
+  # OpenAI — gpt-4o-mini-tts (D-006, D-007)
+  # ============================================================
+  - vendor: openai
+    voice_count:
+      value: partial
+      notes: "6 built-in voices on the /audio/speech endpoint (alloy, echo, fable, onyx, nova, shimmer + newer additions)."
+      source_url: "https://platform.openai.com/docs/api-reference/audio/createSpeech"
+      date_verified: 2026-08-08
+    languages:
+      value: yes
+      notes: "Multilingual via GPT-4o TTS models; specific coverage per model page."
+      source_url: "https://platform.openai.com/docs/guides/text-to-speech"
+      date_verified: 2026-08-08
+    cloning:
+      value: no
+      notes: "No voice-cloning surface on the current /audio/speech endpoint."
+      source_url: "https://platform.openai.com/docs/api-reference/audio/createSpeech"
+      date_verified: 2026-08-08
+    ssml_controls:
+      value: partial
+      notes: "`instructions` parameter for style/emotion in gpt-4o-tts variants; not full SSML."
+      source_url: "https://platform.openai.com/docs/guides/text-to-speech"
+      date_verified: 2026-08-08
+    streaming_protocol:
+      value: yes
+      notes: "Server-Sent Events streaming supported; TTFA measured 946-1882 ms across 6 sessions (F-11)."
+      source_url: "https://platform.openai.com/docs/api-reference/audio/createSpeech"
+      date_verified: 2026-08-08
+    word_level_timestamps:
+      value: no
+      notes: "TTS endpoint returns audio only; word timing would need a separate transcription pass."
+      source_url: null
+      date_verified: 2026-08-08
+    sla_and_data_residency:
+      value: yes
+      notes: "Standard OpenAI enterprise SLA + zero-retention available on API tier at contract."
+      source_url: "https://openai.com/policies/api-data-usage-policies"
+      date_verified: 2026-08-08
+    pricing_model_shape:
+      value: yes
+      notes: "$0.075/1K words flat per pricing.yaml; usage-based billing, Tier 1 default."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: yes
+      notes: "Paid API tier is commercial-permitted per OpenAI ToS."
+      source_url: "https://openai.com/policies/business-terms"
+      date_verified: 2026-08-08
+
+  # ============================================================
+  # Speechify — Simba-3.2 (Starter $10/mo)
+  # ============================================================
+  - vendor: speechify
+    voice_count:
+      value: yes
+      notes: "Large curated voice library; T6 tested edmund_32 vs wyatt_32 (narr, same-gender) and geffen_32 (conv, cross-gender)."
+      source_url: "https://sws.speechify.com/docs/voices"
+      date_verified: 2026-08-07
+    languages:
+      value: yes
+      notes: "Multilingual — English + broader coverage."
+      source_url: "https://sws.speechify.com/docs"
+      date_verified: 2026-08-07
+    cloning:
+      value: partial
+      notes: "Voice-cloning available on higher tiers; Starter $10/mo does not include cloning."
+      source_url: "https://sws.speechify.com/docs/voice-cloning"
+      date_verified: 2026-08-07
+    ssml_controls:
+      value: partial
+      notes: "Emotion / speed parameters; SSML surface not full."
+      source_url: "https://sws.speechify.com/docs/api"
+      date_verified: 2026-08-07
+    streaming_protocol:
+      value: partial
+      notes: "REST synth endpoint; streaming path reverted to /v1/audio/speech (D-008) with TTFA not measurable on the buffered response shape."
+      source_url: "https://sws.speechify.com/docs/api"
+      date_verified: 2026-08-08
+    word_level_timestamps:
+      value: partial
+      notes: "Speech marks / word-timing returned on certain response shapes; scope varies by tier."
+      source_url: "https://sws.speechify.com/docs"
+      date_verified: 2026-08-07
+    sla_and_data_residency:
+      value: TODO_desk_research
+      notes: null
+      source_url: null
+      date_verified: null
+    pricing_model_shape:
+      value: yes
+      notes: "Starter $10/mo for 100K words per pricing.yaml; tier-shape flip below 100K/mo where fixed cost dominates."
+      source_url: "configs/pricing.yaml"
+      date_verified: 2026-08-07
+    determinism:
+      value: no
+      notes: "F-1 — 0 of 2 draws byte-identical."
+      source_url: "analysis/variance-20260809T205319Z/variance.json"
+      date_verified: 2026-08-09
+    commercial_use:
+      value: yes
+      notes: "Starter subscription is commercial-permitted per Speechify API terms."
+      source_url: "https://sws.speechify.com/docs/terms"
+      date_verified: 2026-08-07
