@@ -514,7 +514,7 @@ subset, and there are more of them in R3:
 | R2 | cartesia | narration | 38 / 75 | 37 (49.3%) | marked <sup>²</sup> on narr table above |
 | R2 | google | narration | 71 / 75 | 4 (5.3%) | marked <sup>²</sup> on narr table above |
 | R3 | cartesia | conversational | 51 / 75 | 24 (32.0%) | (R3, not shown in R2 tables) |
-| R3 | cartesia | narration | 37 / 75 | 38 (50.7%) | (R3, comparison-doc row |
+| R3 | cartesia | narration | 37 / 75 | 38 (50.7%) | (R3; see [`round3-vs-round2-comparison.md § DNSMOS coverage`](../analysis/round3-vs-round2-comparison.md)) |
 | R3 | google | narration | 72 / 75 | 3 (4.0%) | (R3) |
 | R3 | speechify | narration | 74 / 75 | 1 (1.3%) | (R3) |
 | R3 | elevenlabs | conversational | 74 / 75 | 1 (1.3%) | (R3; also drives the n=74 in F-12's conv DNSMOS row) |
