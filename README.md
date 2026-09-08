@@ -358,9 +358,7 @@ tests/                           ← pytest regression suite (~236 tests)
 
 ---
 
-## Contact
 
-Neeraj Gera · [neeraj.gera@outlook.com](mailto:neeraj.gera@outlook.com)
 
 *This project is a portfolio piece demonstrating structured
 evaluation, self-critical scoping, and pre-registered methodology
