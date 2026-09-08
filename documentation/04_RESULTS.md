@@ -414,9 +414,13 @@ Rows sorted by AB.PQ (Audiobox production_quality) descending. See
 the ranking rules.
 
 **Footnote ¹ (Orpheus narration)**: Orpheus's narration output is
-truncated to exactly **14.59 seconds per call** by the model's
-hard output cap (F-9 T8, stdev 0.000s across the 8 long items
-tested). Actual truncation scope, per
+truncated to exactly **14.59 seconds per call** by Replicate's
+`max_new_tokens` default (F-9 T8, stdev 0.000s across the 8 long
+items tested; T10 confirmed this is a deployment-config default,
+not model-intrinsic — passing `max_new_tokens = 2000` produces
+~24.32 s per call, still bounded by Replicate's own wrapper
+ceiling. See
+[T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md)). Actual truncation scope, per
 `analysis/campaign-20260809T204608Z/hygiene.json` (using
 `total_seconds > 14.55` as the truncation flag):
 
@@ -995,9 +999,16 @@ estimate above.
 **The $0.030 row is retained** as the direct output of the v1
 cost_model.json (auditability). **Do not compare $0.030 against
 ElevenLabs' $0.22 as if they were peer prices** — they are not
-derived on comparable assumptions. Orpheus is out on Q1 for real
-narration because of the 14.59-s output cap anyway (see § Decision
-framework).
+derived on comparable assumptions. Orpheus is still out on Q1
+for real narration on the Replicate hosted endpoint even at the
+raised cap: T10 (2026-09-07) confirmed the 14.59-s default cap
+is a `max_new_tokens` default rather than model-intrinsic, and
+raising it to Replicate's own wrapper ceiling of 2000 tokens
+extends output to ~24.32 s per call (1.67× more audio per call,
+per-1K cost drops to ~$0.040–0.053). Long narration items still
+need chunking; the T10 fix reduces chunk count by ~1.67× rather
+than eliminating it. See § Decision framework and
+[T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md).
 
 **Three cost-driven conclusions** (updated after the noise-floor
 recompute confirmed the tie calls at 0.2-1.3σ; see Rankings summary

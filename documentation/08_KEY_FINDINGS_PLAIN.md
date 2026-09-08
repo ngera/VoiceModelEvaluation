@@ -123,12 +123,29 @@ assumed each call produced 100 words of audio (a typical
 call because of the cap. The $0.03 is what the model predicted; the
 actual per-word math is 2-3× higher.
 
-**Where Orpheus is genuinely useful**: any use case where every
-individual utterance comfortably fits in 14.59 seconds — a short
-prompt, an alert message, a quick reply. Beyond that, look
-elsewhere.
+**Where the cap comes from — and how far it moves**: we ran one
+more test (T10, 2026-09-07, one API call, one cent) to find out
+whether the 14.59-s cap is the model itself or just Replicate's
+default setting. The answer is **Replicate's default**: passing
+`max_new_tokens = 2000` in the request (Replicate's own hard
+ceiling for that parameter) produces **24.32 seconds** of audio
+per call — 67% longer than the default. So the cap can be
+raised, but only to about 24 seconds; long narration still
+needs to be chunked into pieces, just fewer pieces (roughly
+five instead of eight for a two-minute passage). Per-word cost
+at the raised cap drops to about **$0.04-0.05 per 1,000 words**
+— still in the same range as OpenAI ($0.075), still not the
+"cheapest" the sticker price suggests.
 
-**Finding referenced in the technical docs as F-5 + F-9 test T8.**
+**Where Orpheus is genuinely useful**: any use case where every
+individual utterance comfortably fits under the cap — 14.59 s
+at the default, ~24 s if you pass `max_new_tokens = 2000` — a
+short prompt, an alert message, a quick reply. Beyond that,
+look elsewhere or plan to chunk.
+
+**Finding referenced in the technical docs as F-5 + F-9 test T8
+(the cap) + [T10](../analysis/verification/T10_orpheus_max_new_tokens.md)
+(the fix).**
 
 ---
 

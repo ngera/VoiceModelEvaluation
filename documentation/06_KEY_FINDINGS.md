@@ -261,12 +261,19 @@ for the full derivation.
 
 - **Not cheaper than OpenAI**, once you correct for the per-call
   cap
-- **Hard 14.59-s output cap per call** — **27 of 75 narration items
-  (36%) are truncated** at the cap (long 8/8, medium 18/20,
-  probe 1/15); the 8 long-stratum items lose ~84% of their
-  expected content. See
+- **14.59-s output cap per call by Replicate wrapper default** —
+  **27 of 75 narration items (36%) are truncated** at the default
+  cap (long 8/8, medium 18/20, probe 1/15); the 8 long-stratum
+  items lose ~84% of their expected content under the default. See
   [F-9 T8](#f-9--outlier-verification-verdicts-phase-2c) and
-  [04 footnote ¹](04_RESULTS.md#footnote-1).
+  [04 footnote ¹](04_RESULTS.md#footnote-1). **T10 (2026-09-07)
+  confirmed the cap is a `max_new_tokens` default, not
+  model-intrinsic**: passing `max_new_tokens = 2000` (Replicate's
+  own wrapper ceiling) produces ~24.32 s per call (1.67× more
+  audio). Per-1K cost at the raised cap: ~$0.040-0.053 (down
+  from $0.067-0.088 under the default). Bounded fix — long
+  narration still needs chunking, at ~1.67× fewer chunks. See
+  [T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md).
 - **Worst WER** in the roster (27% mean, ~2× next-worst) —
   the mechanism is the output cap, not intelligibility
 - **Widest between-draw variance** on quality signals
@@ -279,15 +286,18 @@ rendering
 is genuinely uniform-quality; the aggregate is earned.
 
 **Impact:** Orpheus is a legitimate choice when: (a) every turn
-comfortably fits under 14.59 s of audio (so the cap never
-bites), AND (b) worst-WER + no-cost-advantage is acceptable
-(e.g., an experimental prototype, an open-weights preference,
-or a specific voice character the closed vendors don't offer).
-For narration or any long-form use, T8's output cap makes it
-structurally unsuitable. **The old "budget dominates → pick
-Orpheus" heuristic is retired** — on this data, if budget
+comfortably fits under 14.59 s of audio at the default cap or
+~24 s at `max_new_tokens = 2000` (so the cap never bites), AND
+(b) worst-WER + no-cost-advantage is acceptable (e.g., an
+experimental prototype, an open-weights preference, or a specific
+voice character the closed vendors don't offer). For narration
+or any long-form use on Replicate's hosted endpoint, the output
+cap makes it structurally unsuitable at the default (T8) and
+requires ~1.67× fewer but still-multiple chunks at
+`max_new_tokens = 2000` (T10). **The old "budget dominates →
+pick Orpheus" heuristic is retired** — on this data, if budget
 dominates, OpenAI at $0.075 is the pick (peer-priced to Orpheus
-and passes the cap).
+even at Orpheus's raised cap, and passes both caps).
 
 <a name="f-6"></a>
 ### F-6 · Monotonic loudness fade on long-form TTS narration — a cross-vendor phenomenon at ~5-25% base rate

@@ -1,0 +1,27 @@
+{
+  "test": "T10",
+  "hypothesis": "The Orpheus 14.59-s per-call output cap is a deployment-config default (max_new_tokens ~2048) rather than a model-intrinsic architectural limit. Passing max_new_tokens = 4000 will produce output > 14.59s.",
+  "input": {
+    "item_id": "L01",
+    "text_chars": 1313,
+    "text_words": 233,
+    "voice": "dan",
+    "max_new_tokens": 2000,
+    "model_version": "79f2a473e6a9720716a473d9b2f2951437dbf91dc02ccb7079fb3d89b881207f"
+  },
+  "measurement": {
+    "duration_s": 24.32,
+    "n_frames": 583680,
+    "sample_rate_hz": 24000,
+    "wall_clock_s": 137.344,
+    "audio_bytes": 1167404,
+    "audio_path": "analysis\\verification\\T10_orpheus_max_new_tokens\\T10_L01_max_new_tokens_2000.wav"
+  },
+  "baseline_from_t8": {
+    "capped_duration_s": 14.59,
+    "stdev_across_long_items_s": 0.0,
+    "n_items_at_cap": 8
+  },
+  "verdict": "DEPLOYMENT-CONFIG DEFAULT \u2014 cap extends when max_new_tokens is raised; PM fix is one API-flag flip",
+  "date": "2026-09-07"
+}
