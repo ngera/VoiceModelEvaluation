@@ -1348,15 +1348,24 @@ WER cell on the 60 non-probe items shifts the bands by roughly
 | Narration band | 12.4 – 14.0% | 14.9 – 16.8% |
 | Orpheus conversational | 26.9% | 32.5% |
 
-**Ranking impact — a conversational top-1 swap**: probe-included
-top-1 on conv is OpenAI 0.1370 vs Fish 0.1378 (Δ 0.0008 = 40×
-smaller than the ~3-pp probe dilution); probe-excluded, Speechify
-takes top-1. **Quality-axis top-1 is unchanged** on all six
-axis × use-case combinations — this is a WER-only effect. Every
-WER figure in this doc, 06, and 08 is quoted on all 75 items
-with this same ~3-pp caveat implicit; readers who want the
-probe-excluded reading should consult [02 § Contamination
-probe](02_METHODOLOGY.md#probe) for the per-vendor recompute.
+**Ranking impact — conversational top-1 order holds, 3rd/4th
+swap**: probe-included conv top-2 is OpenAI 0.1370 vs Fish 0.1378
+(Δ 0.0008); probe-excluded top-2 is OpenAI 0.1694 vs Fish 0.1701
+(Δ 0.0008) — **OpenAI leads both ways**. What actually moves is
+the 3rd/4th pair: ElevenLabs (0.1407 → 0.1758) drops below
+Speechify (0.1433 → 0.1735), so Speechify takes 3rd on the
+probe-excluded reading. **Narration top-8 order is unchanged**
+either way. The OpenAI–Fish margin (0.0008) is 40× smaller than
+the ~3-pp probe dilution, so the top of conversational WER
+should be read as an unresolved OpenAI/Fish pair either way —
+the probe caveat is a rank-order stability issue at 3rd/4th, not
+a top-1 swap. **Quality-axis top-1 is unchanged** on all six
+axis × use-case combinations under probe exclusion — this is a
+WER-only effect. Every WER figure in this doc, 06, and 08 is
+quoted on all 75 items with the ~3-pp caveat implicit; readers
+who want the probe-excluded reading should consult
+[02 § Contamination probe](02_METHODOLOGY.md#probe) for the
+per-vendor recompute.
 
 **What we do about it**:
 - We do NOT amend the gate post-hoc (that would defeat pre-registration)
@@ -1677,10 +1686,13 @@ Full plain-language walkthrough in
   WER % cell in this doc, 06, and 08 carries an implicit
   **~3 pp probe-dilution caveat**: excluding the 15 probe items
   shifts each vendor's WER upward by ~3 pp (probe transcribes at
-  ~1/5 the corpus rate on narration, ~1/2 on conv), and swaps
-  conversational top-1 from OpenAI to Speechify. Quality-axis
-  top-1 is unchanged — this is WER-only. Full probe-included vs
-  probe-excluded bands + per-vendor swap in
+  ~1/5 the corpus rate on narration, ~1/2 on conv). **Top-1 is
+  unchanged either way** — OpenAI leads conv, Cartesia leads
+  narr, in both readings. The 3rd/4th pair on conv swaps
+  (Speechify passes ElevenLabs under probe exclusion); nothing
+  else in the top-8 moves on either use case. Quality-axis top-1
+  is unchanged — this is WER-only. Full probe-included vs
+  probe-excluded bands + per-vendor recompute in
   [WER-gate admission](#wer-gate-admission) above; per-stratum
   WER receipt in
   [02 § Contamination probe](02_METHODOLOGY.md#probe).

@@ -618,12 +618,14 @@ each other and five vendors sitting inside 0.01).
 > spec § 3.3). Those items transcribe about five times more
 > accurately than the sentences we wrote ourselves, so every
 > vendor's WER looks **~3 percentage points lower** than it
-> would on the 60 non-probe items alone. **On the 60 non-probe
-> items, Speechify — not OpenAI — has the cleanest conversational
-> WER**; the OpenAI/Fish/Speechify differences on the full 75
-> are all smaller than that ~3-pp dilution. Quality scores
-> (Audiobox / DNSMOS rankings) are not affected — this is a
-> WER-only issue. Full technical details in
+> would on the 60 non-probe items alone. **The top-1 winner is
+> the same either way** — OpenAI has the cleanest conversational
+> WER on both readings (16.94% probe-excluded vs 13.70% all-75),
+> Cartesia leads narration on both. What actually moves is
+> 3rd/4th place on conversational: Speechify passes ElevenLabs
+> under probe exclusion. Quality scores (Audiobox / DNSMOS
+> rankings) are not affected — this is a WER-only issue. Full
+> technical details in
 > [04 § WER-gate admission](04_RESULTS.md#wer-gate-admission)
 > and [02 § Contamination probe](02_METHODOLOGY.md#probe).
 

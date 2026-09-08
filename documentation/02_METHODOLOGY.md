@@ -253,13 +253,23 @@ conversational:
 | Narration band | 12.4 – 14.0% | 14.9 – 16.8% |
 | Orpheus conversational | 26.9% | 32.5% |
 
-The **conversational top-1 swap** — probe-included: OpenAI
-0.1370 vs Fish 0.1378 (Δ 0.0008); probe-excluded: Speechify
-leads. The R2 conversational top-1 margin (0.0008) is **40×
-smaller** than the ~3-pp probe dilution, so the rank at the
-top of conversational WER is a probe artefact. **Quality-axis
-top-1 is unchanged** on all six axis × use-case combinations —
-this is a WER-only effect. See
+**Conversational top-1 order holds either way — OpenAI leads
+probe-included at 0.1370 and probe-excluded at 0.1694; Fish is
+#2 in both readings (0.1378 / 0.1701).** What the probe moves
+is the 3rd/4th pair: probe-included ElevenLabs is #3 (0.1407)
+and Speechify #4 (0.1433); probe-excluded Speechify passes
+ElevenLabs (0.1735 vs 0.1758) and takes #3. **Narration
+top-8 order is unchanged either way** (Cartesia → ElevenLabs
+→ Speechify → Google → OpenAI → Deepgram → Fish → Orpheus in
+both readings). The OpenAI–Fish conv margin (0.0008 all-75,
+0.0008 probe-excluded) is 40× smaller than the ~3-pp probe
+dilution, so **conversational WER rank should be read as
+unresolved at this n**, not as a stable ordering — but the
+"unresolved" band is #1-#2 (OpenAI/Fish) either way, and the
+probe caveat is a rank-order stability issue at 3rd/4th,
+not a top-1 swap. **Quality-axis top-1 is unchanged** on all
+six axis × use-case combinations under probe exclusion — the
+probe caveat is WER-only. See
 [04 § WER-gate admission](04_RESULTS.md#wer-gate-admission)
 for the full per-vendor bands, both ways.
 

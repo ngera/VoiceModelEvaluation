@@ -135,9 +135,13 @@ is computed over all 75 items, which includes the 15
 pre-registered contamination-probe items (Harvard sentences /
 literary openings — spec § 3.3). The probe transcribes at ~1/5
 the corpus rate on narration and ~1/2 on conversational, so
-excluding it shifts each vendor's WER upward by ~3 pp and
-**swaps conversational top-1 from OpenAI to Speechify**. Full
-probe-included vs probe-excluded bands + per-vendor swap in
+excluding it shifts each vendor's WER upward by ~3 pp. **Top-1
+order holds either way** — OpenAI leads conversational both
+readings (0.1370 all-75, 0.1694 probe-excluded; Fish #2 both
+readings), Cartesia leads narration both readings. What the
+probe moves is 3rd/4th on conv: Speechify (0.1735 probe-excluded)
+passes ElevenLabs (0.1758). Full probe-included vs
+probe-excluded bands + per-vendor recompute in
 [04 § WER-gate admission](04_RESULTS.md#wer-gate-admission);
 per-stratum WER receipt in [02 § Contamination
 probe](02_METHODOLOGY.md#probe). **Quality-axis top-1 is
@@ -173,10 +177,15 @@ different vendors lead:
 - Cleanest WER (conv) → **cluster** at ~13.7-14.3% (OpenAI 13.70 /
   Fish 13.78 / ElevenLabs 14.07 / Speechify 14.33) — probe-included.
   No vendor cleanly leads; the spread is smaller than the F-2 / F-3
-  WER-judge inflation. **Under probe exclusion the conversational
-  top-1 flips to Speechify** (the 0.0008 gap between OpenAI and Fish
-  is 40× smaller than the ~3-pp probe dilution — see F-2 caveat
-  above and [02 § Contamination probe](02_METHODOLOGY.md#probe)). Orpheus at 26.9% is the only vendor
+  WER-judge inflation. **Top-1 order is stable under probe
+  exclusion** (OpenAI 16.94% still #1, Fish 17.01% still #2 —
+  the 0.0008 gap is preserved), but the 3rd/4th pair swaps:
+  Speechify (17.35%) passes ElevenLabs (17.58%). The OpenAI-Fish
+  margin is 40× smaller than the ~3-pp probe dilution, so the
+  conversational top-2 should be read as an unresolved
+  OpenAI/Fish pair either way — see F-2 caveat above and
+  [02 § Contamination probe](02_METHODOLOGY.md#probe). Orpheus
+  at 26.9% (all-75) / 32.5% (probe-excluded) is the only vendor
   categorically outside the pack under either reading.
 - Cleanest WER (narr) → **cluster** at ~12.4-13.1% (Cartesia
   12.39 / ElevenLabs 12.81 / Speechify 13.02 / Google 13.05 /
