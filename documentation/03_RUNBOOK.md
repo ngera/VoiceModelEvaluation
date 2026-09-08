@@ -359,10 +359,6 @@ interval where the resolved stack was stable
 (ρ = 0.905-1.000). Rank-level reproduction is the load-bearing
 promise.
 
-**Estimated cost of a clean reproduction** (from committed
-`analysis/*/cost_model.json` `total_observed_cost_usd` fields —
-the receipt is directly reproducible):
-
 **Reproduction cost** — an order of magnitude, not a receipt.
 This project publishes vendor *pricing* (per-1K-word rates, D6)
 because that is a finding; it does not publish what the study

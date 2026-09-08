@@ -130,7 +130,8 @@ artifact in the repo. Add liberally as the project progresses.
   is now a written constraint, not a lucky property.
 - **Measured our own noise floor.** Ten items, three draws, six
   providers: the project can now state which differences it is not
-  entitled to report. No competing eval publishes this.
+  entitled to report — a measurement I have not found published in
+  the comparable vendor evaluations I looked at.
 - **Put error bars on the money chart.** An n=1 perceptual study that
   declares "dominated" without confidence intervals is exactly the
   thing a hostile reader dismantles first — so domination now requires
@@ -146,17 +147,6 @@ artifact in the repo. Add liberally as the project progresses.
   items — key to the "monthly cached re-run" story.
 - Errors logged as data, never hand-patched. Failed provider runs get
   a clean re-run under a new manifest, never partial mixes.
-
-### Quotable data points (fill in as results arrive)
-- (TBD) The public leaderboard we audit still ranks PlayHT — a company
-  shut down Dec 31, 2025. Ours re-runs in one command.
-- (TBD) Cross-pipeline rank inversions per provider — where do the
-  two independent MOS pipelines disagree, and what does that say
-  about the "one leaderboard, one number" convention?
-- (TBD) DX friction log: "Provider X — 11 minutes; Provider Y — 74
-  minutes and an undocumented header."
-- (TBD) $ spread across providers at 1M words/mo — expected to be
-  1–2 orders of magnitude, dwarfing quality differences.
 
 ### Meta / self-critical
 - Red-team review caught 10 flaws in my own plan (Appendix E). Owning

@@ -186,3 +186,12 @@ site/
 # is a static snapshot; the live copy with cross-device sync is the claude.ai
 # artifact. Regenerable, personal, and would only churn the diff — not versioned.
 DEFECT_REGISTER_R30.html
+
+# Explainer blog series — drafts, not research output. 5 of 13 planned posts
+# exist, all `status: draft`, with figures still written as `> **Figure N**`
+# specs rather than rendered images. The findings they cite are current
+# (posts 10 and 11 track the corrected F-8 numbers and the D-H deferral), but
+# an unfinished series shipping beside a finished study reads as an abandoned
+# section rather than work in progress. Unignore when the series is ready to
+# publish, or move it to its own repo.
+blog/

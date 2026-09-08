@@ -22,14 +22,20 @@
 | orpheus | 0.4500 | 0.4470¹ | -0.0030 | -0.7% |
 | speechify | 0.3892 | 0.3892 | +0.0000 | +0.0% |
 
-¹ Orpheus R3 = **149 generations, not 150** — one narration call
-failed in the R3 fresh run. `observed_generations = 149` and
+¹ Orpheus R3 = **149 generations, not 150** — one **conversational**
+call failed in the R3 fresh run. `observed_generations = 149` and
 `observed_cost_usd = $0.447` in
 [`campaign-20260831T175358Z/cost_model.json`](campaign-20260831T175358Z/cost_model.json).
 The -$0.003 R2→R3 delta is exactly one Orpheus generation at
-$0.003/call, not a per-call price change. The narration quality
-tables handle the missing item as a missing draw in aggregation;
-per-vendor mean is over the 74 items that succeeded.
+$0.003/call, not a per-call price change. The **conversational**
+quality tables handle the missing item as a missing draw in
+aggregation; the Orpheus conversational per-vendor mean is over the
+74 items that succeeded, and Orpheus narration is a full 75.
+Confirmed in three independent analyzer outputs — `wer.json`,
+`hygiene.json` and `quality.json` all report Orpheus R3 at
+`n_items = 74` conversational / `75` narration. This is also why the
+R3 campaign totals **1,199 files, not 1,200**; the R2 baseline is a
+full 1,200.
 
 ### AB.PQ
 
