@@ -1332,12 +1332,41 @@ categorically worse than the pack — 26.89% vs 13.7-16.7%) and is
 what we publish. The **absolute** thresholds in gates.yaml were
 falsified as decision rules on this data.
 
+**Probe-dilution caveat (the ~3 pp effect all WER figures carry)**:
+15 of the 75 corpus items per use case are the pre-registered
+contamination probe (Harvard sentences conv / literary openings
+narr — spec § 3.3, see
+[02 § Contamination probe](02_METHODOLOGY.md#probe)). The probe
+transcribes at roughly one fifth of the corpus error rate on
+narration and one half on conversational; recomputing every
+WER cell on the 60 non-probe items shifts the bands by roughly
+3 percentage points:
+
+| Band | Published (all 75) | Probe-excluded (60) |
+|---|---:|---:|
+| Conversational band | 13.7 – 16.7% | 16.9 – 20.0% |
+| Narration band | 12.4 – 14.0% | 14.9 – 16.8% |
+| Orpheus conversational | 26.9% | 32.5% |
+
+**Ranking impact — a conversational top-1 swap**: probe-included
+top-1 on conv is OpenAI 0.1370 vs Fish 0.1378 (Δ 0.0008 = 40×
+smaller than the ~3-pp probe dilution); probe-excluded, Speechify
+takes top-1. **Quality-axis top-1 is unchanged** on all six
+axis × use-case combinations — this is a WER-only effect. Every
+WER figure in this doc, 06, and 08 is quoted on all 75 items
+with this same ~3-pp caveat implicit; readers who want the
+probe-excluded reading should consult [02 § Contamination
+probe](02_METHODOLOGY.md#probe) for the per-vendor recompute.
+
 **What we do about it**:
 - We do NOT amend the gate post-hoc (that would defeat pre-registration)
 - We do NOT report "vendor X passed the WER gate" — nobody did
 - We DO report the per-vendor WER as a **comparative band** only
   (glossary reminder: `WER` in this doc is relative-ranking, never
   an absolute claim of intelligibility)
+- We DO publish the probe-inclusive and probe-excluded bands
+  side-by-side in the caveat table above so the ~3-pp dilution
+  is legible
 - The gate is retained in [`configs/gates.yaml`](../configs/gates.yaml)
   as pre-registration evidence and as a receipt that a specific
   pre-committed rule failed on this data. Amending it to something
@@ -1347,13 +1376,16 @@ falsified as decision rules on this data.
 
 **What this does NOT change**:
 - The WER rankings in the [full per-provider tables](#full-per-provider-results)
-  above hold (relative-ranking-only)
+  above hold (relative-ranking-only) — modulo the conversational
+  top-1 swap named in the probe-dilution caveat
 - No pass/fail claim in the memos or the case study depends on
   a WER-gate outcome; all quality decisions are made on
   Audiobox/DNSMOS with the SE(diff) test, not on WER
 - F-3 tracks the specific gate design lessons (WER coloring
   removed from result tables because "green vs red" implies an
   absolute pass/fail claim we can't back)
+- **Quality-axis top-1** is unchanged on all six axis × use-case
+  combinations under probe exclusion — the probe caveat is WER-only
 
 **Gate outcomes JSON**: derived from
 [`analysis/campaign-20260809T204608Z/wer.json`](../analysis/campaign-20260809T204608Z/wer.json)
@@ -1639,7 +1671,19 @@ Full plain-language walkthrough in
 - **noise floor (dBFS)** — Mean noise floor across 75 files (hygiene
   analyzer, `pyloudnorm.integrated_loudness` on the quiet-window
   windows). Less-negative = noisier.
-- **WER %** — Mean `agreement_wer` across all 75 items per vendor.
+- **WER %** — Mean `agreement_wer` across **all 75 items per
+  vendor**, including the 15 contamination-probe items (Harvard
+  sentences conv / literary openings narr — spec § 3.3). Every
+  WER % cell in this doc, 06, and 08 carries an implicit
+  **~3 pp probe-dilution caveat**: excluding the 15 probe items
+  shifts each vendor's WER upward by ~3 pp (probe transcribes at
+  ~1/5 the corpus rate on narration, ~1/2 on conv), and swaps
+  conversational top-1 from OpenAI to Speechify. Quality-axis
+  top-1 is unchanged — this is WER-only. Full probe-included vs
+  probe-excluded bands + per-vendor swap in
+  [WER-gate admission](#wer-gate-admission) above; per-stratum
+  WER receipt in
+  [02 § Contamination probe](02_METHODOLOGY.md#probe).
   `agreement_wer` per item = `jiwer.wer(reference, agreed_hypothesis)`
   where `agreed_hypothesis` is the string of tokens both judges
   (wav2vec2 + faster-whisper) emitted at the same position; disputed

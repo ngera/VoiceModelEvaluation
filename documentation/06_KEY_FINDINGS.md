@@ -130,11 +130,26 @@ even though absolute numbers are inflated**. WER "ties" and
 per-vendor WER SE is computed in v1, so treat the fine-grained
 ordering with caution.
 
+**Second caveat: ~3-pp probe dilution.** The 12-17% band above
+is computed over all 75 items, which includes the 15
+pre-registered contamination-probe items (Harvard sentences /
+literary openings — spec § 3.3). The probe transcribes at ~1/5
+the corpus rate on narration and ~1/2 on conversational, so
+excluding it shifts each vendor's WER upward by ~3 pp and
+**swaps conversational top-1 from OpenAI to Speechify**. Full
+probe-included vs probe-excluded bands + per-vendor swap in
+[04 § WER-gate admission](04_RESULTS.md#wer-gate-admission);
+per-stratum WER receipt in [02 § Contamination
+probe](02_METHODOLOGY.md#probe). **Quality-axis top-1 is
+unchanged** on all six axis × use-case combos — the probe
+caveat is WER-only.
+
 **Impact:** WER is reported as *relative-ranking-only* throughout
-the results. Absolute WER numbers should not be quoted without the
-"vs the same 2-judge pipeline across other vendors" qualifier. A
-stronger judge (NeMo Parakeet once integrated) would tighten
-absolutes but reproduce the ordering.
+the results. Absolute WER numbers should not be quoted without
+both the "vs the same 2-judge pipeline across other vendors"
+qualifier AND the "~3 pp probe-dilution" caveat. A stronger judge
+(NeMo Parakeet once integrated) would tighten absolutes but
+reproduce the ordering.
 
 **Evidence:** [`analysis/campaign-20260809T204608Z/wer.json`](../analysis)
 
@@ -156,10 +171,13 @@ different vendors lead:
 - Audiobox PQ (both use cases) → **Speechify**
 - DNSMOS OVRL (both use cases) → **OpenAI**
 - Cleanest WER (conv) → **cluster** at ~13.7-14.3% (OpenAI 13.70 /
-  Fish 13.78 / ElevenLabs 14.07 / Speechify 14.33). No vendor
-  cleanly leads; the spread is smaller than the F-2 / F-3
-  WER-judge inflation. Orpheus at 26.9% is the only vendor
-  categorically outside the pack.
+  Fish 13.78 / ElevenLabs 14.07 / Speechify 14.33) — probe-included.
+  No vendor cleanly leads; the spread is smaller than the F-2 / F-3
+  WER-judge inflation. **Under probe exclusion the conversational
+  top-1 flips to Speechify** (the 0.0008 gap between OpenAI and Fish
+  is 40× smaller than the ~3-pp probe dilution — see F-2 caveat
+  above and [02 § Contamination probe](02_METHODOLOGY.md#probe)). Orpheus at 26.9% is the only vendor
+  categorically outside the pack under either reading.
 - Cleanest WER (narr) → **cluster** at ~12.4-13.1% (Cartesia
   12.39 / ElevenLabs 12.81 / Speechify 13.02 / Google 13.05 /
   Openai 13.30 / Fish 13.99). No vendor cleanly leads — Google

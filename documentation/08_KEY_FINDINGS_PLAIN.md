@@ -612,6 +612,21 @@ conversational (OpenAI → Speechify, by 0.00346, with three vendors
 — Speechify, Fish, ElevenLabs — sitting inside a 0.007 band of
 each other and five vendors sitting inside 0.01).
 
+> **WER caveat carried through this whole doc**: the WER numbers
+> we quote include the 15 famous-sentence contamination-probe
+> items per use case (Harvard sentences + literary openings —
+> spec § 3.3). Those items transcribe about five times more
+> accurately than the sentences we wrote ourselves, so every
+> vendor's WER looks **~3 percentage points lower** than it
+> would on the 60 non-probe items alone. **On the 60 non-probe
+> items, Speechify — not OpenAI — has the cleanest conversational
+> WER**; the OpenAI/Fish/Speechify differences on the full 75
+> are all smaller than that ~3-pp dilution. Quality scores
+> (Audiobox / DNSMOS rankings) are not affected — this is a
+> WER-only issue. Full technical details in
+> [04 § WER-gate admission](04_RESULTS.md#wer-gate-admission)
+> and [02 § Contamination probe](02_METHODOLOGY.md#probe).
+
 - Speechify won **both** Audiobox axes (PQ + CE) on **both** use
   cases: **same in both runs**
 - OpenAI won DNSMOS OVRL + SIG on both use cases: **same in both
