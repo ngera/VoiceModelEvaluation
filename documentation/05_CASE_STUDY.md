@@ -262,14 +262,25 @@ quality" is not one thing:
   phone-tree confirmation, a screen reader, an IVR system
 
 **These are two different constructs, and our own data separates
-them.** Audiobox's `content_enjoyment` axis runs against all four
-DNSMOS axes (mean ρ = −0.506). Audiobox's `production_quality`
-axis runs *with* them (mean ρ = +0.238, and +0.571 against P.808).
-The split we set out to measure between two pipelines turns out to
-sit between two axes of one of them. Whichever construct a reader
-cares about, the number that tracks it has to be named
-individually — an aggregate across the two hides exactly the
-distinction that motivated running both.
+them — on conversational.** On the conversational corpus,
+Audiobox's `content_enjoyment` axis runs against all four DNSMOS
+axes (mean ρ = **−0.506**) and Audiobox's `production_quality`
+axis runs *with* them (mean ρ = **+0.238**, and **+0.571** against
+P.808). The split we set out to measure between two pipelines
+turns out to sit between two axes of one of them — on that use
+case. **On narration the decomposition does not hold**: PQ is
+mixed-sign at ρ = **−0.167** (still weakly negative against
+DNSMOS) and CE is also negative at **−0.375** — the two axes
+don't cleanly split into "runs-with-DNSMOS" and
+"runs-against-DNSMOS" on narration the way they do on
+conversational. Pooled across both use cases, PQ vs DNSMOS is
+essentially zero (+0.036); CE stays negative (−0.44). So the
+clean/warm decomposition is a **conversational-only** result;
+06 § F-8's per-pair table by use case is the receipt. Whichever
+construct a reader cares about, the number that tracks it has
+to be named individually, by use case — an aggregate across
+either dimension hides exactly the distinction that motivated
+running both.
 
 The practical consequence applies to every quality score in this
 report as much as anywhere else: **a quality number is
@@ -461,8 +472,9 @@ alt-voice pair produces a statistically significant AB.PQ shift,
 and T6's own narration same-gender leg (wyatt_32 → edmund_32,
 both male) already establishes a >3σ voice-choice effect on
 Speechify independent of gender. The lead spans two Audiobox
-axes that measure different constructs — PQ (technical cleanliness;
-agrees with DNSMOS at ρ = +0.24 mean) and CE (warm / enjoyment;
+axes that measure different constructs on conversational — PQ
+(technical cleanliness; agrees with DNSMOS at ρ = +0.24 mean on
+conv, mixed-sign at −0.17 on narr) and CE (warm / enjoyment;
 anti-correlates with DNSMOS). See F-8 for the per-pair receipt.
 
 ### The Cartesia triangulation — two independent code paths agree
@@ -727,9 +739,11 @@ vendor structurally?
 - Warm/engaging (audiobook, storytelling, brand voice) → **Speechify
   wins both Audiobox axes on both use cases** at **3.7–9.5σ vs
   the numerical #2, 3.7–7.3σ vs the deployable #2**. The two
-  Audiobox axes measure different constructs: PQ (technical
-  cleanliness, agrees with DNSMOS at ρ = +0.24 mean) and CE
-  (warm / enjoyment, anti-correlates with DNSMOS at ρ ≈ −0.5 mean).
+  Audiobox axes measure different constructs on conversational:
+  PQ (technical cleanliness, agrees with DNSMOS at ρ = +0.24 mean
+  on conv; mixed-sign at −0.17 on narr) and CE (warm / enjoyment,
+  anti-correlates with DNSMOS at ρ ≈ −0.5 mean on conv, −0.38 on
+  narr — the split is conv-only, see F-8).
   Speechify wins both. Numerical vs deployable #2 differs on
   narration AB.PQ, where Orpheus (8.002) numerically beats Cartesia
   (7.986) but is Q1-disqualified from narration workflows by its
@@ -835,7 +849,7 @@ derived from:
 | Deepgram TTFA ~180 ms p50 / ~230 ms p90 | 583 / 674 and 564 / 670 ms; no session under 500 ms | `analysis/latency-20260809T*/latency.json` |
 | Orpheus $0.030 / 1K words | ~$0.070–0.088 / 1K words under the measured per-call output | `src/veval/analyze/cost.py` line 177 + T8 |
 | Speechify $0.100 / 1K words at 10K/mo | $1.000 / 1K words | `cost_model.json` |
-| Audiobox `production_quality` is the warmth axis | PQ correlates **+0.571** with DNSMOS p808 and +0.238 across all four DNSMOS axes — it tracks cleanliness; CE is the axis that runs against DNSMOS at −0.506 | `cross_metric.json` |
+| Audiobox `production_quality` is the warmth axis | PQ correlates **+0.571** with DNSMOS p808 (conv) and +0.238 across all four DNSMOS axes (conv) — it tracks cleanliness on conv; CE runs against DNSMOS at −0.506 (conv). On narration the split doesn't hold: PQ is mixed-sign at −0.167, CE at −0.375 — the clean/warm decomposition is a conv-only result | `cross_metric.json` |
 | ElevenLabs 469 ms p90 as a stable ceiling | S3 measured 816 ms p90; both vendors moved 50–90% p50 across sessions | `analysis/latency-20260812T*/latency.json` |
 | Project spend ~$56 | $7.85 for the primary campaign, ~$12.60 across all committed runs | `analysis/*/cost_model.json` `total_observed_cost_usd` |
 

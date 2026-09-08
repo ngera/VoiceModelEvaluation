@@ -113,10 +113,20 @@ capabilities:
       source_url: null
       date_verified: null
     streaming_protocol:
-      value: TODO_desk_research
-      notes: "HTTP endpoint used in adapter; streaming websocket not evaluated."
-      source_url: null
-      date_verified: null
+      value: partial
+      notes: >-
+        HTTP chunked streaming CONFIRMED by our own campaign, not by desk
+        research: src/veval/adapters/fish.py opens client.stream("POST", ...)
+        against https://api.fish.audio/v1/tts and records TTFA off the first
+        audio chunk under opts.streaming, so the chunked path was exercised
+        and measured on every Fish row. Websocket streaming (if any) not
+        evaluated - hence `partial`, not `yes`. Sourced to code + run
+        artefacts, the same in-repo provenance pattern `determinism` uses
+        (F-1). This is a positive existence proof, the only direction this
+        kind of evidence runs (spec A.8: "ten measurements cannot tell you
+        a feature does not exist").
+      source_url: "src/veval/adapters/fish.py"
+      date_verified: 2026-09-08
     word_level_timestamps:
       value: TODO_desk_research
       notes: null

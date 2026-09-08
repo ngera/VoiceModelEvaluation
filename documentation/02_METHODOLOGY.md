@@ -542,10 +542,12 @@ what a buying decision needs that no amount of audio scoring
 answers. Per spec § A.8: *"desk research against official docs,
 ~30 minutes per provider, recorded as a ✓/✗/partial matrix with
 a source link and date per cell. No scoring — facts, not
-judgments."* Nine columns: voice count · languages · cloning
-(and its gating tier) · SSML / style / speed controls · streaming
-protocol · word-level timestamps · SLA + data-residency terms ·
-pricing-model shape · determinism.
+judgments."* Nine columns per § A.8: voice count · languages ·
+cloning (and its gating tier) · SSML / style / speed controls ·
+streaming protocol · word-level timestamps · SLA + data-residency
+terms · pricing-model shape · determinism — plus a tenth,
+`commercial_use`, added because a pre-registered gate reads from
+it (see "What D8 closes" below).
 
 **Where**: [`configs/capabilities.yaml`](../configs/capabilities.yaml)
 — per (vendor, column) with `value` (`yes` / `no` / `partial`),
@@ -568,6 +570,41 @@ adjudicated against the `commercial_use` column here. See
 [04 § Pre-registered gate outcomes](04_RESULTS.md#pre-registered-gate-outcomes)
 row for `commercial_use_permitted` for the current per-vendor
 verdicts + source links.
+
+**Completeness — the matrix is 80% filled, and the gaps are
+named.** `capabilities.yaml` holds 8 vendors × 10 columns = 80
+cells. **65 carry a value with a `source_url` and a
+`date_verified`; 15 read `TODO_desk_research`** and are not yet
+researched. They do not spread evenly — they concentrate in the
+column a procurement reader reaches for first:
+
+| Column | TODO | Vendors |
+|---|---:|---|
+| `sla_and_data_residency` | **5 / 8** | deepgram · fish · cartesia · elevenlabs · speechify |
+| `word_level_timestamps` | 3 / 8 | deepgram · fish · cartesia |
+| `voice_count` | 2 / 8 | fish · cartesia |
+| `languages` | 2 / 8 | fish · cartesia |
+| `ssml_controls` | 2 / 8 | deepgram · fish |
+| `cloning` | 1 / 8 | orpheus |
+| *the other four columns* | 0 | — |
+
+(`streaming_protocol` left this list on 2026-09-08: Fish's cell
+was closed to `partial` on in-repo evidence — see the note in
+`capabilities.yaml` and the asymmetry paragraph below.)
+
+**Read every `TODO_desk_research` cell as "not established",
+never as "absent".** Spec § A.8's own rationale is explicit that
+*"ten measurements cannot tell you a feature does not exist"* —
+and that asymmetry runs one way only. An adapter that **uses** a
+feature proves the feature exists: that is how `streaming_protocol`
+and `determinism` are sourced here, to adapter code and to F-1
+respectively. An adapter that does **not** use one proves nothing.
+So the unresearched cells were left empty rather than inferred to
+`no` from the shape of our own request payloads. Closing them is
+desk research against vendor documentation — roughly two hours
+across the six affected vendors, weighted to Fish (6 cells) and
+the five SLA / data-residency rows — and is tracked as
+[07 gap 10](07_GAPS_AND_FUTURE_WORK.md).
 
 ---
 

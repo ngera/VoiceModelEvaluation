@@ -363,15 +363,74 @@ function no longer matches; (c) re-sync `n_judgments_target` to
 `rationale` field describes (Phase-D workstream that was never
 run); (d) tag the amended config as `prereg-v1.11` before any v2
 run; (e) upgrade the `veval doctor` check to refuse to proceed
-if `analyzers.yaml` contains **any** of: a `TODO_` placeholder
-string, a `null` value in a pre-registered numeric field (the
-MDD nulls would have passed a string-only check silently), or a
-value that a subsequent `DEVIATIONS.md` entry has explicitly
-superseded (the `n_judgments_target: 210` line survived several
-review rounds of BT-count corrections in prose because no gate
-cross-referenced it against D-009's amendment).
+if **any pre-registered config** — `analyzers.yaml`,
+`capabilities.yaml`, `gates.yaml`, `pricing.yaml` — contains
+**any** of: a `TODO_` placeholder string, a `null` value in a
+pre-registered numeric field (the MDD nulls would have passed a
+string-only check silently), or a value that a subsequent
+`DEVIATIONS.md` entry has explicitly superseded (the
+`n_judgments_target: 210` line survived several review rounds of
+BT-count corrections in prose because no gate cross-referenced it
+against D-009's amendment). The check is scoped to the whole
+`configs/` directory rather than just `analyzers.yaml` — the
+narrower scope would have missed
+[gap 10](#10-configscapabilitiesyaml-is-81-filled--15-of-80-cells-are-unresearched)
+on the day `capabilities.yaml` landed.
 Wall-clock cost is minutes for (a)+(b)+(d)+(e), a few hours for
 (c) — this gap is a v1 process miss, not a technical constraint.
+
+---
+
+### 10. `configs/capabilities.yaml` is 81% filled — 15 of 80 cells are unresearched
+
+D8's capability matrix ([02 § D8](02_METHODOLOGY.md#d8--capability-audit--desk-research-matrix))
+holds 8 vendors × 10 columns = **80 cells**. 65 carry a value
+with a `source_url` and a `date_verified`. **15 read
+`TODO_desk_research`**, and they cluster in one column:
+
+| Column | TODO | Vendors |
+|---|---:|---|
+| `sla_and_data_residency` | **5 / 8** | deepgram · fish · cartesia · elevenlabs · speechify |
+| `word_level_timestamps` | 3 / 8 | deepgram · fish · cartesia |
+| `voice_count` | 2 / 8 | fish · cartesia |
+| `languages` | 2 / 8 | fish · cartesia |
+| `ssml_controls` | 2 / 8 | deepgram · fish |
+| `cloning` | 1 / 8 | orpheus |
+
+**Why it matters, and how far.** The gate that reads from D8 —
+`commercial_use_permitted` — is **fully populated** (8/8, with
+sources), so no pre-registered outcome in
+[04](04_RESULTS.md#pre-registered-gate-outcomes) rests on an
+unfilled cell. What the gaps cost is the buying-memo half of D8:
+a reader asking "does it do SSML, does it return word timings,
+where is my data held" gets an answer for some vendors and a
+placeholder for others, and SLA / data-residency — the row a
+procurement reviewer opens first — is unanswered for five of
+eight.
+
+**These are "not established", not "absent".** Spec § A.8 states
+that *"ten measurements cannot tell you a feature does not
+exist"*, and the asymmetry is one-directional: an adapter that
+uses a feature proves it exists (`streaming_protocol` and
+`determinism` are sourced exactly that way, to code and to F-1);
+an adapter that does not use one proves nothing. Inferring `no`
+from our own request payloads would have filled the matrix
+faster and made it wrong, so the cells were left as placeholders.
+
+**Same shape as [gap 9](#9-configsanalyzersyaml-carries-eight-todo-placeholders--three-drive-published-numbers-one-is-a-post-hoc-recorded-near-miss-two-are-moot-two-are-the-pre-registered-power-calc)** —
+a pre-registered config shipped with `TODO_` strings — with one
+difference that matters: gap 9's placeholders sat undisclosed
+through several review rounds, and these are disclosed in the
+same round the file landed. That is the discipline gap 9 exists
+to have taught.
+
+**v2 fix**: ~2 hours of desk research against vendor
+documentation, weighted to Fish (6 cells) and the five SLA /
+residency rows; write each cell with `value` +
+`source_url` + `date_verified` like the 64 already filled; then
+re-render [02 § D8](02_METHODOLOGY.md#d8--capability-audit--desk-research-matrix)'s
+completeness table and delete this gap. The `veval doctor`
+widening in gap 9's fix (e) is what prevents a recurrence.
 
 ---
 
