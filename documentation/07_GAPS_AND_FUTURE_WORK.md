@@ -28,7 +28,8 @@ than glossed over.
 ### 1. No human perceptual validation (n=1 rater is not enough)
 
 The operative pre-registered target for this campaign was
-**216 judgments** per
+**216 unique judgments** (+ ~10% consistency-repeat block ≈ 238
+total rated items on the rater's side) per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) (`prereg-v1.7`,
 2026-08-08) — 36 pairs across 9 systems × 2 use cases × 3 reps
 — with clustered bootstrap 95% CIs. Under D-009 the target

@@ -988,7 +988,8 @@ in [`scripts/_t8_analysis.py`](../scripts/_t8_analysis.py) +
 ### The BT deferral
 
 The operative pre-registered target for this campaign was
-**216 judgments** per
+**216 unique judgments** (+ ~22 consistency repeats ≈ 238 total
+rated items on the rater's side) per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) (`prereg-v1.7`)
 — 36 pairs across the 9-system roster × 2 use cases × 3 reps.
 Under D-009 the target and the spec's 3-rep minimum floor

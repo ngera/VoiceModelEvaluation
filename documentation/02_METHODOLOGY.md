@@ -409,8 +409,10 @@ choice.
 ### D4 · Human perceptual (deferred to v2)
 
 The pre-registered plan target for this campaign was **216
-blinded pairwise Bradley-Terry judgments** (36 pairs × 2 use
-cases × 3 reps) with clustered bootstrap 95% CIs, per
+unique blinded pairwise Bradley-Terry judgments** (36 pairs × 2
+use cases × 3 reps) plus a **~10% consistency-repeat block
+(~22 rerated items) ≈ 238 total rated items** on the rater's
+side, with clustered bootstrap 95% CIs, per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) landed as
 `prereg-v1.7` on 2026-08-08 (spec's original 210 target reflected
 the 6-provider + anchor roster; D-003 grew the roster to 8

@@ -184,10 +184,12 @@ project.
 
 The spec's D4 slot was a blinded pairwise BT rating campaign at
 n=1 self-rater. The operative pre-registered target for this
-campaign was **216 judgments** per
+campaign was **216 unique judgments** per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) — 36 pairs
 (C(9,2) over 9 systems) × 2 use cases × 3 reps = 216, landed
-as `prereg-v1.7`. Formula is `pairs × use_cases × reps`; the
+as `prereg-v1.7` — plus a **~10% consistency-repeat block
+(~22 rerated items) ≈ 238 total rated items** on the rater's
+side (`pair_builder.build_manifest`). Formula is `pairs × use_cases × reps`; the
 systems count enters via the pair count. Under
 D-009 the target and the spec's 3-rep minimum floor collapse to
 the same number for the 9-system roster: 216 IS the 3-rep floor
@@ -929,7 +931,7 @@ different artifacts, and only one of them was under test.
 
 **A proper multi-rater human perceptual evaluation.** The
 operative pre-registered target for this campaign was
-**216 blinded pairwise judgments** per
+**216 unique blinded pairwise judgments (+ ~22 consistency repeats ≈ 238 total rated items)** per
 [`DEVIATIONS.md` D-009](../DEVIATIONS.md#d-009) (`prereg-v1.7`,
 2026-08-08), with bootstrap CIs. Under D-009 the campaign target and the spec's 3-rep floor collapse to the same 216 for the 9-system roster (216 IS the 3-rep floor at C(9,2)=36 pairs × 2 UC × 3 reps); 126 is the pre-D-003 7-system spec floor and is superseded. Executable at
 n=1 rater — but the CIs would be conditional on that one rater, and
