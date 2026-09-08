@@ -193,8 +193,8 @@ on **client-side lag logging** (per-request timestamps for DNS +
 TCP handshake + first-byte-arrival) that was not run in v1. F-11
 in 06_KEY_FINDINGS.md is the receipt for both the six-session
 rank stability and the residual attribution gap; the older
-"two-session comparison is not sufficient" framing was the
-S3-only story from before the R14 rebase (see
+"two-session comparison is not sufficient" framing was a
+pre-six-session story from an earlier review pass (see
 [CORRECTIONS row 59](../CORRECTIONS.md) for the six-session
 receipt that superseded it).
 

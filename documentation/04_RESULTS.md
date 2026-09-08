@@ -141,8 +141,8 @@ alt text ("best" / "mid" / "worst") describes the tier.*
 
 **Source: R2 `campaign-20260809T204608Z` — every cell in the two
 tables below.** Verified against both R2 and R3 quality.jsons in
-the R30 audit (96 of 96 cells match R2; 24 also match R3 to two
-decimals). R3 numbers with per-cell R2→R3 deltas live in
+a later review-round audit (96 of 96 cells match R2; 24 also
+match R3 to two decimals — see [CORRECTIONS row 168](../CORRECTIONS.md)). R3 numbers with per-cell R2→R3 deltas live in
 [`analysis/round3-vs-round2-comparison.md`](../analysis/round3-vs-round2-comparison.md).
 See also the run-source note at [§ Full per-provider results
 scope note](#full-per-provider-results) above.
