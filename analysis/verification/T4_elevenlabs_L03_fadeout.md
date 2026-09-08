@@ -4,7 +4,6 @@
 - **Use case**: narration
 - **Test type**: fresh regen × 3 + drift analyzer
 - **Created**: 2026-08-11
-- **Cost**: ~$0.02 (three L03 regenerations, ~90s each)
 - **Wall-clock**: ~2 min
 
 ## Original outlier (from Phase 2)

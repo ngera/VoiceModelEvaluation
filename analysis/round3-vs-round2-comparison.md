@@ -4,8 +4,10 @@
 - R3 run: `campaign-20260831T175358Z` — campaign-20260831T175358Z
 
 ## Cost totals
-- R2 total_observed_cost_usd: **$7.8457**
-- R3 total_observed_cost_usd: **$7.8427**
+- R2 vs R3 `total_observed_cost_usd` agree to within 0.04% — expected,
+  since modelled cost is `chars × rate` and both runs used the same
+  corpus, so cost is not a replication signal (values in the committed
+  `cost_model.json` files).
 - Δ: **-0.0030** (-0.04%)
 
 ### Per-vendor observed cost (delta)

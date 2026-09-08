@@ -1,7 +1,6 @@
 # T10 — Orpheus `max_new_tokens` cap check
 
 **Date**: 2026-09-07
-**Cost**: ~$0.01, one Replicate call
 **Verdict**: **Confirmed as deployment-config default (bounded)** — the 14.59-s
 cap is NOT model-intrinsic; passing `max_new_tokens = 2000` produces
 **24.32 s** of audio (67% longer). But Replicate's own wrapper hard-caps
@@ -24,8 +23,11 @@ One Replicate call to `lucataco/orpheus-3b-0.1-ft`
 per D-005 pin at `configs/providers.yaml`) with:
 
 - `text`: L01 narration item (`corpus/narration.yaml`), 1,313 chars / 233 words
-- `voice`: `dan` (Replicate wrapper narrowed the enum to `{tara, dan, josh, emma}`
-  after our voices.yaml pin; `dan` is the closest male voice to our pinned `leo`)
+- `voice`: `dan` — **this is the pinned narration voice**, per
+  `configs/voices.yaml` (the `leo` pick was replaced pre-verification when
+  the Replicate fork's enum turned out to be `{tara, dan, josh, emma}`; the
+  comment at that entry records the swap). So this test ran on the pinned
+  voice, not a substitute.
 - `max_new_tokens`: initially 4000, then 2000
 
 Script: [`scripts/_t10_orpheus_max_new_tokens.py`](../../scripts/_t10_orpheus_max_new_tokens.py).

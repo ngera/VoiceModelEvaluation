@@ -71,9 +71,9 @@ artefact in this repo:
 | # | Finding | Evidence |
 |---|---|---|
 | 1 | **The two independent quality raters rank vendors differently.** Meta's Audiobox measures two axes (technical cleanliness PQ + warm/enjoyment CE); Microsoft's DNSMOS is a second family of scorers (P.808 single-model + P.835 three-scale). **On conversational, PQ agrees with DNSMOS at mean ρ = +0.24 and CE anti-correlates at mean ρ = −0.51** — a real construct split (PQ-side vs CE-side). **On narration the clean/warm split does not hold**: PQ is mixed-sign at ρ = −0.17 and CE is also negative at −0.38, so both axes anti-correlate weakly with DNSMOS on that use case. The decomposition is a conversational-only result — see [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) for the full per-pair × use-case table. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
-| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). **T10 settled it (2026-09-07, one Replicate call, ~$0.01)**: cap is Replicate's `max_new_tokens` default; passing `max_new_tokens = 2000` (the Replicate wrapper's own hard ceiling) produces **24.32 s** of audio (1.67× the 14.59 s default). Bounded fix, not unbounded — the practical Orpheus-on-Replicate ceiling is ~24 s per call, so long-form narration still needs chunking (~1.67× fewer chunks than the default cap requires). Per-1K-words cost at the raised cap: **~$0.040–0.053** (down from $0.067–0.088 under the default cap, still peer-priced to OpenAI's $0.075 rather than the nominal $0.030). See [T10 verdict](analysis/verification/T10_orpheus_max_new_tokens.md) for the recompute + cost math. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
+| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). **T10 settled it (2026-09-07, one Replicate call)**: cap is Replicate's `max_new_tokens` default; passing `max_new_tokens = 2000` (the Replicate wrapper's own hard ceiling) produces **24.32 s** of audio (1.67× the 14.59 s default) on a single call against one long item (L01 narration, pinned `dan` voice). Bounded fix, not unbounded — the practical Orpheus-on-Replicate ceiling is ~24 s per call, so long-form narration still needs chunking (~1.67× fewer chunks than the default cap requires). Per-1K-words cost at the raised cap: **~$0.040–0.053** (down from $0.067–0.088 under the default cap, still peer-priced to OpenAI's $0.075 rather than the nominal $0.030). See [T10 verdict](analysis/verification/T10_orpheus_max_new_tokens.md) for the recompute + cost math. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
 | 3 | **ElevenLabs shifted downward on both Audiobox axes + DNSMOS P.808 between R2 and R3 (paired-z 2.26–7.32σ, 5 cells surviving Bonferroni-12).** The P.835 triad's 6 cells (3 conv + 3 narr) all stayed at \|z\| < 1.6. Two of three scoring models detected the drift; the third didn't. Both ElevenLabs models (Flash v2.5 conv, Multilingual v2 narr) drift together — a single-model update does not explain the pattern. This is the finding the "measurement date on every finding" discipline exists to catch — invisible without R3. | [F-12 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-12) · [analysis/round3-vs-round2-comparison.md](analysis/round3-vs-round2-comparison.md) |
-| ★ | **The verification pack changed the framing of multiple headline findings** (T4/T5/T6/T7/T8/F-11 all named individually — see [verification README](analysis/verification/)), and a targeted Phase 2 experiment pack (2026-09-01, ~$3.55) further generalised F-6 (loudness fade) from an item-specific quirk to a cross-vendor phenomenon and extended F-7's voice-swap check from 1 vendor to 5. Cheap replication is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) · [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md) |
+| ★ | **The verification pack changed the framing of multiple headline findings** (T4/T5/T6/T7/T8/F-11 all named individually — see [verification README](analysis/verification/)), and a targeted Phase 2 experiment pack (2026-09-01) further generalised F-6 (loudness fade) from an item-specific quirk to a cross-vendor phenomenon and extended F-7's voice-swap check from 1 vendor to 5. Cheap replication is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) · [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md) |
 
 ---
 
@@ -128,8 +128,9 @@ Eight commercial voice AI vendors (ElevenLabs, Cartesia, Fish Audio,
 Google Cloud TTS, Deepgram, Canopy Orpheus / `lucataco`
 community-fork on Replicate, OpenAI, Speechify)
 evaluated on two use cases (support-agent conversational + long-form
-narration) across a 75-item pre-registered corpus per use case. Five
-measurement dimensions:
+narration) across a 75-item pre-registered corpus per use case. The
+spec pre-registered **eight** measurement dimensions; here is what
+happened to each:
 
 - **D1 · Latency** — TTFA p50/p90 from 50 serial trials per vendor per
   session, with **six sessions across four dates** for the two
@@ -150,9 +151,27 @@ measurement dimensions:
   n=1 self-rating cannot license "human preference" claims at
   population level; refusing that ceremony is a stronger position
   than executing and disclaiming it
-- **D5 · Cost** — full pricing model (`pricing.yaml`) covering
+- **D5 · Audio hygiene** — sample-level clipping scan, VAD-based
+  pause detection, and ITU-R BS.1770-4 loudness. Produces three of
+  the eight pre-registered gates (`clipped_samples`,
+  `long_stratum_clipped_samples`,
+  `long_stratum_acoustic_noise_floor_dbfs`) and the whole of F-4
+- **D6 · Cost** — full vendor pricing model (`pricing.yaml`) covering
   monthly minimums, included tiers, and per-1K-word rates at 10K /
   100K / 1M words per month
+- **D7 · Developer experience** — friction log published, timing
+  descoped. The per-vendor friction record is at
+  [`dx/friction_log.md`](dx/friction_log.md); the docs-to-first-audio
+  stopwatch was never run under controlled conditions and cannot be
+  reconstructed, so it is cut on the record rather than estimated —
+  see [D-I in 06](documentation/06_KEY_FINDINGS.md#d-i)
+- **D8 · Capability audit** — factual feature matrix per vendor
+  ([`configs/capabilities.yaml`](configs/capabilities.yaml)): voice
+  count, languages, cloning, SSML controls, streaming protocol, word
+  timestamps, SLA + data residency, pricing shape, determinism,
+  commercial use. 65 of 80 cells carry a value with a source URL and
+  a verification date; **15 are unresearched and named as such** in
+  [07 gap 10](documentation/07_GAPS_AND_FUTURE_WORK.md)
 
 Corpus, gates, voices, vendor models, and analyzer *parameters*
 (dataset ids, axis choices, judge selections, gate thresholds)
@@ -163,21 +182,12 @@ analyzer **neural-model revisions** (Audiobox, wav2vec2,
 faster-whisper) were not SHA-pinned in the campaign — placeholders
 in `configs/analyzers.yaml` propagated into `wer.json`. Disclosed
 in [02 § 1](documentation/02_METHODOLOGY.md#1-pre-registration-with-git-tags)
-and tracked as [07 gap 9](documentation/07_GAPS_AND_FUTURE_WORK.md). A separate **Phase 2c verification pack** (9 tests,
-~$0.63 spend) confirmed or refuted every headline outlier — verdicts
+and tracked as [07 gap 9](documentation/07_GAPS_AND_FUTURE_WORK.md). A separate **Phase 2c verification pack**
+(10 tests) confirmed or refuted every headline outlier — verdicts
 under [analysis/verification/](analysis/verification/). A **Phase 2
-experiment pack** (2026-09-01, ~$3.55) then addressed three
-loose ends F-6, F-7, F-11 raised, with executive writeup in
+experiment pack** (2026-09-01) then addressed three loose ends
+F-6, F-7, F-11 raised, with executive writeup in
 [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md).
-Total metered project spend across 8 vendor accounts: **~$16.15**
-(pilots + primary campaign + variance run + latency sessions +
-verification pack + Phase 2 experiment pack). Load-bearing per-run
-cost figures come from committed `analysis/*/cost_model.json`;
-two categories (doctor + pilot line ~$0.61, T4/T8/Wave-4b lines
-inside ~$0.63) are reproducible locally but not currently
-committed to git — see
-[DISCLAIMER § Cost breakdown](DISCLAIMER.md) for the
-committed-vs-reproducible split per line.
 
 ---
 
@@ -210,13 +220,12 @@ uv run veval analyze <run-id> --stages all
 ```
 
 **Full run** (75 items × 8 vendors × 2 use cases = 1,200 audio
-outputs) is **~$7.85 metered** (per R2 and R3 both) and takes
-~30 min end-to-end. See
+outputs) takes ~30 min end-to-end. See
 [03_RUNBOOK.md § Reproduce the published evaluation](documentation/03_RUNBOOK.md#reproduce-the-published-evaluation)
-for the full ~$16 minimum-reproduction breakdown (campaign +
-variance + latency S1–S3 + verification pack + Phase 2 experiment
-pack), and [DISCLAIMER § Cost breakdown](DISCLAIMER.md) for the
-committed-vs-reproducible split per line.
+for the reproduction-cost bands (campaign + variance + latency
+S1–S3 + verification pack + Phase 2 experiment pack), and
+[DISCLAIMER § Artefact availability](DISCLAIMER.md) for which
+cost models are committed vs regenerable.
 
 **CPU-only by design** (see D-F in
 [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)):

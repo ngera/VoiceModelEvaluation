@@ -21,7 +21,7 @@
 
 ## Structural gaps (cannot fully mitigate in v1 scope)
 
-These are limits inherent to a single-person, three-week, ~$13
+These are limits inherent to a single-person, three-week
 project. Each is documented as an explicit v2 workstream rather
 than glossed over.
 
@@ -496,16 +496,19 @@ Explicit "not in this version" list. Each is a valid v2 workstream.
   well-formed English; behavior on malformed / adversarial input
   (very long tokens, non-printable characters, prompt-injection strings)
   untested
-- **Two cheap tests proposed, not yet run** (each < $0.15,
-  < 30 min wall-clock, both flagged in an earlier review round and
-  scaffolded in [03 § Reproduce the Phase 2 experiment pack](03_RUNBOOK.md#reproduce-the-phase-2-experiment-pack)):
-    - **T10 — Orpheus `max_new_tokens` check.** Distinguishes
-      whether the 14.59-s output cap (F-5, T8) is a
-      deployment-config default (fixable in one API-flag change) vs
-      a model-intrinsic hard cap (requires chunking-engineering).
-      README and 05 both currently flag this as untested; running
-      T10 would let the PM recommendation collapse from "either / or"
-      to a single actionable path.
+- **T10 — Orpheus `max_new_tokens` check — RUN 2026-09-07, no
+  longer a gap.** It distinguished whether the 14.59-s output cap
+  (F-5, T8) was a deployment-config default or a model-intrinsic
+  hard cap, and the answer was the former: `max_new_tokens = 2000`
+  (Replicate's own wrapper ceiling) yields ~24.32 s per call,
+  1.67× the default. The PM recommendation collapsed from
+  "either / or" to a single path — bounded, so long narration
+  still needs chunking, at ~1.67× fewer chunks. Scope: one call
+  on one long item (L01 narration, pinned `dan` voice). See
+  [T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md).
+- **One cheap test still proposed, not yet run**
+  (< 30 min wall-clock, scaffolded in
+  [03 § Reproduce the Phase 2 experiment pack](03_RUNBOOK.md#reproduce-the-phase-2-experiment-pack)):
     - **Sample-rate header sweep.** Confirms no vendor is *still*
       shipping a placeholder sample rate in the WAV header
       (Deepgram's 44,737-s placeholder was fixed by
@@ -536,7 +539,7 @@ Explicit "not in this version" list. Each is a valid v2 workstream.
   raw-audio-generation level for R2. **Closed for R3**: the
   `--no-cache` primary-campaign re-run
   (`campaign-20260831T175358Z`, R3) ran on 2026-08-31 for
-  **$7.85 metered** (cost_model.json total; the earlier
+  **a single-digit-dollar run** (cost_model.json total; the earlier
   ~$40 estimate on this bullet was pre-run), populated per-item
   `synthesis_time` for every (vendor, use case) cell
   (`n_fresh = 75`), adjudicated the RTF gate 5 pass / 3 fail

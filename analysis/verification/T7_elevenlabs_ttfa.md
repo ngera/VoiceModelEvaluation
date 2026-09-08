@@ -4,7 +4,6 @@
 - **Use case**: conversational (`eleven_flash_v2_5`, low-latency model)
 - **Test type**: 2nd 50-trial latency session on a different day
 - **Created**: 2026-08-11
-- **Cost**: ~$0.02
 - **Wall-clock**: ~10 min execution (+ deliberate wait for "different day")
 
 ## Original outlier (from Phase 2)

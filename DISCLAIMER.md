@@ -46,48 +46,26 @@ which fully absorbed our Deepgram spend across the campaign +
 verification runs). **No vendor negotiated preferential pricing,
 provided out-of-band credits, or discounted access.**
 
-**Cost breakdown** — the load-bearing per-run cost figures come
-from `total_observed_cost_usd` in the corresponding
-`analysis/*/cost_model.json`. **Two categories are reproducible
-locally but not currently committed to git**: (a) the ~$0.61
-doctor-probes-plus-pilot line and (b) the ~$0.20 T6 line inside
-the ~$0.63 verification-pack total — both live in
-`runs/<id>/api_log.jsonl`, which is gitignored (regenerable, not
-versioned; see [.gitignore](.gitignore)), so re-deriving their
-cost_model.json requires either (i) running the corresponding
-`veval generate` again from a fresh clone (~$0.81 metered
-spend) or (ii) having the original `runs/` tree on disk from the
-initial run. Every committed cost_model.json path is named in
-[04_RESULTS.md § cost calculus](documentation/04_RESULTS.md#cost-calculus).
+**Reproduction cost, not project accounting** — this repository
+reports vendor *pricing* (D6, [04 § Cost calculus](documentation/04_RESULTS.md#cost-calculus))
+because per-1K-word rates are a finding a reader acts on. It does
+**not** report what running the study cost its author: that is
+neither a finding nor a scope condition, and publishing it invited
+the reader to weigh the work by its budget rather than its method.
+What a reader does need is what re-running it would cost *them* —
+reproducing the primary campaign alone lands in the **$5–15**
+band, and reproducing every committed run in the **$15–30** band,
+depending on account tiers, credit balances, and vendor pricing on
+the day. [03 § Reproduce the published evaluation](documentation/03_RUNBOOK.md#reproduce-the-published-evaluation)
+carries the per-phase breakdown.
 
-- Doctor probes + pilot runs: ~$0.61 gross *(not currently
-  committed under `analysis/`; regeneratable from `runs/`)*
-- Primary campaign R2 (1200 files, 8 vendors × 2 use cases × 75
-  items): $7.85 gross, of which Deepgram's $200 signup credit
-  absorbed ~$1.20
-- Variance run (480 fresh files, 10 items × 3 draws × 8 vendors × 2
-  use cases): $3.16 gross
-- Latency sessions S1a + S1b + S2 + S3 (50 trials each on the four streaming vendors S1a/S1b measure; ElevenLabs S2 and S3 landed n=40 — see 06 § F-11 note 1; S3 with
-  concurrent ping baseline): ~$0.36 gross *(S3 is the same
-  session as "Wave 4b" in the verification-pack line below; the
-  ~$0.36 counts it in the latency-sessions total and the
-  verification pack's $0.63 excludes it to avoid double-counting)*
-- Phase 2c verification pack (T4 + T6 + T8 fresh regens + S2
-  latency session covering T5 + T7; Wave 4b's S3
-  latency + ping baseline is accounted in the latency-sessions
-  line above): $0.63 gross
-  *(T6 quality.json committed at `analysis/campaign-20260811T180824Z/`;
-  T4 + T8 cost_model.json currently uncommitted)*
-- Phase 2 experiment pack + Follow-ups (2026-09-01, 5 experiments +
-  4 follow-ups incl. Sessions S4–S5): ~$3.55 gross
-
-**Rough total: ~$16.16 gross across 8 vendor accounts** (0.61 + 7.85 + 3.16 + 0.36 + 0.63 + 3.55 = 16.16; the earlier "~$16.15" round-total figure was carried from before the Phase 2 line landed and does not sum from the components printed above), of which
-Deepgram absorbed ~$1.20 via signup credit. **Effective
-out-of-pocket: ~$14.96.** The earlier "~$56 gross" figure that
-appeared in this file was a pre-project planning estimate misread
-as a metered receipt; that retraction is logged as
-[CORRECTIONS.md row 12](CORRECTIONS.md). A clean reproduction from
-a fresh clone would be approximately the same as the numbers above.
+**Artefact availability** (unchanged by the above): per-run cost
+models are committed as `analysis/*/cost_model.json`, except the
+doctor-probe/pilot line and the T4 / T8 / Wave-4b lines, which
+live in `runs/<id>/api_log.jsonl`. That path is gitignored
+(regenerable, not versioned; see [.gitignore](.gitignore)), so
+re-deriving those two `cost_model.json` files needs either a fresh
+`veval generate` or the original `runs/` tree on disk.
 
 ---
 

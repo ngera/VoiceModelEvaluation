@@ -4,7 +4,6 @@
 - **Use case**: conversational (latency mode uses conversational voice)
 - **Test type**: 2nd 50-trial latency session on a different day
 - **Created**: 2026-08-11
-- **Cost**: ~$0.02 (50 latency trials on `gpt-4o-mini-tts`)
 - **Wall-clock**: ~10 min execution (+ deliberate wait for "different day")
 
 ## Original outlier (from Phase 2)

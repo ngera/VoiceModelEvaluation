@@ -100,7 +100,7 @@ uv run veval doctor --provider elevenlabs
 uv run veval doctor --use-case narration
 ```
 
-**Cost**: rounding-error small (~$0.001/vendor for a probe text).
+**Effort**: negligible — one short probe text per vendor.
 
 **What you should see**: a Rich table with 1 row per vendor,
 column status ✓/✗, TTFA + total_ms + audio bytes columns populated.
@@ -193,8 +193,8 @@ on **client-side lag logging** (per-request timestamps for DNS +
 TCP handshake + first-byte-arrival) that was not run in v1. F-11
 in 06_KEY_FINDINGS.md is the receipt for both the six-session
 rank stability and the residual attribution gap; the older
-"two-session comparison is not sufficient" framing was a
-pre-six-session story from an earlier review pass (see
+"two-session comparison is not sufficient" framing was the
+S3-only story from an earlier review pass (see
 [CORRECTIONS row 59](../CORRECTIONS.md) for the six-session
 receipt that superseded it).
 
@@ -363,52 +363,52 @@ promise.
 `analysis/*/cost_model.json` `total_observed_cost_usd` fields —
 the receipt is directly reproducible):
 
+**Reproduction cost** — an order of magnitude, not a receipt.
+This project publishes vendor *pricing* (per-1K-word rates, D6)
+because that is a finding; it does not publish what the study
+cost its author. What follows is what re-running it should cost
+**you**.
+
 **Minimum reproduction** — one fresh campaign is enough to
 reproduce every ranking claim in [04_RESULTS.md](04_RESULTS.md)
 and adjudicate every pre-registered gate:
 
-- Doctor probes + pilot runs: **~$0.61**
-- Primary campaign (1200 fresh files, `--no-cache`): **~$7.84**
-- Variance run (10 items × 3 draws × 8 vendors × 2 use cases = 480 files): **$3.16**
-- Two S1 latency sessions (50 trials × 4 streaming vendors): **$0.34**
-- Verification pack (T4 + T6 + T8 fresh regens + S2 verification
-  latency session covering T5 + T7): **~$0.63** (per
-  [04's verification-pack cost line](04_RESULTS.md#verification-pack-outcomes-phase-2c);
-  DISCLAIMER's breakdown lists S2 as part of the latency-sessions
-  aggregate, so summing DISCLAIMER's lines does not double-count S2 — it
-  sits inside the $0.63 total here, and inside the latency-sessions
-  line there)
-- Third latency session with ping baseline: **~$0.02**
-- Phase 2 experiment pack (5 experiments + 4 follow-ups): **~$3.55**
-- **Minimum total: ~$16** across 8 vendor accounts, plus 8-12 hrs
-  wall clock on a mid-tier CPU laptop (~5 hrs of that is the
-  campaign analyzer pass; ~5 hrs is Phase 2 Experiment E's
-  alt-voice quality pass).
+- Doctor probes + pilot runs — under $1
+- Primary campaign (1,200 fresh files, `--no-cache`) — single-digit dollars
+- Variance run (10 items × 3 draws × 8 vendors × 2 use cases = 480 files) — a few dollars
+- Two S1 latency sessions (50 trials × 4 streaming vendors) — well under $1
+- Verification pack (T4 + T6 + T8 fresh regens + S2 latency session covering T5 + T7) — under $1
+- Third latency session with ping baseline — cents
+- Phase 2 experiment pack (5 experiments + 4 follow-ups) — a few dollars
+- **Minimum total: the $5–15 band**, plus 8–12 hrs wall clock on
+  a mid-tier CPU laptop (~5 hrs of that is the campaign analyzer
+  pass; ~5 hrs is Phase 2 Experiment E's alt-voice quality pass)
 
 **Full replication (R2 + R3)** — additionally runs a second full
 campaign three weeks later to verify measurement stability
 (reproduces the R2→R3 ranking comparison, the ElevenLabs cross-axis
 regression signal, and the hygiene-gate R2→R3 flip on Orpheus):
 
-- Add a second campaign 2-4 weeks after the first: **+~$7.84**
-- **Full total: ~$24**, plus another ~5 hrs analyzer wall clock
+- Add a second campaign 2–4 weeks after the first
+- **Full total: the $15–30 band**, plus another ~5 hrs analyzer
+  wall clock
 
-The load-bearing per-run cost figures come from
-`total_observed_cost_usd` in each committed
-`analysis/*/cost_model.json`; the pilot-runs and T4/T8/Wave-4b
-lines are reproducible from `runs/<id>/api_log.jsonl` via
-`veval analyze <id> --stages cost` but `runs/` is gitignored
-(regenerable audio, not versioned) so re-deriving those cost
-figures requires either (i) running the corresponding
-`veval generate` again from a fresh clone or (ii) having the
-original `runs/` tree on disk from the initial run. See
-DISCLAIMER's cost breakdown for the committed-vs-reproducible
-split per line. **Effective out-of-pocket** for our specific project
-was lower because Deepgram's $200 signup credit absorbed ~$1.20
-and Speechify Starter's $10/mo subscription and ElevenLabs
-Creator's $22/mo Creator plan absorbed within-month re-runs; your
-own out-of-pocket depends on your credit balances and subscription
-timing.
+Where you land inside those bands depends on your account tiers,
+credit balances, and each vendor's pricing on the day. Exact
+per-vendor rates are in [`configs/pricing.yaml`](../configs/pricing.yaml)
+and [04 § Cost calculus](04_RESULTS.md#cost-calculus); the
+`--spend-cap` flag gates every run against a USD ceiling so a
+misconfigured campaign cannot overspend.
+
+Per-run cost models are committed as `analysis/*/cost_model.json`.
+The pilot-runs and T4/T8/Wave-4b lines are reproducible from
+`runs/<id>/api_log.jsonl` via `veval analyze <id> --stages cost`,
+but `runs/` is gitignored, so re-deriving those needs either a
+fresh `veval generate` or the original `runs/` tree on disk.
+Signup credits and monthly subscriptions (several vendors offer
+both) can absorb a large share of a reproduction — your
+out-of-pocket depends on your own credit balances and
+subscription timing.
 
 ---
 
@@ -421,7 +421,7 @@ rows). It also stress-tests the R2 rankings under a fresh generation
 set and surfaces vendor-side drift signals.
 
 ```powershell
-# Full campaign, fresh, ~$7.84 metered
+# Full campaign, fresh
 uv run veval generate --mode campaign --no-cache
 
 # Analyze — same stages as R2
@@ -463,7 +463,7 @@ The 5-experiment pack (2026-09-01) + 4 follow-ups answered three
 loose ends from R2+R3 (F-6 fade generalisation, F-7 voice-swap
 consistency, F-11 latency session-count). Full report:
 [EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md). Total
-metered spend: **~$3.55**.
+spend: within the single-digit-dollar band.
 
 Each experiment reproduces from a single script:
 
@@ -529,7 +529,7 @@ uv run python scripts/_experiment_report.py
 **Uncompleted cheap tests** (proposed, not yet run — flagged for
 future revision):
 
-- **T10 — Orpheus `max_new_tokens` check.** ~$0.01, one Replicate
+- **T10 — Orpheus `max_new_tokens` check.** One Replicate
   call. Passes a large `max_new_tokens` in the request payload and
   measures whether the 14.59-s output cap extends. Distinguishes
   "model-intrinsic cap" from "deployment-config default", which

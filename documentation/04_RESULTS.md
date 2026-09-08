@@ -419,7 +419,9 @@ truncated to exactly **14.59 seconds per call** by Replicate's
 items tested; T10 confirmed this is a deployment-config default,
 not model-intrinsic — passing `max_new_tokens = 2000` produces
 ~24.32 s per call, still bounded by Replicate's own wrapper
-ceiling. See
+ceiling. Measured on a single call against one long item (L01
+narration, pinned `dan` voice), so read the 24.32 s as the cap's
+location, not as a per-item distribution. See
 [T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md)). Actual truncation scope, per
 `analysis/campaign-20260809T204608Z/hygiene.json` (using
 `total_seconds > 14.55` as the truncation flag):
@@ -795,7 +797,8 @@ vs DNSMOS three-scale #1/#1/#2; Cartesia narration Audiobox #3 vs
 DNSMOS surviving-subset #8/#8/#8) that are directly citable.
 
 See [documentation/figures/f1_rank_inversion.png](figures/f1_rank_inversion.png)
-for the vendor-by-vendor rank comparison, and
+for the vendor-by-vendor rank comparison (rendered from the campaign
+named in the figure's own footer stamp), and
 [06_KEY_FINDINGS.md § F-8](06_KEY_FINDINGS.md#f-8) for the full
 finding writeup + interpretation.
 
@@ -804,7 +807,7 @@ finding writeup + interpretation.
 ## Phase 2 additions
 
 Two follow-up questions from Phase 1 got answered by the Phase 2
-experiment pack (2026-09-01, ~$3.55 total metered). Full writeup
+experiment pack (2026-09-01). Full writeup
 in [EXPERIMENTS_2026-09-01.md](EXPERIMENTS_2026-09-01.md); the
 two tables that directly extend the primary results above:
 
@@ -1005,7 +1008,7 @@ raised cap: T10 (2026-09-07) confirmed the 14.59-s default cap
 is a `max_new_tokens` default rather than model-intrinsic, and
 raising it to Replicate's own wrapper ceiling of 2000 tokens
 extends output to ~24.32 s per call (1.67× more audio per call,
-per-1K cost drops to ~$0.040–0.053). Long narration items still
+per-1K cost drops to ~$0.040–0.053; n=1 call on L01 narration). Long narration items still
 need chunking; the T10 fix reduces chunk count by ~1.67× rather
 than eliminating it. See § Decision framework and
 [T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md).
@@ -1028,7 +1031,10 @@ above):
    (quality winner is usually the priciest).
 
 See [documentation/figures/f2_cost_vs_quality.png](figures/f2_cost_vs_quality.png)
-for the visual.
+for the visual. **Orpheus is plotted at its measured effective rate,
+not at `cost_model.json`'s $0.030** — that sticker is the
+default-assumption artefact T8 refuted (see the ⚠ block above); the
+figure annotates the substitution on the point itself.
 
 ---
 
@@ -1112,6 +1118,8 @@ under-sampled.
 
 See [documentation/figures/f3_latency_stability.png](figures/f3_latency_stability.png)
 for the latency-stability visual with concurrent ping-baseline annotation.
+The figure plots five of the six F-11 sessions — S1a, S2, S3, S4, S5;
+S1b is omitted as a same-day repeat of S1a.
 Full write-up in
 [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
 Verdict details in
@@ -1519,10 +1527,12 @@ to this table. Each test has a per-test evidence file
 (hypothesis + method + criterion + result + verdict) linked in the
 `Evidence` column.
 
-The verification pack had 10 tests on the roster (T1..T8, N1, N2).
-T3 was retired mid-project (the 2b DNSMOS run answered its exit
-criterion before Phase 2c even started), leaving 9 active tests.
-Table below shows all 10 rows with T3's retirement noted:
+The verification pack had 10 tests on the original Phase 2c roster
+(T1..T8, N1, N2). T3 was retired mid-project (the 2b DNSMOS run
+answered its exit criterion before Phase 2c even started), leaving
+9 active. **T10 was added and run later, on 2026-09-07**, bringing
+the roster to 11 and the active count to 10. Table below shows all
+11 rows with T3's retirement noted:
 
 | # | Outlier | Vendor | Verdict | Evidence |
 |---|---|---|---|---|
@@ -1535,20 +1545,21 @@ Table below shows all 10 rows with T3's retirement noted:
 | T7 | Fastest TTFA (439/479 ms in S1; original observation) | ElevenLabs | **Confirmed faster than OpenAI**, all 6 sessions. Sub-500 ms p90 held in 5 of 6 sessions (S1a 479, S1b 474, S2 469, S4 461, S5 468); S3 alone breached at 816 ms. F-11 documents the session-to-session variance. | [T7](../analysis/verification/T7_elevenlabs_ttfa.md) |
 | T8 | "Cheapest $0.030/1K" (headline claim from `cost_model.json`) | Orpheus | **Refuted with two bigger findings** — (a) 14.59s hard output cap, cost is fixed-per-call not linear-with-text; (b) the $0.030 itself is a `cost_model.py` default-assumption artefact, honest per-1K-words is ~$0.067-0.088 (peer-priced to OpenAI). See T8 for the full analysis. | [T8](../analysis/verification/T8_orpheus_cost.md) |
 | N1 | Audiobox #8/#8 vs DNSMOS #1/#1/#2 narr | OpenAI | Pending (manual listen) | [N1](../analysis/verification/N1_openai_narration_inversion.md) |
+| T10 | Is the 14.59 s cap config or model-intrinsic? | Orpheus | **Confirmed as deployment-config default (bounded)** — `max_new_tokens = 2000` (Replicate's wrapper ceiling) yields 24.32 s, 1.67× the default. Single call on one long item (L01 narration, pinned `dan` voice). | [T10](../analysis/verification/T10_orpheus_max_new_tokens.md) |
 | N2 | DNSMOS OVRL+SIG #8/#8 conv | Fish | **Confirmed** — Fish noise floor +12.6 dB above 8-vendor median (2× threshold); DNSMOS ONNX + hygiene analyzer are two independent code paths agreeing on the same defect. | [N2](../analysis/verification/N2_fish_conv_dnsmos.md) |
 
-**Verdict tally (10 rows):**
-- **Confirmed cleanly**: 3 (T1, T7, N2)
+**Verdict tally (11 rows):**
+- **Confirmed cleanly**: 4 (T1, T7, N2, T10)
 - **Confirmed with refinement / caveat / reversal**: 3 (T4, T5, T6)
 - **Answered by another test's finding**: 1 (T2, resolved by T8)
 - **Refuted with a bigger finding**: 1 (T8)
 - **Retired mid-project**: 1 (T3)
 - **Pending manual work**: 1 (N1)
 
-Total Phase 2c spend: **~$0.63** across the T4/T6/T8 fresh regens,
+Phase 2c spend was under a dollar across the T4/T6/T8 fresh regens,
 2 verification latency sessions (T5+T7), plus **1 additional latency
-session with concurrent ping baseline** (Wave 4b, 2026-08-12,
-~$0.02) that surfaced the S3 shift refuting the T7 stability
+session with concurrent ping baseline** (Wave 4b, 2026-08-12)
+that surfaced the S3 shift refuting the T7 stability
 sub-finding — see
 [06_KEY_FINDINGS.md § F-11](06_KEY_FINDINGS.md#f-11).
 

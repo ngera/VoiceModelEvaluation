@@ -27,7 +27,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-CAMPAIGN = "campaign-20260809T204608Z"
+# Campaign the figures are rendered from. R3 (2026-08-31, --no-cache) is
+# the default; override with VEVAL_FIG_CAMPAIGN to render the R2 versions.
+# Every figure stamps this id into its footer so a reader can never be in
+# doubt about which run a picture shows.
+import os
+CAMPAIGN = os.environ.get("VEVAL_FIG_CAMPAIGN", "campaign-20260831T175358Z")
+
 LAT_S1 = "latency-20260809T214106Z"
 LAT_S2_OAI = "latency-20260811T183028Z"
 LAT_S2_EL = "latency-20260811T183202Z"
@@ -53,6 +59,17 @@ PROVIDER_ORDER = ["speechify", "openai", "elevenlabs", "orpheus",
 
 def _load(path: str) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _stamp(fig, extra: str = "") -> None:
+    """Stamp the source run + render date into the figure footer, so a
+    picture separated from its caption still says which data it shows."""
+    import datetime
+    txt = f"Source: analysis/{CAMPAIGN}/  ·  rendered {datetime.date.today():%Y-%m-%d}"
+    if extra:
+        txt += f"  ·  {extra}"
+    fig.text(0.99, 0.005, txt, ha="right", va="bottom",
+             fontsize=7.5, color="#7f8c8d", style="italic")
 
 
 # ---------------------------------------------------------------- figure 1
@@ -151,6 +168,7 @@ def figure_1_rank_inversion() -> None:
         fontsize=12, y=1.00,
     )
     fig.tight_layout(rect=(0, 0, 1, 0.94))
+    _stamp(fig, '')
     out = FIG_DIR / "f1_rank_inversion.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
     plt.close(fig)
@@ -171,6 +189,17 @@ def figure_2_cost_vs_quality() -> None:
 
     cost_by_prov = {p["provider"]: p.get("dollars_per_1k_words_at", {}).get("100K_words_per_month")
                      for p in c_mod["providers"]}
+
+    # cost_model.json's Orpheus figure ($0.030) is the per-generation
+    # default-assumption artefact that T8 REFUTED and 04's warning block
+    # calls "a model artefact, not a comparable price". Plotting it would
+    # put a retracted number on the chart. Substitute the measured
+    # effective rate under T8's per-call output (~35 words/call), and
+    # annotate the point so the substitution is visible, not silent.
+    # T10 (2026-09-07) raised the cap to ~24.32 s, which brings the
+    # effective rate down to ~$0.040-0.053 — the midpoint is plotted.
+    COST_OVERRIDE = {"orpheus": 0.047}
+    cost_by_prov.update(COST_OVERRIDE)
 
     ab_by_key = {(r["provider"], r["use_case"]): r["audiobox_means"] for r in q["audiobox_by_provider"]}
     dn_by_key = {(r["provider"], r["use_case"]): r["dnsmos_means"] for r in q["dnsmos_by_provider"]}
@@ -233,10 +262,12 @@ def figure_2_cost_vs_quality() -> None:
     fig.suptitle(
         "Cost vs quality — which #1 is actually worth the money?\n"
         "TOP row (warm): Speechify is #1 AND cheapest on the paid tier — rare win-win.\n"
-        "BOTTOM row (clean): the top 2 are essentially tied on quality; OpenAI at $0.075 beats ElevenLabs at $0.22 (3x saving).",
+        "BOTTOM row (clean): the top 2 are essentially tied on quality; OpenAI at \$0.075 beats ElevenLabs at \$0.22 (3x saving).\n"
+        "Orpheus is plotted at its measured effective rate, not the \$0.030 sticker T8 refuted.",
         fontsize=12, y=1.00,
     )
     fig.tight_layout(rect=(0, 0, 1, 0.93))
+    _stamp(fig, 'Orpheus plotted at measured effective rate (T8/T10), not cost_model.json sticker')
     out = FIG_DIR / "f2_cost_vs_quality.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
     plt.close(fig)
@@ -247,6 +278,10 @@ def figure_2_cost_vs_quality() -> None:
 
 LAT_S3_OAI = "latency-20260812T191143Z"
 LAT_S3_EL = "latency-20260812T191323Z"
+LAT_S4_EL = "latency-20260901T185715Z"
+LAT_S4_OAI = "latency-20260901T190715Z"
+LAT_S5_EL = "latency-20260901T191000Z"
+LAT_S5_OAI = "latency-20260901T201051Z"
 
 
 def figure_3_latency_stability() -> None:
@@ -260,6 +295,10 @@ def figure_3_latency_stability() -> None:
     s2_el = _load(f"analysis/{LAT_S2_EL}/latency.json")
     s3_oai = _load(f"analysis/{LAT_S3_OAI}/latency.json")
     s3_el = _load(f"analysis/{LAT_S3_EL}/latency.json")
+    s4_el = _load(f"analysis/{LAT_S4_EL}/latency.json")
+    s4_oai = _load(f"analysis/{LAT_S4_OAI}/latency.json")
+    s5_el = _load(f"analysis/{LAT_S5_EL}/latency.json")
+    s5_oai = _load(f"analysis/{LAT_S5_OAI}/latency.json")
 
     def _extract(doc: dict, provider: str) -> dict:
         for r in doc["by_provider"]:
@@ -271,17 +310,23 @@ def figure_3_latency_stability() -> None:
                 }
         return {}
 
-    oai = [_extract(s1, "openai"), _extract(s2_oai, "openai"), _extract(s3_oai, "openai")]
-    el = [_extract(s1, "elevenlabs"), _extract(s2_el, "elevenlabs"), _extract(s3_el, "elevenlabs")]
+    oai = [_extract(s1, "openai"), _extract(s2_oai, "openai"), _extract(s3_oai, "openai"),
+           _extract(s4_oai, "openai"), _extract(s5_oai, "openai")]
+    el = [_extract(s1, "elevenlabs"), _extract(s2_el, "elevenlabs"), _extract(s3_el, "elevenlabs"),
+          _extract(s4_el, "elevenlabs"), _extract(s5_el, "elevenlabs")]
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
-    y_openai = 1.0
-    y_eleven = 0.4
+    y_openai = 1.15
+    y_eleven = 0.42
 
-    session_colors = ["#27ae60", "#f39c12", "#c0392b"]  # green / amber / red
-    session_labels = ["S1 · 2026-08-09", "S2 · 2026-08-11", "S3 · 2026-08-12 (+ ping baseline)"]
-    session_offsets = [0.12, 0.0, -0.12]
+    # S1a and S1b were the same day; S1 here is the S1a run. Five plotted
+    # sessions cover the six-session F-11 table minus S1b (same-day repeat).
+    session_colors = ["#27ae60", "#f39c12", "#c0392b", "#2980b9", "#8e44ad"]
+    session_labels = ["S1 · 2026-08-09", "S2 · 2026-08-11",
+                      "S3 · 2026-08-12 (+ ping baseline)",
+                      "S4 · 2026-09-01", "S5 · 2026-09-01"]
+    session_offsets = [0.20, 0.10, 0.0, -0.10, -0.20]
 
     def _plot_session(y: float, data: dict, color: str, label: str | None,
                        label_dy: int = 14) -> None:
@@ -293,17 +338,16 @@ def figure_3_latency_stability() -> None:
                     color=color, edgecolor="#2c3e50", linewidths=0.8,
                     zorder=5, label=label)
         ax.annotate(f"p50 {data['p50']:.0f} · p90 {data['p90']:.0f}",
-                     (data["p50"], y), xytext=(-6, label_dy),
+                     (data["p90"], y), xytext=(8, label_dy),
                      textcoords="offset points",
-                     ha="right", fontsize=8.5, color=color, weight="bold")
+                     ha="left", fontsize=8.5, color=color, weight="bold")
 
+    dys = [11, 11, 11, 11, 11]
     for i, (data, color, label, dy) in enumerate(zip(
-        oai, session_colors, session_labels, [14, 14, -18],
+        oai, session_colors, session_labels, dys,
     )):
-        _plot_session(y_openai + session_offsets[i], data, color, label if i < 3 else None, label_dy=dy)
-    for i, (data, color, dy) in enumerate(zip(
-        el, session_colors, [14, 14, -18],
-    )):
+        _plot_session(y_openai + session_offsets[i], data, color, label, label_dy=dy)
+    for i, (data, color, dy) in enumerate(zip(el, session_colors, dys)):
         _plot_session(y_eleven + session_offsets[i], data, color, None, label_dy=dy)
 
     # Range annotations
@@ -332,15 +376,16 @@ def figure_3_latency_stability() -> None:
     ax.set_yticklabels(["OpenAI\n(tts-1-hd)", "ElevenLabs\n(Flash v2.5)"],
                         fontsize=11, weight="bold")
     ax.set_xlabel("Time-to-first-audio-frame (ms) — 50 trials per session, S01 corpus item")
-    ax.set_title("Three-session TTFA per vendor — S3 refuted the 'ElevenLabs is stable' finding (F-11)\n"
+    ax.set_title("Five-session TTFA per vendor — S3 refuted the 'ElevenLabs is stable' finding (F-11)\n"
                   "Bold band = p50→p90. Thin line = min→max. Ranking preserved; absolute values shift 50-90% session-to-session.",
                   fontsize=11)
     ax.grid(True, axis="x", alpha=0.25, lw=0.5)
     ax.set_xlim(300, 3800)
-    ax.set_ylim(0.15, 1.65)
+    ax.set_ylim(0.02, 1.72)
     ax.legend(loc="upper right", frameon=True, fontsize=9, bbox_to_anchor=(0.98, 0.98))
 
     fig.tight_layout()
+    _stamp(fig, '5 sessions: S1a, S2, S3, S4, S5 (S1b omitted — same-day repeat of S1a)')
     out = FIG_DIR / "f3_latency_stability.png"
     fig.savefig(out, dpi=150, bbox_inches="tight")
     plt.close(fig)

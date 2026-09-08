@@ -29,7 +29,7 @@
 
 - **What:** Voice AI provider evaluation harness (portfolio edition scope)
 - **Scope:** 8 providers × 2 use cases (conversational + narration) × 75 corpus items (roster extended 6→8 in `prereg-v1.1`, see DEVIATIONS.md D-003)
-- **Timeline / budget:** ~3 weeks part-time, ~$46–57 baseline (worst case ~$79 with contingencies — see spec §8; OpenAI absorbs in signup credits, Speechify Starter $10 added)
+- **Timeline:** ~3 weeks part-time. Project spend is not reported in the published docs — see DISCLAIMER § Reproduction cost for the reader-facing band.
 - **Status:** Phase A closed 2026-08-05; Phase B closed 2026-08-07 (prereg-v1 tag); Phase C 6/8 adapters green, OpenAI + Speechify pending
 - **Hard deadline:** Fish Audio free window closes **2026-08-31** — sets the schedule
 

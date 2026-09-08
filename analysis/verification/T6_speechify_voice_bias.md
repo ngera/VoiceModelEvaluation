@@ -4,7 +4,6 @@
 - **Use cases**: conversational + narration
 - **Test type**: regen 20 items with a *different* Simba 3.2 voice
 - **Created**: 2026-08-11
-- **Cost**: ~$0.20 (20 items × 2 use cases = 40 calls on Speechify Starter)
 - **Wall-clock**: ~15 min
 
 ## Original outlier (from Phase 2)
@@ -294,7 +293,7 @@ on the P.835 scale.
   wider than the campaign's n=75 baseline. But the deltas here are
   either <0.10 (indistinguishable from noise at any n) or +0.30
   (8.5× noise floor, robust at any reasonable n).
-- **Cost of the T6 pair**: $0.29 total across control + alt-voice
+- **Scope of the T6 pair**: control + alt-voice
   runs. Cheapest possible defense against a "you cherry-picked the
   voice" reviewer objection.
 

@@ -270,7 +270,7 @@ for the full derivation.
   confirmed the cap is a `max_new_tokens` default, not
   model-intrinsic**: passing `max_new_tokens = 2000` (Replicate's
   own wrapper ceiling) produces ~24.32 s per call (1.67× more
-  audio). Per-1K cost at the raised cap: ~$0.040-0.053 (down
+  audio; n=1 call on L01 narration, pinned `dan` voice). Per-1K cost at the raised cap: ~$0.040-0.053 (down
   from $0.067-0.088 under the default). Bounded fix — long
   narration still needs chunking, at ~1.67× fewer chunks. See
   [T10 verdict](../analysis/verification/T10_orpheus_max_new_tokens.md).
@@ -573,9 +573,10 @@ fresh data. Full table + methodology in
 campaign didn't: T8's 14.59s output cap, T6's voice-swap reversal,
 T4's L03 magnitude refinement, and F-11's session-to-session
 latency variance. Of these, T8 and F-11 are the most consequential
-— they reshape recommendations. Cheap replication ($0.61 +
-~90 min in-scope + $0.02 for a 3rd latency session with concurrent
-ping baseline) is where you learn which "findings" are lucky draws.
+— they reshape recommendations. Cheap replication (~90 min of
+in-scope work plus a third latency session with a concurrent ping
+baseline, for a rounding error in vendor spend) is where you learn
+which "findings" are lucky draws.
 
 ---
 
@@ -1078,7 +1079,7 @@ Every outlier claim from Phase 2 gets a targeted verification test
 that can *confirm* or *refute* the finding on fresh data — winners
 and losers same scrutiny. Killed the "we only re-verify losers"
 asymmetry that leaves winners un-audited. Produced Phase 2c's
-9-test pack (F-9), including the T6 reversal and T8 output-cap
+10-test pack (F-9), including the T6 reversal and T8 output-cap
 discoveries that neither original hypothesis expected.
 
 ### D-E · Publish three enterprise decision frameworks, not one composite
@@ -1145,7 +1146,7 @@ project refuses to make.
 
 **What we have instead**: 6 machine quality signals from 2
 independent MOS pipelines + cross-pipeline agreement analysis
-(F-8) + 9-test verification pack. The load-bearing PM claim
+(F-8) + 10-test verification pack. The load-bearing PM claim
 ("pick the MOS pipeline that matches your listener use case") is
 directly supported by that data; it doesn't require human
 validation.
@@ -1303,4 +1304,4 @@ falsifiable.
 - [../DEVIATIONS.md](../DEVIATIONS.md) — the 11 pre-registered
   amendments with full rationale
 - [../analysis/verification/](../analysis/verification/) — per-test
-  verdict files for the 9-test Phase 2c pack
+  verdict files for the 10-test Phase 2c pack

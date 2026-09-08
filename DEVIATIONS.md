@@ -480,7 +480,7 @@ before the first probe would have hit them.
 - **Archetype label.** "Open-weights floor" is still accurate — the
   fine-tune inherits the weights' Apache-2.0 licence per the model
   card. The archetype gap the provider fills is preserved.
-- **No cost delta.** Same Replicate billing model (~$0.003/gen).
+- **No cost delta.** Same Replicate billing model.
 - **Portfolio-worthy DX finding.** Community forks being the actual
   deployment surface for open-weights models is a real DX
   observation. Logged in dx/friction_log.md.
@@ -534,10 +534,10 @@ budget, +33–71% D4 pairwise volume.
   `prereg-v1.7`)]** which compressed reps 5 → 3 to bring the operative
   target down to 216, and re-tagged the arithmetic basis to `pairs ×
   use_cases × reps` — see D-009 for the current pre-registered target.
-- Budget: OpenAI absorbs in signup credit / low-volume trivial cost
-  (~$0.05 for the doctor probe + campaign trivial). Speechify Starter
-  $10 (1 month). New budget subtotal: ~$46–57 (was ~$36–47). Ceiling
-  unchanged; contingency band tightens.
+- Budget: both additions are low-volume. OpenAI absorbs in signup
+  credit; Speechify needs a one-month Starter subscription. Project
+  budget figures are no longer published — see DISCLAIMER §
+  Reproduction cost for the reader-facing band.
 - Prereg tag: re-tagged **prereg-v1.1** on the amendment commit.
   prereg-v1 remains reachable as history for the "predates results"
   receipt.

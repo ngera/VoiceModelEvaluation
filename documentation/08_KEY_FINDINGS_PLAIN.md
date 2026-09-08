@@ -16,7 +16,7 @@ receipts.*
 > runs three weeks apart, 8 vendors × 2 use cases × 75 items each,
 > replicated cleanly. Phase 1 raised three specific questions that a
 > targeted **Phase 2 experiment pack** (2026-09-01) then answered
-> for ~$3.55 more in vendor spend. Findings 4, 6, and 12 are where
+> answered. Findings 4, 6, and 12 are where
 > Phase 2 sharpened or extended the Phase 1 story. Everything is
 > traced back to committed artefacts under
 > [`analysis/`](../analysis/) and the audit trail is in
@@ -124,7 +124,7 @@ call because of the cap. The $0.03 is what the model predicted; the
 actual per-word math is 2-3× higher.
 
 **Where the cap comes from — and how far it moves**: we ran one
-more test (T10, 2026-09-07, one API call, one cent) to find out
+more test (T10, 2026-09-07, one API call) to find out
 whether the 14.59-s cap is the model itself or just Replicate's
 default setting. The answer is **Replicate's default**: passing
 `max_new_tokens = 2000` in the request (Replicate's own hard
@@ -254,6 +254,17 @@ the two tools — it's between the two *axes* Meta's tool measures:
 - **Microsoft's DNSMOS** measures the same *technical-cleanliness*
   construct as Audiobox PQ, from a different training pipeline. It
   does not measure warmth.
+
+**One important limit on that story.** The clean/warm split above is
+a **conversational** result. On the narration corpus it does not
+hold: PQ stops agreeing with DNSMOS and goes mildly the other way
+(ρ = **−0.17**, mixed sign across the four DNSMOS axes), while CE
+stays negative (**−0.38**). So "PQ is the clean axis, CE is the warm
+axis" is a description of what we measured on conversational
+content, not a general property of the two tools. Pooled across both
+use cases PQ is **+0.04** — essentially uncorrelated. The full
+per-pair × use-case table is in
+[06 § F-8](06_KEY_FINDINGS.md#f-8).
 
 **What the data actually says** — Speechify's lead over the #2
 vendor on each axis, reported as unpaired SE(diff) between

@@ -4,7 +4,6 @@
 - **Use case**: narration
 - **Test type**: manual listen (self-mark warmth / cleanliness)
 - **Created**: 2026-08-11 (new outlier surfaced by F-8 rank inversion)
-- **Cost**: $0
 - **Wall-clock**: ~10 min
 
 ## Outlier (surfaced by F-8, campaign)

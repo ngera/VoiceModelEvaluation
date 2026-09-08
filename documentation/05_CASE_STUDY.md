@@ -14,7 +14,7 @@ so this metadata lives in an HTML comment instead.
 scoping, and killing your own decisions.*
 
 *A three-week portfolio project. 8 vendors, 2 use cases, 6 machine-quality
-signals from 2 independent pipelines, a 9-test outlier verification pack,
+signals from 2 independent pipelines, a 10-test outlier verification pack,
 and no human perceptual panel. The reason we didn't run the human panel
 is one of the findings.*
 
@@ -32,7 +32,7 @@ is one of the findings.*
 > 2026-08-31) was the primary campaign — two full replicated runs
 > three weeks apart, 8 vendors × 2 use cases × 75 items each. Phase
 > 1 raised three specific questions that a targeted Phase 2
-> experiment pack (2026-09-01, ~$3.55 more in vendor spend)
+> experiment pack (2026-09-01)
 > answered:
 > - "Was ElevenLabs' L03 fadeout a one-off item quirk?" — Follow-up 1
 > - "Does the voice-swap check that held for Speechify also hold for
@@ -61,8 +61,7 @@ voice needs consistency + expressive range. A vendor that wins one
 and loses the other is the *expected*, most instructive outcome, and
 it is what the two-use-case design was chosen to expose.
 
-Three weeks and roughly **$13 of Phase 1 metered vendor spend
-later** (~$16 in total including Phase 2's experiment pack — see
+Three weeks of part-time work
 receipt at the bottom of this doc), we have:
 
 - 1,200 audio outputs across the 8-vendor × 2-use-case × 75-item
@@ -244,6 +243,8 @@ per-vendor rank inversions that are directly citable regardless of
 the CI on the aggregate.
 
 ![F-8 rank inversion](figures/f1_rank_inversion.png)
+
+*Source run and render date are stamped in the figure's footer.*
 
 The most vivid case: **OpenAI's narration voice ranks dead last
 (#8/8) on Audiobox's warmth axis and #1/8 on DNSMOS's cleanliness
@@ -538,7 +539,7 @@ supports.
 ## What Phase 2 added
 
 Three loose ends from Phase 1 got specific answers on 2026-09-01
-via a focused ~$3.55 experiment pack. All raw artefacts committed
+via a focused experiment pack. All raw artefacts committed
 under
 [`analysis/experiments-2026-09-01/`](../analysis/experiments-2026-09-01/);
 executive writeup in
@@ -715,8 +716,9 @@ Three questions to answer in order:
 vendor structurally?
 
 - Long-form narration (>15s per turn)? **Orpheus is out at the
-  hosted endpoint** (14.59s cap observed; may be a config parameter
-  or a model-intrinsic cap, untested — see § 2)
+  hosted endpoint** (14.59 s cap observed; T10 settled it as a
+  `max_new_tokens` default, raisable to ~24.32 s — bounded, so
+  long narration still needs chunking — see § 2)
 - Any downstream audio pipeline (MOS check, ASR, resample)?
   **Cartesia needs a peak-limiter step** first
 - Sub-500 ms p90 required (real-time voice)? **Unresolved on our
@@ -781,6 +783,11 @@ vendor structurally?
 Look at the cost-vs-quality frontier:
 
 ![Cost vs quality](figures/f2_cost_vs_quality.png)
+
+*Orpheus sits at its **measured effective** rate here, not at the
+$0.030 sticker `cost_model.json` reports — T8 refuted that figure as a
+per-generation default-assumption artefact, and T10 later raised the
+output cap. The figure's footer stamps the source run and render date.*
 
 Use [04's Rankings summary](04_RESULTS.md#rankings-summary) for the
 per-pair statistical test (|Δ| / SE(diff), where SE_i = SD(75) / √75).
@@ -853,7 +860,7 @@ derived from:
 | Speechify $0.100 / 1K words at 10K/mo | $1.000 / 1K words | `cost_model.json` |
 | Audiobox `production_quality` is the warmth axis | PQ correlates **+0.571** with DNSMOS p808 (conv) and +0.238 across all four DNSMOS axes (conv) — it tracks cleanliness on conv; CE runs against DNSMOS at −0.506 (conv). On narration the split doesn't hold: PQ is mixed-sign at −0.167, CE at −0.375 — the clean/warm decomposition is a conv-only result | `cross_metric.json` |
 | ElevenLabs 469 ms p90 as a stable ceiling | S3 measured 816 ms p90; both vendors moved 50–90% p50 across sessions | `analysis/latency-20260812T*/latency.json` |
-| Project spend ~$56 | $7.85 for the primary campaign, ~$12.60 across all committed runs | `analysis/*/cost_model.json` `total_observed_cost_usd` |
+| A project-spend total published as if metered | It was a pre-project planning estimate, not a receipt. Project spend is no longer reported at all — the repo publishes vendor pricing (a finding) and a reproduction-cost band (useful to a reader), not what the study cost its author | `analysis/*/cost_model.json` `total_observed_cost_usd` |
 
 In every case the underlying value was correct in its JSON at the
 time the report said otherwise. These are not measurement errors.
@@ -868,7 +875,7 @@ because the mechanisms recur:
 |---|---|
 | A figure that was never traced to a source | Deepgram ~180 ms — origin still unidentified; no run in the repository produces it |
 | A tool default mistaken for a measurement | Orpheus $0.030, which is `cost.py`'s 100-word-per-call assumption — an assumption T8 had already falsified at ~35 words per call |
-| A planning estimate published as a result | "~$56 project spend", carried from the pre-project budget line |
+| A planning estimate published as a result | A project-spend total carried from the pre-project budget line and printed as a metered figure |
 | A transcription error that inverts a reading | Speechify $0.100 vs $1.000 — a 10× slip that moves the vendor from near-cheapest to second-most-expensive at that tier |
 | A frame imposed on data that contradicts it | The warm/clean axis labels, contradicted by a correlation matrix committed before the framing was written |
 | A mechanism invented to explain a real number | "−78.7 dBFS is silence padding" — `speech_ratio` is 0.901, higher than Speechify's 0.875; the clips are 90% speech and the quiet floor is a real property |
@@ -994,18 +1001,15 @@ those decisions are in [DEVIATIONS.md](../DEVIATIONS.md) and
 - **[../DEVIATIONS.md](../DEVIATIONS.md)** — 11 pre-registered
   amendments made before results existed, each with rationale
 - **[../analysis/verification/](../analysis/verification/)** —
-  per-test hypothesis + method + result + verdict for the 9-test
+  per-test hypothesis + method + result + verdict for the 10-test
   Phase 2c outlier verification pack
 - **Source of everything**: prereg tag
   [`prereg-v1.10`](https://github.com/ngera/VoiceModelEvaluation/tree/prereg-v1.10)
   contains the configs at the moment the campaign ran.
 
-*Total metered project spend: **~$16.15 across 8 vendor accounts**
-(pilot campaigns $0.61 + primary campaign $7.85 + variance run
-$3.16 + two S1 latency sessions $0.34 + verification pack $0.63 +
-S3 latency ~$0.02 + Phase 2 experiment pack + Follow-ups ~$3.55,
-all sourced from committed `analysis/*/cost_model.json` and
-`analysis/experiments-2026-09-01/*` fields).
+*Reproduction cost for a reader re-running this work: the $5–15
+band for the primary campaign, the $15–30 band for every
+committed run — see [03 § Reproduce the published evaluation](03_RUNBOOK.md#reproduce-the-published-evaluation).
 Time: ~60 hours part-time across three weeks (Phase 1) + ~1 day
 (Phase 2).
 Codebase:

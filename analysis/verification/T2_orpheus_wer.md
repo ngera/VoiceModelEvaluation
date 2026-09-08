@@ -4,7 +4,6 @@
 - **Use cases**: conversational + narration (worst cases are long stratum)
 - **Test type**: manual listen (self-mark unclear / clear)
 - **Created**: 2026-08-11
-- **Cost**: $0
 - **Wall-clock**: ~20 min
 
 ## Original outlier (from Phase 2)

@@ -7,17 +7,18 @@ sections. Fill result + verdict after execution.
 
 ## Roster
 
-| # | Provider | Type | Cost | Wall-clock | Can do now? |
-|---|---|---|---|---|---|
-| [T1](T1_cartesia_clipping.md) | Cartesia | Downgraded write-up | $0 | 5 min | **✅ done — verdict Confirmed** |
-| [T2](T2_orpheus_wer.md) | Orpheus | Manual listen 10 items | $0 | 20 min | ✅ (headphones + reference) |
-| [T4](T4_elevenlabs_L03_fadeout.md) | ElevenLabs | Regen L03 × 3 + drift | $0.02 | 2 min | ✅ (fresh calls) |
-| [T5](T5_openai_latency.md) | OpenAI | 2nd 50-trial latency session | $0.02 | 10 min | ⏸ **needs different day** |
-| [T6](T6_speechify_voice_bias.md) | Speechify | 20 items × alt Simba voice | $0.20 | 15 min | ✅ (alt voice ID needed first) |
-| [T7](T7_elevenlabs_ttfa.md) | ElevenLabs | 2nd 50-trial latency session | $0.02 | 10 min | ⏸ **needs different day** |
-| [T8](T8_orpheus_cost.md) | Orpheus | 10 long-item cost measurement | $0.05 | 15 min | ✅ + Replicate dashboard |
-| [N1](N1_openai_narration_inversion.md) | OpenAI | Manual listen 5 narr items | $0 | 10 min | ✅ (headphones) |
-| [N2](N2_fish_conv_dnsmos.md) | Fish | Spot listen 3 + noise floor | $0 | 10 min | ✅ (headphones + query) |
+| # | Provider | Type | Wall-clock | Can do now? |
+|---|---|---|---|---|
+| [T1](T1_cartesia_clipping.md) | Cartesia | Downgraded write-up | 5 min | **✅ done — verdict Confirmed** |
+| [T2](T2_orpheus_wer.md) | Orpheus | Manual listen 10 items | 20 min | ✅ (headphones + reference) |
+| [T4](T4_elevenlabs_L03_fadeout.md) | ElevenLabs | Regen L03 × 3 + drift | 2 min | ✅ (fresh calls) |
+| [T5](T5_openai_latency.md) | OpenAI | 2nd 50-trial latency session | 10 min | ⏸ **needs different day** |
+| [T6](T6_speechify_voice_bias.md) | Speechify | 20 items × alt Simba voice | 15 min | ✅ (alt voice ID needed first) |
+| [T7](T7_elevenlabs_ttfa.md) | ElevenLabs | 2nd 50-trial latency session | 10 min | ⏸ **needs different day** |
+| [T8](T8_orpheus_cost.md) | Orpheus | 10 long-item cost measurement | 15 min | ✅ + Replicate dashboard |
+| [N1](N1_openai_narration_inversion.md) | OpenAI | Manual listen 5 narr items | 10 min | ✅ (headphones) |
+| [N2](N2_fish_conv_dnsmos.md) | Fish | Spot listen 3 + noise floor | 10 min | ✅ (headphones + query) |
+| [T10](T10_orpheus_max_new_tokens.md) | Orpheus | `max_new_tokens` cap probe, 1 call | 5 min | **✅ done 2026-09-07 — cap is a deployment-config default** |
 
 **Retired**: T3 (Orpheus PQ artefact) — answered by 2b F-8. See
 [06_KEY_FINDINGS.md](../../documentation/06_KEY_FINDINGS.md) F-9.

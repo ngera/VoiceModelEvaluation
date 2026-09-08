@@ -5,7 +5,6 @@
 - **Test type**: 10 long-item Orpheus calls; measure actual GPU-seconds
   per Replicate dashboard
 - **Created**: 2026-08-11
-- **Cost**: ~$0.05
 - **Wall-clock**: ~15 min
 
 ## Original outlier (from Phase 2)

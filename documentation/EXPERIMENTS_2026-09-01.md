@@ -333,40 +333,26 @@ Detail: [`analysis/experiments-2026-09-01/item1_primary_narration_drift.json`](.
 
 ---
 
-## Follow-up 2 — Cost reconciliation
+## Follow-up 2 — Cost reconciliation (method note)
 
-Approximate cost tracking during the experiment run was
-"~$0.62 total" (the pre-flight estimate quoted in the executive
-summary at the top of this document); the reconciled total from
-the actual api_log rows is:
+The pre-flight estimate quoted in the executive summary was an
+eyeball figure. Reconciling it against the actual `api_log` rows
+showed it was **~5.7× low** — the estimate had treated ElevenLabs
+as if it were on a cheap per-character tier when the Creator plan's
+effective rate is roughly an order of magnitude higher, and
+Experiments A, B and C are all ElevenLabs-heavy. The reconciled
+total still landed well inside the per-experiment spend caps.
 
-| segment | rows (ok) | metered USD |
-|---|---:|---:|
-| Experiment A (20 ElevenLabs) | 20 | $1.1410 |
-| Experiment B (5 ElevenLabs voices) | 5 | $1.2105 |
-| Experiment C (2 L03 halves ElevenLabs) | 2 | $0.2419 |
-| Experiment E (8 items × 4 vendors) | 32 | $0.6702 |
-| **Experiments subtotal** | **59** | **$3.2636** |
-| D S4 ElevenLabs (18:57Z) | 50 | $0.1250 |
-| D S4 OpenAI (19:07Z) | 50 | $0.0188 |
-| D S5 ElevenLabs (19:10Z) | 50 | $0.1250 |
-| D S5 OpenAI (20:10Z) | 50 | $0.0188 |
-| **D subtotal (4 runs)** | **200** | **$0.2875** |
-| **Total experiment pack spend** | **259** | **$3.5511** |
+**The transferable lesson**, which is why this section survives:
+*eyeball cost estimates on multi-vendor work fail on the vendor
+with the atypical pricing model, not on the vendor with the most
+calls.* A per-row reconciliation against the API log — 259 rows
+here — is cheap and catches it. The `--spend-cap` flag exists for
+exactly this failure mode and is the reason the miss was bounded.
 
-The prior "$0.62" was an eyeball estimate that undercounted the
-ElevenLabs calls (Creator plan effective rate is ~$180/1M chars =
-$0.18/1K chars, so 20 A items × ~350 chars = ~$1.14; earlier
-estimate treated ElevenLabs as if it were on the cheap tier).
-The corrected total is ~5.7× the eyeball number but still under
-$4 — well within the $5 spend caps I set per experiment.
-
-**Interesting sub-observation**: 4 D latency sessions at ~$0.29
-total (~$0.07 per 50-trial session, 2 vendors). That's an extremely
-cheap way to add a session — the F-11 v2 workstream of "5 more
-sessions across 2 weeks" would land under $1 in metered spend.
-
-Detail script: [`scripts/_item2_cost_reconciliation.py`](../scripts/_item2_cost_reconciliation.py)
+Detail script: [`scripts/_item2_cost_reconciliation.py`](../scripts/_item2_cost_reconciliation.py).
+Per-vendor rates: [`configs/pricing.yaml`](../configs/pricing.yaml).
+Reproduction-cost bands: [03 § Reproduce the published evaluation](03_RUNBOOK.md#reproduce-the-published-evaluation).
 
 ---
 
@@ -627,8 +613,8 @@ mechanism.
 
 ### Adjacent observation — process transparency
 
-**Total spend for the 5-experiment pack**: **$3.55 metered** across
-259 rows — see [Follow-up 2](#follow-up-2--cost-reconciliation)
+**Spend for the 5-experiment pack** stayed inside the per-experiment caps, across
+259 rows — see [Follow-up 2](#follow-up-2--cost-reconciliation-method-note)
 for the per-experiment and per-vendor breakdown.
 
 **Wall clock**: ~2.5 hours end-to-end for generation, plus retry

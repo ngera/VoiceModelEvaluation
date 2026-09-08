@@ -440,7 +440,7 @@ as rigor.
 
 **Substitutes v1 relies on instead**:
 - 6 machine quality signals + cross-pipeline agreement (F-8)
-- 9-test Phase 2c verification pack (F-9)
+- 10-test Phase 2c verification pack (F-9; T10 added 2026-09-07)
 - F-4a's two-independent-code-paths corroboration on the Cartesia
   mastering finding (sample-level peak scan in the hygiene analyzer
   + DNSMOS's peak-out-of-range refusal — two paths, not three; see
@@ -653,7 +653,7 @@ fresh data — winners and losers same scrutiny.
   session-to-session TTFA variance (concurrent ping baseline was
   clean)
 
-**Cost**: ~$0.63 spend + ~2 hours of work (including the third
+**Effort**: ~2 hours of work and a rounding error in vendor spend (including the third
 latency session with concurrent ping baseline). Cheap replication
 is the highest-leverage step in a portfolio evaluation.
 
