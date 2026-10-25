@@ -726,7 +726,16 @@ vendor structurally?
   `ttfa_p90_ms < 400` (`configs/gates.yaml`); the perception-
   threshold reference from the spec's A.1 is ~500 ms. **No
   measured vendor clears the pre-registered 400 ms gate in any
-  session.** ElevenLabs Flash's best measurement across all 6
+  session** — bounded by what our clock measures: a *cold* call
+  from a residential link, with DNS, TCP, the TLS handshake and
+  request upload inside the interval and no connection pooled
+  between trials (see
+  [02 § D1](02_METHODOLOGY.md#d1--latency)). A warmed, in-region,
+  handshake-excluded harness measures a strictly smaller interval
+  and could plausibly clear the gate on the fastest vendors, so
+  this is a result about our vantage point rather than a claim
+  that 400 ms is unreachable. ElevenLabs Flash's best measurement
+  across all 6
   sessions was 461 ms p90 (S4); everything else fails more clearly
   (Cartesia 529,
   Deepgram 670, OpenAI 946+). Against the softer 500 ms perception

@@ -281,6 +281,70 @@ the number is quoted.
 
 ---
 
+## <a name="roster"></a>The roster as tested
+
+Every result in this repository is a claim about a **vendor, a
+model string, and a voice** — not about a vendor. Model lineups
+move fast enough that a vendor name alone will mislead a reader
+within months, so the exact roster is reproduced here and is
+pinned in [`configs/voices.yaml`](../configs/voices.yaml) under
+the `prereg-v1.x` tags.
+
+| Vendor | Use case | Model string | Voice |
+|---|---|---|---|
+| cartesia | conversational | `sonic-2` | `db6b0ed5…` |
+| cartesia | narration | `sonic-2` | `79f8b5fb…` |
+| deepgram | conversational | `aura-2-thalia-en` | voice encoded in model |
+| deepgram | narration | `aura-2-orion-en` | voice encoded in model |
+| elevenlabs | conversational | `eleven_flash_v2_5` | `g6xIsTj2HwM6VR4iXFCw` |
+| elevenlabs | narration | `eleven_multilingual_v2` | `qSeXEcewz7tA0Q0qk9fH` |
+| fish | conversational | `s2.1-pro` (latency) / `s2.1-pro-free` (quality + WER) | `9a9cf477…` |
+| fish | narration | `s2.1-pro` (latency) / `s2.1-pro-free` (quality + WER) | `e3cd3841…` |
+| google | conversational | `en-US-Chirp3-HD-Achernar` | voice encoded in model |
+| google | narration | `en-US-Chirp3-HD-Charon` | voice encoded in model |
+| openai | conversational | `gpt-4o-mini-tts` | `fable` |
+| openai | narration | `tts-1-hd` | `onyx` |
+| orpheus | conversational | `lucataco/orpheus-3b-0.1-ft` | `tara` |
+| orpheus | narration | `lucataco/orpheus-3b-0.1-ft` | `dan` |
+| speechify | conversational | `simba-3.2` | `geffen_32` |
+| speechify | narration | `simba-3.2` | `wyatt_32` |
+
+Voices were selected 2026-08-07 from each vendor's own English
+catalogue by use-case category; the per-voice reasoning is
+recorded alongside each entry in `voices.yaml`.
+
+**Three asymmetries a reader must carry into every results
+table**, all of them deliberate and pre-registered:
+
+1. **ElevenLabs and OpenAI run different models per use case.**
+   ElevenLabs conversational is Flash v2.5, the latency-optimised
+   tier; narration is Multilingual v2. OpenAI conversational is
+   `gpt-4o-mini-tts`; narration is `tts-1-hd`. The rule (spec
+   §3.4) was to deploy the model a buyer would actually choose
+   for that use case, not to hold the model constant. The
+   consequence is that an ElevenLabs or OpenAI
+   conversational-vs-narration comparison is **across two
+   models**, not one model across two corpora.
+2. **Fish splits model by dimension.** Quality and WER run on the
+   free `s2.1-pro-free` string; latency runs on the paid
+   `s2.1-pro`, because free-tier latency is best-effort with no
+   SLA. So Fish's D1 row and its D2/D3 rows are not the same
+   deployment.
+3. **Cartesia runs one model for both use cases** because its
+   lineup shipped no distinct narration model at selection time.
+
+**Scope note.** These are the model versions available on
+2026-08-07. Several vendors have shipped major revisions since.
+A finding here is evidence about the tested model, and carries
+to a newer revision only as far as a reader is willing to assume
+continuity — which, for Cartesia's clipping signature (F-4) and
+Orpheus's output cap (F-5), are exactly the deployment-specific
+behaviours least likely to survive a version bump. Re-running
+`veval generate` against a current `voices.yaml` is the cheap
+way to re-establish any of them.
+
+---
+
 ## The eight measurement dimensions (D1–D8)
 
 Each dimension is designed to be *independent* — a vendor that
@@ -304,6 +368,38 @@ campaign (`campaign-20260831T175358Z`, `--no-cache`) populated
 gate: 5 pass / 3 fail**. See
 [04_RESULTS.md § RTF admission](04_RESULTS.md#rtf-admission) for
 the full per-vendor table.
+
+**What the TTFA clock includes**: the timer starts *before* the
+HTTP client is constructed and stops at the first non-empty
+audio chunk — see `start = time.perf_counter()` ahead of the
+`httpx.Client(...)` block in each streaming adapter
+([`elevenlabs.py`](../src/veval/adapters/elevenlabs.py) line 80,
+and the identical pattern in `openai.py`, `cartesia.py`,
+`deepgram.py`). Every adapter builds a fresh client per call, so
+no connection is pooled between trials. **Each TTFA figure
+therefore contains DNS resolution, TCP connect, the TLS
+handshake, request upload, server-side synthesis, and first-byte
+delivery — measured over a residential Windows 11 connection.**
+
+This is a deliberate choice: it is what a cold call from a user's
+own machine actually costs. It is also **not** the quantity most
+published TTS latency figures report. Harnesses that pre-warm a
+pooled connection, exclude the TLS handshake, or run from cloud
+infrastructure adjacent to the vendor's region are measuring a
+strictly smaller interval. The difference is a roughly constant
+per-call offset rather than noise, so it moves every vendor in
+the same direction and leaves rank ordering intact — which is
+why the rank result below is the portable one and the absolute
+values are not.
+
+**This matters for the gate.** The all-fail verdict on
+`ttfa_p90_ms < 400` is a property of *this* measurement
+boundary and *this* vantage point, not a claim that sub-400 ms
+is unreachable. A pooled, handshake-excluded harness in-region
+could plausibly clear the gate on the fastest vendors without
+anything about the vendor having changed. Read the gate row as
+"not achieved from a residential cold-call vantage", and
+re-measure from your own deployment before relying on it.
 
 **Why serial not parallel**: parallel trials measure the vendor's
 concurrency handling; serial trials measure the tail of an
@@ -342,6 +438,10 @@ The methodology takeaways:
   pre-registration evidence; recommendations use the
   perception-threshold reference (~500 ms) as the softer bar,
   with F-11's session-to-session variance disclosure attached.
+  **The all-fail verdict is bounded by the measurement boundary
+  described above** — cold-call TTFA including handshake, from a
+  residential link — and should not be read as a claim that the
+  threshold is unreachable on a warmed in-region deployment.
 
 ### D2 · WER (Word Error Rate)
 

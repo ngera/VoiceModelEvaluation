@@ -94,6 +94,22 @@ scrutiny and what doesn't.</p>
   <a href="../DISCLAIMER.md">full scope</a> ·
   <a href="../README.md">longer path (8 numbered docs + EXPERIMENTS)</a>
 </p>
+
+<div class="callout neutral">
+  <p><strong>Every result here names a vendor, but the tested artefact is a
+  vendor + model + voice.</strong> ElevenLabs and OpenAI run
+  <strong>different models per use case</strong> (ElevenLabs
+  <code>eleven_flash_v2_5</code> conversational /
+  <code>eleven_multilingual_v2</code> narration; OpenAI
+  <code>gpt-4o-mini-tts</code> / <code>tts-1-hd</code>), and Fish runs
+  <code>s2.1-pro</code> for latency but <code>s2.1-pro-free</code> for
+  quality and WER. So a conversational-vs-narration comparison on those
+  vendors is across two models, not one model across two corpora.
+  Cartesia was tested on <code>sonic-2</code>, Speechify on
+  <code>simba-3.2</code>, as available 2026-08-07 — several vendors have
+  shipped major revisions since. Full roster:
+  <a href="../documentation/02_METHODOLOGY.md#roster">02 § The roster as tested</a>.</p>
+</div>
 </header>
 
 <div class="hero">
@@ -143,6 +159,15 @@ data. Instead:</p>
   <span class="pill">Unresolved on our data</span> — no measured
   vendor cleared the pre-registered <code>ttfa_p90_ms &lt; 400</code>
   gate in any session. Best measurement across all 6 sessions: ElevenLabs Flash 461 ms p90 (S4).
+  <strong>Bounded by what our clock measures</strong>: a <em>cold</em>
+  call from a residential link, with DNS, TCP, the TLS handshake and
+  request upload inside the interval and no connection pooled between
+  trials (see
+  <a href="../documentation/02_METHODOLOGY.md#d1--latency">02 § D1</a>).
+  A warmed, in-region, handshake-excluded harness measures a strictly
+  smaller interval and could plausibly clear the gate on the fastest
+  vendors — so this is a result about our vantage point, not a claim
+  that 400 ms is unreachable. Rank is the portable part.
   The pre-registered gate-robustness sweep on that gate
   (<code>robustness_points: [300, 400, 500, 600]</code>) shows
   discrimination starts at 500 ms (ElevenLabs alone) and reaches
@@ -184,7 +209,8 @@ structural, not noise. See <a href="#axis-split">chart below</a>.</p>
   <li><strong>Fast response</strong> (support-agent, conversational
   turns) → <strong>ElevenLabs Flash</strong> is consistently
   fastest across all 6 latency sessions (rank portable), but no
-  vendor clears the 400 ms p90 bar.</li>
+  vendor clears the 400 ms p90 bar from a cold start on a
+  residential link.</li>
 </ul>
 <p class="footnote">The Audiobox <em>PQ</em> axis correlates
 <strong>+0.24 mean</strong> with DNSMOS (agree on cleanliness); the

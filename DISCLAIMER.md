@@ -19,6 +19,13 @@ updates on the order of weeks to months. A finding about `tts-1-hd`,
 transfer to whatever the same vendor ships next quarter. Every
 adapter records the exact model string it called; the campaign
 `manifest.json` files record the exact date and version pins used.
+The full tested roster — all 16 (vendor × use case) cells with
+model string and voice — is reproduced in
+[02 § The roster as tested](documentation/02_METHODOLOGY.md#roster).
+Note in particular that **ElevenLabs and OpenAI ran different
+models for the two use cases**, and Fish ran a different model for
+latency than for quality, so a vendor's two rows are not always
+the same deployment.
 
 Before making a vendor decision on the strength of findings here,
 re-run the evaluation against the vendor's *current* model — the

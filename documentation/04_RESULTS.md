@@ -52,6 +52,15 @@ noise-floor, WER via two-judge agreement, latency (conversational
 only, 50-trial session), and public-tier cost per 1K words at 100K
 words/month.
 
+**Roster scope**: every row below names a **vendor**, but the
+measured artefact is a vendor + model + voice. ElevenLabs and
+OpenAI run **different models per use case**, and Fish runs a
+different model for latency than for quality/WER. The full
+roster is in
+[02 § The roster as tested](02_METHODOLOGY.md#roster); read it
+before comparing a vendor's conversational row against its
+narration row.
+
 **Important scope note (single-realization)**: **each cell in
 these tables is a single realization** — one draw per (vendor, item)
 in the campaign, aggregated over 75 items. F-1 established that no
@@ -1259,6 +1268,22 @@ committed with the gate is: "Perception degrades above ~500-600 ms
 (spec A.1); 400 ms is a deliberate headroom margin below that,
 since TTS latency is only one term in an agent's end-to-end
 budget (LLM + TTS + network)."
+
+**What this verdict is bounded by.** Every TTFA figure in this
+section is a *cold-call* measurement from a residential Windows 11
+connection: the clock starts before the HTTP client is built and
+therefore includes DNS, TCP connect, the TLS handshake and request
+upload, with no connection pooled between trials (see
+[02 § D1](02_METHODOLOGY.md#d1--latency) for the code pointer).
+Harnesses that pre-warm a pooled connection, exclude the
+handshake, or run in-region measure a strictly smaller interval,
+and the difference is a roughly constant per-call offset rather
+than noise. So **"every measured streaming vendor fails at 400 ms
+p90" is a result about this vantage point, not a claim that the
+threshold is unreachable** — a warmed in-region deployment could
+clear it on the fastest vendors with nothing about the vendor
+having changed. The rank ordering is the portable part; the
+absolute values are not (F-11).
 
 Measured p90 by vendor and session (best measurement in bold):
 

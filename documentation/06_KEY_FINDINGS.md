@@ -62,7 +62,7 @@ the entries below.*
   future v2 work can slot in without renumbering; F-12 covers the
   R2→R3 ElevenLabs Audiobox+P.808 scorer-partition shift)
 - [Friction points — the portfolio narrative bank](#friction-points)
-- [Decisions D-A through D-H](#decisions)
+- [Decisions D-A through D-I](#decisions)
 - [Threats to validity](#threats-to-validity)
 - [Pre-registered amendments](#pre-registered-amendments) *(link to DEVIATIONS.md)*
 
@@ -70,6 +70,7 @@ the entries below.*
 
 ## Findings
 
+<a name="f-1"></a>
 ### F-1 · Every vendor is non-deterministic across draws
 
 Not one of the 8 vendors produces byte-identical output when the
@@ -119,6 +120,7 @@ walking skeleton. The provenance is cited in
 [DEVIATIONS.md](../DEVIATIONS.md) line 282, and by cross-doc
 pointers to F-1a from every duration-derived metric.
 
+<a name="f-2"></a>
 ### F-2 · Wav2vec2 is a noisy WER judge on TTS-distribution audio
 
 Two-judge agreement WER lands in **~12–17%** for 7 of 8 vendors
@@ -157,6 +159,7 @@ reproduce the ordering.
 
 **Evidence:** [`analysis/campaign-20260809T204608Z/wer.json`](../analysis)
 
+<a name="f-3"></a>
 ### F-3 · Vendor strengths cluster orthogonally — no universal winner
 
 Across 7 measured dimensions (latency, cost, Audiobox PQ, Audiobox CE,
@@ -202,6 +205,7 @@ different vendors lead:
 not a quality-headline strength. Every recommended vendor will be a
 trade-off, not a dominant choice.
 
+<a name="f-4"></a>
 ### F-4 + F-4a · Cartesia's clipping is corroborated by two independent code paths
 
 **F-4** (original observation): Cartesia produced 429 clipped
@@ -245,6 +249,7 @@ runs' figures in
 [`quality.json` dnsmos_errors block](../analysis) +
 [T1 verdict](../analysis/verification/T1_cartesia_clipping.md)
 
+<a name="f-5"></a>
 ### F-5 · Orpheus is the "capped-and-peer-priced" archetype — not cheap, output-limited, worst WER
 
 Orpheus's `cost_model.json` figure of **$0.030/1K words** is a
@@ -534,9 +539,10 @@ Report the axis, not the pipeline.
 `cross_pipeline_mean_rho` field is the aggregate) ·
 [figure 1](figures/f1_rank_inversion.png)
 
+<a name="f-9"></a>
 ### F-9 · Outlier verification verdicts (Phase 2c)
 
-9 targeted tests re-checked every headline outlier from Phase 2 on
+10 targeted tests re-checked every headline outlier from Phase 2 on
 fresh data. Full table + methodology in
 [04_RESULTS.md § verification pack outcomes](04_RESULTS.md#verification-pack-outcomes-phase-2c).
 
@@ -629,6 +635,26 @@ slowed dramatically.
 
 The ping baseline rules out **only the "ISP dropped packets during
 the window"** hypothesis. It is a useful ruleout but a narrow one.
+
+**The handshake is inside the measured interval, by construction.**
+Each streaming adapter starts its clock *before* the HTTP client is
+constructed (`start = time.perf_counter()` ahead of the
+`httpx.Client(...)` block in `elevenlabs.py`, `openai.py`,
+`cartesia.py`, `deepgram.py`) and builds a fresh client per call,
+so no connection is pooled between trials. Every TTFA figure above
+therefore contains DNS resolution, TCP connect, the TLS handshake
+and request upload alongside server-side synthesis. The first two
+scope-of-ruleout items are not merely un-excluded — they are
+*definitely present* in every number. That makes these figures
+cold-call latencies from a residential link, which is the right
+quantity for "what does this cost a user on their own machine" and
+the wrong quantity for comparison against any harness that pools
+connections or excludes the handshake. Such a harness measures a
+strictly smaller interval, offset by a roughly constant per-call
+amount, which is a further reason rank is the portable result here
+and the absolute values are not. See
+[02 § D1](02_METHODOLOGY.md#d1--latency) for the full boundary
+statement and its consequence for the `ttfa_p90_ms < 400` gate.
 
 **Parsimonious client-side reading** (Occam-preferred, not proved):
 both vendors moved in the same direction between S2 and S3. The

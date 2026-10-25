@@ -11,12 +11,27 @@ receipts.*
 > across August-September 2026 from a residential Windows 11
 > environment. Full scope in [../DISCLAIMER.md](../DISCLAIMER.md).
 
+> **"ElevenLabs" here means a particular ElevenLabs model, not the
+> company.** Each vendor sells several models, and we tested the one
+> a buyer would plausibly pick for each job. That means two vendors
+> are running **different models in the two halves of this study**:
+> ElevenLabs used its fast model for the chat-style use case and its
+> higher-quality model for narration, and OpenAI did the same. So
+> when you read that a vendor did better on one use case than the
+> other, part of that can be the model changing rather than the
+> vendor being better at one job. Fish is a third case — its speed
+> numbers and its quality numbers come from two different plans.
+> The exact list of what was tested is in
+> [02 § The roster as tested](02_METHODOLOGY.md#roster). Several of
+> these vendors have shipped newer models since August 2026, so
+> treat a finding as evidence about the version we tested.
+
 > **How this got here in two phases**: **Phase 1** (2026-08-09 to
 > 2026-08-31) established the baseline findings — two full campaign
 > runs three weeks apart, 8 vendors × 2 use cases × 75 items each,
 > replicated cleanly. Phase 1 raised three specific questions that a
-> targeted **Phase 2 experiment pack** (2026-09-01) then answered
-> answered. Findings 4, 6, and 12 are where
+> targeted **Phase 2 experiment pack** (2026-09-01) then answered.
+> Findings 4, 6, and 12 are where
 > Phase 2 sharpened or extended the Phase 1 story. Everything is
 > traced back to committed artefacts under
 > [`analysis/`](../analysis/) and the audit trail is in
@@ -406,6 +421,30 @@ The other measured vendors were further off:
 **Every measured vendor failed our pre-committed real-time bar**,
 in every session we measured.
 
+**What our stopwatch was actually timing.** This matters more than
+it sounds. Our clock starts *before* we open the connection and
+stops at the first scrap of audio that comes back — so each number
+includes looking up the vendor's address, opening the connection,
+negotiating encryption, uploading the request, and only then the
+vendor actually making the audio. We also opened a brand-new
+connection for every single call, and we measured from an ordinary
+home broadband line.
+
+That is a fair stand-in for "what a cold request from a user's own
+machine costs". It is **not** the same quantity most published
+latency numbers report. A test that keeps a connection open and
+reuses it, or that runs from a data centre next door to the
+vendor, is timing a strictly smaller slice, and the gap is a
+fairly steady amount added to every call rather than random noise.
+
+So read our result as **"nobody hit 400 ms from a cold start on a
+home connection"** — not as "400 ms is impossible". A warmed-up
+connection running close to the vendor could plausibly clear the
+bar on the fastest vendors without anything about the vendor
+having changed. What does carry across setups is the *order*: the
+fast vendors stayed fast relative to the slow ones in all six
+sessions.
+
 **Why this doesn't automatically kill any vendor**: 400 ms was a
 conservative bar (we picked it to leave headroom below the ~500 ms
 "noticeably laggy" threshold from research literature). A vendor
@@ -455,7 +494,8 @@ is:
 
 - Support-agent voice bot (real-time, short turns) → **ElevenLabs**
   is fastest; no vendor clears the pre-registered 400 ms p90 gate
-  (see finding #7).
+  from a cold start on a home connection (see finding #7 for what
+  that measurement includes).
 - Long-form narration where any quality measure is what matters →
   **Speechify** wins Audiobox on both axes at ≥3.7σ.
 - Enterprise IVR / phone agent (conversational, clean signal

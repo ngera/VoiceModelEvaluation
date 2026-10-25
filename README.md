@@ -132,9 +132,24 @@ narration) across a 75-item pre-registered corpus per use case. The
 spec pre-registered **eight** measurement dimensions; here is what
 happened to each:
 
+> **Every result here is a claim about a vendor *plus a model
+> string and a voice*, not about a vendor.** ElevenLabs and OpenAI
+> run **different models per use case** (ElevenLabs Flash v2.5
+> conversational / Multilingual v2 narration; OpenAI
+> `gpt-4o-mini-tts` / `tts-1-hd`), and Fish runs a different model
+> for latency than for quality. Cartesia was tested on `sonic-2`
+> and Speechify on `simba-3.2`, as available 2026-08-07. Several
+> vendors have shipped major revisions since. Full roster:
+> [02 § The roster as tested](documentation/02_METHODOLOGY.md#roster).
+
 - **D1 · Latency** — TTFA p50/p90 from 50 serial trials per vendor per
   session, with **six sessions across four dates** for the two
-  speed-critical vendors to separate speed from stability
+  speed-critical vendors to separate speed from stability.
+  TTFA is measured **cold**, from a residential link, with DNS,
+  TCP, the TLS handshake and request upload inside the interval —
+  so the all-fail verdict on the `ttfa_p90_ms < 400` gate is
+  bounded by that vantage point, not a claim the threshold is
+  unreachable
 - **D2 · WER** — two ASR judges (Meta `wav2vec2-large-robust` + OpenAI
   `faster-whisper large-v3`), agreement-based failure detection.
   Judges required to differ in *organisation*, *encoder architecture
