@@ -11,62 +11,15 @@ covers the code that implements them.*
 
 ## System overview
 
-```mermaid
-flowchart TB
-    subgraph FRONT["Two front doors — one implementation"]
-        F1["CLI: veval doctor · generate<br/>analyze · score · report"]
-        F2["Admin panel: Streamlit<br/>Doctor · Run · Results · Frontier*<br/>*score.json exists (survivals + robustness populated); its<br/>frontiers block is empty because BT is D-H-blocked — see 07 gap 8<br/>thin wrapper — never duplicates logic"]
-    end
+![System architecture block diagram](figures/architecture_overview.png)
 
-    subgraph CONFIG["Pre-registered config — git-tagged before results"]
-        C1["providers.yaml · voices.yaml<br/>model strings · voice IDs · endpoints"]
-        C2["gates.yaml<br/>pass/fail thresholds · na_policy"]
-        C3["corpus/*.yaml<br/>75 items × 2 use cases<br/>+ variance_subset.yaml"]
-        C4["analyzers.yaml<br/>MOS pipeline pins · judge revisions"]
-        C5["pricing.yaml<br/>per-tier cost model"]
-    end
-
-    subgraph ADAPTERS["Vendor adapters — one file each, common interface"]
-        A1["synthesize(text, opts) →<br/>{audio_bytes, ttfa_ms, chars_billed, meta}"]
-        A2["8 vendors: deepgram · elevenlabs<br/>cartesia · fish · google · openai<br/>speechify · orpheus"]
-    end
-
-    subgraph RUNNER["Runner — veval generate"]
-        R1["Async orchestrator<br/>httpx · retry + backoff · rate limits<br/>content-hash cache · spend cap<br/>errors logged as data"]
-        R2["--mode campaign · variance · latency"]
-    end
-
-    subgraph STORE["Immutable run store — runs/&lt;run_id&gt;/"]
-        S1["manifest.json — date · env pins · hardware"]
-        S2["audio/&lt;provider&gt;/&lt;use_case&gt;/&lt;item&gt;.wav"]
-        S3["api_log.jsonl — timings · usage · errors"]
-    end
-
-    subgraph ANALYZE["Analyzers — pure functions of the run store"]
-        AN1["acceptance.py — WAV / LUFS / VAD gate"]
-        AN2["hygiene.py — clipping · noise floor · pauses"]
-        AN3["latency.py — TTFA percentiles · RTF"]
-        AN4["cost.py — pricing.yaml × observed usage"]
-        AN5["wer.py — two-judge ASR agreement"]
-        AN6["quality.py — Audiobox + DNSMOS + optional TTSDS2"]
-        AN7["cross_metric.py — Spearman ρ across 6 signals"]
-        AN8["variance.py — noise floor + determinism"]
-        AN9["drift.py — per-third loudness/spectral analysis"]
-    end
-
-    subgraph RATE["Rating pipeline (D4 — deferred execution)"]
-        RT1["rate build/score — BT judgment ingest<br/>bootstrap CIs · consistency re-judge"]
-    end
-
-    FRONT --> RUNNER
-    FRONT --> ANALYZE
-    CONFIG --> RUNNER
-    CONFIG --> ANALYZE
-    ADAPTERS --> RUNNER
-    RUNNER --> STORE
-    STORE --> ANALYZE
-    ANALYZE --> RATE
-```
+*Pipeline top → bottom: front doors + pinned config + vendor adapters
+feed the async runner; the runner writes an immutable
+`runs/<run_id>/` store; analyzers are pure functions of that store;
+the Bradley–Terry rating pipeline (D4) is deferred — see
+[07 gap 8](07_GAPS_AND_FUTURE_WORK.md#8-pareto-frontier-build--bootstrap-ci-domination-not-executed-in-v1).*
+`score.json` exists with survivals + robustness populated; its
+`frontiers` block is `{}` because BT is D-H-blocked.
 
 **Design principle**: the harness has **two front doors, one
 implementation**. The CLI and the Streamlit admin panel call the
