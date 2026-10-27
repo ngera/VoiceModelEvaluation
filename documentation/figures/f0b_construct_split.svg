@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 300" width="920" height="300" role="img"
+     aria-label="The construct split on conversational audio. Meta Audiobox Aesthetics emits two axes. Its production-quality axis agrees with Microsoft DNSMOS at a rank correlation of plus 0.24. Its content-enjoyment axis anti-correlates with DNSMOS at minus 0.51. DNSMOS rewards a clean signal; Audiobox content enjoyment rewards warmth. On narration this decomposition does not hold: production quality is mixed-sign at minus 0.17.">
+  <style>
+    .bg   { fill: #ffffff; }
+    .box  { fill: #f4f6f8; stroke: #c3ccd4; stroke-width: 1.25; }
+    .boxw { fill: #f7f3ec; stroke: #d8c7a8; stroke-width: 1.25; }
+    .boxc { fill: #eef5f2; stroke: #9cc4b6; stroke-width: 1.25; }
+    .t    { fill: #15202b; font-family: system-ui, -apple-system, Segoe UI, sans-serif; font-size: 15px; }
+    .tb   { font-weight: 600; }
+    .ts   { font-size: 12.5px; fill: #5b6873; }
+    .cap  { font-size: 11.5px; fill: #5b6873; font-style: italic; }
+    .grp  { font-size: 11px; fill: #5b6873; letter-spacing: .09em; }
+    .pos  { stroke: #1f8a5f; }
+    .neg  { stroke: #b1442f; }
+    .post { fill: #1f8a5f; font-weight: 600; }
+    .negt { fill: #b1442f; font-weight: 600; }
+    .brk  { stroke: #c3ccd4; stroke-width: 1.25; fill: none; }
+    .rule { stroke: #e2e7ec; stroke-width: 1; }
+    @media (prefers-color-scheme: dark) {
+      .bg   { fill: #0f1419; }
+      .box  { fill: #182028; stroke: #2f3d49; }
+      .boxw { fill: #221d14; stroke: #5a4a2c; }
+      .boxc { fill: #16241f; stroke: #2f5a4b; }
+      .t    { fill: #e6edf3; }
+      .ts, .cap, .grp { fill: #93a3b1; }
+      .pos  { stroke: #3ddc97; }
+      .neg  { stroke: #ff9a8a; }
+      .post { fill: #3ddc97; }
+      .negt { fill: #ff9a8a; }
+      .brk  { stroke: #2f3d49; }
+      .rule { stroke: #222c35; }
+    }
+  </style>
+
+  <defs>
+    <marker id="mp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" class="post"/>
+    </marker>
+    <marker id="mn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" class="negt"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="920" height="300" rx="10"/>
+
+  <!-- left: the two Audiobox axes -->
+  <text class="grp" x="24" y="34">META AUDIOBOX AESTHETICS — TWO AXES</text>
+  <path class="brk" d="M16 50 L10 50 L10 210 L16 210"/>
+
+  <rect class="box" x="24" y="52" width="244" height="58" rx="8"/>
+  <text class="t tb" x="40" y="77">Audiobox PQ</text>
+  <text class="t ts" x="40" y="96">production quality — cleanliness</text>
+
+  <rect class="boxw" x="24" y="152" width="244" height="58" rx="8"/>
+  <text class="t tb" x="40" y="177">Audiobox CE</text>
+  <text class="t ts" x="40" y="196">content enjoyment — warmth</text>
+
+  <!-- right: DNSMOS -->
+  <text class="grp" x="640" y="34">MICROSOFT DNSMOS</text>
+  <rect class="boxc" x="640" y="102" width="256" height="58" rx="8"/>
+  <text class="t tb" x="656" y="127">DNSMOS</text>
+  <text class="t ts" x="656" y="146">rewards a clean signal</text>
+
+  <!-- arrows -->
+  <path class="pos" fill="none" stroke-width="2" marker-end="url(#mp)"
+        d="M268 81 C430 81 480 112 636 118"/>
+  <path class="neg" fill="none" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#mn)"
+        d="M268 181 C430 181 480 150 636 144"/>
+
+  <!-- arrow labels -->
+  <text class="t post" x="452" y="80"  text-anchor="middle" font-size="14">ρ = +0.24 · agrees</text>
+  <text class="t negt" x="452" y="196" text-anchor="middle" font-size="14">ρ = −0.51 · anti-correlates</text>
+
+  <!-- caveat strip -->
+  <line class="rule" x1="24" y1="244" x2="896" y2="244"/>
+  <text class="cap" x="24" y="266">Conversational audio only. On narration the decomposition does not hold — PQ comes out mixed-sign at ρ = −0.17.</text>
+  <text class="cap" x="24" y="284">Mean rank correlation across pipeline pairs, 8 vendors. Directional at n=8, not significant.</text>
+</svg>

@@ -131,11 +131,7 @@ Solo, self-funded. No vendor sponsored, reviewed, or previewed it.
 
 On **conversational** audio the split decomposes cleanly:
 
-```mermaid
-flowchart LR
-  PQ["Audiobox PQ<br/>production quality"] -->|"ρ = +0.24 · agrees"| DN["DNSMOS<br/>rewards CLEAN"]
-  CE["Audiobox CE<br/>content enjoyment"] -->|"ρ = −0.51 · anti-correlates"| DN
-```
+![The construct split on conversational audio. Meta Audiobox Aesthetics emits two axes: its production-quality axis agrees with Microsoft DNSMOS at a rank correlation of +0.24, while its content-enjoyment axis anti-correlates at −0.51. DNSMOS rewards a clean signal; Audiobox CE rewards warmth. On narration the decomposition does not hold — PQ is mixed-sign at −0.17.](documentation/figures/f0b_construct_split.svg)
 
 - DNSMOS rewards **clean**. Audiobox CE rewards **warm**.
 - A voice engineered to sound intimate loses points for exactly the quality that makes it appealing.
