@@ -195,3 +195,4 @@ DEFECT_REGISTER_R30.html
 # section rather than work in progress. Unignore when the series is ready to
 # publish, or move it to its own repo.
 blog/
+Claude outputs/

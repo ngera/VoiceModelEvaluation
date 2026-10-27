@@ -1,405 +1,360 @@
-# voice AI provider evaluation
+# Which voice AI vendor should you use?
 
-**An independent evaluation of 8 commercial voice AI vendors across
-two production-realistic use cases, using two independent quality
-pipelines, with every decision and deviation traceable to a git
-commit that predates the results.**
+**An independent evaluation of eight commercial text-to-speech vendors — and why that question has no single answer.**
 
-> **The one thing to know before you keep reading:**
-> Two peer-reviewed machine-quality raters, applied to the same 8
-> vendors, **rank them differently**. Meta's Audiobox and Microsoft's
-> DNSMOS have a cross-pipeline Spearman ρ of **−0.13 on conversational
-> and −0.27 on narration**. Before quoting a single vendor "quality
-> score", ask: *quality on which axis?*
-
-**Which axis matches human perception?** *This study cannot say*
-— and that is a deliberate scoping decision, not a hole in the
-work. The correlation structure decomposes on **conversational**
-(Audiobox's PQ axis agrees with DNSMOS at mean ρ = **+0.24**,
-F-8's "clean" side; CE anti-correlates at mean ρ = **−0.51**,
-F-8's "warm" side), so the two pipelines are measuring genuinely
-different constructs on that use case. **On narration the story
-does not hold**: PQ is mixed-sign at ρ = **−0.17** and CE is
-also negative at −0.38 — the clean/warm decomposition is a
-**conversational-only** result (see [F-8](documentation/06_KEY_FINDINGS.md#f-8)
-for the per-pair × use-case table, which 06 states plainly).
-But which construct aligns with real listener preference is a
-**human-perceptual D4** question, and the only honest way to
-answer it is a multi-rater blinded panel. n=1 self-rating can't license
-population-level preference claims (see
-[D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2)
-for the deferral rationale — refusing an under-powered ceremony
-is a stronger position than executing it and disclaiming the
-result). What would settle it: a 15-30 rater blinded panel
-comparing the two pipelines' rankings against human preference
-per use case, spec-designed and budgeted in
-[07 § What a v2 pass would look like item 1](documentation/07_GAPS_AND_FUTURE_WORK.md#what-a-v2-pass-would-look-like).
-Until then: pick the pipeline that matches the construct your
-listener use case rewards (F-8 § construct decomposition names
-which is which), or **read both**.
-
-> **⚠ Scope disclaimer** · Findings are as of 2026-09-01, on specific
-> vendor accounts (paid public tiers), specific voice_ids, and a
-> residential Windows 11 measurement environment. No financial
-> relationship with any vendor. This is a scoped vendor advisory,
-> not legal / contractual / financial advice — see
-> [DISCLAIMER.md § Not legal or contractual advice](DISCLAIMER.md#not-legal-or-contractual-advice).
-> Full scope + corrections process in [DISCLAIMER.md](DISCLAIMER.md).
+*Neeraj Gera · findings as of 2026-09-01 · ~10 minute read*
 
 ---
 
-## Have 10 minutes? Start here
+## What is this research?
 
-**[▶ docs/index.html — one-page decision brief](docs/index.html)**
-— the three-question vendor-selection framework, the cross-pipeline
-axis-split chart, the cost table (with Orpheus + Speechify pricing
-caveats inline), and a "what I got wrong" box linking to
-[CORRECTIONS.md](CORRECTIONS.md). Self-contained HTML, no build
-step. Everything else on this page is appendix.
+I measured eight commercial text-to-speech vendors against the same audio, on the same days, under rules committed before the data existed.
 
-**Have longer than 10 minutes?** The 8 numbered documents (plus EXPERIMENTS_2026-09-01.md) in
-[`documentation/`](documentation/) are the full narrative — jump to
-the [Where to read](#where-to-read) section below.
+The question: **does the industry habit of quoting one "quality score" per vendor survive contact with evidence?**
+
+It does not.
+
+Two peer-reviewed machine quality raters — Meta's Audiobox Aesthetics and Microsoft's DNSMOS — scored identical audio from the same campaign and **ranked the eight vendors differently**:
+
+| Rank correlation between the two raters | Campaign 1 | Campaign 2 |
+|---|---:|---:|
+| Conversational | −0.134 | −0.143 |
+| Narration | −0.271 | −0.220 |
+
+- **Zero** would mean the two raters are unrelated.
+- **Negative** means the vendors one liked were faintly the ones the other didn't.
+- Neither model is broken. They measure different things.
+- Almost nobody quoting a vendor quality number has checked which thing theirs measures.
+
+That finding is the spine of the project. Everything else exists to answer the question a buyer actually has — not *"who wins"* but *"which difference is real, and which one matters for what I'm building."*
+
+Solo, self-funded. No vendor sponsored, reviewed, or previewed it.
 
 ---
 
-## What did we find?
+## What was the scope?
 
-Three headline findings and one meta-observation, each backed by an
-artefact in this repo:
+### The roster
 
-| # | Finding | Evidence |
+| Vendor | Model tested | Why it was selected |
 |---|---|---|
-| 1 | **The two independent quality raters rank vendors differently.** Meta's Audiobox measures two axes (technical cleanliness PQ + warm/enjoyment CE); Microsoft's DNSMOS is a second family of scorers (P.808 single-model + P.835 three-scale). **On conversational, PQ agrees with DNSMOS at mean ρ = +0.24 and CE anti-correlates at mean ρ = −0.51** — a real construct split (PQ-side vs CE-side). **On narration the clean/warm split does not hold**: PQ is mixed-sign at ρ = −0.17 and CE is also negative at −0.38, so both axes anti-correlate weakly with DNSMOS on that use case. The decomposition is a conversational-only result — see [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) for the full per-pair × use-case table. | [Figure 1](documentation/figures/f1_rank_inversion.png) · [F-8 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-8) |
-| 2 | **Orpheus's hosted Replicate endpoint caps output at 14.59 seconds per call.** On the 8-item T8 long-narration probe, every call hit the cap (std dev 0.000 s); on the full 75-item narration corpus, 27 items (36%) were truncated and 48 came back complete because they fit under the cap. Honest per-1K-word cost under T8's measured per-call output (~35 words/call) is ~$0.067–0.088 (2.2–2.9× the nominal $0.030 in the pricing.yaml table, not 5-6×); WER on long items is ~27% (85% is *content loss* on the truncated tail, not word-error rate). **T10 settled it (2026-09-07, one Replicate call)**: cap is Replicate's `max_new_tokens` default; passing `max_new_tokens = 2000` (the Replicate wrapper's own hard ceiling) produces **24.32 s** of audio (1.67× the 14.59 s default) on a single call against one long item (L01 narration, pinned `dan` voice). Bounded fix, not unbounded — the practical Orpheus-on-Replicate ceiling is ~24 s per call, so long-form narration still needs chunking (~1.67× fewer chunks than the default cap requires). Per-1K-words cost at the raised cap: **~$0.040–0.053** (down from $0.067–0.088 under the default cap, still peer-priced to OpenAI's $0.075 rather than the nominal $0.030). See [T10 verdict](analysis/verification/T10_orpheus_max_new_tokens.md) for the recompute + cost math. | [T8 verdict](analysis/verification/T8_orpheus_cost.md) |
-| 3 | **ElevenLabs shifted downward on both Audiobox axes + DNSMOS P.808 between R2 and R3 (paired-z 2.26–7.32σ, 5 cells surviving Bonferroni-12).** The P.835 triad's 6 cells (3 conv + 3 narr) all stayed at \|z\| < 1.6. Two of three scoring models detected the drift; the third didn't. Both ElevenLabs models (Flash v2.5 conv, Multilingual v2 narr) drift together — a single-model update does not explain the pattern. This is the finding the "measurement date on every finding" discipline exists to catch — invisible without R3. | [F-12 in 06_KEY_FINDINGS](documentation/06_KEY_FINDINGS.md#f-12) · [analysis/round3-vs-round2-comparison.md](analysis/round3-vs-round2-comparison.md) |
-| ★ | **The verification pack changed the framing of multiple headline findings** (T4/T5/T6/T7/T8/F-11 all named individually — see [verification README](analysis/verification/)), and a targeted Phase 2 experiment pack (2026-09-01) further generalised F-6 (loudness fade) from an item-specific quirk to a cross-vendor phenomenon and extended F-7's voice-swap check from 1 vendor to 5. Cheap replication is where you learn the difference between a real finding and a lucky draw. | [analysis/verification/](analysis/verification/) · [EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md) |
+| ElevenLabs | `eleven_flash_v2_5` · `eleven_multilingual_v2` | Market-reputation leader |
+| OpenAI | `gpt-4o-mini-tts` · `tts-1-hd` | LLM-ecosystem default |
+| Google Cloud | `Chirp3-HD` | Hyperscaler |
+| Deepgram | `aura-2` | Voice-agent specialist |
+| Cartesia | `sonic-2` | Latency-optimised |
+| Fish Audio | `s2.1-pro` | Low-cost challenger |
+| Speechify | `simba-3.2` | Consumer-scale |
+| Canopy Orpheus | `orpheus-3b` on Replicate | Open-weights / self-hosted |
+
+> **Read the model, not just the vendor.** Vendors ship several models and I tested the one a buyer would plausibly deploy for each job. So **ElevenLabs and OpenAI ran different models for the two use cases**, and **Fish ran a different model for latency than for quality** — a vendor's two rows are not always the same deployment. Column above reflects selection rationale, not a result.
+
+### The design
+
+| | |
+|---|---|
+| **Use cases** | Conversational (short turns, latency-sensitive) · Narration (long-form, quality-sensitive) |
+| **Corpus** | 75 items per use case, six strata: short, medium, long, jargon, edge cases, contamination probe |
+| **Campaigns** | Two, three weeks apart — 1,200 files, then 1,199 |
+| **Total audio scored** | 2,399 files |
+
+### In and out
+
+| In scope | Out of scope |
+|---|---|
+| English | Any other language |
+| One voice per vendor per use case | Voice-library sweeps |
+| Public paid tiers | Enterprise contracts |
+| Text-to-speech | Speech-to-text, conversational agents |
 
 ---
 
-## Where to read
+## How it was done?
 
-The 8 numbered documents plus EXPERIMENTS_2026-09-01.md in [`documentation/`](documentation/)
-are the full narrative. Read them in order for the end-to-end
-story, or pick the one that matches what you're here for:
-
-1. **[01_ARCHITECTURE.md](documentation/01_ARCHITECTURE.md)** — how
-   the harness is built (adapters, run store, analyzer chain,
-   config discipline)
-2. **[02_METHODOLOGY.md](documentation/02_METHODOLOGY.md)** — why
-   the methodology choices were made (2 MOS pipelines, 2-judge
-   WER, pre-registration, verification pattern, honest limits)
-3. **[03_RUNBOOK.md](documentation/03_RUNBOOK.md)** — install +
-   run + reproduce the published measurements
-4. **[04_RESULTS.md](documentation/04_RESULTS.md)** — full per-vendor
-   data table + rankings + cost calculus + decision framework
-5. **[05_CASE_STUDY.md](documentation/05_CASE_STUDY.md)** — long-form
-   portfolio narrative on how the findings were extracted
-6. **[06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md)** — the
-   11 findings (F-1..F-9 + F-11 + F-12; F-10 slot reserved for BT panel) + friction-point stories + 8-decision log
-   (D-A..D-H)
-7. **[07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md)** —
-   what wasn't done and why; deferred items; a proper v2 outline
-8. **[08_KEY_FINDINGS_PLAIN.md](documentation/08_KEY_FINDINGS_PLAIN.md)** —
-   the same findings as 06, in plain language for non-technical
-   readers
-9. **[EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md)** —
-   Phase 2 experiment pack: five targeted experiments + four
-   follow-ups that generalised F-6, extended F-7, and confirmed
-   S3's latency spike was transient
-
-**Quick paths by reader type**:
-
-- **PM choosing a vendor** → read **04_RESULTS.md** first (headline
-  table + decision framework), then **05_CASE_STUDY.md** for the
-  story. 15-20 min total.
-- **Fork-and-adapt engineer** → read **03_RUNBOOK.md** for install
-  + reproduce, then **01_ARCHITECTURE.md** for the code layout.
-- **Evaluation-methodology researcher** → read **02_METHODOLOGY.md**
-  for the *why*, then **06_KEY_FINDINGS.md** for the specific
-  decisions + findings, then **07_GAPS_AND_FUTURE_WORK.md** for
-  the honest limits.
-
----
-
-## Method in one paragraph
-
-Eight commercial voice AI vendors (ElevenLabs, Cartesia, Fish Audio,
-Google Cloud TTS, Deepgram, Canopy Orpheus / `lucataco`
-community-fork on Replicate, OpenAI, Speechify)
-evaluated on two use cases (support-agent conversational + long-form
-narration) across a 75-item pre-registered corpus per use case. The
-spec pre-registered **eight** measurement dimensions; here is what
-happened to each:
-
-> **Every result here is a claim about a vendor *plus a model
-> string and a voice*, not about a vendor.** ElevenLabs and OpenAI
-> run **different models per use case** (ElevenLabs Flash v2.5
-> conversational / Multilingual v2 narration; OpenAI
-> `gpt-4o-mini-tts` / `tts-1-hd`), and Fish runs a different model
-> for latency than for quality. Cartesia was tested on `sonic-2`
-> and Speechify on `simba-3.2`, as available 2026-08-07. Several
-> vendors have shipped major revisions since. Full roster:
-> [02 § The roster as tested](documentation/02_METHODOLOGY.md#roster).
-
-- **D1 · Latency** — TTFA p50/p90 from 50 serial trials per vendor per
-  session, with **six sessions across four dates** for the two
-  speed-critical vendors to separate speed from stability.
-  TTFA is measured **cold**, from a residential link, with DNS,
-  TCP, the TLS handshake and request upload inside the interval —
-  so the all-fail verdict on the `ttfa_p90_ms < 400` gate is
-  bounded by that vantage point, not a claim the threshold is
-  unreachable
-- **D2 · WER** — two ASR judges (Meta `wav2vec2-large-robust` + OpenAI
-  `faster-whisper large-v3`), agreement-based failure detection.
-  Judges required to differ in *organisation*, *encoder architecture
-  family*, AND *training pipeline* (enforced by Pydantic validator)
-- **D3 · Quality** — three scoring models: Meta's Audiobox
-  Aesthetics (2 axes: PQ = technical cleanliness, CE = warm /
-  enjoyment — see F-8 for the construct decomposition) + Microsoft's
-  DNSMOS P.808 (1 axis: single-model listening-quality MOS) +
-  Microsoft's DNSMOS P.835 (3 axes: ovrl / sig / bak from a shared
-  internal representation). Six machine-quality signals total per
-  (vendor, use case)
-- **D4 · Human perceptual rating** — deferred to a v2 multi-rater
-  panel with written rationale in [06_KEY_FINDINGS.md § D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
-  n=1 self-rating cannot license "human preference" claims at
-  population level; refusing that ceremony is a stronger position
-  than executing and disclaiming it
-- **D5 · Audio hygiene** — sample-level clipping scan, VAD-based
-  pause detection, and ITU-R BS.1770-4 loudness. Produces three of
-  the eight pre-registered gates (`clipped_samples`,
-  `long_stratum_clipped_samples`,
-  `long_stratum_acoustic_noise_floor_dbfs`) and the whole of F-4
-- **D6 · Cost** — full vendor pricing model (`pricing.yaml`) covering
-  monthly minimums, included tiers, and per-1K-word rates at 10K /
-  100K / 1M words per month
-- **D7 · Developer experience** — friction log published, timing
-  descoped. The per-vendor friction record is at
-  [`dx/friction_log.md`](dx/friction_log.md); the docs-to-first-audio
-  stopwatch was never run under controlled conditions and cannot be
-  reconstructed, so it is cut on the record rather than estimated —
-  see [D-I in 06](documentation/06_KEY_FINDINGS.md#d-i)
-- **D8 · Capability audit** — factual feature matrix per vendor
-  ([`configs/capabilities.yaml`](configs/capabilities.yaml)): voice
-  count, languages, cloning, SSML controls, streaming protocol, word
-  timestamps, SLA + data residency, pricing shape, determinism,
-  commercial use. 65 of 80 cells carry a value with a source URL and
-  a verification date; **15 are unresearched and named as such** in
-  [07 gap 10](documentation/07_GAPS_AND_FUTURE_WORK.md)
-
-Corpus, gates, voices, vendor models, and analyzer *parameters*
-(dataset ids, axis choices, judge selections, gate thresholds)
-frozen in git tag `prereg-v1` before results existed; amendments
-logged in [DEVIATIONS.md](DEVIATIONS.md) with rationale and
-re-tagged (v1.1 through v1.10). Honest exception: the three
-analyzer **neural-model revisions** (Audiobox, wav2vec2,
-faster-whisper) were not SHA-pinned in the campaign — placeholders
-in `configs/analyzers.yaml` propagated into `wer.json`. Disclosed
-in [02 § 1](documentation/02_METHODOLOGY.md#1-pre-registration-with-git-tags)
-and tracked as [07 gap 9](documentation/07_GAPS_AND_FUTURE_WORK.md). A separate **Phase 2c verification pack**
-(10 tests) confirmed or refuted every headline outlier — verdicts
-under [analysis/verification/](analysis/verification/). A **Phase 2
-experiment pack** (2026-09-01) then addressed three loose ends
-F-6, F-7, F-11 raised, with executive writeup in
-[EXPERIMENTS_2026-09-01.md](documentation/EXPERIMENTS_2026-09-01.md).
-
----
-
-## Reproducing the work
-
-**Requires:** Python 3.11, [`uv`](https://docs.astral.sh/uv/) as
-package manager, ~5 GB disk for model downloads, and API keys for
-whichever vendors you want to include. Native Windows, macOS, or
-Linux — all supported.
-
-```bash
-# Clone + install
-git clone https://github.com/ngera/VoiceModelEvaluation.git
-cd VoiceModelEvaluation
-uv sync
-
-# Add API keys to .env (copy .env.example first)
-cp .env.example .env
-# Edit .env with your provider keys
-
-# Verify everything's wired up
-uv run veval doctor --all-providers
-
-# Generate audio for a small pilot (10 items × 8 providers × 2 use cases)
-uv run veval generate --mode campaign --spend-cap 5.00
-
-# Analyze
-uv run veval analyze <run-id> --stages all
-# Outputs go to analysis/<run-id>/*.json
+```mermaid
+flowchart LR
+  A["75-item corpus<br/>× 2 use cases"] --> B["8 vendors<br/>model + voice<br/>pre-registered"]
+  B --> C["1,200 audio files<br/>per campaign"]
+  C --> D["Loudness<br/>normalisation"]
+  D --> E1["Audiobox<br/>PQ · CE"]
+  D --> E2["DNSMOS<br/>P.808 · P.835"]
+  D --> E3["Two ASR judges<br/>agreement WER"]
+  D --> E4["Hygiene<br/>clipping · LUFS · floor"]
+  E1 --> F["Gates committed<br/>before results"]
+  E2 --> F
+  E3 --> F
+  E4 --> F
+  F --> G["Findings"]
+  R["Campaign 2<br/>3 weeks later"] -.->|"replicates every<br/>ranking claim"| G
+  B --> R
 ```
 
-**Full run** (75 items × 8 vendors × 2 use cases = 1,200 audio
-outputs) takes ~30 min end-to-end. See
-[03_RUNBOOK.md § Reproduce the published evaluation](documentation/03_RUNBOOK.md#reproduce-the-published-evaluation)
-for the reproduction-cost bands (campaign + variance + latency
-S1–S3 + verification pack + Phase 2 experiment pack), and
-[DISCLAIMER § Artefact availability](DISCLAIMER.md) for which
-cost models are committed vs regenerable.
+### The method choices that matter
 
-**CPU-only by design** (see D-F in
-[06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)):
-the whole thing runs on commodity hardware. GPU accelerates
-wall-clock but doesn't change any measurement. See
-[configs/hardware.yaml](configs/hardware.yaml).
+| Choice | Why |
+|---|---|
+| **Pre-registration with git tags** | 11 tags, each predating the result it judges. A convenient-looking finding can be checked against the tag that came first. |
+| **Two independent quality pipelines** | If they agree, the ranking is robust to the instrument. If they disagree, "quality" isn't one thing — more useful than a confident ranking. |
+| **Two ASR judges, independence enforced in code** | WER from one recognizer measures the *pair*, not the speaker. Judges must differ in organisation, encoder family, and training pipeline — a validator refuses a run that violates it. No recognizer from a vendor under test. |
+| **Loudness normalised first** | Louder reliably sounds better, to models as well as people. Skip it and you benchmark mastering. |
+| **Gates, not a weighted composite** | I built a composite, then deleted it. Averaging axes that anti-correlate hides a decision instead of making one. |
+| **Measured my own noise floor** | 10 items × 3 draws × 6 vendors, so the study can say which differences it is *not* entitled to report. |
+| **Contamination probe** | 15 items per use case of Harvard sentences and public-domain openings — text models may have trained on. |
+| **Recompute and diff** | Every published number recalculated from committed JSON, then compared against the sentence reporting it. |
+
+### Two things the audit turned up
+
+- **The probe works.** Probe items transcribe at **2.6% / 2.8%** error against roughly **14%** for the authored corpus — evidence the corpus is doing real work and the pipeline isn't broken.
+- **The measurement layer never failed; the reporting layer did.** Recomputation reproduced perfectly every pass. The ~198 retractions in `CORRECTIONS.md` are all reporting errors — the most transferable finding here about how evaluations go wrong.
 
 ---
 
-## Repo layout
+## What was measured?
 
-```
-README.md                        ← this file
-DEVIATIONS.md                    ← 11 pre-registered amendments with rationale
-CORRECTIONS.md                   ← retracted-claim register — every claim traceable to a committed artefact; row count grows with review rounds
-CLAUDE.md                        ← project-wide conventions
-pyproject.toml                   ← uv-managed Python 3.11 env
+| | Dimension | What it captures | Status |
+|---|---|---|---|
+| **D1** | Latency | Time to first audio, 50 serial trials × 6 sessions over 4 dates; real-time factor | Executed |
+| **D2** | Intelligibility | Word error rate via two-judge agreement | Executed |
+| **D3** | Quality | Six signals, two pipelines — Audiobox PQ/CE, DNSMOS P.808 + P.835 triad | Executed |
+| **D4** | Human preference | Blinded pairwise, Bradley–Terry ranking | **Designed, not run** |
+| **D5** | Audio hygiene | Clipping, loudness, noise floor | Executed |
+| **D6** | Cost | Published rates, normalised to $/1K words at three volumes | Executed |
+| **D7** | Developer experience | Integration friction log | Published; timings descoped |
+| **D8** | Capabilities | Desk-research matrix of commercial + technical properties | 65 of 80 cells |
 
-configs/
-├── providers.yaml               ← 8 vendors, endpoints, env keys
-├── voices.yaml                  ← locked voice + model per (vendor, use case)
-├── voices.T6.yaml               ← T6-specific overlay (edmund_32)
-├── gates.yaml                   ← pass/fail thresholds
-├── analyzers.yaml               ← analyzer parameters (dataset ids,
-│                                  judge selection, gate thresholds
-│                                  pinned; neural-model revisions
-│                                  were TODO placeholders — see 07 gap 9)
-├── pricing.yaml                 ← cost model per vendor + tier
-└── hardware.yaml                ← reproducibility receipt
+**One note on D1.** Every latency figure is a **cold call from a residential connection**, with DNS lookup, connection setup, TLS handshake and request upload inside the interval.
 
-corpus/                          ← 75 items per use case (top-level, not under configs/)
-├── conversational.yaml
-└── narration.yaml
+- Fair stand-in for what a request from a user's own machine costs.
+- **Not** the quantity most published latency numbers report.
+- The difference is a roughly constant amount added to every call, not random noise.
 
-src/veval/
-├── adapters/                    ← one per vendor
-├── analyze/                     ← per-dimension analyzers
-│   ├── quality.py               ← Audiobox + DNSMOS
-│   ├── cross_metric.py          ← Spearman across 6 signals (F-8)
-│   ├── wer.py                   ← two-judge agreement
-│   ├── latency.py               ← TTFA / RTF
-│   ├── hygiene.py               ← clipping, LUFS, noise floor
-│   ├── drift.py                 ← per-third analysis
-│   ├── variance.py              ← within-provider stability
-│   └── cost.py                  ← from pricing.yaml
-├── cli.py                       ← veval subcommands
-├── config.py                    ← Pydantic v2 config validation
-├── doctor.py                    ← per-vendor probe
-├── runner/                      ← async request runner with spend cap
-├── store/                       ← immutable run store
-├── admin/                       ← Streamlit local dashboard
-├── human/                       ← BT rating pipeline pieces (pair_builder,
-│                                  bt, loudness) — execution deferred (D-H)
-├── report/                      ← report generation helpers
-└── score/                       ← gates.py + robustness.py (ran in v1,
-                                   receipt at analysis/campaign-20260831T175358Z/
-                                   score.json) · correlations.py (module
-                                   present, receipt block is [] this pass;
-                                   F-8's Spearman ρ comes from
-                                   analyze/cross_metric.py) · frontier.py
-                                   (D-H-blocked; frontiers block is {})
+---
 
-documentation/
-├── 01_ARCHITECTURE.md           ← technical spec + system design (mermaid embedded)
-├── 02_METHODOLOGY.md            ← why every methodology choice was made
-├── 03_RUNBOOK.md                ← install + reproduce + troubleshooting
-├── 04_RESULTS.md                ← full per-vendor data table + cost calculus + decision framework
-├── 05_CASE_STUDY.md             ← long-form portfolio narrative
-├── 06_KEY_FINDINGS.md           ← F-1..F-9 + F-11 + F-12 + friction stories + D-A..D-H log
-├── 07_GAPS_AND_FUTURE_WORK.md   ← threats to validity + deferred items + v2 plan
-├── 08_KEY_FINDINGS_PLAIN.md     ← same findings, non-technical framing
-├── EXPERIMENTS_2026-09-01.md    ← Phase 2 experiment pack + follow-ups
-├── figures/                     ← f1_rank_inversion, f2_cost_vs_quality, f3_latency_stability
-└── archive/                     ← superseded v1 docs (kept for git-blame trail)
+## What were the key findings?
 
-analysis/
-├── verification/                ← Phase 2c per-test verdicts (T1..T8, N1, N2) — committed
-├── campaign-20260809T204608Z/   ← R2 primary campaign analyzer JSONs — committed
-├── campaign-20260831T175358Z/   ← R3 fresh-generation campaign — committed
-├── campaign-20260811T180824Z/   ← T6 Speechify voice-swap — committed
-├── variance-*/                  ← 3-draw variance subset — committed
-├── latency-*/                   ← S1a/S1b/S2/S3/S4/S5 (6 sessions) — committed
-├── experiments-2026-09-01/      ← Phase 2 experiment pack — committed
-├── experiments-2026-09-01-E/    ← Follow-up 4 alt-voice analyzer output — committed
-└── round3-vs-round2-comparison.md ← R2 vs R3 replication comparison — committed
-                                   (audio `runs/` are gitignored; analyzer outputs above are un-ignored explicitly per `.gitignore`)
+### 1 · The two raters disagree, and the disagreement is structural
 
-runs/                            ← immutable audio + api_log (gitignored — regenerable)
+On **conversational** audio the split decomposes cleanly:
 
-tests/                           ← pytest regression suite (~236 tests)
+```mermaid
+flowchart LR
+  PQ["Audiobox PQ<br/>production quality"] -->|"ρ = +0.24 · agrees"| DN["DNSMOS<br/>rewards CLEAN"]
+  CE["Audiobox CE<br/>content enjoyment"] -->|"ρ = −0.51 · anti-correlates"| DN
 ```
 
+- DNSMOS rewards **clean**. Audiobox CE rewards **warm**.
+- A voice engineered to sound intimate loses points for exactly the quality that makes it appealing.
+
+**That story is only half true.** On **narration** the decomposition collapses — production quality comes out mixed-sign at **−0.17**. The clean-versus-warm reading is a **conversational-only** result. Writing it up as a general law would have been the most quotable paragraph in the study.
+
+#### The inversion, vendor by vendor
+
+![Two slope charts, conversational and narration. In each, the eight vendors are ranked by Audiobox PQ on the left and DNSMOS OVRL on the right, with a line joining each vendor's two positions. Most lines cross. Red lines mark swings of four ranks or more: on narration OpenAI moves from rank 8 on Audiobox to rank 1 on DNSMOS, and Cartesia moves from rank 2 to rank 8.](documentation/figures/f1_rank_inversion.png)
+
+*Each vendor appears twice — ranked by the warm rater on the left, the clean rater on the right. Red lines mark a swing of four ranks or more. Rendered from the **replication campaign**; the source run and render date are stamped in the figure footer.*
+
+The same finding as exact ranks, from the **baseline campaign**. All six quality signals, narration use case. **1 = best, 8 = worst.** Rows sorted by the first column.
+
+| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak |
+|---|---:|---:|---:|---:|---:|---:|
+| Speechify | **1** | **1** | 6 | 4 | 5 | 3 |
+| Orpheus | 2 | 7 | 4 | 2 | 4 | **1** |
+| Cartesia | 3 | 5 | **1** | 8 | 8 | 8 |
+| Google | 4 | 3 | 7 | 6 | 7 | 5 |
+| ElevenLabs | 5 | 2 | 5 | 7 | 6 | 7 |
+| Deepgram | 6 | 4 | 3 | 3 | 2 | 4 |
+| Fish | 7 | 6 | 2 | 5 | 3 | 6 |
+| OpenAI | 8 | 8 | 8 | **1** | **1** | 2 |
+
+> Chart and table come from **different campaigns**, three weeks apart, so mid-table ordering differs slightly between them. The three rows below hold in both.
+
+**What each column means**
+
+| Column | Rater | What it scores |
+|---|---|---|
+| **AB.PQ** | Meta Audiobox | **Production quality** — technical cleanliness. The closest available proxy for "does this sound professionally produced". |
+| **AB.CE** | Meta Audiobox | **Content enjoyment** — a warmth and pleasantness judgment, closer to listener preference than to engineering quality. |
+| **DN.p808** | Microsoft DNSMOS | **ITU-T P.808** — one overall listening-quality score, trained against crowd ratings of whole clips. |
+| **DN.ovrl** | Microsoft DNSMOS | **P.835 overall** — the headline score of the three-scale standard. |
+| **DN.sig** | Microsoft DNSMOS | **P.835 signal** — distortion in the speech itself, judged separately from anything behind it. |
+| **DN.bak** | Microsoft DNSMOS | **P.835 background** — how intrusive the background is, judged independently of the voice. |
+
+The first **two** columns come from one rater. The last **four** come from the other. That block structure is the point — read the table left-to-right and the ordering reshuffles as you cross the boundary.
+
+**Three rows worth reading closely** — each holds in both campaigns
+
+| Vendor | What it does | Baseline | Replication |
+|---|---|---|---|
+| **OpenAI** | Last on both Audiobox axes, first on two DNSMOS axes. Technically pristine; Audiobox hears it as unengaging. | PQ #8, CE #8, OVRL #1, SIG #1 | PQ #7, CE #8, OVRL #1, SIG #1 |
+| **Speechify** | First on both Audiobox axes, mid-pack on DNSMOS. Warm and engaging; DNSMOS gives no credit for that. | PQ #1, CE #1 | PQ #1, CE #1 |
+| **Cartesia** | Top on P.808, bottom on the P.835 triad. The triad detects the clipping; P.808 does not. | p808 #1, OVRL/SIG/BAK #8 | p808 #2, OVRL #8, SIG #8, BAK #7 |
+
+> Cartesia's DNSMOS row is computed over a **survivor subset** — 38 of 75 files, with the rest refused outright for peak-out-of-range (see finding 6). Google's is 71 of 75. Treat both as less certain than the others.
+
+An aggregate "quality score" averages this table into a single column and hides every inversion in it. That is why this project reports six signals rather than one.
+
+### 2 · There is no universal winner
+
+| Axis | Winner | Both use cases? |
+|---|---|---|
+| Audiobox production quality | **Speechify** | Yes |
+| DNSMOS overall | **OpenAI** | Yes |
+| Intelligibility (conversational) | **No winner** — OpenAI 13.70% / Fish 13.78%, inside the noise floor | — |
+
+Two vendors each win an entire rater, and the table above shows them winning it at the other's expense.
+
+> Pick the pipeline matching the construct your listeners reward — or read both.
+
+### 3 · Three pre-registered gates were failed by the entire roster
+
+| Gate | Outcome |
+|---|---|
+| Intelligibility threshold | **Failed all 8** |
+| Response time < 400 ms | **Failed all 4 measured** — best 461 ms |
+| Real-time factor ≥ 3.0 | 5 pass · 3 fail — first gate to discriminate |
+| No clipping (conversational) | 6 pass · 2 fail |
+| Noise floor ≤ −40 dBFS | 6 pass · 2 fail, then 5 · 3 |
+
+Reporting a threshold nobody met beats quietly relaxing it. The response-time verdict is bounded by the cold-call measurement above — not a claim that 400 ms is unreachable.
+
+### 4 · The cheapest vendor on paper is not cheap
+
+Orpheus shows **$0.030** per 1,000 words in the cost model.
+
+- Measured per call, the honest figure is **$0.067–0.088** — peer-priced to OpenAI.
+- Truncates output at exactly **14.59 seconds**, cutting short 27 of 75 narration items.
+- Worst intelligibility on the roster at **26.9%**.
+
+### 5 · Cost ordering inverts across volume
+
+| Vendor | @ 10K words/mo | @ 100K | @ 1M |
+|---|---:|---:|---:|
+| OpenAI · Fish | **$0.075** | **$0.075** | $0.075 |
+| Speechify | $1.000 | $0.100 | **$0.040** |
+| Deepgram · Google | $0.150 | $0.150 | $0.150 |
+| Cartesia | $0.500 | $0.160 | $0.196 |
+| ElevenLabs | $2.200 | $0.220 | $0.244 |
+
+- Speechify is **cheapest at 1M words and second-most-expensive at 10K** — a flat monthly minimum dominates at low volume.
+- ElevenLabs is **29× Speechify** at low volume, **6×** at high volume.
+- Match the pricing model to your actual usage, not to the headline rate.
+
+### 6 · One vendor's audio breaks downstream tools
+
+Cartesia's output sits hard against the numeric ceiling.
+
+- DNSMOS **refused to score 46% of its files** in campaign 1, **41%** in campaign 2, for peak-out-of-range.
+- Corroborated independently by a second code path.
+- Budget a peak-limiter stage if anything downstream reads that audio — a quality check, a recognizer, a resampler.
+
+### 7 · Latency rank is portable; latency numbers are not
+
+| Across 6 sessions on 4 dates | |
+|---|---|
+| Absolute times | swung **50–90%** |
+| Ordering | held in **all 6** |
+
+Measure from your own environment. Treat anyone's absolute millisecond figure — mine included — as a starting point.
+
+### 8 · Two smaller findings with real consequences
+
+- **Nothing is deterministic.** Not one of the eight returns identical audio for an identical request. Byte-level caching is unavailable from all of them.
+- **Voice choice inside a vendor moves measured quality by ≥3σ**, and it survives matching voices for gender. Some of what looks like a vendor difference is a voice difference.
+
 ---
 
-## Provenance
+## Disclaimer
 
-- **`prereg-v1`** (`git tag prereg-v1`) — the original 6-vendor
-  frozen configs, before any campaign result existed
-- **`prereg-v1.1` through `prereg-v1.10`** — 10 amendments, each with
-  rationale in [DEVIATIONS.md](DEVIATIONS.md). Every amendment
-  predates the results that use it.
-- **`prereg-v1.10`** is the tag pointing at the state of the configs
-  during the current campaign
-- Every claim in [04_RESULTS.md](documentation/04_RESULTS.md),
-  [05_CASE_STUDY.md](documentation/05_CASE_STUDY.md), and
-  [06_KEY_FINDINGS.md](documentation/06_KEY_FINDINGS.md) is either
-  derivable from `analysis/*.json` outputs (regenerable from the
-  immutable run store) or from a manual verification artefact in
-  [analysis/verification/](analysis/verification/)
+### This is personal research
+
+- One person, self-funded.
+- No sponsorship, vendor relationship, review copy, or pre-publication access by any vendor named.
+
+### The biggest limitation is the one I chose
+
+The dimension I care most about — which voice a human actually prefers — **has no result**.
+
+- Designed properly: blinded pairwise, Bradley–Terry over 216 comparisons, bootstrap clustered by item, minimum detectable difference computed in advance.
+- Then the available rater pool turned out to be **one person**. So I didn't run it.
+- A single rater can't support a population-preference claim. The most it yields is one person's taste wearing the notation of an estimate — and a number like that gets quoted long after its caveat stops travelling with it.
+- Closing the gap needs **15–30 blinded raters per use case**.
+
+### Environment
+
+| | |
+|---|---|
+| Machine | Residential Windows 11, home broadband, single location |
+| Latency figures | Cold calls including connection setup, one vantage point, moved 50–90% between sessions |
+| Portability | Latency absolutes do **not** transfer. Rank order does. |
+
+### Statistical limits
+
+- With eight vendors, correlation estimates are **directional, not significant**.
+- The load-bearing claim is the **absence of strong positive agreement** between pipelines — not any specific coefficient.
+- Most result cells are a **single draw**, so vendor non-determinism isn't averaged out except where noted.
+
+### Version-bound
+
+- Findings describe models available on **2026-08-07**. Several vendors have shipped major revisions since.
+- The deployment-specific behaviours — Cartesia's clipping signature, Orpheus's output cap — are the ones **least likely to survive a version bump**.
+- Re-running against current models is one command.
+
+### Known gaps, disclosed rather than hidden
+
+| Gap | Effect |
+|---|---|
+| Three analyzer model revisions unpinned | Exact-value reproducibility not guaranteed against those revisions; rank-level reproduction is |
+| 15 of 80 capability cells unresearched | Capability matrix is 81% complete |
+| Developer-experience timings descoped | Data proved unrecoverable; the friction log is published in full |
+
+### What to do with this
+
+**Don't provision from my numbers.**
+
+Use the method, the corpus design and the gate structure. Re-measure the vendors from your own environment against your own thresholds. The repository is built to make that a two-command job.
 
 ---
 
-## What's *not* in v1 (and why)
+## Where to go next
 
-- **Human perceptual rating panel** — deferred to v2 with a proper
-  15-30 rater blinded panel; n=1 self-rating BT can't license
-  "human preference" claims. See
-  [06_KEY_FINDINGS.md § D-H](documentation/06_KEY_FINDINGS.md#d-h-bt-deferred-to-v2).
-- **Cross-lingual, accent-varied, or streaming** measurements —
-  English-only, one voice per vendor, buffered playback in v1. See
-  [07_GAPS_AND_FUTURE_WORK.md](documentation/07_GAPS_AND_FUTURE_WORK.md).
-- **Enterprise-colocated latency baseline** — TTFA numbers are
-  from a residential Windows 11 environment; enterprise cloud-VM
-  measurements would likely see lower absolute numbers, though we
-  cannot bound the direction rigorously. Rankings are portable
-  across the 6 sessions we ran; absolute values are
-  session-to-session observations, not ceilings. See D-G in
-  [06_KEY_FINDINGS.md § decisions](documentation/06_KEY_FINDINGS.md#decisions)
-  and F-11.
-
----
-
-
-
-*This project is a portfolio piece demonstrating structured
-evaluation, self-critical scoping, and pre-registered methodology
-in the context of a commercially-relevant vendor-selection
-question.*
+| Document | What's in it |
+|---|---|
+| [`02_METHODOLOGY.md`](documentation/02_METHODOLOGY.md) | Why each choice was made · the roster as tested · the eight dimensions in full |
+| [`03_RUNBOOK.md`](documentation/03_RUNBOOK.md) | **Reproduce the campaign from a clean clone** · reproduction cost band |
+| [`04_RESULTS.md`](documentation/04_RESULTS.md) | Per-vendor tables · gate adjudication · cost calculus |
+| [`06_KEY_FINDINGS.md`](documentation/06_KEY_FINDINGS.md) | All findings with σ ratios and JSON pointers |
+| [`08_KEY_FINDINGS_PLAIN.md`](documentation/08_KEY_FINDINGS_PLAIN.md) | The same findings, for a non-technical reader |
+| [`05_CASE_STUDY.md`](documentation/05_CASE_STUDY.md) | How the findings were extracted, including the self-audit |
+| [`07_GAPS_AND_FUTURE_WORK.md`](documentation/07_GAPS_AND_FUTURE_WORK.md) | What wasn't done, and the v2 workstream |
+| [`CORRECTIONS.md`](CORRECTIONS.md) | Every retracted claim, dated and sourced |
+| [`DEVIATIONS.md`](DEVIATIONS.md) | Amendments made before results existed |
+| [`DISCLAIMER.md`](DISCLAIMER.md) | Full scope and non-affiliation statement |
+| [`analysis/`](analysis/) | The committed analyzer outputs every number is derived from |
 
 ---
 
 ## Licence
 
-Dual-scope, per path — see [`LICENSE`](LICENSE) for the full text.
+Dual-scope, by path. Full text in [`LICENSE`](LICENSE).
 
-- **Code** (`src/`, `tests/`, `scripts/`, `configs/`, `dx/`,
-  `pyproject.toml`, etc.) — **Apache License 2.0**. The explicit
-  patent grant is chosen deliberately for a harness others will
-  run against their own vendor accounts.
-- **Content** (`documentation/`, `docs/`, `analysis/`, `corpus/`,
-  `README.md`, `DISCLAIMER.md`, `DEVIATIONS.md`, `CORRECTIONS.md`,
-  and the figures under `documentation/figures/`) —
-  **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
-  Share and adapt with attribution.
+| Scope | Covers | Licence |
+|---|---|---|
+| **Code** | `src/` · `tests/` · `scripts/` · `configs/` · `dx/` · `pyproject.toml` | **Apache 2.0** |
+| **Content** | `documentation/` · `docs/` · `analysis/` · `corpus/` · this file · `DISCLAIMER.md` · `DEVIATIONS.md` · `CORRECTIONS.md` · figures | **CC BY 4.0** |
 
-The 15 contamination-probe items per use case (Harvard sentences +
-literary openings, IDs P01–P15) are pre-existing public-domain
-text; their inclusion does not create additional rights over that
-source material. Vendor and analyzer names are trademarks of their
-respective owners, used for factual identification only. `LICENSE`
-governs re-use rights only; it does not modify [`DISCLAIMER.md`](DISCLAIMER.md)'s
-scope, non-affiliation, and not-advice statements.
+- The Apache patent grant is deliberate: this is a harness other people will run against **their own** vendor accounts, and the explicit grant matters for that use.
+- CC BY 4.0 means you may share and adapt the content, including commercially, with attribution.
+
+**Attribution format**
+
+```
+Voice AI Provider Evaluation — Neeraj Gera, 2026-09
+(https://github.com/ngera/VoiceModelEvaluation), CC BY 4.0
+```
+
+**Third-party material**
+
+- The 15 contamination-probe items per use case (IDs P01–P15) are pre-existing **public-domain** text — Harvard sentences for conversational, literary openings for narration. Their inclusion creates no additional rights over that source material.
+- Vendor names (ElevenLabs, Cartesia, Fish Audio, Google, Deepgram, OpenAI, Speechify, Canopy Orpheus) and analyzer names (Meta Audiobox Aesthetics, Microsoft DNSMOS, NVIDIA Parakeet, Systran faster-whisper, jiwer) are trademarks of their respective owners, used here for factual identification only.
+
+`LICENSE` governs re-use rights only. It does not modify the scope, non-affiliation, or not-advice statements in [`DISCLAIMER.md`](DISCLAIMER.md).
