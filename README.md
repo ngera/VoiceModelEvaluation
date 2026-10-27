@@ -1,3 +1,14 @@
+<style>
+/* Theme is ngera/caliper-pages: content sits in <article class="prose">.
+   article.prose beats the theme's own .prose rules on specificity, so no
+   !important is needed. Colour comes from Caliper's --accent token, so it
+   follows light/dark and the accent switcher instead of being pinned. */
+article.prose h1,
+article.prose h2,
+article.prose h3,
+article.prose h4 { color: var(--accent); }
+</style>
+
 # Which voice AI vendor should you use?
 
 **An independent evaluation of eight commercial text-to-speech vendors — and why that question has no single answer.**
@@ -71,23 +82,7 @@ Solo, self-funded. No vendor sponsored, reviewed, or previewed it.
 
 ## How it was done?
 
-```mermaid
-flowchart LR
-  A["75-item corpus<br/>× 2 use cases"] --> B["8 vendors<br/>model + voice<br/>pre-registered"]
-  B --> C["1,200 audio files<br/>per campaign"]
-  C --> D["Loudness<br/>normalisation"]
-  D --> E1["Audiobox<br/>PQ · CE"]
-  D --> E2["DNSMOS<br/>P.808 · P.835"]
-  D --> E3["Two ASR judges<br/>agreement WER"]
-  D --> E4["Hygiene<br/>clipping · LUFS · floor"]
-  E1 --> F["Gates committed<br/>before results"]
-  E2 --> F
-  E3 --> F
-  E4 --> F
-  F --> G["Findings"]
-  R["Campaign 2<br/>3 weeks later"] -.->|"replicates every<br/>ranking claim"| G
-  B --> R
-```
+![Method pipeline: a 75-item corpus across two use cases goes to eight vendors with pre-registered model and voice, producing 1,200 audio files per campaign, run twice three weeks apart. Audio is loudness-normalised, then scored in parallel by four analyzers — Audiobox (PQ, CE), DNSMOS (P.808, P.835), two ASR judges (agreement WER), and a hygiene pass (clipping, LUFS, noise floor). All four feed gates committed before results, which produce the findings.](documentation/figures/f0_method_pipeline.svg)
 
 ### The method choices that matter
 
@@ -155,16 +150,91 @@ flowchart LR
 
 The same finding as exact ranks, from the **baseline campaign**. All six quality signals, narration use case. **1 = best, 8 = worst.** Rows sorted by the first column.
 
-| Vendor | AB.PQ | AB.CE | DN.p808 | DN.ovrl | DN.sig | DN.bak |
-|---|---:|---:|---:|---:|---:|---:|
-| Speechify | **1** | **1** | 6 | 4 | 5 | 3 |
-| Orpheus | 2 | 7 | 4 | 2 | 4 | **1** |
-| Cartesia | 3 | 5 | **1** | 8 | 8 | 8 |
-| Google | 4 | 3 | 7 | 6 | 7 | 5 |
-| ElevenLabs | 5 | 2 | 5 | 7 | 6 | 7 |
-| Deepgram | 6 | 4 | 3 | 3 | 2 | 4 |
-| Fish | 7 | 6 | 2 | 5 | 3 | 6 |
-| OpenAI | 8 | 8 | 8 | **1** | **1** | 2 |
+<table style="border-collapse:collapse;display:table;margin:0 0 6px;">
+<thead><tr>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:left;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">Vendor</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">AB.PQ</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">AB.CE</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">DN.p808</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">DN.ovrl</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">DN.sig</th>
+<th style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-size:11px;">DN.bak</th>
+</tr></thead><tbody>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Speechify</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Orpheus</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Cartesia</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Google</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">ElevenLabs</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Deepgram</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f4f1b8;color:#16202a;">4</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">Fish</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f6bba4;color:#16202a;">7</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#fae3b0;color:#16202a;">5</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#e4f1bd;color:#16202a;">3</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f9d0a8;color:#16202a;">6</td>
+</tr>
+<tr>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;font-weight:600;white-space:nowrap;color:var(--fg);">OpenAI</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#f2a7a2;color:#16202a;">8</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#bfe8cc;color:#16202a;">1</td>
+<td style="padding:7px 10px;border:1px solid var(--line);font-size:13px;text-align:center;font-weight:600;background:#d2eec4;color:#16202a;">2</td>
+</tr>
+</tbody></table>
+
+<p style="font-size:12px;color:var(--fg-3);margin:0 0 4px;">Shaded best&nbsp;(1) to worst&nbsp;(8). The rank number carries the signal; colour only reinforces it.</p>
 
 > Chart and table come from **different campaigns**, three weeks apart, so mid-table ordering differs slightly between them. The three rows below hold in both.
 
@@ -329,7 +399,6 @@ Use the method, the corpus design and the gate structure. Re-measure the vendors
 | [`CORRECTIONS.md`](CORRECTIONS.md) | Every retracted claim, dated and sourced |
 | [`DEVIATIONS.md`](DEVIATIONS.md) | Amendments made before results existed |
 | [`DISCLAIMER.md`](DISCLAIMER.md) | Full scope and non-affiliation statement |
-| [`analysis/`](analysis/) | The committed analyzer outputs every number is derived from |
 
 ---
 
